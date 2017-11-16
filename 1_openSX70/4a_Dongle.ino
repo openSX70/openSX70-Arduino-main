@@ -5,14 +5,27 @@ void Dongle(int DongleSlot)
   
     if (takePicture == true)
     {
-                        shutterCLOSE (); 
+                 
+                  HighSpeedPWM ();
+                  shutterCLOSE (); 
                   Serial.println ("close");
                   delay (500);
-                  shutterOPEN();
+  /*                shutterOPEN();
                   Serial.println ("open");
-                  delay (500);
+                  delay (25);
                   takePicture == false;                  
-    }
+                  shutterCLOSE();
+
+*/
+                  Click (); 
+                  Serial.println ("click");
+
+                  delay (500);
+                  shutterOPEN();
+                  
+     }
+     return;
+    
     /*
     byte Selector = DongleSlot;
 

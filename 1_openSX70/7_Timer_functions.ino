@@ -17,21 +17,21 @@ void timerDelay() {
   // everytime the led (in pin 5) blinks faster 1000, 700, 400, and 100.
 
 unsigned long startTimer = millis();
-Serial.println ("START 500,2600,5,0");
-BlinkBeep (500,2600,5,0);
+Serial.println ("START 500,2600,6,0");
+BlinkBeep (500,2600,6,0);
 ;
-Serial.println ("START 300,2400,5,0");
-BlinkBeep (300,2400,5,0);
+Serial.println ("START 300,2400,6,0");
+BlinkBeep (300,2400,6,0);
 ;
-Serial.println ("START 200,2400,5,0");
-BlinkBeep (200,2400,5,0);
+Serial.println ("START 200,2400,6,0");
+BlinkBeep (200,2400,6,0);
 ;
-Serial.println ("START 70,1400,5,0");
-BlinkBeep (70,1400,5,0);
+Serial.println ("START 70,1400,6,0");
+BlinkBeep (70,1400,6,0);
 ;
 
-Serial.println ("START 1200,1200,5,0");
-BlinkBeep (1200,1200,5,0);
+Serial.println ("START 1200,1200,6,0");
+BlinkBeep (1200,1200,6,0);
 ;
 Serial.println ("END");
 

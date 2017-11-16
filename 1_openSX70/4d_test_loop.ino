@@ -1,6 +1,6 @@
 void loop() {
   
-                                                
+              takePicture= false;                                  
               int pressTime = REDbutton(S1);
   
             if ((pressTime > shortPress) && (pressTime < longPress)) {
@@ -37,8 +37,10 @@ void loop() {
                                       Serial.println (ActualSlot);
                                       #endif
 
-          Dongle (ActualSlot);
 
+
+          Dongle (ActualSlot);
+/*
     byte S1 = TimeSlot(1);
                                       #if ISDEBUG 
                                       Serial.print ("------------------------>S1: ");
@@ -71,6 +73,7 @@ void loop() {
                                   #if ISDEBUG 
                                   Serial.println ("DONT KNOW ");
                                   #endif
+                                  */
   }
 
 }

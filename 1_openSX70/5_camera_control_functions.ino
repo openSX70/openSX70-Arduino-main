@@ -1,4 +1,3 @@
-//***************************************************************************************************************************************
 // --------------------------------------------------------------------------------------------------------------------------------------
 
 //                                CAMERA CONTROL
@@ -9,7 +8,7 @@
 int REDbutton(int button) {
 
                #if ISDEBUG 
-             //U Serial.println("REDbutton");      
+              //Serial.println("REDbutton");      
               #endif
 
     
@@ -98,7 +97,7 @@ void shutterOPEN()
                             #if ISDEBUG 
                           Serial.println ("shutterOPEN");
                           #endif
-analogWrite (Solenoid1,255);
+analogWrite (Solenoid1,0);
 
 }     //end of void shutterOPEN()
 
@@ -177,4 +176,16 @@ void Click()
   shutterCLOSE ();                                         //close the shutter
 
 } //en of void Click()
+void HighSpeedPWM ()
+ {
+  //PWM high speed
+  //one N_Mosfet powerdown
+  //taken from: https://www.gammon.com.au/forum/?id=11504
+
+  TCCR2A = bit (WGM20) | bit (WGM21) | bit (COM2B1); // fast PWM, clear OC2A on compare
+  TCCR2B = bit (WGM22) | bit (CS20);         // fast PWM, no prescaler
+  OCR2A =  n;                                // from table  
+  OCR2B = ((n + 1) / 2) - 1;                 // 50% duty cycle
+  //THIS AFFECTS OUTPUT 3 AND OUTPUT 11 (Solenoid1 and Solenoid2) 
+ }
 //***************************************************************************************************************************************

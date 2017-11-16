@@ -3,11 +3,11 @@
 //*************
 
 //TEST ONLY SHUTTER ASSEMBLY
-//#define SHUTTERONLY 1
+//#define SHUTTER 1
 //*************
 
 //TEST ONLY BACK OF THE CAMERA
-//#define MOTORONLY 1
+//#define MOTOR 1
 //*************
 
 
@@ -98,4 +98,5 @@ void darkslideEJECT();
 void Click();
 void timerDelay();
 void Dongle (int DongleSlot);
+void HighSpeedPWM ();
 
