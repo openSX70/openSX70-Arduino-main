@@ -3,11 +3,11 @@
 //*************
 
 //TEST ONLY SHUTTER ASSEMBLY
-//#define SHUTTER 1
+#define SHUTTER 1
 //*************
 
 //TEST ONLY BACK OF THE CAMERA
-//#define MOTOR 1
+#define MOTOR 0
 //*************
 
 
@@ -86,7 +86,7 @@ const int shortPress = 150;
   const int  longPress = 1200;
 //***************************************************************************************************************************************
 //FUNCTION PROTOTYPES
-byte TimeSlot(int Slot);
+byte DS2408(int Slot);
 int REDbutton(int button);
 void motorON();
 void motorOFF();

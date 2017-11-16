@@ -27,11 +27,11 @@ void loop() {
             takePicture = true;
 
             }   // END Of else if (pressTime > longPress) 
-         byte ActualSlot = (TimeSlot(0));
+         byte ActualSlot = (DS2408(0));
                                       
-          if (TimeSlot(0) < 100)
+          if (DS2408(0) < 100)
                               {
-          //byte ActualSlot = (TimeSlot(0));
+          //byte ActualSlot = (DS2408(0));
                                       #if ISDEBUG 
                                       Serial.print ("Selector: ");
                                       Serial.println (ActualSlot);
@@ -41,27 +41,27 @@ void loop() {
 
           Dongle (ActualSlot);
 /*
-    byte S1 = TimeSlot(1);
+    byte S1 = DS2408(1);
                                       #if ISDEBUG 
                                       Serial.print ("------------------------>S1: ");
                                       Serial.println (S1);
                                       #endif
 
-    byte S2 = TimeSlot(2);
+    byte S2 = DS2408(2);
                                       #if ISDEBUG 
                                       Serial.print ("------------------------>S2: ");
                                       Serial.println (S2);
                                       #endif
     return;
   }
-  if (TimeSlot(0) == 100)
+  if (DS2408(0) == 100)
   {
                                       #if ISDEBUG 
                                       Serial.println ("FLASH");
                                       #endif
     return;
   }
-  if (TimeSlot(0) == 200)
+  if (DS2408(0) == 200)
   {
                                     #if ISDEBUG 
                                     Serial.println ("NOTHING");

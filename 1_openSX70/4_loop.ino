@@ -8,8 +8,10 @@ void loop() {
   //closed  open  --> EJECT DARKSLIDE (DEFAULT)
   // open  closed --> FILM REACH 0 (NO FLASH)
   // open   open  --> NORMAL OPERATION 10 TO 1
+
  
-    // STATE 1: EJECT DARKSLIDE:
+   // STATE 1: EJECT DARKSLIDE:
+  #if MOTOR 
   if (digitalRead(S8) == HIGH && digitalRead(S9) == LOW)
     //EJECT DARK SLIDE
   {
@@ -18,7 +20,8 @@ void loop() {
                                   Serial.println("STATE1: EJECT DARK SLIDE");      
                                   #endif
   }
-
+  #endif
+  #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH
   if (digitalRead(S8) == LOW && digitalRead(S9) == HIGH)
     // FOR THE MOMENT I JUST TURN ON THE GREEN LED
@@ -28,7 +31,8 @@ void loop() {
                                   #endif
 
 }
-
+#endif
+#if MOTOR 
   //STATE 3: NORMAL OPERATION
   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW)
   {
@@ -36,6 +40,7 @@ void loop() {
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
                                 #endif
     
+#endif
    
 // ///////////////////////////////////PICTURE TAKING OPERATION//////////////////////////////////////////////////
 //    FOUR CASES:
@@ -86,36 +91,36 @@ void loop() {
 
             }   // END Of else if (pressTime > longPress) {
 
-          if (TimeSlot(0) < 100)
+          if (DS2408(0) < 100)
   {
-    byte ActualSlot = (TimeSlot(0));
+    byte ActualSlot = (DS2408(0));
                                       #if ISDEBUG 
                                       Serial.print ("Selector: ");
                                       Serial.println (ActualSlot);
                                       #endif
     Dongle (ActualSlot);
 
-    byte S1 = TimeSlot(1);
+    byte S1 = DS2408(1);
                                       #if ISDEBUG 
                                       Serial.print ("S1: ");
                                       Serial.println (S1);
                                       #endif
 
-    byte S2 = TimeSlot(2);
+    byte S2 = DS2408(2);
                                       #if ISDEBUG 
                                       Serial.print ("S2: ");
                                       Serial.println (S2);
                                       #endif
     return;
   }
-  if (TimeSlot(0) == 100)
+  if (DS2408(0) == 100)
   {
                                       #if ISDEBUG 
                                       Serial.println ("FLASH");
                                       #endif
     return;
   }
-  if (TimeSlot(0) == 200)
+  if (DS2408(0) == 200)
   {
                                     #if ISDEBUG 
                                     Serial.println ("NOTHING");
@@ -128,14 +133,15 @@ void loop() {
                                   Serial.println ("DONT KNOW ");
                                   #endif
   }
-  //  int TimeSlot();
+  //  int DS2408();
   return;
 
 
 
             //---------------------------------------------------------------------------
-           
+#if MOTOR           
   }
+#endif
 
 } //END OF loop      
 

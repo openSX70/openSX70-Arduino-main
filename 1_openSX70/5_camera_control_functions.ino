@@ -78,6 +78,7 @@ void shutterCLOSE()
                                       #if ISDEBUG 
                                     Serial.println ("shutterCLOSE");
                                     #endif
+   HighSpeedPWM ();
   analogWrite(Solenoid1, 255);
                                       #if ISDEBUG 
                                     Serial.println ("Delay 15ms");
@@ -153,7 +154,7 @@ void Click()
   
   shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
 
-  ActualSlot = TimeSlot(0);
+  ActualSlot = DS2408(0);
 
   if (ActualSlot == 0)                                        //THIS IS THE B "BULB" OPTION WHILE S1 (Red SHUTTER button is pressed) the shutter is OPEN
   { ;
@@ -161,7 +162,7 @@ void Click()
     shutterCLOSE ();
     return;
   }
-  // TimeSlot = 9
+  // DS2408 = 9
 
   if (ActualSlot == 9)
   { ;

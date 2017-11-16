@@ -21,27 +21,27 @@ void loop() {
 
 */
 /*
-  if (TimeSlot(0) < 100)
+  if (DS2408(0) < 100)
   {
-    byte ActualSlot = TimeSlot(0);
+    byte ActualSlot = DS2408(0);
     Serial.print ("Selector: ");
     Serial.println (ActualSlot);
 
-    byte S1 = TimeSlot(1);
+    byte S1 = DS2408(1);
     Serial.print ("S1: ");
     Serial.println (S1);
 
-    byte S2 = TimeSlot(2);
+    byte S2 = DS2408(2);
     Serial.print ("S2: ");
     Serial.println (S2);
     return;
   }
-  if (TimeSlot(0) == 100)
+  if (DS2408(0) == 100)
   {
     Serial.println ("FLASH");
     return;
   }
-  if (TimeSlot(0) == 200)
+  if (DS2408(0) == 200)
   {
     Serial.println ("NOTHING");
     return;
@@ -50,14 +50,14 @@ void loop() {
   {
     Serial.println ("DONT KNOW ");
   }
-  //  int TimeSlot();
+  //  int DS2408();
   return;
 
 } // END OF loop
 //******************************************************************************************************
 */
 
-byte TimeSlot(int Slot) {
+byte DS2408(int Slot) {
    // Slot = 0 selector    // return value 0-15 (selector) 100 = Flash inserted 200 = NOTHING INSERTED
    // Slot = 1 S1
    // Slot = 2 S2
@@ -116,7 +116,7 @@ byte TimeSlot(int Slot) {
 
   return 200; //NOTHING
 
-} //END OF TimeSlot() function
+} //END OF DS2408() function
 
 //******************************************************************************************************
 byte WritePIO(byte port, bool ON) {
