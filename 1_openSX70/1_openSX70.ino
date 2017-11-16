@@ -6,6 +6,7 @@
 //This will work with "normal" arduinos (UNO etc...)
 //You have been warned!
 //I have "stolen" code from all over, if not credited I apologize.
+//this is the first "proper" GitHub code
 
 
 
