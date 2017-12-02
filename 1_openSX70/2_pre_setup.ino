@@ -80,6 +80,8 @@ int ShutterSpeed[] = {POSB, POST, 4, 8, 16, 33, 66, 125, 250, 500, 1000, POS1, P
 
 int shots = 0;
 
+int pressTime = 0;     //intialize pressTime            
+
          // Lets define what is considered a longPress and a shortPress
          // shortPress is when you want to take a "regular" picture
          // it needs to be timed for debounce purposes, that is, you need a "solid" press to take a picture

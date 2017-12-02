@@ -116,7 +116,7 @@ void shutterCLOSE()
                                     Serial.println ("shutter in power down mode (130)");
                                     #endif
   analogWrite (Solenoid1, 130);
-  
+  return;
   }   //end of void motorON()
 
 //***************************************************************************************************************************************
@@ -127,6 +127,7 @@ void shutterOPEN()
                           Serial.println ("shutterOPEN");
                           #endif
 analogWrite (Solenoid1,0);
+return;
 
 }     //end of void shutterOPEN()
 
@@ -142,6 +143,7 @@ void mirrorDOWN()
   while (digitalRead(S5) != LOW)  //While S5 open keep the motor running and lower the mirror
     ;
   motorOFF ();
+  return;
 }    //end of void mirrorDOWN()
 //***************************************************************************************************************************************
 
@@ -158,6 +160,7 @@ void mirrorUP()
   //S1 MAY BE OPEN NOW (DON'T KNOW HOW TO DO THIS YET)
   // Motor Brake
   motorOFF ();
+  return;
 
 }   //end of mirrorUP();
 //***************************************************************************************************************************************
@@ -170,6 +173,7 @@ void darkslideEJECT()
   
   mirrorUP();
   mirrorDOWN();
+  return;
 }   // end of void darkslideEJECT()
 
 //***************************************************************************************************************************************
@@ -177,7 +181,7 @@ void darkslideEJECT()
 void Click()
 {
                             #if ISDEBUG 
-                              ActualSlot = DS2408(0);
+                            ActualSlot = DS2408(0);
                             Serial.print ("Click: ");
                             Serial.println (ShutterSpeed[ActualSlot]);
                             #endif
@@ -208,6 +212,7 @@ void Click()
   //CLICK!
 
   shutterCLOSE ();                                         //close the shutter
+  return;
 
 } //en of void Click()
 void HighSpeedPWM ()
