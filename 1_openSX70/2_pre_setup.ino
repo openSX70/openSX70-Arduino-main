@@ -70,7 +70,13 @@ int ActualSlot;                //selectorPOSITION is the position of the selecto
                                 //int ShutterSpeed[] = {0, 1000, 500, 250, 125, 66, 33, 16, 8, 0};
                                 //inversed wheel
 
-int ShutterSpeed[] = {0, 8, 16, 33, 66, 125, 250, 500, 1000, 0,0,0,0,0,0,0};
+//int ShutterSpeed[] = {"B","T",4, 8, 16, 33, 66, 125, 250, 500, 1000, 1, 2, 3, 4, 5};
+
+enum positions_t {POS1 = -100, POS2, POS3, POS4, POS5, POSB, POST};
+
+int ShutterSpeed[] = {POSB, POST, 4, 8, 16, 33, 66, 125, 250, 500, 1000, POS1, POS2, POS3, POS4, POS5 };
+
+
 
 int shots = 0;
 
@@ -100,4 +106,5 @@ void timerDelay();
 void Dongle (int DongleSlot);
 void HighSpeedPWM ();
 void Flash ();
-
+void ShutterB();
+void ShutterT();

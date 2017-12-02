@@ -6,7 +6,18 @@
 //***************************************************************************************************************************************
 
 int REDbutton(int button) {
-
+/*
+if (digitalRead(button) == LOW && DS2408(0) == 0)
+    {
+    ShutterB();
+    return;
+    }
+if (digitalRead(button) == LOW && DS2408(0) == 1)
+    {
+    ShutterT();
+    return;
+    }
+  */  
                #if ISDEBUG 
               //Serial.println("REDbutton");      
               #endif
@@ -26,6 +37,11 @@ static unsigned long STARTbuttonTimer = 0 ;
  
     
 int result= 0 ;
+
+                 #if ISDEBUG 
+                 Serial.print ("SHUTTERSPEED:  ");    
+                 Serial.println (ShutterSpeed[DS2408(0)]);
+                 #endif
 
 if (digitalRead(button) == LOW) {
             if (buttonActive == false) {
@@ -56,7 +72,19 @@ if (digitalRead(button) == LOW) {
 
      } // END OF REDbutton function
 //***************************************************************************************************************************************
-     
+void ShutterT()
+{
+                 #if ISDEBUG 
+                 Serial.println ("SHUTTER T");    
+                 #endif
+}
+
+void ShutterB()
+{
+               #if ISDEBUG 
+               Serial.println ("SHUTTER B");    
+               #endif
+}
 void motorON()
 {
                                         #if ISDEBUG 
@@ -158,12 +186,14 @@ void Click()
 
   ActualSlot = DS2408(0);
 
+/*
   if (ActualSlot == 0)                                        //THIS IS THE B "BULB" OPTION WHILE S1 (Red SHUTTER button is pressed) the shutter is OPEN
   { ;
     while (digitalRead(S1) == LOW);
     shutterCLOSE ();
     return;
   }
+
   // DS2408 = 9
 
   if (ActualSlot == 9)
@@ -172,6 +202,7 @@ void Click()
     shutterCLOSE ();
     return;
   }
+  */
   delay (ShutterSpeed[ActualSlot]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
 
   //CLICK!

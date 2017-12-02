@@ -1,8 +1,11 @@
 void Dongle(int DongleSlot) 
     {
- 
-    Serial.println ("                                                 Dongle");
-  
+                                        #if ISDEBUG 
+                                        Serial.print ("                                                 Dongle:");
+                                        Serial.println (DongleSlot);
+                                        #endif
+
+    
     if (takePicture == true  && DS2408(1) ==  0 && shots == 0)    //NORMAL OPERATION
     {
  
