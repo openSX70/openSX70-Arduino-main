@@ -56,75 +56,12 @@ void loop() {
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
 
-
-              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POST)))) //NO FUNCIONA!!!!
-                  {
-                      Serial.println ("POSITION T");
-              
-                  #if SHUTTER
-                  shutterCLOSE (); 
-                  #endif
-                  
-                  #if MOTOR 
-                  mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-                  while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
-                   ;
-                  delay (40);                               //S3 is now open start Y-delay (40ms)
-                  #endif
- 
-                  #if !MOTOR
-                  delay (500);
-                  #endif
-
-                  #if SHUTTER
-                  shutterOPEN ();
-
-                       
-                        if (digitalRead(S1) == LOW)
-                        {
-                        shutterCLOSE ();
-                        }
-                        else
-                        {
-                        ;
-                        }
-                  #endif
-                  
-                  #if !MOTOR
-                  delay (500);
-                  #endif
-
-                  #if !MOTOR
-                  delay (1000);
-                  #endif
-
-                  #if MOTOR
-                  delay (200);                             //AGAIN is this delay necessary?
-                  mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-                  delay (200);                             //AGAIN is this delay necessary?
-                  #endif
-
-                 #if SHUTTER
-                 shutterOPEN();
-                 #endif   
-                 //shots = 0;  
- 
-                        
-
-                 return;       
-                  
-               }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))       
   
-                    
-            
-/*
-             if (((ShutterSpeed[ActualSlot]) != (POSB)) && ((ShutterSpeed[ActualSlot]) != (POST)))
-             {*/
-             
             int pressTime = REDbutton(S1);
-             // }
-       if (((ShutterSpeed[ActualSlot]) != (POSB)) && ((ShutterSpeed[ActualSlot]) != (POST)))
+    
+       if ((ShutterSpeed[ActualSlot]) != (POSB))
              {
+              
             if ((pressTime > shortPress) && (pressTime < longPress)) {
                                        #if ISDEBUG 
                                       Serial.println("---------------------------");
@@ -146,8 +83,14 @@ void loop() {
                                       #endif  
 
             timerDelay();   
+            if ((ShutterSpeed[ActualSlot]) != (POSB))
+              {
+                bool shutterT = true;
+              } else {
             takePicture = true;
+              }
 
+              
             }   // END Of else if (pressTime > longPress) 
              }
                                       
