@@ -99,4 +99,5 @@ void Click();
 void timerDelay();
 void Dongle (int DongleSlot);
 void HighSpeedPWM ();
+void Flash ();
 

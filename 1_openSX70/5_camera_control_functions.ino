@@ -149,7 +149,9 @@ void darkslideEJECT()
 void Click()
 {
                             #if ISDEBUG 
-                            Serial.println ("Click");
+                              ActualSlot = DS2408(0);
+                            Serial.print ("Click: ");
+                            Serial.println (ShutterSpeed[ActualSlot]);
                             #endif
   
   shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!

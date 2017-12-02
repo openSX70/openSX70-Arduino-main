@@ -33,48 +33,46 @@ void loop() {
                               {
           //byte ActualSlot = (DS2408(0));
                                       #if ISDEBUG 
+                                      byte S1 = DS2408(1);
+                                      byte S2 = DS2408(2);
                                       Serial.print ("Selector: ");
-                                      Serial.println (ActualSlot);
+                                      Serial.print (ActualSlot);
+                                      Serial.print (" / ");
+                                      Serial.print (S1);
+                                      Serial.print (" / ");
+                                      Serial.println (S2);
                                       #endif
 
 
 
           Dongle (ActualSlot);
-/*
-    byte S1 = DS2408(1);
-                                      #if ISDEBUG 
-                                      Serial.print ("------------------------>S1: ");
-                                      Serial.println (S1);
-                                      #endif
+          return;
+                              }
 
-    byte S2 = DS2408(2);
-                                      #if ISDEBUG 
-                                      Serial.print ("------------------------>S2: ");
-                                      Serial.println (S2);
-                                      #endif
-    return;
-  }
   if (DS2408(0) == 100)
   {
                                       #if ISDEBUG 
-                                      Serial.println ("FLASH");
+                                      Serial.print (DS2408(0));
+                                      Serial.println (":  FLASH");
                                       #endif
+                                      Flash();
     return;
   }
   if (DS2408(0) == 200)
   {
                                     #if ISDEBUG 
-                                    Serial.println ("NOTHING");
+                                    Serial.print (DS2408(0));
+                                    Serial.println (": NOTHING: WILL USE LIGHT METER?");
                                     #endif
     return;
   }
   else
   {
                                   #if ISDEBUG 
-                                  Serial.println ("DONT KNOW ");
+                                  Serial.print (DS2408(0));
+                                  Serial.println (":   DONT KNOW, SHOULD NOT BE HERE! ");
                                   #endif
-                                  */
   }
-
+                              
 }
 
