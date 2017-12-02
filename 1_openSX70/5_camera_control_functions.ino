@@ -83,7 +83,7 @@ void shutterCLOSE()
                                       #if ISDEBUG 
                                     Serial.println ("Delay 15ms");
                                     #endif
-  delay (15);                                        //Wait for the SOL#1 in BC position, more tests perhaps need
+  delay (25);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
                                     #if ISDEBUG 
                                     Serial.println ("shutter in power down mode (130)");
                                     #endif
