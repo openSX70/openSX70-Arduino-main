@@ -6,18 +6,7 @@
 //***************************************************************************************************************************************
 
 int REDbutton(int button) {
-/*
-if (digitalRead(button) == LOW && DS2408(0) == 0)
-    {
-    ShutterB();
-    return;
-    }
-if (digitalRead(button) == LOW && DS2408(0) == 1)
-    {
-    ShutterT();
-    return;
-    }
-  */  
+
                #if ISDEBUG 
               //Serial.println("REDbutton");      
               #endif
@@ -85,6 +74,7 @@ void ShutterB()
                Serial.println ("SHUTTER B");    
                #endif
 }
+//***************************************************************************************************************************************
 void motorON()
 {
                                         #if ISDEBUG 
@@ -93,6 +83,7 @@ void motorON()
   digitalWrite(Motor, HIGH);
 }
 
+//***************************************************************************************************************************************
 void motorOFF()
 {
                                       #if ISDEBUG 
@@ -101,6 +92,7 @@ void motorOFF()
   digitalWrite(Motor, LOW);
 }
 
+//***************************************************************************************************************************************
 void shutterCLOSE()
 {
                                       #if ISDEBUG 
@@ -120,7 +112,6 @@ void shutterCLOSE()
   }   //end of void motorON()
 
 //***************************************************************************************************************************************
-
 void shutterOPEN()
 {
                             #if ISDEBUG 
@@ -130,7 +121,6 @@ analogWrite (Solenoid1,0);
 return;
 
 }     //end of void shutterOPEN()
-
 //***************************************************************************************************************************************
 
 void mirrorDOWN()
@@ -186,9 +176,43 @@ void Click()
                             Serial.println (ShutterSpeed[ActualSlot]);
                             #endif
   
-  shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
 
   ActualSlot = DS2408(0);
+
+  if (ActualSlot == POST)
+  {
+    // case T
+      #if SHUTTER
+     shutterOPEN (); 
+     if (pressTime > shortPress)
+     {
+      shutterCLOSE();      
+     }
+     return;
+     #endif
+  }
+
+  if (ActualSlot == POSFLASH)
+  {
+    // case FLASH DONGLE
+                  #if SHUTTER
+                  shutterOPEN (); 
+                  delay (51);
+                 WritePIO (7,1);
+                  //                        digitalWrite(FFA, HIGH);
+                  delay (25);
+                  //                      digitalWrite(FFA, LOW);
+                  WritePIO (7,0);
+                  delay (26);
+                  shutterCLOSE();
+                  #endif
+                  return;
+  }
+
+  if (ActualSlot > 0)
+  {
+      shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
+
 
 /*
   if (ActualSlot == 0)                                        //THIS IS THE B "BULB" OPTION WHILE S1 (Red SHUTTER button is pressed) the shutter is OPEN
@@ -213,6 +237,7 @@ void Click()
 
   shutterCLOSE ();                                         //close the shutter
   return;
+    }
 
 } //en of void Click()
 void HighSpeedPWM ()

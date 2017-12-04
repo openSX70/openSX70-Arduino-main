@@ -72,9 +72,9 @@ int ActualSlot;                //selectorPOSITION is the position of the selecto
 
 //int ShutterSpeed[] = {"B","T",4, 8, 16, 33, 66, 125, 250, 500, 1000, 1, 2, 3, 4, 5};
 
-enum positions_t {POS1 = -100, POS2, POS3, POS4, POS5, POSB, POST};
+enum positions_t {POS1 = -100, POS2, POS3, POS4, POSFLASH, POSB, POST};
 
-int ShutterSpeed[] = {POSB, POST, 4, 8, 16, 33, 66, 125, 250, 500, 1000, POS1, POS2, POS3, POS4, POS5 };
+int ShutterSpeed[] = {POSB, POST, 4, 8, 16, 33, 66, 125, 250, 500, 1000, POSFLASH, POS1, POS1, POS3, POS4 };
 
 
 
