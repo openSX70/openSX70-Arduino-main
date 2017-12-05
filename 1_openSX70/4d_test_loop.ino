@@ -5,8 +5,9 @@ void loop() {
               
               if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
                   {
-                      Serial.println ("POSITION B");
-              
+                      Serial.print ("POSITION B:  ");
+                      Serial.println( ActualSlot);
+                                    
                   #if SHUTTER
                   shutterCLOSE (); 
                   #endif
@@ -58,7 +59,7 @@ void loop() {
 
   
             int pressTime = REDbutton(S1);
-    
+        
        if ((ShutterSpeed[ActualSlot]) != (POSB))
              {
               
@@ -83,14 +84,8 @@ void loop() {
                                       #endif  
 
             timerDelay();   
-            if ((ShutterSpeed[ActualSlot]) != (POSB))
-              {
-                bool shutterT = true;
-              } else {
             takePicture = true;
-              }
-
-              
+             
             }   // END Of else if (pressTime > longPress) 
              }
                                       

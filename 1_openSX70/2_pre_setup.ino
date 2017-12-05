@@ -72,9 +72,18 @@ int ActualSlot;                //selectorPOSITION is the position of the selecto
 
 //int ShutterSpeed[] = {"B","T",4, 8, 16, 33, 66, 125, 250, 500, 1000, 1, 2, 3, 4, 5};
 
-enum positions_t {POS1 = -100, POS2, POS3, POS4, POSFLASH, POSB, POST};
+enum positions_t {POS1 = -100, POS2, POS3, POS4, POSB, POST, POSFLASH};
+/* TO CLARIFY:
+ *  POS1 = -100
+ *  POS2 = -99
+ *  POS3 = -98
+ *  POS4 = -97
+ *  POSB = -96
+ *  POST = -95
+ *  POSFLASH = -94
+ */
 
-int ShutterSpeed[] = {POSB, POST, 4, 8, 16, 33, 66, 125, 250, 500, 1000, POSFLASH, POS1, POS1, POS3, POS4 };
+int ShutterSpeed[] = { 4, 8, 16, 33, 66, 125, 250, 500, 1000, POS1, POS2, POS3, POS4,  POSB, POST, POSFLASH };
 
 
 
@@ -110,3 +119,4 @@ void HighSpeedPWM ();
 void Flash ();
 void ShutterB();
 void ShutterT();
+byte WritePIO(byte port, bool ON);

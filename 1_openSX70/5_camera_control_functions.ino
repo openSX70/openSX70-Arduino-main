@@ -172,29 +172,44 @@ void Click()
 {
                             #if ISDEBUG 
                             ActualSlot = DS2408(0);
-                            Serial.print ("Click: ");
+                            Serial.print ("ClickClickClickClickClickClickClickClickClickClickClickClickClickClickClick: ");
                             Serial.println (ShutterSpeed[ActualSlot]);
                             #endif
   
 
   ActualSlot = DS2408(0);
 
-  if (ActualSlot == POST)
+  if ((ShutterSpeed[ActualSlot]) == POST)
   {
     // case T
+      #if ISDEBUG
+      Serial.println ("MODE T");
+      #endif
+      
       #if SHUTTER
      shutterOPEN (); 
+     
      if (pressTime > shortPress)
      {
-      shutterCLOSE();      
+      shutterCLOSE();
+     #endif      
+     } else {
+      ;
      }
-     return;
-     #endif
+          
   }
 
-  if (ActualSlot == POSFLASH)
+  if ((ShutterSpeed[ActualSlot]) == POSFLASH)
   {
     // case FLASH DONGLE
+                                  #if ISDEBUG
+                                  Serial.println ("MODE FLASH IN DONGLE POSITION");
+                                  #endif
+//delay (10000);
+                            #if ISDEBUG 
+                            ActualSlot = DS2408(0);
+                            Serial.println ("Click: FLASH ");
+                            #endif
                   #if SHUTTER
                   shutterOPEN (); 
                   delay (51);
@@ -209,37 +224,24 @@ void Click()
                   return;
   }
 
-  if (ActualSlot > 0)
+  if ((ShutterSpeed[ActualSlot]) > 0)
+
   {
       shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
 
-
-/*
-  if (ActualSlot == 0)                                        //THIS IS THE B "BULB" OPTION WHILE S1 (Red SHUTTER button is pressed) the shutter is OPEN
-  { ;
-    while (digitalRead(S1) == LOW);
-    shutterCLOSE ();
-    return;
-  }
-
-  // DS2408 = 9
-
-  if (ActualSlot == 9)
-  { ;
-    (digitalRead(S1) == HIGH );                        //THIS IS THE T "TIME" OPTION PRESS ONCE S1 (Red SHUTTER button) the shutter is OPEN and AGAIN to close
-    shutterCLOSE ();
-    return;
-  }
-  */
   delay (ShutterSpeed[ActualSlot]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
 
   //CLICK!
 
   shutterCLOSE ();                                         //close the shutter
   return;
+    } else {
+
+    return;
     }
 
 } //en of void Click()
+//***************************************************************************************************************************************
 void HighSpeedPWM ()
  {
   //PWM high speed
