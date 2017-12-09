@@ -27,7 +27,7 @@ void Flash ()
                   delay (51);
                   digitalWrite(FFA, HIGH);
                   delay (25);
-                  analogWrite (Solenoid1,0);
+                  analogWrite (Solenoid2,0);
                   digitalWrite(FFA, LOW);
                   delay (26);
                   shutterCLOSE();
