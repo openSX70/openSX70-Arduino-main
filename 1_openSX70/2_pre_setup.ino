@@ -83,7 +83,7 @@ enum positions_t {POS1 = -100, POS2, POS3, POS4, POSB, POST, POSFLASH};
  *  POSFLASH = -94
  */
 
-int ShutterSpeed[] = { 4, 8, 16, 33, 66, 125, 250, 500, 1000, POS1, POS2, POS3, POS4,  POSB, POST, POSFLASH };
+int ShutterSpeed[] = { 6, 10, 16, 33, 66, 125, 250, 500, 1000, POS1, POS2, POS3, POS4,  POSB, POST, POSFLASH };
 
 
 

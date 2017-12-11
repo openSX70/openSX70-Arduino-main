@@ -172,8 +172,8 @@ void Click()
 {
                             #if ISDEBUG 
                             ActualSlot = DS2408(0);
-                            Serial.print ("ClickClickClickClickClickClickClickClickClickClickClickClickClickClickClick: ");
-                            Serial.println (ShutterSpeed[ActualSlot]);
+//                            Serial.print ("ClickClickClickClickClickClickClickClickClickClickClickClickClickClickClick: ");
+//                            Serial.println (ShutterSpeed[ActualSlot]);
                             #endif
   
 
@@ -182,20 +182,22 @@ void Click()
   if ((ShutterSpeed[ActualSlot]) == POST)
   {
     // case T
+     pressTime = 0;
+          
       #if ISDEBUG
       Serial.println ("MODE T");
+      delay (1000);
       #endif
       
       #if SHUTTER
      shutterOPEN (); 
      
-     if (pressTime > shortPress)
-     {
+     while (pressTime > shortPress)
+     int pressTime = REDbutton(S1);
       shutterCLOSE();
-     #endif      
-     } else {
-      ;
-     }
+      #endif    
+
+     
           
   }
 
@@ -227,18 +229,28 @@ void Click()
   if ((ShutterSpeed[ActualSlot]) > 0)
 
   {
-      shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
-
-  delay (ShutterSpeed[ActualSlot]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
-
-  //CLICK!
-
-  shutterCLOSE ();                                         //close the shutter
-  return;
-    } else {
-
+    #if ISDEBUG
+    WritePIO (6,1);
+    delay (5);
+    WritePIO (6,0);
+    Serial.print ("--------------------------------------------------CLICK:  ");
+    Serial.println (ShutterSpeed[ActualSlot]);
+    
+    #endif
+    shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
+        delay (ShutterSpeed[ActualSlot]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+        ////////CLICK!
+    shutterCLOSE ();                                         //close the shutter
+    #if ISDEBUG
+    WritePIO (6,1);
+    delay (5);
+    WritePIO (6,0);
+    #endif
     return;
-    }
+            } else {
+
+                    return;
+                  }
 
 } //en of void Click()
 //***************************************************************************************************************************************
@@ -248,12 +260,10 @@ void HighSpeedPWM ()
   //one N_Mosfet powerdown
   //taken from: https://www.gammon.com.au/forum/?id=11504
 
-/* DE-ACTIVATED FOR MICRO/NANO DIFFERENT CPU
   TCCR2A = bit (WGM20) | bit (WGM21) | bit (COM2B1); // fast PWM, clear OC2A on compare
   TCCR2B = bit (WGM22) | bit (CS20);         // fast PWM, no prescaler
   OCR2A =  n;                                // from table  
   OCR2B = ((n + 1) / 2) - 1;                 // 50% duty cycle
   //THIS AFFECTS OUTPUT 3 AND OUTPUT 11 (Solenoid1 and Solenoid2) 
-  */
  }
 //***************************************************************************************************************************************
