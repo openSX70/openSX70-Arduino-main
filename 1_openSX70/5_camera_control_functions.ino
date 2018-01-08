@@ -98,16 +98,16 @@ void shutterCLOSE()
                                       #if ISDEBUG 
                                     Serial.println ("shutterCLOSE");
                                     #endif
-   HighSpeedPWM ();
-  analogWrite(Solenoid1, 255);
+                                    HighSpeedPWM ();
+                                    analogWrite(Solenoid1, 255);
                                       #if ISDEBUG 
-                                    Serial.println ("Delay 15ms");
+                                    Serial.println ("Delay 35ms");
                                     #endif
-  delay (25);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
+                                    delay (10);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
                                     #if ISDEBUG 
                                     Serial.println ("shutter in power down mode (130)");
                                     #endif
-  analogWrite (Solenoid1, 130);
+                                    analogWrite (Solenoid1, 205);
   return;
   }   //end of void motorON()
 
@@ -229,23 +229,15 @@ void Click()
   if ((ShutterSpeed[ActualSlot]) > 0)
 
   {
-    #if ISDEBUG
-    WritePIO (6,1);
-    delay (5);
-    WritePIO (6,0);
+        #if ISDEBUG
     Serial.print ("--------------------------------------------------CLICK:  ");
     Serial.println (ShutterSpeed[ActualSlot]);
-    
     #endif
+    
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
         delay (ShutterSpeed[ActualSlot]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
         ////////CLICK!
     shutterCLOSE ();                                         //close the shutter
-    #if ISDEBUG
-    WritePIO (6,1);
-    delay (5);
-    WritePIO (6,0);
-    #endif
     return;
             } else {
 
