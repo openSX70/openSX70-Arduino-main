@@ -23,7 +23,7 @@ void loop() {
   int Speed = 10;
 
 while (digitalRead(ARM) == LOW) {
-    
+    HighSpeedPWM ();
     analogWrite (Solenoid1, 255);
     delay (10);
     analogWrite (Solenoid1,155); //OPTIONAL LOW POWER
@@ -48,3 +48,17 @@ while (digitalRead(ARM) == LOW) {
   }
 
 }// END OF LOOP
+//***************************************************************************************************************************************
+void HighSpeedPWM ()
+ {
+  //PWM high speed
+  //one N_Mosfet powerdown
+  //taken from: https://www.gammon.com.au/forum/?id=11504
+
+  TCCR2A = bit (WGM20) | bit (WGM21) | bit (COM2B1); // fast PWM, clear OC2A on compare
+  TCCR2B = bit (WGM22) | bit (CS20);         // fast PWM, no prescaler
+  OCR2A =  n;                                // from table  
+  OCR2B = ((n + 1) / 2) - 1;                 // 50% duty cycle
+  //THIS AFFECTS OUTPUT 3 AND OUTPUT 11 (Solenoid1 and Solenoid2) 
+ }
+//***************************************************************************************************************************************
