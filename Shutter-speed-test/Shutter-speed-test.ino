@@ -6,11 +6,13 @@ const int S1 = 12;     //Red button SHUTTER RELEASE
 const int Solenoid1 = 3;           // 6V High Power
 const int LED = 13;
 const int ARM = 8;
+const int ARMLED = 11;
 
 void setup() {
     pinMode(S1, INPUT_PULLUP);
     pinMode(Solenoid1, OUTPUT);
     pinMode(LED,OUTPUT);
+    pinMode(ARMLED,OUTPUT);
     pinMode(ARM,INPUT_PULLUP);
         
     analogWrite(Solenoid1, 0);
@@ -19,16 +21,20 @@ void setup() {
 }
 
 void loop() {
+
+    //digitalWrite (ARMLED,LOW);
+    //analogWrite(Solenoid1, 0);
   
-  int Speed = 10;
+  int Speed = 50;
 
 while (digitalRead(ARM) == LOW) {
+    digitalWrite (ARMLED,HIGH);
     HighSpeedPWM ();
-    analogWrite (Solenoid1, 255);
-    delay (10);
-    analogWrite (Solenoid1,155); //OPTIONAL LOW POWER
-       
+    analogWrite (Solenoid1, 235);
+    delay (5);
+    analogWrite (Solenoid1,255); //OPTIONAL LOW POWER
       if (digitalRead(S1) == LOW) {
+      delay (500);
       //T=-1
       digitalWrite (LED, HIGH);
       delay (1);
@@ -37,16 +43,17 @@ while (digitalRead(ARM) == LOW) {
       analogWrite (Solenoid1,0); //SHUTTER OPEN
       delay (Speed); //EXPOSURE
       //T=Speed-+
-      analogWrite (Solenoid1,255); //SHUTTER CLOSE
+      analogWrite (Solenoid1,235); //SHUTTER CLOSE
       digitalWrite (LED, HIGH);
       delay (1);
       digitalWrite (LED, LOW);
-      delay (10);
-      analogWrite (Solenoid1,155); //OPTIONAL LOW POWER
+      delay (5);
+      analogWrite (Solenoid1,250); //OPTIONAL LOW POWER
       }
 
   }
-
+      digitalWrite (ARMLED,LOW);         
+      analogWrite (Solenoid1,0);
 }// END OF LOOP
 //***************************************************************************************************************************************
 void HighSpeedPWM ()
