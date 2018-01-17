@@ -20,10 +20,12 @@ void Dongle(int DongleSlot)
                   delay (40);                               //S3 is now open start Y-delay (40ms)
                   #endif
                       pinMode(13,OUTPUT);
-    digitalWrite (13,HIGH);
+   // WritePIO (6,1);
+    WritePIO (6,1);
+    //digitalWrite (13,HIGH);
     delay (500);
-    //WritePIO (6,0);
-    digitalWrite (13,LOW);
+    WritePIO (6,0);
+    //digitalWrite (13,LOW);
   
                   #if !MOTOR
                   delay (500);

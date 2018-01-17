@@ -4,7 +4,7 @@
   // has lots of debug messages
 #include <DS2408.h>
 
-const int S2 = 10;
+const int S2 = 2;
 
 
 #define ONE_WIRE_BUS_PORT S2
@@ -39,7 +39,7 @@ void loop() {
     
   // put your main code here, to run repeatedly:
   // I try loop to be very simple and that looking at it you can understand what is happening
-         LOOPresult = REDbutton(6);
+         LOOPresult = REDbutton(12);
             if ((LOOPresult > shortPress) && (LOOPresult < longPress)) {
             Serial.println("---------------------------");
             Serial.println ("CLICK");

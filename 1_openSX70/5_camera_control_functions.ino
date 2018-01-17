@@ -101,13 +101,10 @@ void shutterCLOSE()
                                     HighSpeedPWM ();
                                     analogWrite(Solenoid1, 255);
                                       #if ISDEBUG 
-                                    Serial.println ("Delay 35ms");
+                                    Serial.println ("Delay 25ms");
                                     #endif
-                                    delay (10);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
-                                    #if ISDEBUG 
-                                    Serial.println ("shutter in power down mode (130)");
-                                    #endif
-                                    analogWrite (Solenoid1, 205);
+                                    delay (25);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
+                                    analogWrite (Solenoid1, 195);
   return;
   }   //end of void motorON()
 
@@ -244,18 +241,37 @@ void Click()
                     return;
                   }
 
-} //en of void Click()
+} //end of void Click()
 //***************************************************************************************************************************************
 void HighSpeedPWM ()
  {
   //PWM high speed
   //one N_Mosfet powerdown
   //taken from: https://www.gammon.com.au/forum/?id=11504
+/*
+ * 
+  Timer 0
+  input     T0     pin  6  (D4)
+  output    OC0A   pin 12  (D6)
+  output    OC0B   pin 11  (D5)
+
+  Timer 1
+  input     T1     pin 11  (D5)
+  output    OC1A   pin 15  (D9)
+  output    OC1B   pin 16  (D10)
+
+  Timer 2
+  output    OC2A   pin 17  (D11)
+  output    OC2B   pin  5  (D3)
+ 
+ */
 
   TCCR2A = bit (WGM20) | bit (WGM21) | bit (COM2B1); // fast PWM, clear OC2A on compare
   TCCR2B = bit (WGM22) | bit (CS20);         // fast PWM, no prescaler
   OCR2A =  n;                                // from table  
   OCR2B = ((n + 1) / 2) - 1;                 // 50% duty cycle
-  //THIS AFFECTS OUTPUT 3 AND OUTPUT 11 (Solenoid1 and Solenoid2) 
+  
+  //THIS AFFECTS OUTPUT 3 AND OUTPUT 11 (Solenoid1 and Solenoid2)
+  
  }
 //***************************************************************************************************************************************
