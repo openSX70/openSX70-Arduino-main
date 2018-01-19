@@ -139,7 +139,9 @@ delay (100);
 mirrorDOWN();
 delay (100);
 shutterOPEN();
+
 delay (2000);
+
 beep (1,6);
  delay (100);
  beep (0,6);
