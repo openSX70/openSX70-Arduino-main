@@ -28,8 +28,8 @@ static unsigned long STARTbuttonTimer = 0 ;
 int result= 0 ;
 
                  #if ISDEBUG 
-                 Serial.print ("SHUTTERSPEED:  ");    
-                 Serial.println (ShutterSpeed[DS2408(0)]);
+                 //Serial.print ("SHUTTERSPEED:  ");    
+                 //Serial.println (ShutterSpeed[DS2408(0)]);
                  #endif
 
 if (digitalRead(button) == LOW) {

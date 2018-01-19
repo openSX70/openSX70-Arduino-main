@@ -1,4 +1,4 @@
-void loop() {
+/*void loop() {
   
               takePicture= false;                                  
               byte ActualSlot = (DS2408(0));
@@ -137,4 +137,4 @@ void loop() {
   }
                               
 }
-
+*/

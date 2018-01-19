@@ -1,5 +1,4 @@
-/*
-void loop() {
+/* void loop() {
  
   //running code from 3d_test_loop
   
@@ -62,10 +61,70 @@ void loop() {
 //   *  
 //   *  SELECTOR = NORMAL (LOW)
 //   *  SHOTS >= 1
-     
+ 
+              takePicture= false;                                  
+              byte ActualSlot = (DS2408(0));
+              
+              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB)))) //////////////POSITION B
+                  {
+                      Serial.print ("POSITION B:  ");
+                      Serial.println( ActualSlot);
+                                    
+                  #if SHUTTER
+                  shutterCLOSE (); 
+                  #endif
+                  
+                  #if MOTOR 
+                  mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
+                  while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
+                   ;
+                  delay (40);                               //S3 is now open start Y-delay (40ms)
+                  #endif
+ 
+                  #if !MOTOR
+                  delay (500);
+                  #endif
 
-            int pressTime = REDbutton(S1);
+                  #if SHUTTER
+                  shutterOPEN ();
+                   
+                        while (digitalRead(S1) == LOW)
+                        ;
+                        
+                        shutterCLOSE ();
+                  #endif
+                  
+                  #if !MOTOR
+                  delay (500);
+                  #endif
+
+                  #if !MOTOR
+                  delay (1000);
+                  #endif
+
+                  #if MOTOR
+                  delay (200);                             //AGAIN is this delay necessary?
+                  mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
+                  delay (200);                             //AGAIN is this delay necessary?
+                  #endif
+
+                 #if SHUTTER
+                 shutterOPEN();
+                 #endif   
+                 //shots = 0;  
+ 
+                        
+
+                 return;       
+                  
+               }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
+
   
+            int pressTime = REDbutton(S1);
+        
+       if ((ShutterSpeed[ActualSlot]) != (POSB))
+             {
+              
             if ((pressTime > shortPress) && (pressTime < longPress)) {
                                        #if ISDEBUG 
                                       Serial.println("---------------------------");
@@ -86,63 +145,60 @@ void loop() {
                                       Serial.println("---------------------------");
                                       #endif  
 
-            timerDelay(); 
+            timerDelay();   
             takePicture = true;
-
-            }   // END Of else if (pressTime > longPress) {
-
+             
+            }   // END Of else if (pressTime > longPress) 
+             }
+                                      
           if (DS2408(0) < 100)
-  {
-    byte ActualSlot = (DS2408(0));
+                              {
+          //byte ActualSlot = (DS2408(0));
                                       #if ISDEBUG 
+                                      byte S1 = DS2408(1);
+                                      byte S2 = DS2408(2);
                                       Serial.print ("Selector: ");
-                                      Serial.println (ActualSlot);
+                                      Serial.print (ActualSlot);
+                                      Serial.print (" / ");
+                                      Serial.print (S1);
+                                      Serial.print (" / ");
+                                      Serial.print (S2);
+                                      Serial.print (" Shutter Speed: ");
+                                      Serial.println ((ShutterSpeed[DS2408(0)]));
                                       #endif
-    Dongle (ActualSlot);
 
-    byte S1 = DS2408(1);
-                                      #if ISDEBUG 
-                                      Serial.print ("S1: ");
-                                      Serial.println (S1);
-                                      #endif
 
-    byte S2 = DS2408(2);
-                                      #if ISDEBUG 
-                                      Serial.print ("S2: ");
-                                      Serial.println (S2);
-                                      #endif
-    return;
-  }
+
+          Dongle (ActualSlot);
+          return;
+                              }
+
   if (DS2408(0) == 100)
   {
                                       #if ISDEBUG 
-                                      Serial.println ("FLASH");
+                                      Serial.print (DS2408(0));
+                                      Serial.println (":  FLASH");
                                       #endif
+                                      Flash();
     return;
   }
   if (DS2408(0) == 200)
   {
                                     #if ISDEBUG 
-                                    Serial.println ("NOTHING");
+                                    Serial.print (DS2408(0));
+                                    Serial.println (": NOTHING: WILL USE LIGHT METER?");
                                     #endif
     return;
   }
   else
   {
                                   #if ISDEBUG 
-                                  Serial.println ("DONT KNOW ");
+                                  Serial.print (DS2408(0));
+                                  Serial.println (":   DONT KNOW, SHOULD NOT BE HERE! ");
                                   #endif
   }
-  //  int DS2408();
-  return;
 
-
-
-            //---------------------------------------------------------------------------
-#if MOTOR           
   }
-#endif
-
 } //END OF loop      
 
 //***************************************************************************************************************************************

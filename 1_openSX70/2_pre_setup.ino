@@ -7,7 +7,7 @@
 //*************
 
 //TEST ONLY BACK OF THE CAMERA
-#define MOTOR 0
+#define MOTOR 1
 //*************
 
 
@@ -41,7 +41,7 @@ const int S9 = A0;     //S9: HIGH = CLOSED
 const int Solenoid1 = 5;           // 6V High Power
 const int Solenoid2 = 11;          // 6V High Power    
 
-const int FFA = 4;
+const int FFA = 3;
 
 
 
@@ -53,7 +53,7 @@ const int DS_pc_flash = 7;
 
                 // MOTOR JUST TURNS ON OR OFF THE MOTOR
                 // DEPENDS ON S3 AND S5 STATES PRIMARILY
-const int Motor = 13;
+const int Motor = A2;
 
 /* THESE ARE THE INPUTS USED TO "READ" THE SHUTTER SPEED SELECTOR
 const int switchPin1 = A0; // the number of the switch’s pin
