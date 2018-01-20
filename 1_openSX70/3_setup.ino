@@ -17,7 +17,7 @@ digitalWrite(FFA, LOW);           // make sure I don't fire the flash!
 pinMode(S2, INPUT_PULLUP);      // initialize the pushbutton pin as an input:
 
 #if ISDEBUG
-Serial.begin (57600);
+Serial.begin (9600);
 Serial.println ("Welcome to openSX70");
 #endif
 

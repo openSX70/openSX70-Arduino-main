@@ -120,4 +120,5 @@ void Flash ();
 void ShutterB();
 void ShutterT();
 byte WritePIO(byte port, bool ON);
+void Ydelay ();
 

@@ -15,7 +15,7 @@ void Flash ()
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
                   analogWrite (Solenoid2, 130);
-                  delay (40);                               //S3 is now open start Y-delay (40ms)
+                  Ydelay ();                               //S3 is now open start Y-delay (40ms)
                   #endif
  
                   #if !MOTOR

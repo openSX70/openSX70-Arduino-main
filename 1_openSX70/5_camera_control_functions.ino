@@ -242,6 +242,21 @@ void Click()
                   }
 
 } //end of void Click()
+
+void Ydelay ()
+{
+                    if (DS2408(2) ==  1) {
+                    //NORMAL DELAY
+                    delay (40);                                 //S3 is now open start Y-delay (40ms)
+                   Serial.println ("NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY");     
+
+                        } 
+                        else 
+                        {
+                    delay (1000);                              //LONG DELAY SELECTED 
+                    Serial.println ("LONG DELAY**************************************************************************************************************************************");     
+                        }
+}
 //***************************************************************************************************************************************
 void HighSpeedPWM ()
  {

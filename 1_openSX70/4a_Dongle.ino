@@ -8,19 +8,19 @@ void Dongle(int DongleSlot)
     
     if (takePicture == true  && DS2408(1) ==  0 && shots == 0)    //NORMAL OPERATION
     {
- 
+ Serial.println ("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+                  
                   #if SHUTTER
                   shutterCLOSE (); 
                   #endif
-                  
-                  #if MOTOR 
+
+                  #if !MOTOR
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
-                  delay (40);                               //S3 is now open start Y-delay (40ms)
+                  Ydelay();
                   #endif
-                      pinMode(13,OUTPUT);
-  
+                  
                   #if !MOTOR
                   delay (500);
                   #endif
@@ -60,7 +60,7 @@ void Dongle(int DongleSlot)
 
           while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
             ;
-          delay (40);                               //S3 is now open start Y-delay (40ms)
+          Ydelay();                         //S3 is now open start Y-delay (40ms)
           #endif
           #if !MOTOR
           delay (500);
@@ -86,7 +86,7 @@ void Dongle(int DongleSlot)
           #if SHUTTER    
           Click();
           
-          delay (1000); //debounce will go here
+          delay (500); //debounce will go here
           
           shots++;
           #endif
@@ -105,7 +105,7 @@ void Dongle(int DongleSlot)
              #if MOTOR
             mirrorDOWN ();
 
-            delay (200);                             //AGAIN is this delay necessary?
+            delay (100);                             //AGAIN is this delay necessary?
             #endif
                   #if !MOTOR
                   delay (500);

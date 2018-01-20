@@ -1,4 +1,4 @@
-/* void loop() {
+ void loop() {
  
   //running code from 3d_test_loop
   
@@ -23,12 +23,16 @@
   #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH
   if (digitalRead(S8) == LOW && digitalRead(S9) == HIGH)
-    // FOR THE MOMENT I JUST TURN ON THE GREEN LED
-  {
+    // FOR THE MOMENT I JUST TURN ON THE LED ON DONGLE
+     {
                                    #if ISDEBUG 
                                   Serial.println("STATE2: PACK IS EMPTY");      
                                   #endif
 
+    // FOR THE MOMENT I JUST TURN ON THE LED ON DONGLE
+    // KEEP IN MIND THAT THIS **THE CAMERA** SAYING IT HAS ALREADY MADE 10 SHOTS.
+    // I COULD SET MY OWN COUNTER (UP TO 8) AND MAKE IT MORE IMPOSSIBLE-8-SHOTS-FRIENDLY
+      WritePIO (6, 1);
 }
 #endif
 #if MOTOR 
@@ -64,7 +68,8 @@
  
               takePicture= false;                                  
               byte ActualSlot = (DS2408(0));
-              
+
+              /*
               if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB)))) //////////////POSITION B
                   {
                       Serial.print ("POSITION B:  ");
@@ -95,10 +100,6 @@
                   #endif
                   
                   #if !MOTOR
-                  delay (500);
-                  #endif
-
-                  #if !MOTOR
                   delay (1000);
                   #endif
 
@@ -118,7 +119,7 @@
                  return;       
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
-
+                */
   
             int pressTime = REDbutton(S1);
         
@@ -138,7 +139,7 @@
             }  // END OF if ((pressTime > shortPress) && (pressTime < longPress)) {
             
             else if (pressTime > longPress) {
-              #if ISDEBUG 
+                                       #if ISDEBUG 
                                       Serial.println("---------------------------");
                                       Serial.print ("LONG: ");
                                       Serial.println (pressTime);
@@ -151,7 +152,7 @@
             }   // END Of else if (pressTime > longPress) 
              }
                                       
-          if (DS2408(0) < 100)
+          if (DS2408(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
           //byte ActualSlot = (DS2408(0));
                                       #if ISDEBUG 
@@ -173,7 +174,7 @@
           return;
                               }
 
-  if (DS2408(0) == 100)
+  if (DS2408(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
   {
                                       #if ISDEBUG 
                                       Serial.print (DS2408(0));
@@ -182,7 +183,7 @@
                                       Flash();
     return;
   }
-  if (DS2408(0) == 200)
+  if (DS2408(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
   {
                                     #if ISDEBUG 
                                     Serial.print (DS2408(0));
@@ -198,8 +199,9 @@
                                   #endif
   }
 
+
   }
 } //END OF loop      
 
 //***************************************************************************************************************************************
-*/
+

@@ -1,6 +1,6 @@
-void loop()
+/*void loop()
 {
-  /*if ((digitalRead(S1) == LOW))  
+  if ((digitalRead(S1) == LOW))  
                   {
                       Serial.print ("RED BUTTON PRESSED");
                                     
@@ -84,7 +84,10 @@ delay (10000);
                  shutterOPEN();
                  shots = 0;  
      }
- */
+
+//START LOOP HERE FOR ROLLING TESTS
+
+ Serial.println ("TEST SHUTTER ONLY");
  beep (1,6);
  delay (100);
  beep (0,6);
@@ -100,6 +103,8 @@ shutterOPEN();
 
 delay (2000);
 
+Serial.println ("TEST MOTOR ONLY");
+ 
 beep (1,6);
  delay (500);
  beep (0,6);
@@ -114,6 +119,8 @@ mirrorDOWN();
 
 delay (2000);
 
+Serial.println ("TEST PICTURE-TAKING ONLY");
+ 
 beep (1,6);
  delay (100);
  beep (0,6);
@@ -159,5 +166,6 @@ beep (1,6);
  beep (0,6);
  delay (100);
 
-     
+ delay (2000);    
 }
+*/
