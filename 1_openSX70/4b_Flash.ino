@@ -1,6 +1,7 @@
 void Flash () 
     {
 
+ Serial.println ("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");  
        if (takePicture == true)
        {
       Serial.println ("FLASH FUNCTION!");

@@ -6,9 +6,9 @@ void Dongle(int DongleSlot)
                                         #endif
 
     
-    if (takePicture == true  && DS2408(1) ==  0 && shots == 0)    //NORMAL OPERATION
+    if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     {
- Serial.println ("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
+
                   
                   #if SHUTTER
                   shutterCLOSE (); 
@@ -44,11 +44,11 @@ void Dongle(int DongleSlot)
                  #endif   
                  shots = 0;  
                  return;             
-     } // END of  if (takePicture == true  && DS2408(1) ==  0 && shots == 0)    //NORMAL OPERATION
+     } // END of  if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     
                    
      // CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)           
-     if (takePicture == true && DS2408(1) ==  1 && shots == 0)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) FIRST SHOT!!!!
+     if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots == 0)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) FIRST SHOT!!!!
       {
  
           #if SHUTTER
@@ -74,13 +74,13 @@ void Dongle(int DongleSlot)
           #endif
           return;
 
-          } // end of  if (takePicture == true && DS2408(1) ==  1 && shots == 0)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) FIRST SHOT!!!!
+          } // end of  if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots == 0)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) FIRST SHOT!!!!
 
         
          // CASE 3 DOUBLE EXPOSURE ULTERIOR SHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED) 
 
           
-         if (takePicture == true && DS2408(1) ==  1 && shots >= 1)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) ULTERIOR SHOTS!!!!
+         if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots >= 1)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) ULTERIOR SHOTS!!!!
           {
  
           #if SHUTTER    
@@ -92,12 +92,12 @@ void Dongle(int DongleSlot)
           #endif
           return;
           
-          } // end of  if (digitalRead(S1) == LOW && DS2408(1) ==  1 && shots >= 1)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) ULTERIOR SHOTS!!!!
+          } // end of  if (digitalRead(S1) == LOW && Read_DS2408_PIO(1) ==  1 && shots >= 1)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) ULTERIOR SHOTS!!!!
 
           
           
           // CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
-         if (takePicture == true && DS2408(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
+         if (takePicture == true && Read_DS2408_PIO(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
           {
         
             shots = 0;
@@ -116,7 +116,7 @@ void Dongle(int DongleSlot)
             #endif
             return;
             
-           }// end of if (takePicture == true && DS2408(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
+           }// end of if (takePicture == true && Read_DS2408_PIO(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
 
     }
      

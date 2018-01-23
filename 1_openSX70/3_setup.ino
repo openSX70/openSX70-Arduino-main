@@ -34,12 +34,21 @@ analogWrite(Solenoid2, 0);
 
 device_count = ds.find(&devices);
 // THIS IS FUNDAMENTAL
-/* 
+
+// Light Meter initialization
+    
+
+    lightmeter.begin(luxMode); // Inicialize BH1750
+    pinMode(A4, INPUT_PULLUP);
+    pinMode(A5, INPUT_PULLUP);
+
+
+ 
  //This is just in case the mirror is (for whatever reason) halfway when I power up I want to run this JUST ONCE
 while (digitalRead(S5) != LOW || digitalRead(S3) != LOW)  // while S5 or S3 are different than CLOSED (mirror at an angle)
 {
 void motorON ();
 void motorOFF();
 }
-*/
+
 }

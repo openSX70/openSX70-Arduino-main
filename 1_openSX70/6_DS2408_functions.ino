@@ -8,13 +8,13 @@
 /*
 void loop() {
 
-  // TEST WritePIO function!
+  // TEST Write_DS2408_PIO function!
   //***********************************************************************
   while (digitalRead(buttonPin) == LOW) {
-    WritePIO (DSled, 1);
+    Write_DS2408_PIO (DSled, 1);
   }
   {
-    WritePIO (DSled, 0);
+    Write_DS2408_PIO (DSled, 0);
 
   }
   //***********************************************************************
@@ -57,7 +57,7 @@ void loop() {
 //******************************************************************************************************
 */
 
-byte DS2408(int Slot) {
+byte Read_DS2408_PIO(int Slot) {
    // Slot = 0 selector    // return value 0-15 (selector) 100 = Flash inserted 200 = NOTHING INSERTED
    // Slot = 1 S1
    // Slot = 2 S2
@@ -116,10 +116,10 @@ byte DS2408(int Slot) {
 
   return 200; //NOTHING
 
-} //END OF DS2408() function
+} //END OF Read_DS2408_PIO() function
 
 //******************************************************************************************************
-byte WritePIO(byte port, bool ON) {
+byte Write_DS2408_PIO(byte port, bool ON) {
 // This is to turn on LED P6 or PC-FLASH socket (opto) P7
 // port 6 = P6 = LED
 // port 7 = P7 = PC-FLASHM
@@ -137,5 +137,5 @@ byte WritePIO(byte port, bool ON) {
     ds.set_state(devices[0], ~OutPIO);
     return;
   }
-} //END OF WritePIO
+} //END OF Write_DS2408_PIO
 //******************************************************************************************************

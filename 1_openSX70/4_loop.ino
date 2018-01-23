@@ -1,5 +1,4 @@
  void loop() {
- 
   //running code from 3d_test_loop
   
   //WHAT TO DO WHEN POWER-UP:
@@ -32,7 +31,7 @@
     // FOR THE MOMENT I JUST TURN ON THE LED ON DONGLE
     // KEEP IN MIND THAT THIS **THE CAMERA** SAYING IT HAS ALREADY MADE 10 SHOTS.
     // I COULD SET MY OWN COUNTER (UP TO 8) AND MAKE IT MORE IMPOSSIBLE-8-SHOTS-FRIENDLY
-      WritePIO (6, 1);
+      Write_DS2408_PIO (6, 1);
 }
 #endif
 #if MOTOR 
@@ -41,6 +40,10 @@
   {
                                  #if ISDEBUG 
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
+                                Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
+
+                                Serial.println ("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");   
+
                                 #endif
     
 #endif
@@ -67,7 +70,8 @@
 //   *  SHOTS >= 1
  
               takePicture= false;                                  
-              byte ActualSlot = (DS2408(0));
+              byte ActualSlot = (Read_DS2408_PIO(0));
+
 
               /*
               if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB)))) //////////////POSITION B
@@ -152,12 +156,12 @@
             }   // END Of else if (pressTime > longPress) 
              }
                                       
-          if (DS2408(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
+          if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
-          //byte ActualSlot = (DS2408(0));
+          //byte ActualSlot = (Read_DS2408_PIO(0));
                                       #if ISDEBUG 
-                                      byte S1 = DS2408(1);
-                                      byte S2 = DS2408(2);
+                                      byte S1 = Read_DS2408_PIO(1);
+                                      byte S2 = Read_DS2408_PIO(2);
                                       Serial.print ("Selector: ");
                                       Serial.print (ActualSlot);
                                       Serial.print (" / ");
@@ -165,7 +169,7 @@
                                       Serial.print (" / ");
                                       Serial.print (S2);
                                       Serial.print (" Shutter Speed: ");
-                                      Serial.println ((ShutterSpeed[DS2408(0)]));
+                                      Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
                                       #endif
 
 
@@ -174,27 +178,30 @@
           return;
                               }
 
-  if (DS2408(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
+  if (Read_DS2408_PIO(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
   {
                                       #if ISDEBUG 
-                                      Serial.print (DS2408(0));
+                                      Serial.print (Read_DS2408_PIO(0));
                                       Serial.println (":  FLASH");
                                       #endif
                                       Flash();
     return;
   }
-  if (DS2408(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
+  if (Read_DS2408_PIO(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
   {
                                     #if ISDEBUG 
-                                    Serial.print (DS2408(0));
-                                    Serial.println (": NOTHING: WILL USE LIGHT METER?");
+                                    Serial.print (Read_DS2408_PIO(0));
+                                    Serial.println (": Reading LIGHT METER");
+                                    Serial.print(lux);
+                                    Serial.println(" lux");
+                                    delay(500);
                                     #endif
     return;
   }
   else
   {
                                   #if ISDEBUG 
-                                  Serial.print (DS2408(0));
+                                  Serial.print (Read_DS2408_PIO(0));
                                   Serial.println (":   DONT KNOW, SHOULD NOT BE HERE! ");
                                   #endif
   }

@@ -1,7 +1,7 @@
 /*void loop() {
   
               takePicture= false;                                  
-              byte ActualSlot = (DS2408(0));
+              byte ActualSlot = (Read_DS2408_PIO(0));
               
               if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
                   {
@@ -89,12 +89,12 @@
             }   // END Of else if (pressTime > longPress) 
              }
                                       
-          if (DS2408(0) < 100)
+          if (Read_DS2408_PIO(0) < 100)
                               {
-          //byte ActualSlot = (DS2408(0));
+          //byte ActualSlot = (Read_DS2408_PIO(0));
                                       #if ISDEBUG 
-                                      byte S1 = DS2408(1);
-                                      byte S2 = DS2408(2);
+                                      byte S1 = Read_DS2408_PIO(1);
+                                      byte S2 = Read_DS2408_PIO(2);
                                       Serial.print ("Selector: ");
                                       Serial.print (ActualSlot);
                                       Serial.print (" / ");
@@ -102,7 +102,7 @@
                                       Serial.print (" / ");
                                       Serial.print (S2);
                                       Serial.print (" Shutter Speed: ");
-                                      Serial.println ((ShutterSpeed[DS2408(0)]));
+                                      Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
                                       #endif
 
 
@@ -111,19 +111,19 @@
           return;
                               }
 
-  if (DS2408(0) == 100)
+  if (Read_DS2408_PIO(0) == 100)
   {
                                       #if ISDEBUG 
-                                      Serial.print (DS2408(0));
+                                      Serial.print (Read_DS2408_PIO(0));
                                       Serial.println (":  FLASH");
                                       #endif
                                       Flash();
     return;
   }
-  if (DS2408(0) == 200)
+  if (Read_DS2408_PIO(0) == 200)
   {
                                     #if ISDEBUG 
-                                    Serial.print (DS2408(0));
+                                    Serial.print (Read_DS2408_PIO(0));
                                     Serial.println (": NOTHING: WILL USE LIGHT METER?");
                                     #endif
     return;
@@ -131,7 +131,7 @@
   else
   {
                                   #if ISDEBUG 
-                                  Serial.print (DS2408(0));
+                                  Serial.print (Read_DS2408_PIO(0));
                                   Serial.println (":   DONT KNOW, SHOULD NOT BE HERE! ");
                                   #endif
   }

@@ -1,5 +1,5 @@
 //DEBUG OR NOT
-#define ISDEBUG 1
+#define ISDEBUG 0
 //*************
 
 //TEST ONLY SHUTTER ASSEMBLY
@@ -10,6 +10,12 @@
 #define MOTOR 1
 //*************
 
+// LIGHT METER STUFF BH1750*****************************************************************
+
+#include <Wire.h>
+#include <BH1750.h>
+BH1750 lightmeter;
+const byte luxMode = BH1750_CONTINUOUS_HIGH_RES_MODE;
 
 // ONE WIRE STUFF DS2408*****************************************************************
 
@@ -103,7 +109,7 @@ const int shortPress = 150;
   const int  longPress = 1200;
 //***************************************************************************************************************************************
 //FUNCTION PROTOTYPES
-byte DS2408(int Slot);
+byte Read_DS2408_PIO(int Slot);
 int REDbutton(int button);
 void motorON();
 void motorOFF();
@@ -119,6 +125,6 @@ void HighSpeedPWM ();
 void Flash ();
 void ShutterB();
 void ShutterT();
-byte WritePIO(byte port, bool ON);
+byte Write_DS2408_PIO(byte port, bool ON);
 void Ydelay ();
 

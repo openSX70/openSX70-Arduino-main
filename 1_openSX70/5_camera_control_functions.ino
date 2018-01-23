@@ -29,7 +29,7 @@ int result= 0 ;
 
                  #if ISDEBUG 
                  //Serial.print ("SHUTTERSPEED:  ");    
-                 //Serial.println (ShutterSpeed[DS2408(0)]);
+                 //Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
                  #endif
 
 if (digitalRead(button) == LOW) {
@@ -168,13 +168,13 @@ void darkslideEJECT()
 void Click()
 {
                             #if ISDEBUG 
-                            ActualSlot = DS2408(0);
+                            ActualSlot = Read_DS2408_PIO(0);
 //                            Serial.print ("ClickClickClickClickClickClickClickClickClickClickClickClickClickClickClick: ");
 //                            Serial.println (ShutterSpeed[ActualSlot]);
                             #endif
   
 
-  ActualSlot = DS2408(0);
+  ActualSlot = Read_DS2408_PIO(0);
 
   if ((ShutterSpeed[ActualSlot]) == POST)
   {
@@ -206,17 +206,17 @@ void Click()
                                   #endif
 //delay (10000);
                             #if ISDEBUG 
-                            ActualSlot = DS2408(0);
+                            ActualSlot = Read_DS2408_PIO(0);
                             Serial.println ("Click: FLASH ");
                             #endif
                   #if SHUTTER
                   shutterOPEN (); 
                   delay (51);
-                 WritePIO (7,1);
+                 Write_DS2408_PIO (7,1);
                   //                        digitalWrite(FFA, HIGH);
                   delay (25);
                   //                      digitalWrite(FFA, LOW);
-                  WritePIO (7,0);
+                  Write_DS2408_PIO (7,0);
                   delay (26);
                   shutterCLOSE();
                   #endif
@@ -245,7 +245,7 @@ void Click()
 
 void Ydelay ()
 {
-                    if (DS2408(2) ==  1) {
+                    if (Read_DS2408_PIO(2) ==  1) {
                     //NORMAL DELAY
                     delay (40);                                 //S3 is now open start Y-delay (40ms)
                    Serial.println ("NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY");     
