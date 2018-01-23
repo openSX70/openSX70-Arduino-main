@@ -1,5 +1,7 @@
- void loop() {
-  //running code from 3d_test_loop
+/*
+void loop() {
+
+  Serial.println ("LOOOOOOP");
   
   //WHAT TO DO WHEN POWER-UP:
   //  S8     S9
@@ -40,11 +42,7 @@
   {
                                  #if ISDEBUG 
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
-                                Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
-
-                                Serial.println ("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");   
-
-                                #endif
+                                 #endif
     
 #endif
    
@@ -123,8 +121,8 @@
                  return;       
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
-                */
-  
+                */ /*
+ 
             int pressTime = REDbutton(S1);
         
        if ((ShutterSpeed[ActualSlot]) != (POSB))
@@ -191,11 +189,15 @@
   {
                                     #if ISDEBUG 
                                     Serial.print (Read_DS2408_PIO(0));
+                                    #endif
+                                    #if LIGHTMETER
                                     Serial.println (": Reading LIGHT METER");
+                                    uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
                                     Serial.print(lux);
                                     Serial.println(" lux");
                                     delay(500);
                                     #endif
+                                    
     return;
   }
   else
@@ -211,4 +213,4 @@
 } //END OF loop      
 
 //***************************************************************************************************************************************
-
+*/

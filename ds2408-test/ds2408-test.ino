@@ -7,9 +7,9 @@
 
 #define ISDEBUG 1
 
-const int buttonPin = 2;     // the number of the pushbutton pin
+const int buttonPin = 12;     // the number of the pushbutton pin
 const int flashPin =  9;      // firing the flash through the Mosfet
-const int selectorPin = 12;    // detects if a flash is inserted (FFC mode "1")
+const int selectorPin = 2;    // detects if a flash is inserted (FFC mode "1")
 
 DS2408 ds(ONE_WIRE_BUS_PORT);
 
@@ -41,14 +41,11 @@ void setup() {
   pinMode(buttonPin, INPUT);
 
   #if ISDEBUG 
-  Serial.begin(57600);                  // set up Serial library at 9600 bps
+  Serial.begin(9600);                  // set up Serial library at 9600 bps
   Serial.println("HELLO openSX70!");
   #endif
 
  device_count = ds.find(&devices);
- Serial.begin(57600);                  // set up Serial library at 9600 bps
-
-Serial.println ("hello");                                                                                                 
 } //        end of void setup()
 
 
@@ -58,7 +55,7 @@ void loop() {
 Serial.println ("HELLO");                                                                                                 
   
   
-/*
+
  //***********************************************************************
  while (digitalRead(buttonPin) == LOW) {
       uint8_t readDevice = ds.get_state(devices[0]);
@@ -113,7 +110,7 @@ if ((digitalRead(selectorPin) == HIGH) && (readDevice > 0)){  //////////////////
                 ds.set_state(devices[0], ~0b01000000); 
                 } else {
                 ds.set_state(devices[0], ~0b00000000);
-                 *//*
+                 */
                  }else bitClear(S1, 0);
                  
       if (readDevice & 0b00100000) {
@@ -164,7 +161,7 @@ if (S2) {
                   }
                  
 */               
-/* ////////////////////////////////////////////////////// 
+ ////////////////////////////////////////////////////// 
    
 //                } // END OF for(int index=0; index < device_count; index++) {
 
@@ -216,7 +213,6 @@ pinMode(selectorPin, INPUT_PULLUP); // perhaps not such a good idea internal pul
         
   } // END OF if (digitalRead(selectorPin) == LOW)  {  // CASE FLASH
 
-*/  
 
 } // END OF loop
 //******************************************************************************************************

@@ -1,6 +1,6 @@
-/*void loop()
+void loop()
 {
-  if ((digitalRead(S1) == LOW))  
+/*  if ((digitalRead(S1) == LOW))  
                   {
                       Serial.print ("RED BUTTON PRESSED");
                                     
@@ -36,8 +36,6 @@ delay (10000);
 mirrorDOWN();
 delay (10000);
 
-*/
-/*
             takePicture = false;
             int pressTime = REDbutton(S1);
             
@@ -84,7 +82,7 @@ delay (10000);
                  shutterOPEN();
                  shots = 0;  
      }
-
+*/
 //START LOOP HERE FOR ROLLING TESTS
 
  Serial.println ("TEST SHUTTER ONLY");
@@ -100,7 +98,16 @@ delay (66);
 shutterCLOSE();
 delay (500);
 shutterOPEN();
-
+                                       #if ISDEBUG 
+                                      Serial.print ("Selector: ");
+                                      Serial.print (Read_DS2408_PIO(0));
+                                      Serial.print (" / ");
+                                      Serial.print (Read_DS2408_PIO(1));
+                                      Serial.print (" / ");
+                                      Serial.print (Read_DS2408_PIO(2));
+                                      Serial.print (" Shutter Speed: ");
+                                      Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
+                                      #endif
 delay (2000);
 
 Serial.println ("TEST MOTOR ONLY");
@@ -118,7 +125,16 @@ delay (1000);
 mirrorDOWN();
 
 delay (2000);
-
+                                       #if ISDEBUG 
+                                      Serial.print ("Selector: ");
+                                      Serial.print (Read_DS2408_PIO(0));
+                                      Serial.print (" / ");
+                                      Serial.print (Read_DS2408_PIO(1));
+                                      Serial.print (" / ");
+                                      Serial.print (Read_DS2408_PIO(2));
+                                      Serial.print (" Shutter Speed: ");
+                                      Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
+                                      #endif
 Serial.println ("TEST PICTURE-TAKING ONLY");
  
 beep (1,6);
@@ -146,7 +162,16 @@ delay (100);
 mirrorDOWN();
 delay (100);
 shutterOPEN();
-
+                                       #if ISDEBUG 
+                                      Serial.print ("Selector: ");
+                                      Serial.print (Read_DS2408_PIO(0));
+                                      Serial.print (" / ");
+                                      Serial.print (Read_DS2408_PIO(1));
+                                      Serial.print (" / ");
+                                      Serial.print (Read_DS2408_PIO(2));
+                                      Serial.print (" Shutter Speed: ");
+                                      Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
+                                      #endif
 delay (2000);
 
 beep (1,6);
@@ -165,7 +190,17 @@ beep (1,6);
  delay (100);
  beep (0,6);
  delay (100);
-
+                                       #if ISDEBUG 
+                                      Serial.print ("Selector: ");
+                                      Serial.print (Read_DS2408_PIO(0));
+                                      Serial.print (" / ");
+                                      Serial.print (Read_DS2408_PIO(1));
+                                      Serial.print (" / ");
+                                      Serial.print (Read_DS2408_PIO(2));
+                                      Serial.print (" Shutter Speed: ");
+                                      Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
+                                      #endif
  delay (2000);    
 }
-*/
+
+

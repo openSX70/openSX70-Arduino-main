@@ -14,7 +14,7 @@ void Dongle(int DongleSlot)
                   shutterCLOSE (); 
                   #endif
 
-                  #if !MOTOR
+                  #if MOTOR
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;

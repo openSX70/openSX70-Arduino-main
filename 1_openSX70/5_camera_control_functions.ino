@@ -98,7 +98,7 @@ void shutterCLOSE()
                                       #if ISDEBUG 
                                     Serial.println ("shutterCLOSE");
                                     #endif
-                                    HighSpeedPWM ();
+                                    //HighSpeedPWM ();
                                     analogWrite(Solenoid1, 255);
                                       #if ISDEBUG 
                                     Serial.println ("Delay 25ms");
@@ -248,23 +248,24 @@ void Ydelay ()
                     if (Read_DS2408_PIO(2) ==  1) {
                     //NORMAL DELAY
                     delay (40);                                 //S3 is now open start Y-delay (40ms)
-                   Serial.println ("NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY NORMAL Y-DELAY");     
-
+                   
                         } 
                         else 
                         {
-                    delay (1000);                              //LONG DELAY SELECTED 
+                    delay (200);                              //LONG DELAY SELECTED 
                     Serial.println ("LONG DELAY**************************************************************************************************************************************");     
                         }
 }
 //***************************************************************************************************************************************
 void HighSpeedPWM ()
- {
+{
+
+  
+
   //PWM high speed
   //one N_Mosfet powerdown
   //taken from: https://www.gammon.com.au/forum/?id=11504
-/*
- * 
+/* 
   Timer 0
   input     T0     pin  6  (D4)
   output    OC0A   pin 12  (D6)
@@ -279,7 +280,7 @@ void HighSpeedPWM ()
   output    OC2A   pin 17  (D11)
   output    OC2B   pin  5  (D3)
  
- */
+*/
 
   TCCR2A = bit (WGM20) | bit (WGM21) | bit (COM2B1); // fast PWM, clear OC2A on compare
   TCCR2B = bit (WGM22) | bit (CS20);         // fast PWM, no prescaler
@@ -287,6 +288,6 @@ void HighSpeedPWM ()
   OCR2B = ((n + 1) / 2) - 1;                 // 50% duty cycle
   
   //THIS AFFECTS OUTPUT 3 AND OUTPUT 11 (Solenoid1 and Solenoid2)
-  
+
  }
 //***************************************************************************************************************************************
