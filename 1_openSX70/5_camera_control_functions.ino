@@ -98,7 +98,7 @@ void shutterCLOSE()
                                       #if ISDEBUG 
                                     Serial.println ("shutterCLOSE");
                                     #endif
-                                    //HighSpeedPWM ();
+                                    HighSpeedPWM ();
                                     analogWrite(Solenoid1, 255);
                                       #if ISDEBUG 
                                     Serial.println ("Delay 25ms");

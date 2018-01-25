@@ -50,7 +50,7 @@ uint8_t device_count;
 
 //High speed PWM
 
-const byte n = 224;  // for example, 71.111 kHz
+ const byte n = 224;  // for example, 71.111 kHz
 
 
 const int S1 = 12;     //Red button SHUTTER RELEASE
