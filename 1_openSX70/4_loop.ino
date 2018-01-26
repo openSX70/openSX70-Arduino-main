@@ -1,4 +1,3 @@
-/*
 void loop() {
 
   Serial.println ("LOOOOOOP");
@@ -121,7 +120,7 @@ void loop() {
                  return;       
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
-                */ /*
+                */ 
  
             int pressTime = REDbutton(S1);
         
@@ -148,7 +147,9 @@ void loop() {
                                       Serial.println("---------------------------");
                                       #endif  
 
-            timerDelay();   
+            BeepTimerDelay();   //Piezo beeps
+//          BlinkTimerDelay();  //Dongle LED blinks
+//          LEDTimerDelay();    //Built-in LED blinks          
             takePicture = true;
              
             }   // END Of else if (pressTime > longPress) 
@@ -213,4 +214,4 @@ void loop() {
 } //END OF loop      
 
 //***************************************************************************************************************************************
-*/
+

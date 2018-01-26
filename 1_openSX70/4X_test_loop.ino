@@ -83,7 +83,7 @@
                                       Serial.println("---------------------------");
                                       #endif  
 
-            timerDelay();   
+            BeepTimerDelay();   
             takePicture = true;
              
             }   // END Of else if (pressTime > longPress) 

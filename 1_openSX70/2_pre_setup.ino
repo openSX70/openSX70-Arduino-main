@@ -133,6 +133,7 @@ const int shortPress = 150;
 //***************************************************************************************************************************************
 //FUNCTION PROTOTYPES
 byte Read_DS2408_PIO(int Slot);
+byte Write_DS2408_PIO(byte port, bool ON);
 int REDbutton(int button);
 void motorON();
 void motorOFF();
@@ -142,12 +143,13 @@ void mirrorDOWN();
 void mirrorUP();
 void darkslideEJECT();
 void Click();
-void timerDelay();
+void BeepTimerDelay();
+void BlinkTimerDelay();
+void LEDTimerDelay();
 void Dongle (int DongleSlot);
 void HighSpeedPWM ();
 void Flash ();
 void ShutterB();
 void ShutterT();
-byte Write_DS2408_PIO(byte port, bool ON);
 void Ydelay ();
 

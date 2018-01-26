@@ -1,4 +1,4 @@
-void loop()
+/*void loop()
 {
 /*  if ((digitalRead(S1) == LOW))  
                   {
@@ -59,7 +59,7 @@ delay (10000);
                                       Serial.println("---------------------------");
                                       #endif  
 
-            timerDelay();   
+            BeepTimerDelay();   
             takePicture = true;
             }
              
@@ -82,7 +82,7 @@ delay (10000);
                  shutterOPEN();
                  shots = 0;  
      }
-*/
+
 //START LOOP HERE FOR ROLLING TESTS
 
  Serial.println ("TEST SHUTTER ONLY");

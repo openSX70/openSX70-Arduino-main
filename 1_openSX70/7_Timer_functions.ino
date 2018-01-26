@@ -6,48 +6,89 @@
 // --------------------------------------------------------------------------------------------------------------------------------------
 //***************************************************************************************************************************************
 
-void timerDelay() {
-
-              #if ISDEBUG 
-              Serial.println("timerDelay");      
-              #endif
-
+void BeepTimerDelay () {
+  // PIEZO BUZZER BEEPS
   // this is a test function to do the progressing blinking of the LED using my blink function
   // it last exactly 10 seconds (2500x4) and I could not accomplish this with the delay() 
   // everytime the led (in pin 5) blinks faster 1000, 700, 400, and 100.
 
 unsigned long startTimer = millis();
-Serial.println ("START 500,2600,6,0");
+
 BlinkBeep (500,2600,6,0);
-;
-Serial.println ("START 300,2400,6,0");
+
 BlinkBeep (300,2400,6,0);
-;
-Serial.println ("START 200,2400,6,0");
+
 BlinkBeep (200,2400,6,0);
-;
-Serial.println ("START 70,1400,6,0");
+
 BlinkBeep (70,1400,6,0);
-;
 
-Serial.println ("START 1200,1200,6,0");
 BlinkBeep (1200,1200,6,0);
-;
-Serial.println ("END");
 
+#if ISDEBUG
 unsigned long endTimer = millis();
-
 unsigned long time = ((endTimer-startTimer)/1000);
-;
-Serial.println ("===========================");
-Serial.print ("TIME:   ");
 Serial.print(time);
 Serial.println ("  seconds  ");
-Serial.println ("===========================");
+#endif
 
 }
 
-//************************************************************************************************************
+
+void LEDTimerDelay() {
+  //MAIN PCB LED (D13) BLINKS (10 secs)
+  // this is a test function to do the progressing blinking of the LED using my blink function
+  // it last exactly 10 seconds (2500x4) and I could not accomplish this with the delay() 
+  // everytime the led (in pin 5) blinks faster 1000, 700, 400, and 100.
+unsigned long startTimer = millis();
+Serial.println ("START 500,2600,5,0");
+
+//BUILT-IN LED
+//*******************************************************
+BlinkBeep (1000,2500,5,1);
+
+BlinkBeep (600,2500,5,1);
+
+BlinkBeep (200,2500,5,1);
+
+BlinkBeep (80,2500,5,1);
+
+#if ISDEBUG
+unsigned long endTimer = millis();
+unsigned long time = ((endTimer-startTimer)/1000);
+Serial.print(time);
+Serial.println ("  seconds  ");
+#endif
+
+}
+
+void BlinkTimerDelay() {
+  // DONGLE-LED BLINKS ON COUNTDOWN (10secs)
+  // this is a test function to do the progressing blinking of the LED using my blink function
+  // it last exactly 10 seconds (2500x4) and I could not accomplish this with the delay() 
+  // everytime the led (in pin 5) blinks faster 1000, 700, 400, and 100.
+
+unsigned long startTimer = millis();
+Serial.println ("START 500,2600,5,0");
+
+//*******************************************************
+
+// DS2408 LED
+BlinkBeep (1000,2500,6,2);
+
+BlinkBeep (600,2500,6,2);
+
+BlinkBeep (200,2500,6,2);
+
+BlinkBeep (80,2500,6,2);
+
+#if ISDEBUG
+unsigned long endTimer = millis();
+unsigned long time = ((endTimer-startTimer)/1000);
+Serial.print(time);
+Serial.println ("  seconds  ");
+#endif
+
+}
 
 int BlinkBeep (int interval, int timer, int Pin, bool isLED)
 // blink (blink interval=blinking speed, timer=duration blinking, Pin=pin of LED isLED 1 = LED 0 = Piezo)
@@ -91,8 +132,6 @@ unsigned long currentMillisTimer = millis();
 } //   END OF BlinkBeep FUNCTION
 
 
-
-
 bool beep (bool state,int Pin) {
 //int PiezoPin = 5;
 pinMode(Pin, OUTPUT);
@@ -101,7 +140,7 @@ tone (Pin, 1300);
 return;
 };
 noTone(Pin);
-Serial.println ("NO TONE");
+//Serial.println ("NO TONE");
 return;
 }
 //***************************************************************************************************************************************
