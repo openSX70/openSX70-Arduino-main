@@ -34,9 +34,6 @@ digitalWrite(Motor, LOW);
 analogWrite(Solenoid1, 0);
 analogWrite(Solenoid2, 0);
 
-device_count = ds.find(&devices);
-// THIS IS FUNDAMENTAL
-
     
     #if LIGHTMETER
     // Light Meter initialization
@@ -44,6 +41,12 @@ device_count = ds.find(&devices);
     pinMode(A4, INPUT_PULLUP);
     pinMode(A5, INPUT_PULLUP);
     #endif
+
+
+device_count = ds.find(&devices);
+
+// THIS IS FUNDAMENTAL
+
 
 if (digitalRead(S5) != LOW || digitalRead(S3) != LOW)
 {

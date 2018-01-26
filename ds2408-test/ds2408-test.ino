@@ -55,7 +55,7 @@ void loop() {
 Serial.println ("HELLO");                                                                                                 
   
   
-
+/*
  //***********************************************************************
  while (digitalRead(buttonPin) == LOW) {
       uint8_t readDevice = ds.get_state(devices[0]);
@@ -68,6 +68,7 @@ Serial.println ("HELLO");
        ds.set_state(devices[0], ~OutPIO); 
         }
  //***********************************************************************
+*/
 
  #if ISDEBUG 
     cycle = cycle+1;
@@ -118,7 +119,7 @@ if ((digitalRead(selectorPin) == HIGH) && (readDevice > 0)){  //////////////////
                 }else bitClear(S2, 0);
 
 
-/*
+
 if (S1 && S2) {
   bitSet(OutPIO, 7);
   bitSet(OutPIO, 6);

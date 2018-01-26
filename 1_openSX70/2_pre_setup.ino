@@ -40,8 +40,14 @@ const int S2 = 2;  //this for Flash insertion detection
 
 #define ONE_WIRE_BUS_PORT S2
 
-DS2408 ds(ONE_WIRE_BUS_PORT);
+
+//DS2408 ds(ONE_WIRE_BUS_PORT);
 //Read_DS2408_PIO ds(ONE_WIRE_BUS_PORT);
+
+//Devices devices;
+//uint8_t device_count;
+
+DS2408 ds(ONE_WIRE_BUS_PORT);
 
 Devices devices;
 uint8_t device_count;
@@ -152,4 +158,5 @@ void Flash ();
 void ShutterB();
 void ShutterT();
 void Ydelay ();
+bool beep (bool state,int Pin);
 

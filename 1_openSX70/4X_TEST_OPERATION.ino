@@ -1,4 +1,4 @@
-/*void loop()
+void loop()
 {
 /*  if ((digitalRead(S1) == LOW))  
                   {
@@ -68,7 +68,7 @@ delay (10000);
                   shutterCLOSE (); 
                   
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-                  while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
+while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
                   delay (40);                               //S3 is now open start Y-delay (40ms)
   
@@ -82,7 +82,7 @@ delay (10000);
                  shutterOPEN();
                  shots = 0;  
      }
-
+*/
 //START LOOP HERE FOR ROLLING TESTS
 
  Serial.println ("TEST SHUTTER ONLY");
@@ -198,7 +198,7 @@ beep (1,6);
                                       Serial.print (" / ");
                                       Serial.print (Read_DS2408_PIO(2));
                                       Serial.print (" Shutter Speed: ");
-                                      Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
+                                      Serial.println(ShutterSpeed[Read_DS2408_PIO(0)]);
                                       #endif
  delay (2000);    
 }

@@ -1,6 +1,9 @@
-void loop() {
+/*
+ * 
+ /*
+ void loop() {
 
-  Serial.println ("LOOOOOOP");
+  Serial.println (Read_DS2408_PIO(0));
   
   //WHAT TO DO WHEN POWER-UP:
   //  S8     S9
@@ -121,7 +124,7 @@ void loop() {
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
                 */ 
- 
+/* 
             int pressTime = REDbutton(S1);
         
        if ((ShutterSpeed[ActualSlot]) != (POSB))
@@ -158,11 +161,13 @@ void loop() {
           if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
           //byte ActualSlot = (Read_DS2408_PIO(0));
+
                                       #if ISDEBUG 
                                       byte S1 = Read_DS2408_PIO(1);
                                       byte S2 = Read_DS2408_PIO(2);
                                       Serial.print ("Selector: ");
-                                      Serial.print (ActualSlot);
+                                      Serial.print (Read_DS2408_PIO(0));
+//                                      Serial.print (ActualSlot);
                                       Serial.print (" / ");
                                       Serial.print (S1);
                                       Serial.print (" / ");
@@ -214,4 +219,4 @@ void loop() {
 } //END OF loop      
 
 //***************************************************************************************************************************************
-
+*/
