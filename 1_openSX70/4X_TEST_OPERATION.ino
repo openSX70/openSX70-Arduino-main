@@ -1,6 +1,7 @@
-void loop()
+/*
+ * void loop()
 {
-/*  if ((digitalRead(S1) == LOW))  
+  if ((digitalRead(S1) == LOW))  
                   {
                       Serial.print ("RED BUTTON PRESSED");
                                     
@@ -82,7 +83,6 @@ while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                  shutterOPEN();
                  shots = 0;  
      }
-*/
 //START LOOP HERE FOR ROLLING TESTS
 
  Serial.println ("TEST SHUTTER ONLY");
@@ -203,4 +203,4 @@ beep (1,6);
  delay (2000);    
 }
 
-
+*/

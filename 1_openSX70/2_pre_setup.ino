@@ -11,7 +11,7 @@
 //*************
 
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 1
+#define LIGHTMETER 0
 //*************
 
 // LIGHT METER STUFF BH1750*****************************************************************

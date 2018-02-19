@@ -1,4 +1,5 @@
-/*void loop() {
+/*
+ void loop() {
   
               takePicture= false;                                  
               byte ActualSlot = (Read_DS2408_PIO(0));
