@@ -111,19 +111,19 @@ unsigned long currentMillisTimer = millis();
     previousMillis = currentMillis;
 
     // if the LED is off turn it on and vice-versa:
-
+/*
 //**********NORMAL "LOGIC" Arduino pin to Piezzo+ and Piezzo- to GND
     if (ledState == 0) {
       ledState = 1;
     } else {
       ledState = 0;
-/*
+*/
 //**********INVERSE "LOGIC" Arduino pin to Piezzo- and Piezzo+ to either 2.5V or 6V.
     if (ledState == 1) {
       ledState = 0;
     } else {
       ledState = 1;
-*/
+
     
     }
 

@@ -1,4 +1,4 @@
-void loop() {
+/*void loop() {
 
   Serial.println (Read_DS2408_PIO(0));
   
@@ -121,7 +121,7 @@ void loop() {
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
                 */ 
-
+/*
             int pressTime = REDbutton(S1);
         
        if ((ShutterSpeed[ActualSlot]) != (POSB))
@@ -216,4 +216,4 @@ void loop() {
 } //END OF loop      
 
 //***************************************************************************************************************************************
-
+*/

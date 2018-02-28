@@ -1,6 +1,6 @@
-/* void loop()
+ void loop()
 {
-
+/*
 
 {
   if ((digitalRead(S1) == LOW))  
@@ -85,9 +85,9 @@ while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                  shutterOPEN();
                  shots = 0;  
      }
+*/
 //START LOOP HERE FOR ROLLING TESTS
 
-/*
 Serial.println ("TEST SHUTTER ONLY");
  beep (1,6);
  delay (100);
@@ -95,7 +95,7 @@ Serial.println ("TEST SHUTTER ONLY");
  delay (100);
 delay (5000);
 
-BeepTimerDelay ();
+//BeepTimerDelay ();
 
 shutterCLOSE();
 delay (1000);
@@ -126,7 +126,8 @@ beep (1,6);
  delay (100);
  beep (0,6);
  delay (100);
-BeepTimerDelay ();
+
+//BeepTimerDelay ();
 mirrorUP();
 delay (1000);
 mirrorDOWN();
@@ -143,7 +144,6 @@ delay (2000);
                                       Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
                                       #endif
 Serial.println ("TEST PICTURE-TAKING ONLY");
- /*
 beep (1,6);
  delay (100);
  beep (0,6);
@@ -156,7 +156,7 @@ beep (1,6);
  delay (100);
  beep (0,6);
  delay (100);
-BeepTimerDelay ();
+//BeepTimerDelay ();
 shutterOPEN();
 delay (2000);
 shutterCLOSE();
@@ -212,4 +212,4 @@ beep (1,6);
  delay (2000);    
 }
 
-*/
+

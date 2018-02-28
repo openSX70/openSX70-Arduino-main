@@ -66,18 +66,18 @@ const int S5 = 7;     //S5: LOW = CLOSED
 const int S8 = A1;     //S8: HIGH = CLOSED
 const int S9 = A0;     //S9: HIGH = CLOSED
 
-//const int Solenoid1 = 5;           // 6V High Power
+const int Solenoid1 = 5;           // 6V High Power
 
 // in Aladdin :
-const int Solenoid1 = 3;           // 6V High Power
+//const int Solenoid1 = 3;           // 6V High Power
 
 const int Solenoid2 = 11;          // 6V High Power    
 
 
 // in Aladdin :
-const int FFA = 4;
+//const int FFA = 4;
 
-//const int FFA = 3;
+const int FFA = 3;
 
 
 // ONE WIRE OUTPUT "PIN"s
