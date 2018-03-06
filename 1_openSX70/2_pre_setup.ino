@@ -1,5 +1,4 @@
-//DEBUG OR NOT
-#define ISDEBUG 1
+#define ISDEBUG 0
 //*************
 
 //TEST ONLY SHUTTER ASSEMBLY
@@ -11,7 +10,7 @@
 //*************
 
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 0
+#define LIGHTMETER 1
 //*************
 
 // LIGHT METER STUFF BH1750*****************************************************************
@@ -55,8 +54,7 @@ uint8_t device_count;
 // DS2408*****************************************************************
 
 //High speed PWM
-
- const byte n = 224;  // for example, 71.111 kHz
+const byte n = 224;  // for example, 71.111 kHz
 
 
 const int S1 = 12;     //Red button SHUTTER RELEASE
@@ -107,18 +105,18 @@ int ActualSlot;                //selectorPOSITION is the position of the selecto
 
 //int ShutterSpeed[] = {"B","T",4, 8, 16, 33, 66, 125, 250, 500, 1000, 1, 2, 3, 4, 5};
 
-enum positions_t {POS1 = -100, POS2, POS3, POS4, POSB, POST, POSFLASH};
+enum positions_t {POS1 = -100, POS2, A100, A600, POSFLASH, POST, POSB};
 /* TO CLARIFY:
  *  POS1 = -100
  *  POS2 = -99
- *  POS3 = -98
- *  POS4 = -97
+ *  A100 = -98
+ *  A600 = -97
  *  POSB = -96
  *  POST = -95
  *  POSFLASH = -94
  */
 
-int ShutterSpeed[] = { 6, 10, 16, 33, 66, 125, 250, 500, 1000, POS1, POS2, POS3, POS4,  POSB, POST, POSFLASH };
+int ShutterSpeed[] = { 6, 10, 16, 33, 66, 125, 250, 500, 1000, POS1, POS2, A100, A600,  POSB, POST, POSFLASH };
 
 
 
