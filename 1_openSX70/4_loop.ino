@@ -147,8 +147,8 @@ void loop() {
                                       Serial.println("---------------------------");
                                       #endif  
 
-            BeepTimerDelay();   //Piezo beeps
-//          BlinkTimerDelay();  //Dongle LED blinks
+//            BeepTimerDelay();   //Piezo beeps
+          BlinkTimerDelay();  //Dongle LED blinks
 //          LEDTimerDelay();    //Built-in LED blinks          
             takePicture = true;
              
@@ -171,6 +171,11 @@ void loop() {
                                       Serial.print (S2);
                                       Serial.print (" Shutter Speed: ");
                                       Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
+                                        uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+                                      Serial.print(F("Lux:  "));
+                                      Serial.print(lux);
+                                      Serial.println(" lx");
+                                      delay(500);
                                       #endif
 
 
