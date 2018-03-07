@@ -3,18 +3,22 @@
 #include <BH1750.h>
 #include <EEPROM.h>
 
-byte eeCounter = 0;
-int val = 1;
+//byte eeCounter = 0;
+//byte picCounter = 0;
 
-byte ActualCounter = EEPROM.read(eeCounter);
+struct Picture{
+  byte Index;
+  int  ShutterSpeed;
+  uint16_t lux;
+};
+
+byte eeAddress = EEPROM.read(1);  // where to write
+//byte ActualCounter = EEPROM.read(eeCounter);
+byte ActualPicture = EEPROM.read(10); //the pictures taken serial
 
 //byte value = EEPROM.read(eeCounter);
 
-/*
-if ((eeCounter) == 1) {
-   EEPROM.write (eeCounter, 1);
-}
-*/
+//EEPROM.write(eeCounter, val
 
 // digital pin 2 has a pushbutton attached to it. Give it a name:
 int pushButton = 6;
@@ -41,23 +45,77 @@ void setup() {
     lightmeter.begin(luxMode); // Inicializar BH1750
     pinMode(A4, INPUT_PULLUP);
     pinMode(A5, INPUT_PULLUP);
+
+/*
+if ((ActualCounter) == 255) 
+{
+  EEPROM.write (eeCounter, 1);
 }
+*/
+
+}
+
+
+
+
 
 // the loop routine runs over and over again forever:
 void loop() {
+
+int ShutterSpeed = 66;
+    uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+  
+  struct Picture = {
+    ActualPicture,
+    ShutterSpeed,
+    lux
+  };
+
+
+  if (digitalRead(pushButton) == LOW) 
+  {
+  
+    digitalWrite (led, HIGH);    
+    
+ 
+  EEPROM.put (eeAddress,current); 
+
+  eeAddress += sizeof(float);  //Obtener la siguiente posicion para escribir
+  if(eeAddress >= EEPROM.length()) eeAddress = 0;  //Comprobar que no hay desbordamiento
+
+ EEPROM.update (0,eeAddress);
+
+  ActualPicture = ActualPicture+1;
+
+  EEPROM.update (10,ActualPicture);
+
+  
+//eeCounter += sizeof(Picture);
   // read the input pin:
 //bool buttonState = digitalRead(pushButton);
 // print out the state of the button:
 
-  while (digitalRead(pushButton) == LOW) 
-  {
-  
-    digitalWrite (led, HIGH);
+    
+    
+    EEPROM.get (eeAddress,ActualPicture);
+
+
+    Picture current;
+  EEPROM.get( eeAddress, Picture );  
+  Serial.println( "Estructura leida: " );
+  Serial.println( Picture.ActualPicture );
+  Serial.println( Picture.ShutterSpeed );
+  Serial.println( Picture.lux );
+    
+    
+//    EEPROM.write(eeCounter, ActualCounter++);
+//    EEPROM.put(0,ActualPicture);
  
     uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
   Serial.print(F("Lux:  "));
   Serial.print(lux);
   Serial.println(" lx");
+  Serial.println(ActualPicture);
   delay(500);
 
   }
