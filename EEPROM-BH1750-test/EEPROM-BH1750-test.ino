@@ -21,16 +21,17 @@ struct Picture{
   };
 
 
-byte eeAddress = EEPROM.read(1);  // where to write
-//byte ActualCounter = EEPROM.read(eeCounter);
-byte ActualPicture = EEPROM.read(10); //the picture taken counter
+int eeAddress;
+int ActualPicture;
+
 
 //byte value = EEPROM.read(eeCounter);
 
-//EEPROM.write(eeCounter, val
+//EEPROM.write (eeCounter, val
 
 // digital pin 2 has a pushbutton attached to it. Give it a name:
 int pushButton = 6;
+int dumpButton = 4;
 int led = 5;
 
 // the setup routine runs once when you press reset:
@@ -50,22 +51,22 @@ void setup() {
   Serial.begin(9600);
   // make the pushbutton's pin an input:
   pinMode(pushButton, INPUT);
+  pinMode(dumpButton, INPUT_PULLUP);
   pinMode(led,OUTPUT);
     lightmeter.begin(luxMode); // Inicializar BH1750
     pinMode(A4, INPUT_PULLUP);
     pinMode(A5, INPUT_PULLUP);
 
-/*
-if ((ActualCounter) == 255) 
-{
-  EEPROM.write (eeCounter, 1);
+
+EEPROM.get(1,eeAddress);  // where to write
+//byte ActualCounter = EEPROM.read(eeCounter);
+
+
+EEPROM.get (10, ActualPicture); //the picture taken counter
+
+
+
 }
-*/
-
-}
-
-
-
 
 
 // the loop routine runs over and over again forever:
@@ -74,6 +75,8 @@ void loop() //******************************************************************
 {
 
 int ShutterSpeed = 66;
+//uint16_t lux;
+
 uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
 /* 
   struct Picture  {
@@ -82,41 +85,40 @@ uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
   uint16_t StructLux;
   };
 */
+Picture MyPicture ={ ActualPicture, ShutterSpeed, lux};
   if (digitalRead(pushButton) == LOW) 
   {
   
-    digitalWrite (led, HIGH);  
+//    digitalWrite (led, HIGH);  
 
-      Picture MyPicture ={ ActualPicture, ShutterSpeed, lux};
+//      Picture MyPicture ={ ActualPicture, ShutterSpeed, lux};
     
-
-
-
+    EEPROM.put(eeAddress,MyPicture);
+    
   
 //eeCounter += sizeof(Picture);
   // read the input pin:
 //bool buttonState = digitalRead(pushButton);
 // print out the state of the button:
 
-    
-    
+   
     EEPROM.get (eeAddress,MyPicture);
-
 
 //    Picture MyPicture;
   Serial.println("****************************************************************");
   Serial.print("eeAddress read: ");
   Serial.println (eeAddress);
+  Serial.println ("-");
   Serial.print("ActualPicture read: ");
   Serial.println(ActualPicture);
-
+  Serial.println ("-");
   EEPROM.get( eeAddress, MyPicture );  
-  Serial.print( "Estructura Picture: " );
+  Serial.print( " Picture: " );
   Serial.println( MyPicture.StructPicture );
-  Serial.print( "Estructura ShutterSpeed: " );
+  Serial.print( " ShutterSpeed: " );
 
   Serial.println( MyPicture.StructSpeed );
-    Serial.print( "Estructura Lux: " );
+    Serial.print( " Lux: " );
 
   Serial.println( MyPicture.StructLux );
     
@@ -125,15 +127,15 @@ uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
 //    EEPROM.put(0,ActualPicture);
 
     uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-  Serial.print(F("Check Lux:  "));
-  Serial.print(lux);
-  Serial.println(" lx");
-  Serial.print("ActualPicture = ");
-  Serial.println(ActualPicture);
-  delay(1000);
+//  Serial.print(F("Check Lux:  "));
+//  Serial.print(lux);
+//  Serial.println(" lx");
+//  Serial.print("ActualPicture = ");
+//  Serial.println(ActualPicture);
+//  delay(1000);
 
   eeAddress += sizeof(MyPicture);  //Obtener la siguiente posicion para escribir
-  if(eeAddress >= EEPROM.length()) eeAddress = 0;  //Comprobar que no hay desbordamiento
+  if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) eeAddress = 0;  //Comprobar que no hay desbordamiento
 
  
  EEPROM.update (1,eeAddress);
@@ -142,7 +144,51 @@ uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
 
  EEPROM.update (10,ActualPicture);
 
+delay (500);
+  }
 
+  if (digitalRead(dumpButton) == LOW) 
+  {
+
+EEPROM.get(1,eeAddress);
+int ReadAddress = (eeAddress - (sizeof(MyPicture)*8));
+
+Serial.print("======================= Entering loop =======================");
+Serial.print("eeAddress before loop: ");
+Serial.println (eeAddress);
+  
+Serial.print("ReadAddress before loop: ");
+Serial.println (ReadAddress);
+  
+for (int i = 0; i < 8; i++)
+{
+  int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
+  EEPROM.get(thisRecordAddress, MyPicture);
+  Serial.println("=======================================================");
+  Serial.print("eeAddress read: ");
+  Serial.println (thisRecordAddress);
+  Serial.println ("-");
+  Serial.print("ActualPicture read: ");
+  Serial.println(ActualPicture);
+  Serial.println ("-");
+  Serial.print( " Picture: " );
+  Serial.println( MyPicture.StructPicture );
+  Serial.print( " ShutterSpeed: " );
+
+  Serial.println( MyPicture.StructSpeed );
+  Serial.print( " Lux: " );
+
+  Serial.println( MyPicture.StructLux );
+  
+  delay(500);  
+  
+}
+Serial.print("======================= After loop =======================");
+Serial.print ("Read: ");
+Serial.println (ReadAddress);
+
+    digitalWrite (led, HIGH);  
+    delay (1000);
   }
 
   digitalWrite (led, LOW);
