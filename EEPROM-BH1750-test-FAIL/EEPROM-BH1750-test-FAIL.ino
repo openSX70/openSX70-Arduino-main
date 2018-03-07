@@ -19,15 +19,11 @@ struct Picture{
   int StructSpeed;
   uint16_t StructLux;
   };
-
+//int InitPicture;
+//int TestPicture;
 
 int eeAddress;
-int ActualPicture;
 
-
-//byte value = EEPROM.read(eeCounter);
-
-//EEPROM.write (eeCounter, val
 
 // digital pin 2 has a pushbutton attached to it. Give it a name:
 int pushButton = 6;
@@ -56,20 +52,32 @@ void setup() {
     lightmeter.begin(luxMode); // Inicializar BH1750
     pinMode(A4, INPUT_PULLUP);
     pinMode(A5, INPUT_PULLUP);
+/*
+int InitPicture;
+
+int TestPicture;
+*/
+/*
+Picture InitPicture;
+Picture TestPicture ={ 1111111111, 2222222222, 3333333333};
+EEPROM.get (10,InitPicture);
+
+if (TestPicture.StructPicture != InitPicture.StructPicture)
+{
+
+EEPROM.put(10,1);
+EEPROM.put(1,10);  // where to write
+
+}
 
 
 EEPROM.get(1,eeAddress);  // where to write
-
-if (eeAddress >= 32000){
-  EEPROM.put(1,100);
-}
-
 //byte ActualCounter = EEPROM.read(eeCounter);
 
 
-EEPROM.get (10, ActualPicture); //the picture taken counter
+//EEPROM.get (10, ActualPicture); //the picture taken counter
 
-
+*/
 
 }
 
@@ -90,6 +98,7 @@ uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
   uint16_t StructLux;
   };
 */
+int ActualPicture;
 Picture MyPicture ={ ActualPicture, ShutterSpeed, lux};
   if (digitalRead(pushButton) == LOW) 
   {
@@ -97,8 +106,7 @@ Picture MyPicture ={ ActualPicture, ShutterSpeed, lux};
 //    digitalWrite (led, HIGH);  
 
 //      Picture MyPicture ={ ActualPicture, ShutterSpeed, lux};
-
-
+    
     EEPROM.put(eeAddress,MyPicture);
     
   
@@ -115,8 +123,8 @@ Picture MyPicture ={ ActualPicture, ShutterSpeed, lux};
   Serial.print("eeAddress read: ");
   Serial.println (eeAddress);
   Serial.println ("-");
-  //Serial.print("ActualPicture read: ");
-  //Serial.println(ActualPicture);
+  Serial.print("ActualPicture read: ");
+  Serial.println(ActualPicture);
   Serial.println ("-");
   EEPROM.get( eeAddress, MyPicture );  
   Serial.print( " Picture: " );
@@ -127,9 +135,10 @@ Picture MyPicture ={ ActualPicture, ShutterSpeed, lux};
     Serial.print( " Lux: " );
 
   Serial.println( MyPicture.StructLux );
-Serial.println("****************************************************************");
     
     
+//    EEPROM.write(eeCounter, ActualCounter++);
+//    EEPROM.put(0,ActualPicture);
 
     uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
 //  Serial.print(F("Check Lux:  "));
@@ -152,7 +161,6 @@ Serial.println("****************************************************************
 delay (500);
   }
 
-//*************************DUMPING ROUTINE****************************************************************  
   if (digitalRead(dumpButton) == LOW) 
   {
 
@@ -169,14 +177,14 @@ Serial.println (ReadAddress);
 for (int i = 0; i < 8; i++)
 {
   int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
-  int sequence = i+1;
   EEPROM.get(thisRecordAddress, MyPicture);
   Serial.println("=======================================================");
   Serial.print("eeAddress read: ");
   Serial.println (thisRecordAddress);
   Serial.println ("-");
-  Serial.print ("Pack order: ");
-  Serial.println (sequence);
+  Serial.print("ActualPicture read: ");
+  Serial.println(ActualPicture);
+  Serial.println ("-");
   Serial.print( " Picture: " );
   Serial.println( MyPicture.StructPicture );
   Serial.print( " ShutterSpeed: " );
