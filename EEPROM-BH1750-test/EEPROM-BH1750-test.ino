@@ -16,6 +16,7 @@ struct Picture{
  
   struct Picture  {
   byte StructPicture;
+  byte StructType;
   int StructSpeed;
   uint16_t StructLux;
   };
@@ -78,6 +79,13 @@ EEPROM.get (10, ActualPicture); //the picture taken counter
 void loop() //*************************************************************************************************************************************************************************
 
 {
+
+byte PictureType;
+// PictureType = 0 ---> MANUAL
+// PictureType = 1 ---> A100
+// PictureType = 2 ---> FLASH DONGLELESS
+// PictureType = 4 ---> FLASH F8 DONGLE 
+// PictureType = 6 ---> A600
 
 int ShutterSpeed = 66;
 //uint16_t lux;
