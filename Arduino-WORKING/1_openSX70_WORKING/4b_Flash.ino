@@ -1,13 +1,23 @@
 void Flash () 
     {
 
- Serial.println ("AQUIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");  
+ 
        if (takePicture == true)
        {
+        
+                  digitalWrite(FFA, HIGH);
+                  Serial.println ("FFA, HIGH");
+                  delay (45);
+   //               analogWrite (Solenoid2,0);
+                  digitalWrite(FFA, LOW);
+                  Serial.println ("FFA, LOW");
+
+       }
+       /*{
       Serial.println ("FLASH FUNCTION!");
             #if SHUTTER
                    HighSpeedPWM ();
-                  analogWrite(Solenoid2, 255);
+ //                 analogWrite(Solenoid2, 255);
                   shutterCLOSE (); 
                   #endif
                   
@@ -15,7 +25,7 @@ void Flash ()
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
-                  analogWrite (Solenoid2, 130);
+   //               analogWrite (Solenoid2, 130);
                   Ydelay ();                               //S3 is now open start Y-delay (40ms)
                   #endif
  
@@ -26,9 +36,10 @@ void Flash ()
                   #if SHUTTER
                   shutterOPEN (); 
                   delay (51);
+Serial.println ("AQUI          FFA   FFA   FFA   FFA");  
                   digitalWrite(FFA, HIGH);
-                  delay (25);
-                  analogWrite (Solenoid2,0);
+                  delay (45);
+   //               analogWrite (Solenoid2,0);
                   digitalWrite(FFA, LOW);
                   delay (26);
                   shutterCLOSE();
@@ -49,6 +60,6 @@ void Flash ()
                  #endif   
                  shots = 0;  
                  return;   
-       }
+       }*/
     }
 

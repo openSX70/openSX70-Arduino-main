@@ -1,4 +1,4 @@
-#define ISDEBUG 0
+#define ISDEBUG 1
 //*************
 
 //TEST ONLY SHUTTER ASSEMBLY
@@ -73,6 +73,7 @@ const int Solenoid2 = 11;          // 6V High Power
 
 
 // in Aladdin :
+
 const int FFA = 4;
 
 //const int FFA = 3;
@@ -157,4 +158,4 @@ void ShutterB();
 void ShutterT();
 void Ydelay ();
 bool beep (bool state,int Pin);
-
+   

@@ -127,7 +127,7 @@ unsigned long currentMillisTimer = millis();
         digitalWrite (Pin, ledState);
   } else if (type == 2){
     Serial.println ("TYPE 2");
-    Write_DS2408_PIO.(Pin, ledState);
+    Write_DS2408_PIO(Pin, ledState);
   } else 
   {
    Serial.println ("TYPE 0");
@@ -138,6 +138,7 @@ unsigned long currentMillisTimer = millis();
   }
     beep (0,Pin);
 } //   END OF BlinkBeep FUNCTION
+
 
 
 

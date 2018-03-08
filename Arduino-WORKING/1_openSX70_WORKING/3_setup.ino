@@ -16,7 +16,7 @@ pinMode(S8, INPUT);
 pinMode(S9, INPUT);
 pinMode(FFA, OUTPUT);
 
-digitalWrite(FFA, LOW);           // make sure I don't fire the flash!
+//digitalWrite(FFA, LOW);           // make sure I don't fire the flash!
 
 #if ISDEBUG
 Serial.begin (9600);
