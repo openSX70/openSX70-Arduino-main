@@ -3,9 +3,9 @@
 #include <BH1750.h>
 #include <EEPROM.h>
 
-//EEPROM fixed positions
-// 0 -->J
-// 1 -->P
+//EEPROM INITIALIZATION fixed positions
+// 0 -->S
+// 1 -->X
 //10 --> pointer int eeAddress
 
 int eeAddress;
@@ -86,18 +86,18 @@ EEPROM.get (13, ActualPicture); //the picture taken counter
 Serial.println ("Running main code...");
 }
 
-
-// the loop routine runs over and over again forever:
-void loop() //*************************************************************************************************************************************************************************
-
-{
-
 byte PictureType = 0;
 // PictureType = 0 ---> MANUAL
 // PictureType = 1 ---> A100
 // PictureType = 2 ---> FLASH DONGLELESS
 // PictureType = 4 ---> FLASH F8 DONGLE 
 // PictureType = 6 ---> A600
+
+// the loop routine runs over and over again forever:
+void loop() //*************************************************************************************************************************************************************************
+
+{
+
 
 int ShutterSpeed = 66;
 //uint16_t lux;
