@@ -51,8 +51,8 @@ void Dongle(int DongleSlot)
    //EEPROM
     EEPROM.put(eeAddress,MyPicture);
     EEPROM.get (eeAddress,MyPicture);
-    eeAddress += sizeof(MyPicture);  //Obtener la siguiente posicion para escribir
-    if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) eeAddress = 0;  //Comprobar que no hay desbordamiento
+    eeAddress += sizeof(MyPicture);  //Next eeAdress
+    if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) eeAddress = 0;  //check for address overflow
      EEPROM.update (10,eeAddress);
     ActualPicture = ActualPicture+1;
     EEPROM.update (13,ActualPicture);

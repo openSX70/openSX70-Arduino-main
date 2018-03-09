@@ -35,7 +35,7 @@ void Flash ()
 
                   #if SHUTTER
                   shutterOPEN (); 
-                  delay (51);
+                  delay (66);
 Serial.println ("AQUI          FFA   FFA   FFA   FFA");  
                   digitalWrite(FFA, HIGH);
                   delay (45);

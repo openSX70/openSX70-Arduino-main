@@ -1,4 +1,4 @@
-#define ISDEBUG 1
+#define ISDEBUG 0
 //*************
 
 //TEST ONLY SHUTTER ASSEMBLY

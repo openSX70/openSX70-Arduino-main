@@ -58,13 +58,13 @@ EEPROM.get (eeAddress,MyPicture);
 
 if (digitalRead(S1) == LOW) 
   {
-EEPROM.get(10,eeAddress);
+//EEPROM.get(10,eeAddress);
 int ReadAddress = (eeAddress - (sizeof(MyPicture)*8));
 
 //Serial.print("======================= Entering loop =======================");
 //Serial.print("eeAddress before loop: ");
 //Serial.println (eeAddress);
-  
+Serial.begin (9600);
 Serial.print("ReadAddress before loop: ");
 Serial.println (ReadAddress);
   
