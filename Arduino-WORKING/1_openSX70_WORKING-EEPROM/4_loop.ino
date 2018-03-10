@@ -50,11 +50,16 @@ EEPROM.get(10,eeAddress);
 EEPROM.get (eeAddress,MyPicture);
 
 
+//byte Pack = 1;
+//byte previousPack = 0;
 
 if (digitalRead(S1) == LOW) 
   {
+
 //EEPROM.get(10,eeAddress);
-int ReadAddress = (eeAddress - (sizeof(MyPicture)*8));
+//
+int ReadAddress = (eeAddress - (((sizeof(MyPicture)*8)))*Pack);
+
 Serial.begin (9600);
 //
 Serial.print("======================= Entering loop =======================");
@@ -75,13 +80,14 @@ for (int i = 0; i < 8; i++)
   Serial.println("=======================================================");
   Serial.print("eeAddress read: ");
   Serial.println (thisRecordAddress);
-  Serial.println ("-");
+  Serial.print ("Pack # :");
+  Serial.println (Pack);
   Serial.print ("Pack order: ");
   Serial.println (sequence);
   Serial.print( " Picture: " );
   Serial.println( MyPicture.StructPicture );
-  Serial.print( " Type raw: " );
-  Serial.println( MyPicture.StructType );
+  //Serial.print( " Type raw: " );
+  //Serial.println( MyPicture.StructType );
 
   // PictureType = 0 ---> MANUAL
 // PictureType = 1 ---> A100
@@ -106,10 +112,18 @@ for (int i = 0; i < 8; i++)
   Serial.print( " Lux: " );
 
   Serial.println( MyPicture.StructLux );
+
+
+Serial.println (Pack);
   
   delay(500);  
   
 }
+
+  Pack = Pack+1;
+
+//Serial.println (Pack);
+ 
 //Serial.print("======================= After loop =======================");
 //Serial.print ("Read: ");
 //Serial.println (ReadAddress);

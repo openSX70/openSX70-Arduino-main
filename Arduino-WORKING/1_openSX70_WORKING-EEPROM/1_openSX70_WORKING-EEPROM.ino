@@ -9,7 +9,7 @@
 //I have "stolen" code from all over, if not credited I apologize.
 //this is the first "proper" GitHub code
 // 16/11/2017 Fixed many things. Optional MOTOR or SHUTTER for tests only shutter and only MOTOR. BUG: with double exposure with Switch 1 = 0 (Read_DS2408_PIO(1) = 1 (ON). For some reason does two pictures in case 2.
-
+// 10/03/2018 First working camera?
 
 
               // FIRST I ASSIGN THE Sx SWITCHES OF THE SX70 TO PINS ON THE ARDUINO
