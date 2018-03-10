@@ -1,6 +1,6 @@
 void loop() {
 
-  Serial.println (Read_DS2408_PIO(0));
+//  Serial.println (Read_DS2408_PIO(0));
   
   //WHAT TO DO WHEN POWER-UP:
   //  S8     S9
@@ -44,14 +44,9 @@ byte PictureType = 0;
 
 //
 uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-
-
-//
 Picture MyPicture ={ ActualPicture, PictureType, ShutterSpeed, lux};
 
-
-
-
+EEPROM.get(10,eeAddress);
 EEPROM.get (eeAddress,MyPicture);
 
 
@@ -60,11 +55,15 @@ if (digitalRead(S1) == LOW)
   {
 //EEPROM.get(10,eeAddress);
 int ReadAddress = (eeAddress - (sizeof(MyPicture)*8));
-
-//Serial.print("======================= Entering loop =======================");
-//Serial.print("eeAddress before loop: ");
-//Serial.println (eeAddress);
 Serial.begin (9600);
+//
+Serial.print("======================= Entering loop =======================");
+//
+EEPROM.get(10,eeAddress);
+Serial.print("eeAddress before loop: ");
+//
+Serial.println (eeAddress);
+
 Serial.print("ReadAddress before loop: ");
 Serial.println (ReadAddress);
   
@@ -72,7 +71,7 @@ for (int i = 0; i < 8; i++)
 {
   int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
   int sequence = i+1;
-//  EEPROM.get(thisRecordAddress, MyPicture);
+  EEPROM.get(thisRecordAddress, MyPicture);
   Serial.println("=======================================================");
   Serial.print("eeAddress read: ");
   Serial.println (thisRecordAddress);

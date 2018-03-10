@@ -134,7 +134,7 @@ int pressTime = 0;     //intialize pressTime
          // shortPress is when you want to take a "regular" picture
          // it needs to be timed for debounce purposes, that is, you need a "solid" press to take a picture
   
-const int shortPress = 150;
+const int shortPress = 100;
   
          //longPress is when you want to "something else", in my case delay the taking of the picture for x (10) seconds.
          //since 1000ms = 1 seconds, this is just a bit more than 1 second.

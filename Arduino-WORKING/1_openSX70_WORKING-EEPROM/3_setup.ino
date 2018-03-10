@@ -49,7 +49,7 @@ device_count = ds.find(&devices);
 
 
 // EEPROM STUFF INITIALIZING SEQUENCE
-
+Serial.begin (9600);
     char initJP [2];
     initJP[0] = EEPROM.read(0);
     initJP[1] = EEPROM.read(1);
@@ -69,7 +69,18 @@ device_count = ds.find(&devices);
 Serial.println ("EEPROM already initialized...");
 EEPROM.get(10,eeAddress);  // where to write
 EEPROM.get (13, ActualPicture); //the picture taken counter
+
   }
+/*
+EEPROM.get(10,eeAddress);  // where to write
+EEPROM.get (13, ActualPicture); //the picture taken counter
+
+Serial.print ("eeAddress READ:");
+Serial.println (eeAddress);
+Serial.print ("ActualPicture READ:");
+Serial.println (ActualPicture);
+*/
+  
 //byte PictureType = 0;
 // PictureType = 0 ---> MANUAL
 // PictureType = 1 ---> A100
