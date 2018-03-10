@@ -1,6 +1,6 @@
 void loop() {
 
-//  Serial.println (Read_DS2408_PIO(0));
+  Serial.println (Read_DS2408_PIO(0));
   
   //WHAT TO DO WHEN POWER-UP:
   //  S8     S9
@@ -44,31 +44,27 @@ byte PictureType = 0;
 
 //
 uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+
+
+//
 Picture MyPicture ={ ActualPicture, PictureType, ShutterSpeed, lux};
 
-EEPROM.get(10,eeAddress);
+
+
+
 EEPROM.get (eeAddress,MyPicture);
 
 
-//byte Pack = 1;
-//byte previousPack = 0;
 
 if (digitalRead(S1) == LOW) 
   {
-
 //EEPROM.get(10,eeAddress);
-//
-int ReadAddress = (eeAddress - (((sizeof(MyPicture)*8)))*Pack);
+int ReadAddress = (eeAddress - (sizeof(MyPicture)*8));
 
+//Serial.print("======================= Entering loop =======================");
+//Serial.print("eeAddress before loop: ");
+//Serial.println (eeAddress);
 Serial.begin (9600);
-//
-Serial.print("======================= Entering loop =======================");
-//
-EEPROM.get(10,eeAddress);
-Serial.print("eeAddress before loop: ");
-//
-Serial.println (eeAddress);
-
 Serial.print("ReadAddress before loop: ");
 Serial.println (ReadAddress);
   
@@ -76,18 +72,17 @@ for (int i = 0; i < 8; i++)
 {
   int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
   int sequence = i+1;
-  EEPROM.get(thisRecordAddress, MyPicture);
+//  EEPROM.get(thisRecordAddress, MyPicture);
   Serial.println("=======================================================");
   Serial.print("eeAddress read: ");
   Serial.println (thisRecordAddress);
-  Serial.print ("Pack # :");
-  Serial.println (Pack);
+  Serial.println ("-");
   Serial.print ("Pack order: ");
   Serial.println (sequence);
   Serial.print( " Picture: " );
   Serial.println( MyPicture.StructPicture );
-  //Serial.print( " Type raw: " );
-  //Serial.println( MyPicture.StructType );
+  Serial.print( " Type raw: " );
+  Serial.println( MyPicture.StructType );
 
   // PictureType = 0 ---> MANUAL
 // PictureType = 1 ---> A100
@@ -112,18 +107,10 @@ for (int i = 0; i < 8; i++)
   Serial.print( " Lux: " );
 
   Serial.println( MyPicture.StructLux );
-
-
-Serial.println (Pack);
   
   delay(500);  
   
 }
-
-  Pack = Pack+1;
-
-//Serial.println (Pack);
- 
 //Serial.print("======================= After loop =======================");
 //Serial.print ("Read: ");
 //Serial.println (ReadAddress);
@@ -308,6 +295,8 @@ Serial.println (Pack);
   }
   else
   {
+                                  // re check if dongle has been re-connected!
+                                  device_count = ds.find(&devices);
                                   #if ISDEBUG 
                                   Serial.print (Read_DS2408_PIO(0));
                                   Serial.println (":   DONT KNOW, SHOULD NOT BE HERE! ");
