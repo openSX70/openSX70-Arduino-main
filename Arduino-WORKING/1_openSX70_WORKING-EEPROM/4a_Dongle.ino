@@ -11,7 +11,15 @@ void Dongle(int DongleSlot)
 Serial.println ("take picture");
     //EEPROM OK
     EEPROM.get (10,ActualPicture);
+
+
     byte PictureType = 0;
+    /*
+   if  (Read_DS2408_PIO(2) ==  1) {
+    PictureType = PictureType+10;}
+    if (Read_DS2408_PIO(1) ==  1) {
+    PictureType = PictureType+200;}
+    */
     uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
     int Shutter = (ShutterSpeed[ActualSlot]);
     Picture MyPicture ={ ActualPicture, PictureType, Shutter, lux};
@@ -51,7 +59,8 @@ Serial.println ("take picture");
                  shots = 0;  
              
    //EEPROM
-
+   CurrentPicture = CurrentPicture++;
+    EEPROM.write(4,CurrentPicture);
    Serial.println ("Picture taken");
     EEPROM.put(eeAddress,MyPicture);
  //   EEPROM.get (eeAddress,MyPicture);

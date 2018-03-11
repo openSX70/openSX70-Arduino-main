@@ -14,15 +14,18 @@ void loop() {
   if (digitalRead(S8) == HIGH && digitalRead(S9) == LOW)
     //EJECT DARK SLIDE
   {
+    CurrentPicture = 0;
+      EEPROM.write(4,CurrentPicture);
      darkslideEJECT();
                                    #if ISDEBUG 
                                   Serial.println("STATE1: EJECT DARK SLIDE");      
                                   #endif
   }
+  CurrentPicture = EEPROM.read(4) ;
   #endif
   #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH
-  if (digitalRead(S8) == LOW && digitalRead(S9) == HIGH)
+  if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) || (CurrentPicture >= 8))
     // FOR THE MOMENT I JUST TURN ON THE LED ON DONGLE
      {
                                    #if ISDEBUG 
@@ -56,10 +59,12 @@ EEPROM.get (eeAddress,MyPicture);
 
 
 
-if (digitalRead(S1) == LOW) 
+if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  0))
+  
   {
+    
 //EEPROM.get(10,eeAddress);
-int ReadAddress = (eeAddress - (sizeof(MyPicture)*8));
+int ReadAddress = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
 
 //Serial.print("======================= Entering loop =======================");
 //Serial.print("eeAddress before loop: ");
@@ -76,7 +81,8 @@ for (int i = 0; i < 8; i++)
   Serial.println("=======================================================");
   Serial.print("eeAddress read: ");
   Serial.println (thisRecordAddress);
-  Serial.println ("-");
+  Serial.print ("Pack: ");
+  Serial.println (Pack);
   Serial.print ("Pack order: ");
   Serial.println (sequence);
   Serial.print( " Picture: " );
@@ -89,10 +95,14 @@ for (int i = 0; i < 8; i++)
 // PictureType = 2 ---> FLASH DONGLELESS
 // PictureType = 4 ---> FLASH F8 DONGLE 
 // PictureType = 6 ---> A600
+// PictureType = +10 ---> MIRROR DELAY
+// PictureType = +100 ---> MULTIPLE EXPOSURE
+// PictureType = +200 ---> TIMER DELAY
+
 
   Serial.print( " Type: " );
   if (MyPicture.StructType == 0){
-  Serial.println( "MANUAL" );  }  
+  Serial.println( "MANUAL" );  }    
   if (MyPicture.StructType == 1){
   Serial.println( "AUTO 100" ) ; }
   if (MyPicture.StructType == 2){
@@ -107,6 +117,74 @@ for (int i = 0; i < 8; i++)
   Serial.print( " Lux: " );
 
   Serial.println( MyPicture.StructLux );
+
+  Pack = Pack++;
+  delay(500);  
+  
+}
+//Serial.print("======================= After loop =======================");
+//Serial.print ("Read: ");
+//Serial.println (ReadAddress);
+//    delay (1000);
+  }
+     
+//======================================================================================================
+
+if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  1))
+  
+  {
+    
+//EEPROM.get(10,eeAddress);
+int ReadAddress = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
+
+//int ReadAddress = eeAddress; 
+
+Serial.begin (9600);
+Serial.print("ReadAddress before loop: ");
+Serial.println (ReadAddress);
+  
+for (int i = 0; i < 8; i++)
+{
+  int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
+  int sequence = i+1;
+//  EEPROM.get(thisRecordAddress, MyPicture);
+  Serial.println("eeAddress,Pack order,Picture,Type Raw, Type, ShutterSpeed, Lux");
+  Serial.print (thisRecordAddress);
+  Serial.print (",");
+  Serial.print (sequence);
+  Serial.print (",");
+  Serial.print( MyPicture.StructPicture );
+  Serial.print (",");
+  Serial.print( MyPicture.StructType );
+//  Serial.print (",");
+
+  // PictureType = 0 ---> MANUAL
+// PictureType = 1 ---> A100
+// PictureType = 2 ---> FLASH DONGLELESS
+// PictureType = 4 ---> FLASH F8 DONGLE 
+// PictureType = 6 ---> A600
+// PictureType = +10 ---> MIRROR DELAY
+// PictureType = +100 ---> MULTIPLE EXPOSURE
+// PictureType = +200 ---> TIMER DELAY
+
+
+  if (MyPicture.StructType == 0){
+  Serial.print( ",MANUAL," );  }    
+  if (MyPicture.StructType == 1){
+  Serial.print( ",AUTO 100," ) ; }
+  if (MyPicture.StructType == 2){
+  Serial.print( ",FLASH DONGLELESS," );}
+  if (MyPicture.StructType == 4){
+  Serial.print( ",FLASH F8 DONGLE," ); }
+  if (MyPicture.StructType == 6){
+  Serial.print( ",AUTO 600," );  }
+  
+  Serial.print( MyPicture.StructSpeed );
+  Serial.print (",");
+
+  Serial.println( MyPicture.StructLux );
+
+  Pack = Pack++;
   
   delay(500);  
   
@@ -117,6 +195,7 @@ for (int i = 0; i < 8; i++)
 //    delay (1000);
   }
 
+//======================================================================================================
       
 }
 #endif
@@ -231,7 +310,7 @@ for (int i = 0; i < 8; i++)
                                       Serial.println (pressTime);
                                       Serial.println("---------------------------");
                                       #endif  
-
+                                        
 //            BeepTimerDelay();   //Piezo beeps
           BlinkTimerDelay();  //Dongle LED blinks
 //          LEDTimerDelay();    //Built-in LED blinks          

@@ -152,6 +152,7 @@ int eeAddress;
 //13 --> Picture counter int ActualPicture
 
 int ActualPicture;
+byte CurrentPicture;
 
 //15-100 --> empty for future settings auto exposure etc...
 //101 --> intial record
