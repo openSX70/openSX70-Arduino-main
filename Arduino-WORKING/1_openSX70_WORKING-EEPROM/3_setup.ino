@@ -88,6 +88,8 @@ Serial.println (ActualPicture);
 // PictureType = 4 ---> FLASH F8 DONGLE 
 // PictureType = 6 ---> A600
 
+//Start with Dongle LED off
+Write_DS2408_PIO (6, 0);
 
 if (digitalRead(S5) != LOW || digitalRead(S3) != LOW)
 {

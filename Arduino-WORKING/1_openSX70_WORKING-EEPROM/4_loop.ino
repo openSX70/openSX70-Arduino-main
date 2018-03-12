@@ -1,6 +1,6 @@
 void loop() {
 
-  Serial.println (Read_DS2408_PIO(0));
+  //Serial.println (Read_DS2408_PIO(0));
   
   //WHAT TO DO WHEN POWER-UP:
   //  S8     S9
@@ -9,7 +9,7 @@ void loop() {
   // open   open  --> NORMAL OPERATION 10 TO 1
 
  
-   // STATE 1: EJECT DARKSLIDE:
+   // STATE 1: EJECT DARKSLIDE:*************************************************************************************************************************************************
   #if MOTOR 
   if (digitalRead(S8) == HIGH && digitalRead(S9) == LOW)
     //EJECT DARK SLIDE
@@ -21,11 +21,13 @@ void loop() {
                                   Serial.println("STATE1: EJECT DARK SLIDE");      
                                   #endif
   }
-  CurrentPicture = EEPROM.read(4) ;
+  CurrentPicture = EEPROM.read(4) ; 
   #endif
   #if MOTOR 
-  //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH
-  if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) || (CurrentPicture >= 8))
+  //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH *********************************************************************************************************************************
+    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) || (CurrentPicture >= 8))
+    
+    //CurrentPicture = 0;
     // FOR THE MOMENT I JUST TURN ON THE LED ON DONGLE
      {
                                    #if ISDEBUG 
@@ -36,6 +38,8 @@ void loop() {
     // KEEP IN MIND THAT THIS **THE CAMERA** SAYING IT HAS ALREADY MADE 10 SHOTS.
     // I COULD SET MY OWN COUNTER (UP TO 8) AND MAKE IT MORE IMPOSSIBLE-8-SHOTS-FRIENDLY
       Write_DS2408_PIO (6, 1);
+//      Serial.begin (9600);
+//      Serial.println ("Write f^*ng PIO");
 //EEPROM 
 
 byte PictureType = 0;
@@ -46,20 +50,23 @@ byte PictureType = 0;
 // PictureType = 6 ---> A600
 
 //
-uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+//uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
 
 
 //
-Picture MyPicture ={ ActualPicture, PictureType, ShutterSpeed, lux};
+int ActualPicture;
+byte CurrentPicture;
+//byte PictureType;
+int ShutterSpeed;
+uint16_t lux;
 
-
-
+Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, ShutterSpeed,  lux};
 
 EEPROM.get (eeAddress,MyPicture);
 
 
 
-if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  0))
+if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  0))  // DUMP EEPROM INFO "NORMAL" Read_DS2408_PIO(2) ==  0
   
   {
     
@@ -75,7 +82,7 @@ Serial.println (ReadAddress);
   
 for (int i = 0; i < 8; i++)
 {
-  int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
+  int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
   int sequence = i+1;
 //  EEPROM.get(thisRecordAddress, MyPicture);
   Serial.println("=======================================================");
@@ -87,6 +94,8 @@ for (int i = 0; i < 8; i++)
   Serial.println (sequence);
   Serial.print( " Picture: " );
   Serial.println( MyPicture.StructPicture );
+  Serial.print ("Current Picture: ");
+  Serial.println (CurrentPicture);
   Serial.print( " Type raw: " );
   Serial.println( MyPicture.StructType );
 
@@ -129,26 +138,48 @@ for (int i = 0; i < 8; i++)
   }
      
 //======================================================================================================
+// S1 = ON dump CSV and ask how many
+
 
 if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  1))
-  
   {
-    
+     Serial.begin (9600);
+
+     Serial.println("eeAddress,Pack order,Picture,CurrentPicture,Type Raw, Type, ShutterSpeed, Lux");
+
+/*
+    Serial.println ("Input number of pictures to dump: ");
+    int incomingByte = 0;   // for incoming serial data
+    if (Serial.available() > 0) { 
+                // read the incoming byte:
+                int
+                incomingByte = Serial.read();
+
+                // say what you got:
+                Serial.print("Dumping info of ");
+                Serial.print(incomingByte, DEC);
+                Serial.println (" pictures from the last backwards");
+*/        
 //EEPROM.get(10,eeAddress);
-int ReadAddress = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
 
-//int ReadAddress = eeAddress; 
+byte incomingByte = 19;
+//int ReadAddress = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
+//
 
-Serial.begin (9600);
-Serial.print("ReadAddress before loop: ");
-Serial.println (ReadAddress);
+int ReadAddress = eeAddress; 
+
+//  int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
+
+
+//Serial.print("ReadAddress before loop: ");
+//Serial.println (ReadAddress);
   
-for (int i = 0; i < 8; i++)
+for (int i = 0; i < incomingByte; i++)
 {
   int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
   int sequence = i+1;
-//  EEPROM.get(thisRecordAddress, MyPicture);
-  Serial.println("eeAddress,Pack order,Picture,Type Raw, Type, ShutterSpeed, Lux");
+  EEPROM.get(thisRecordAddress, MyPicture);
+//  Serial.println("eeAddress,Pack order,Picture,Type Raw, Type, ShutterSpeed, Lux");
   Serial.print (thisRecordAddress);
   Serial.print (",");
   Serial.print (sequence);
@@ -156,6 +187,7 @@ for (int i = 0; i < 8; i++)
   Serial.print( MyPicture.StructPicture );
   Serial.print (",");
   Serial.print( MyPicture.StructType );
+  Serial.println (CurrentPicture);
 //  Serial.print (",");
 
   // PictureType = 0 ---> MANUAL
@@ -193,21 +225,20 @@ for (int i = 0; i < 8; i++)
 //Serial.print ("Read: ");
 //Serial.println (ReadAddress);
 //    delay (1000);
-  }
-
+  //}
+}
 //======================================================================================================
       
 }
 #endif
-#if MOTOR 
-  //STATE 3: NORMAL OPERATION
+
+  //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW)
   {
                                  #if ISDEBUG 
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
                                  #endif
     
-#endif
    
 // ///////////////////////////////////PICTURE TAKING OPERATION//////////////////////////////////////////////////
 //    FOUR CASES:

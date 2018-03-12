@@ -165,6 +165,7 @@ byte CurrentPicture;
  
   struct Picture  {
   int StructPicture;
+  byte PackPicture;
   byte StructType;
   int StructSpeed;
   uint16_t StructLux;
