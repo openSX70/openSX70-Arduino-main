@@ -31,10 +31,10 @@
               //ActualPicture
               //CurrentPicture 
 
-              // Picture:
-              //           int StructPicture--> continous picture counter  
-              //           byte PackPicture --> within pack 1-8 counter 
-              //           byte StructType  --> Type of picture (see table)
+              // Picture:MyPicture
+              //           int StructPicture:ActualPicture --> continous picture counter  
+              //           byte PackPicture:CurrentPicture --> within pack 1-8 counter 
+              //           byte StructType:PictureType  --> Type of picture (see table)
 
                                             // PictureType = 0 ---> MANUAL
                                             // PictureType = 1 ---> A100
@@ -42,6 +42,6 @@
                                             // PictureType = 4 ---> FLASH F8 DONGLE 
                                             // PictureType = 6 ---> A600
               
-              //           int StructSpeed  --> ShutterSpeed
-              //           uint16_t StructLux --> Lux as read by BH170 just before picture-taking
+              //           int StructSpeed:ShutterSpeed  --> ShutterSpeed
+              //           uint16_t StructLux:lux --> Lux as read by BH170 just before picture-taking
                
