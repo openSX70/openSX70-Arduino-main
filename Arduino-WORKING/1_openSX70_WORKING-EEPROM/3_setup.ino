@@ -18,12 +18,12 @@ pinMode(FFA, OUTPUT);
 
 digitalWrite(FFA, LOW);           // make sure I don't fire the flash!
 
-#if ISDEBUG
+//#if ISDEBUG
 Serial.begin (9600);
 Serial.println ("Welcome to openSX70");
 Serial.print ("Version: ");
 Serial.println(F(__FILE__ " " __DATE__ " " __TIME__));
-#endif
+//#endif
 
 //Motor is OUTPUT
 pinMode(Motor, OUTPUT);
@@ -68,7 +68,18 @@ Serial.begin (9600);
   }
       else 
   {
+
+if ((Read_DS2408_PIO(1) == 1) && (Read_DS2408_PIO(2) == 1)) {
+  Serial.println ("RE-nitializing EEPROM....");
+  EEPROM.write(0,'S');
+  EEPROM.write(1,'X');
+  int eeAddress = 101;
+  EEPROM.put (10,eeAddress);
+  int ActualPicture= 1;
+  EEPROM.put (13,ActualPicture);
+}
 Serial.println ("EEPROM already initialized...");
+
 EEPROM.get(10,eeAddress);  // where to write
 EEPROM.get (13, ActualPicture); //the picture taken counter
 Serial.print ("eeAddress: ");

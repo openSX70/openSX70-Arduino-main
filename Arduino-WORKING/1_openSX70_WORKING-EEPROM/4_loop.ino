@@ -54,7 +54,7 @@ byte PictureType = 0;
 
 
 //
-int ActualPicture;
+// int ActualPicture;
 byte CurrentPicture;
 //byte PictureType;
 int ShutterSpeed;
@@ -399,28 +399,17 @@ for (int i = 0; i < incomingByte; i++)
                                     Serial.print(lux);
                                     Serial.println(" lux");
                                     delay(500);
+    
                                     #endif
+                                    device_count = ds.find(&devices);
+                                      
                                     
     return;
   }
   else
   {
                                   // re check if dongle has been re-connected!
-                                  // blink three
-                                  Write_DS2408_PIO (6, 0);
-                                  delay (300);
-                                  Write_DS2408_PIO (6, 1);
-                                  delay (300);
-                                  Write_DS2408_PIO (6, 0);
-                                  delay (300);
-                                  Write_DS2408_PIO (6, 1);
-                                  delay (300);
-                                  Write_DS2408_PIO (6, 0);
-                                  delay (300);
-                                  Write_DS2408_PIO (6, 1);
-                                  delay (300);
-                                  Write_DS2408_PIO (6, 0);
-                                  device_count = ds.find(&devices);
+
                                   #if ISDEBUG 
                                   Serial.print (Read_DS2408_PIO(0));
                                   Serial.println (":   DONT KNOW, SHOULD NOT BE HERE! ");

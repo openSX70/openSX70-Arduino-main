@@ -10,7 +10,7 @@ void Dongle(int DongleSlot)
     {
                           Serial.println ("take picture");
     //EEPROM OK
-    EEPROM.get (10,ActualPicture);
+    EEPROM.get (13,ActualPicture);
     
    CurrentPicture = (CurrentPicture+1);
 
