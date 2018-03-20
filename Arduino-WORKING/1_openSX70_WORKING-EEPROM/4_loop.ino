@@ -406,6 +406,20 @@ for (int i = 0; i < incomingByte; i++)
   else
   {
                                   // re check if dongle has been re-connected!
+                                  // blink three
+                                  Write_DS2408_PIO (6, 0);
+                                  delay (300);
+                                  Write_DS2408_PIO (6, 1);
+                                  delay (300);
+                                  Write_DS2408_PIO (6, 0);
+                                  delay (300);
+                                  Write_DS2408_PIO (6, 1);
+                                  delay (300);
+                                  Write_DS2408_PIO (6, 0);
+                                  delay (300);
+                                  Write_DS2408_PIO (6, 1);
+                                  delay (300);
+                                  Write_DS2408_PIO (6, 0);
                                   device_count = ds.find(&devices);
                                   #if ISDEBUG 
                                   Serial.print (Read_DS2408_PIO(0));

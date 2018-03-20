@@ -21,6 +21,8 @@ digitalWrite(FFA, LOW);           // make sure I don't fire the flash!
 #if ISDEBUG
 Serial.begin (9600);
 Serial.println ("Welcome to openSX70");
+Serial.print ("Version: ");
+Serial.println(F(__FILE__ " " __DATE__ " " __TIME__));
 #endif
 
 //Motor is OUTPUT
@@ -69,6 +71,10 @@ Serial.begin (9600);
 Serial.println ("EEPROM already initialized...");
 EEPROM.get(10,eeAddress);  // where to write
 EEPROM.get (13, ActualPicture); //the picture taken counter
+Serial.print ("eeAddress: ");
+Serial.println (eeAddress);
+Serial.print ("ActualPicture: ");
+Serial.println (ActualPicture);
 
   }
 /*
@@ -89,7 +95,17 @@ Serial.println (ActualPicture);
 // PictureType = 6 ---> A600
 
 //Start with Dongle LED off
+//Write_DS2408_PIO (6, 0);
+
+//Blink twice Dongle LED on opening
+Write_DS2408_PIO (6, 1);
+delay (300);
 Write_DS2408_PIO (6, 0);
+delay (300);
+Write_DS2408_PIO (6, 1);
+delay (300);
+Write_DS2408_PIO (6, 0);
+
 
 if (digitalRead(S5) != LOW || digitalRead(S3) != LOW)
 {
