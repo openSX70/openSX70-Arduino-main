@@ -70,7 +70,7 @@ if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  0))  // DUMP EEPROM INFO
   
   {
     
-//EEPROM.get(10,eeAddress);
+/*EEPROM.get(10,eeAddress);
 int ReadAddress = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
 
 //Serial.print("======================= Entering loop =======================");
@@ -80,18 +80,32 @@ Serial.begin (9600);
 Serial.print("ReadAddress before loop: ");
 Serial.println (ReadAddress);
   
+for (int i = 0; i < 8; i++) */
+
+
+EEPROM.get(10,eeAddress);
+
+int ReadAddress = (eeAddress - (sizeof(MyPicture)*8));
+
+Serial.print("======================= Entering loop =======================");
+Serial.print("eeAddress before loop: ");
+Serial.println (eeAddress);
+  
+Serial.print("ReadAddress before loop: ");
+Serial.println (ReadAddress);
+  
 for (int i = 0; i < 8; i++)
 {
   int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
-  int sequence = i+1;
+ // int sequence = i+1;
 //  EEPROM.get(thisRecordAddress, MyPicture);
   Serial.println("=======================================================");
   Serial.print("eeAddress read: ");
   Serial.println (thisRecordAddress);
   Serial.print ("Pack: ");
   Serial.println (Pack);
-  Serial.print ("Pack order: ");
-  Serial.println (sequence);
+//  Serial.print ("Pack order: ");
+//  Serial.println (sequence);
   Serial.print( " Picture: " );
   Serial.println( MyPicture.StructPicture );
   Serial.print ("Current Picture: ");
@@ -135,6 +149,9 @@ for (int i = 0; i < 8; i++)
 //Serial.print ("Read: ");
 //Serial.println (ReadAddress);
 //    delay (1000);
+  
+//added return
+  return;
   }
      
 //======================================================================================================
@@ -218,8 +235,10 @@ for (int i = 0; i < incomingByte; i++)
 
   Pack = Pack++;
   
-  delay(500);  
+  delay(500); 
   
+//added return 
+  return;
 }
 //Serial.print("======================= After loop =======================");
 //Serial.print ("Read: ");
@@ -228,6 +247,9 @@ for (int i = 0; i < incomingByte; i++)
   //}
 }
 //======================================================================================================
+
+//added return
+return;
       
 }
 #endif
