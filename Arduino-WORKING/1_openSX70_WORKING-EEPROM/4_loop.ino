@@ -16,6 +16,8 @@ void loop() {
   {
     CurrentPicture = 0;
       EEPROM.write(4,CurrentPicture);
+            Write_DS2408_PIO (6, 0);
+      
      darkslideEJECT();
                                    #if ISDEBUG 
                                   Serial.println("STATE1: EJECT DARK SLIDE");      
