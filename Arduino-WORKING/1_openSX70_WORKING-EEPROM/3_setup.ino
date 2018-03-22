@@ -108,9 +108,12 @@ Serial.println (ActualPicture);
 //Start with Dongle LED off
 //Write_DS2408_PIO (6, 0);
 
-simpleBlink (2);
+//byte CurrentPicture = EEPROM.read (4);
 
-// byte Pack = 1;
+simpleBlink (8 - (EEPROM.read (4)));
+
+
+
 
 if (digitalRead(S5) != LOW || digitalRead(S3) != LOW)
 {

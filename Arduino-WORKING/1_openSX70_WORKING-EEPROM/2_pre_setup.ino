@@ -198,4 +198,4 @@ void ShutterB();
 void ShutterT();
 void Ydelay ();
 bool beep (bool state,int Pin);
-bool simpleBlink (byte times);  
+void simpleBlink (int times);  
