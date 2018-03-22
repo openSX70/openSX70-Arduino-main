@@ -21,7 +21,7 @@ void loop() {
                                   Serial.println("STATE1: EJECT DARK SLIDE");      
                                   #endif
   }
-  CurrentPicture = EEPROM.read(4) ; 
+  //CurrentPicture = EEPROM.read(4) ; 
   #endif
   #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH *********************************************************************************************************************************
@@ -95,21 +95,23 @@ Serial.print("ReadAddress before loop: ");
 Serial.println (ReadAddress);
   
 for (int i = 0; i < 8; i++)
+
 {
-  int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
+int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
  // int sequence = i+1;
-//  EEPROM.get(thisRecordAddress, MyPicture);
+// 
+  EEPROM.get(thisRecordAddress, MyPicture);
   Serial.println("=======================================================");
   Serial.print("eeAddress read: ");
   Serial.println (thisRecordAddress);
-  Serial.print ("Pack: ");
-  Serial.println (Pack);
+//  Serial.print ("Pack: ");
+//  Serial.println (Pack);
 //  Serial.print ("Pack order: ");
 //  Serial.println (sequence);
   Serial.print( " Picture: " );
   Serial.println( MyPicture.StructPicture );
   Serial.print ("Current Picture: ");
-  Serial.println (CurrentPicture);
+  Serial.println (MyPicture.PackPicture);
   Serial.print( " Type raw: " );
   Serial.println( MyPicture.StructType );
 
@@ -141,8 +143,8 @@ for (int i = 0; i < 8; i++)
 
   Serial.println( MyPicture.StructLux );
 
-  Pack = Pack++;
-  delay(500);  
+  // Pack = Pack++;
+  delay(500);
   
 }
 //Serial.print("======================= After loop =======================");
@@ -233,7 +235,7 @@ for (int i = 0; i < incomingByte; i++)
 
   Serial.println( MyPicture.StructLux );
 
-  Pack = Pack++;
+  //Pack = Pack++;
   
   delay(500); 
   
@@ -443,4 +445,4 @@ return;
 } //END OF loop      
 
 //***************************************************************************************************************************************
-
+ 
