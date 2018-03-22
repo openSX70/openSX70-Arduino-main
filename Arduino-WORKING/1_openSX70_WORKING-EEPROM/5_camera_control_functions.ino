@@ -174,7 +174,7 @@ void Click()
                             #endif
   
 
-  ActualSlot = Read_DS2408_PIO(0);
+//  ActualSlot = Read_DS2408_PIO(0);
 
   if ((ShutterSpeed[Read_DS2408_PIO(0)]) == POST)
   {
@@ -232,7 +232,7 @@ void Click()
     #endif
     
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
-        delay (ShutterSpeed[ActualSlot]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+        delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
         ////////CLICK!
     shutterCLOSE ();                                         //close the shutter
     return;

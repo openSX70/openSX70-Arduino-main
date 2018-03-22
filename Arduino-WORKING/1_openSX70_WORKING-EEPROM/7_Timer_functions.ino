@@ -153,4 +153,12 @@ noTone(Pin);
 //Serial.println ("NO TONE");
 return;
 }
+bool simpleBlink (byte times) {
+
+for (int i = 1 ; i <= times; i++)
+delay (200);
+Write_DS2408_PIO (6, 1);
+delay (200);
+Write_DS2408_PIO (6, 0);
+}
 //***************************************************************************************************************************************

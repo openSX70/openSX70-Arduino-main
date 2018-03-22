@@ -43,6 +43,7 @@ void loop() {
 //      Serial.println ("Write f^*ng PIO");
 //EEPROM 
 
+
 byte PictureType = 0;
 // PictureType = 0 ---> MANUAL
 // PictureType = 1 ---> A100
@@ -89,7 +90,7 @@ EEPROM.get(10,eeAddress);
 int ReadAddress  = (eeAddress - (sizeof(MyPicture)*8));
 
 Serial.println("======================= Entering loop =======================");
-Serial.print("eeAddress before loop: ");
+Serial.print("INITIAL eeAddress before loop: ");
 Serial.println (eeAddress);
   
 Serial.print("ReadAddress before loop: ");
@@ -98,13 +99,13 @@ Serial.println (ReadAddress);
 for (int i = 0; i < 8; i++)
 
 {
-int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
+int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
  // int sequence = i+1;
 // 
 
   EEPROM.get(thisRecordAddress, MyPicture);
   Serial.println("=======================================================");
-  Serial.print("eeAddress read: ");
+  Serial.print("eeAddress read (thisRecordAddress): ");
   Serial.println (thisRecordAddress);
 //  Serial.print ("Pack: ");
 //  Serial.println (Pack);
@@ -145,8 +146,9 @@ int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
 
   Serial.println( MyPicture.StructLux );
 
-  // Pack = Pack++;
-  delay(500);
+  //
+  Pack = Pack+1;
+  delay(50);
   
 }
 //Serial.print("======================= After loop =======================");
@@ -164,51 +166,37 @@ int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
 
 if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  1))
   {
+    EEPROM.get(10,eeAddress);
+
      Serial.begin (9600);
 
-     Serial.println("eeAddress,Pack order,Picture,CurrentPicture,Type Raw, Type, ShutterSpeed, Lux");
+     Serial.println("eeAddress,Pack,Pack order,Picture,Type Raw, Type, ShutterSpeed, Lux");
 
-/*
-    Serial.println ("Input number of pictures to dump: ");
-    int incomingByte = 0;   // for incoming serial data
-    if (Serial.available() > 0) { 
-                // read the incoming byte:
-                int
-                incomingByte = Serial.read();
+int ReadAddress  = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
 
-                // say what you got:
-                Serial.print("Dumping info of ");
-                Serial.print(incomingByte, DEC);
-                Serial.println (" pictures from the last backwards");
-*/        
-//EEPROM.get(10,eeAddress);
-
-byte incomingByte = 19;
-//int ReadAddress = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
-//
-
-int ReadAddress = eeAddress; 
-
-//  int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
-
-
+//Serial.println("======================= Entering loop =======================");
+//Serial.print("INITIAL eeAddress before loop: ");
+//Serial.println (eeAddress);
+  
 //Serial.print("ReadAddress before loop: ");
 //Serial.println (ReadAddress);
   
-for (int i = 0; i < incomingByte; i++)
+for (int i = 0; i < 8; i++)
+
 {
-  int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
-  int sequence = i+1;
+  int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
+
   EEPROM.get(thisRecordAddress, MyPicture);
-//  Serial.println("eeAddress,Pack order,Picture,Type Raw, Type, ShutterSpeed, Lux");
   Serial.print (thisRecordAddress);
   Serial.print (",");
-  Serial.print (sequence);
+  Serial.print (Pack);
+  Serial.print (",");
+  Serial.print (MyPicture.PackPicture);
   Serial.print (",");
   Serial.print( MyPicture.StructPicture );
   Serial.print (",");
   Serial.print( MyPicture.StructType );
-  Serial.println (CurrentPicture);
+//  Serial.println (CurrentPicture);
 //  Serial.print (",");
 
   // PictureType = 0 ---> MANUAL
@@ -237,18 +225,19 @@ for (int i = 0; i < incomingByte; i++)
 
   Serial.println( MyPicture.StructLux );
 
-  //Pack = Pack++;
   
-  delay(500); 
+  //delay(500); 
   
 //added return 
-  return;
+  //return;
 }
 //Serial.print("======================= After loop =======================");
 //Serial.print ("Read: ");
 //Serial.println (ReadAddress);
 //    delay (1000);
   //}
+  Pack = Pack+1;
+
 }
 //======================================================================================================
 
@@ -288,7 +277,7 @@ return;
 //   *  SHOTS >= 1
  
               takePicture= false;                                  
-              byte ActualSlot = (Read_DS2408_PIO(0));
+//              byte ActualSlot = (Read_DS2408_PIO(0));
 
 
               /*
@@ -345,7 +334,7 @@ return;
 
             int pressTime = REDbutton(S1);
         
-       if ((ShutterSpeed[ActualSlot]) != (POSB))
+       if ((ShutterSpeed[Read_DS2408_PIO(0)]) != (POSB))
              {
               
             if ((pressTime > shortPress) && (pressTime < longPress)) {
@@ -385,8 +374,7 @@ return;
                                       byte S2 = Read_DS2408_PIO(2);
                                       Serial.print ("Selector: ");
                                       Serial.print (Read_DS2408_PIO(0));
-//                                      Serial.print (ActualSlot);
-                                      Serial.print (" / ");
+Serial.print (" / ");
                                       Serial.print (S1);
                                       Serial.print (" / ");
                                       Serial.print (S2);
@@ -401,7 +389,7 @@ return;
 
 
 
-          Dongle (ActualSlot);
+          Dongle (Read_DS2408_PIO(0));
           return;
                               }
 

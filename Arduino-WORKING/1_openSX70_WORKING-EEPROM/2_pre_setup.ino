@@ -105,7 +105,7 @@ const int switchPin4 = A3; // the number of the switch’s pin
 
 bool takePicture = false;
 
-int ActualSlot;                //selectorPOSITION is the position of the selector, we assign speeds with ShutterSpeed
+//int ActualSlot;                //selectorPOSITION is the position of the selector, we assign speeds with ShutterSpeed
                                 //These are the actual speed in ms
                                 //int ShutterSpeed[] = {0, 1000, 500, 250, 125, 66, 33, 16, 8, 0};
                                 //inversed wheel
@@ -172,7 +172,7 @@ byte CurrentPicture;
   uint16_t StructLux;
   };
 
-  //byte Pack = 1;
+  byte Pack = 1;
 
   
 //***************************************************************************************************************************************
@@ -198,4 +198,4 @@ void ShutterB();
 void ShutterT();
 void Ydelay ();
 bool beep (bool state,int Pin);
-   
+bool simpleBlink (byte times);  

@@ -108,15 +108,9 @@ Serial.println (ActualPicture);
 //Start with Dongle LED off
 //Write_DS2408_PIO (6, 0);
 
-//Blink twice Dongle LED on opening
-Write_DS2408_PIO (6, 1);
-delay (300);
-Write_DS2408_PIO (6, 0);
-delay (300);
-Write_DS2408_PIO (6, 1);
-delay (300);
-Write_DS2408_PIO (6, 0);
+simpleBlink (2);
 
+// byte Pack = 1;
 
 if (digitalRead(S5) != LOW || digitalRead(S3) != LOW)
 {
