@@ -21,7 +21,8 @@ void loop() {
                                   Serial.println("STATE1: EJECT DARK SLIDE");      
                                   #endif
   }
-  //CurrentPicture = EEPROM.read(4) ; 
+  //
+  CurrentPicture = EEPROM.read(4) ; 
   #endif
   #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH *********************************************************************************************************************************
@@ -55,7 +56,7 @@ byte PictureType = 0;
 
 //
 // int ActualPicture;
-byte CurrentPicture;
+//byte CurrentPicture;
 //byte PictureType;
 int ShutterSpeed;
 uint16_t lux;
@@ -85,9 +86,9 @@ for (int i = 0; i < 8; i++) */
 
 EEPROM.get(10,eeAddress);
 
-int ReadAddress = (eeAddress - (sizeof(MyPicture)*8));
+int ReadAddress  = (eeAddress - (sizeof(MyPicture)*8));
 
-Serial.print("======================= Entering loop =======================");
+Serial.println("======================= Entering loop =======================");
 Serial.print("eeAddress before loop: ");
 Serial.println (eeAddress);
   
@@ -100,6 +101,7 @@ for (int i = 0; i < 8; i++)
 int thisRecordAddress = ReadAddress - (i * sizeof(MyPicture));
  // int sequence = i+1;
 // 
+
   EEPROM.get(thisRecordAddress, MyPicture);
   Serial.println("=======================================================");
   Serial.print("eeAddress read: ");

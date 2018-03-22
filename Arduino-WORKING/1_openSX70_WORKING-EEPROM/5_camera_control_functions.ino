@@ -168,7 +168,7 @@ void darkslideEJECT()
 void Click()
 {
                             #if ISDEBUG 
-                            ActualSlot = Read_DS2408_PIO(0);
+//                            ActualSlot = Read_DS2408_PIO(0);
 //                            Serial.print ("ClickClickClickClickClickClickClickClickClickClickClickClickClickClickClick: ");
 //                            Serial.println (ShutterSpeed[ActualSlot]);
                             #endif
@@ -176,7 +176,7 @@ void Click()
 
   ActualSlot = Read_DS2408_PIO(0);
 
-  if ((ShutterSpeed[ActualSlot]) == POST)
+  if ((ShutterSpeed[Read_DS2408_PIO(0)]) == POST)
   {
     // case T
      pressTime = 0;
@@ -198,7 +198,7 @@ void Click()
           
   }
 
-  if ((ShutterSpeed[ActualSlot]) == POSFLASH)
+  if ((ShutterSpeed[Read_DS2408_PIO(0)]) == POSFLASH)
   {
     // case FLASH DONGLE
                                   #if ISDEBUG
@@ -206,7 +206,7 @@ void Click()
                                   #endif
 //delay (10000);
                             #if ISDEBUG 
-                            ActualSlot = Read_DS2408_PIO(0);
+                            //ActualSlot = Read_DS2408_PIO(0);
                             Serial.println ("Click: FLASH ");
                             #endif
                   #if SHUTTER
@@ -223,12 +223,12 @@ void Click()
                   return;
   }
 
-  if ((ShutterSpeed[ActualSlot]) > 0)
+  if ((ShutterSpeed[Read_DS2408_PIO(0)]) > 0)
 
   {
         #if ISDEBUG
     Serial.print ("--------------------------------------------------CLICK:  ");
-    Serial.println (ShutterSpeed[ActualSlot]);
+    Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
     #endif
     
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
