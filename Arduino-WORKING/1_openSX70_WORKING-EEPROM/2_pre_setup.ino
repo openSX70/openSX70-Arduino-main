@@ -112,18 +112,21 @@ bool takePicture = false;
 
 //int ShutterSpeed[] = {"B","T",4, 8, 16, 33, 66, 125, 250, 500, 1000, 1, 2, 3, 4, 5};
 
-enum positions_t {POS1 = -100, POS2, A100, A600, POSFLASH, POST, POSB};
+//enum positions_t {POS1 = -100, POS2, A100, A600, POSFLASH, POST, POSB};
+
+enum positions_t {A100 = -98, A600, POSFLASH, POST, POSB};
+
 /* TO CLARIFY:
  *  POS1 = -100
  *  POS2 = -99
  *  A100 = -98
  *  A600 = -97
- *  POSB = -96
+ *  POSFLASH = -96
  *  POST = -95
- *  POSFLASH = -94
+ *  POSB = -94
  */
 
-int ShutterSpeed[] = { 40, 50, 56, 58, 62, 66, 84, 120, 180, 550, 1050, A100, A600,  POSB, POST, POSFLASH };
+int ShutterSpeed[] = { 40, 50, 56, 58, 62, 66, 84, 120, 180, 550, 1050, A100, A600, POSFLASH, POST, POSB };
 
 
 

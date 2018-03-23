@@ -206,6 +206,7 @@ for (int i = 0; i < 8; i++)
 // PictureType = 2 ---> FLASH DONGLELESS
 // PictureType = 4 ---> FLASH F8 DONGLE 
 // PictureType = 6 ---> A600
+// PictureType = 7 ---> B
 // PictureType = +10 ---> MIRROR DELAY
 // PictureType = +100 ---> MULTIPLE EXPOSURE
 // PictureType = +200 ---> TIMER DELAY
@@ -282,19 +283,37 @@ return;
 //              byte ActualSlot = (Read_DS2408_PIO(0));
 
 
-              /*
-              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB)))) //////////////POSITION B
+              
+             if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POSB)))) //////////////POSITION B
+
                   {
+                          //EEPROM OK
+                        EEPROM.get (13,ActualPicture);
+                        CurrentPicture = (CurrentPicture+1);
+                     
+                      #if ISDEBUG
                       Serial.print ("POSITION B:  ");
-                      Serial.println( ActualSlot);
-                                    
+                      Serial.println( Read_DS2408_PIO(0));
+                      #endif
+                        byte PictureType = 0;
+                  uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+                  int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
+                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
+                      Serial.println ("*****************************");
+                      Serial.println (ActualPicture);
+                      Serial.println (CurrentPicture);
+                      Serial.println (PictureType);
+                      Serial.println (Shutter);
+                      Serial.println (lux);
+                      Serial.println ("*****************************");
+                
                   #if SHUTTER
                   shutterCLOSE (); 
                   #endif
                   
                   #if MOTOR 
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-                  while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
+                  while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN˚
                    ;
                   delay (40);                               //S3 is now open start Y-delay (40ms)
                   #endif
@@ -327,12 +346,113 @@ return;
                  #endif   
                  //shots = 0;  
  
-                        
+                 //EEPROM
+                 EEPROM.write(4,CurrentPicture);
+                 Serial.print ("Picture taken: ");
+                  Serial.println (EEPROM.read (4));  
+                  EEPROM.put(eeAddress,MyPicture);
+                   //   EEPROM.get (eeAddress,MyPicture);
+                      eeAddress += sizeof(MyPicture);  //Next eeAdress
+                      if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) {eeAddress = 0;}  //check for address overflow
+                    
+                  //     EEPROM.update (10,eeAddress);
+                  //    ActualPicture = ActualPicture+1;
+                  //    EEPROM.update (13,ActualPicture);
+                  
+                       EEPROM.put (10,eeAddress);
+                      ActualPicture = ActualPicture+1;
+                      EEPROM.put (13,ActualPicture);    
 
                  return;       
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
-                */ 
+//=================================================================================================================================================================
+             if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POST)))) //////////////POSITION T
+  
+                  {
+                      //EEPROM OK
+                    EEPROM.get (13,ActualPicture);
+                    CurrentPicture = (CurrentPicture+1);
+
+                      #if ISDEBUG
+                      Serial.print ("POSITION T:  ");
+                      Serial.println( Read_DS2408_PIO(0));
+                      #endif
+                        byte PictureType = 0;
+                  uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+                  int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
+                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
+                      Serial.println ("*****************************");
+                      Serial.println (ActualPicture);
+                      Serial.println (CurrentPicture);
+                      Serial.println (PictureType);
+                      Serial.println (Shutter);
+                      Serial.println (lux);
+                      Serial.println ("*****************************");
+                
+                  #if SHUTTER
+                  shutterCLOSE (); 
+                  #endif
+                  
+                  #if MOTOR 
+                  mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
+                  while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN˚
+                   ;
+                  delay (40);                               //S3 is now open start Y-delay (40ms)
+                  #endif
+ 
+                  #if !MOTOR
+                  delay (500);
+                  #endif
+
+                  #if SHUTTER
+                  shutterOPEN ();
+                   
+                        while (digitalRead(S1) == HIGH)
+                        ;
+
+                        if (digitalRead(S1) == LOW)
+                        {
+                        shutterCLOSE ();
+                        }
+                  #endif
+                  
+                  #if !MOTOR
+                  delay (1000);
+                  #endif
+
+                  #if MOTOR
+                  delay (200);                             //AGAIN is this delay necessary?
+                  mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
+                  delay (200);                             //AGAIN is this delay necessary?
+                  #endif
+
+                 #if SHUTTER
+                 shutterOPEN();
+                 #endif   
+                 //shots = 0;  
+ 
+                 //EEPROM
+                 EEPROM.write(4,CurrentPicture);
+                 Serial.print ("Picture taken: ");
+                  Serial.println (EEPROM.read (4));  
+                  EEPROM.put(eeAddress,MyPicture);
+                   //   EEPROM.get (eeAddress,MyPicture);
+                      eeAddress += sizeof(MyPicture);  //Next eeAdress
+                      if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) {eeAddress = 0;}  //check for address overflow
+                    
+                  //     EEPROM.update (10,eeAddress);
+                  //    ActualPicture = ActualPicture+1;
+                  //    EEPROM.update (13,ActualPicture);
+                  
+                       EEPROM.put (10,eeAddress);
+                      ActualPicture = ActualPicture+1;
+                      EEPROM.put (13,ActualPicture);    
+                        
+                 return;       
+                  
+               }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POST))))
+  //==================================================================================================================================================================                
 
             int pressTime = REDbutton(S1);
         
