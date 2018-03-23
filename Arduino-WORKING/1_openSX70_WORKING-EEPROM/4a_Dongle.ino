@@ -9,28 +9,10 @@ void Dongle(int DongleSlot)
     if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     {
                           Serial.println ("take picture");
-    //EEPROM OK
-    EEPROM.get (13,ActualPicture);
+                    eepromUpdate ();
     
-   CurrentPicture = (CurrentPicture+1);
-    
-    byte PictureType = 0;
-    /*
-   if  (Read_DS2408_PIO(2) ==  1) {
-    PictureType = PictureType+10;}
-    if (Read_DS2408_PIO(1) ==  1) {
-    PictureType = PictureType+200;}
-    */
-    uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-    int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
-    Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
-    Serial.println ("*****************************");
-    Serial.println (ActualPicture);
-    Serial.println (CurrentPicture);
-    Serial.println (PictureType);
-    Serial.println (Shutter);
-    Serial.println (lux);
-    Serial.println ("*****************************");
+                    byte PictureType = 0;
+
                   
                   #if SHUTTER
                   shutterCLOSE (); 
@@ -65,23 +47,6 @@ void Dongle(int DongleSlot)
                  shutterOPEN();
                  #endif   
                  shots = 0;  
-             
-   //EEPROM
-    EEPROM.write(4,CurrentPicture);
-   Serial.print ("Picture taken: ");
-   Serial.println (EEPROM.read (4));  
-    EEPROM.put(eeAddress,MyPicture);
- //   EEPROM.get (eeAddress,MyPicture);
-    eeAddress += sizeof(MyPicture);  //Next eeAdress
-    if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) {eeAddress = 0;}  //check for address overflow
-  
-//     EEPROM.update (10,eeAddress);
-//    ActualPicture = ActualPicture+1;
-//    EEPROM.update (13,ActualPicture);
-
-     EEPROM.put (10,eeAddress);
-    ActualPicture = ActualPicture+1;
-    EEPROM.put (13,ActualPicture);
 
                  return;  
     
@@ -91,25 +56,12 @@ void Dongle(int DongleSlot)
      // CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)           
      if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots == 0)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) FIRST SHOT!!!!
       {   
-
+/*
      EEPROM.get (13,ActualPicture);
           //CurrentPicture = (CurrentPicture+1);
-    //byte shots = 0;
+*/    
     byte PictureType = 0;
-    uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-    int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
-    Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
-    Serial.println ("*****************************");
-    Serial.println (ActualPicture);
-    Serial.println (CurrentPicture);
-    Serial.println (PictureType);
-    Serial.println (Shutter);
-    Serial.println (lux);
-    Serial.println ("Multiple Exposure: first shot");
-    
-    Serial.println ("*****************************");
 
- 
           #if SHUTTER
           shutterCLOSE ();  // I CLOSE THE SHUTTER
           #endif
@@ -144,25 +96,7 @@ void Dongle(int DongleSlot)
  
           #if SHUTTER    
           Click();
-              EEPROM.put (10,eeAddress);
-             // ActualPicture = ActualPicture+1;
-              EEPROM.put (13,ActualPicture);
-              byte PictureType = 0;
-              uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-              int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
-              Serial.println ("*****************************");
-              Serial.println (ActualPicture);
-              Serial.println (CurrentPicture);
-              Serial.println (PictureType);
-              Serial.println (Shutter);
-              Serial.println (lux);
-              Serial.print ("Multiple Exposure: ");
-              Serial.println (shots+1);
-              
-    
-              Serial.println ("*****************************");
-          
-          
+
           delay (500); //debounce will go here
           
           shots++;
@@ -177,7 +111,9 @@ void Dongle(int DongleSlot)
           // CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
          if (takePicture == true && Read_DS2408_PIO(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
           {
-        
+            
+            eepromUpdate ();
+
             shots = 0;
  
              #if MOTOR
@@ -192,25 +128,6 @@ void Dongle(int DongleSlot)
             #if SHUTTER
             shutterOPEN();    
             #endif
-    byte PictureType = 0;
-    uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-    int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
-    Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
-    Serial.println ("*****************************");
-    Serial.println (ActualPicture);
-    Serial.println (CurrentPicture);
-    Serial.println (PictureType);
-    Serial.println (Shutter);
-    Serial.println (lux);
-    Serial.print ("Multiple Exposure: ");
-    Serial.println ("Multiple Exposure: expulsion");
-    Serial.println ("*****************************");
-
-    CurrentPicture = (CurrentPicture+1);
-
-    EEPROM.put (10,eeAddress);
-    ActualPicture = ActualPicture+1;
-    EEPROM.put (13,ActualPicture);
 
             return;
             

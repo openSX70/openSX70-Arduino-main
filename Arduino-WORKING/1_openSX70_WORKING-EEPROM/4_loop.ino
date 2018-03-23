@@ -73,18 +73,6 @@ EEPROM.get (eeAddress,MyPicture);
 if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  0))  // DUMP EEPROM INFO "NORMAL" Read_DS2408_PIO(2) ==  0
   
   {
-    
-/*EEPROM.get(10,eeAddress);
-int ReadAddress = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
-
-//Serial.print("======================= Entering loop =======================");
-//Serial.print("eeAddress before loop: ");
-//Serial.println (eeAddress);
-Serial.begin (9600);
-Serial.print("ReadAddress before loop: ");
-Serial.println (ReadAddress);
-  
-for (int i = 0; i < 8; i++) */
 
 
 EEPROM.get(10,eeAddress);
@@ -287,26 +275,8 @@ return;
              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POSB)))) //////////////POSITION B
 
                   {
-                          //EEPROM OK
-                        EEPROM.get (13,ActualPicture);
-                        CurrentPicture = (CurrentPicture+1);
-                     
-                      #if ISDEBUG
-                      Serial.print ("POSITION B:  ");
-                      Serial.println( Read_DS2408_PIO(0));
-                      #endif
-                        byte PictureType = 0;
-                  uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-                  int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
-                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
-                      Serial.println ("*****************************");
-                      Serial.println (ActualPicture);
-                      Serial.println (CurrentPicture);
-                      Serial.println (PictureType);
-                      Serial.println (Shutter);
-                      Serial.println (lux);
-                      Serial.println ("*****************************");
-                
+                    eepromUpdate ();
+             
                   #if SHUTTER
                   shutterCLOSE (); 
                   #endif
@@ -345,50 +315,16 @@ return;
                  shutterOPEN();
                  #endif   
                  //shots = 0;  
- 
-                 //EEPROM
-                 EEPROM.write(4,CurrentPicture);
-                 Serial.print ("Picture taken: ");
-                  Serial.println (EEPROM.read (4));  
-                  EEPROM.put(eeAddress,MyPicture);
-                   //   EEPROM.get (eeAddress,MyPicture);
-                      eeAddress += sizeof(MyPicture);  //Next eeAdress
-                      if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) {eeAddress = 0;}  //check for address overflow
-                    
-                  //     EEPROM.update (10,eeAddress);
-                  //    ActualPicture = ActualPicture+1;
-                  //    EEPROM.update (13,ActualPicture);
-                  
-                       EEPROM.put (10,eeAddress);
-                      ActualPicture = ActualPicture+1;
-                      EEPROM.put (13,ActualPicture);    
 
-                 return;       
+              return;       
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
 //=================================================================================================================================================================
              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POST)))) //////////////POSITION T
   
                   {
-                      //EEPROM OK
-                    EEPROM.get (13,ActualPicture);
-                    CurrentPicture = (CurrentPicture+1);
-
-                      #if ISDEBUG
-                      Serial.print ("POSITION T:  ");
-                      Serial.println( Read_DS2408_PIO(0));
-                      #endif
-                        byte PictureType = 0;
-                  uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-                  int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
-                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
-                      Serial.println ("*****************************");
-                      Serial.println (ActualPicture);
-                      Serial.println (CurrentPicture);
-                      Serial.println (PictureType);
-                      Serial.println (Shutter);
-                      Serial.println (lux);
-                      Serial.println ("*****************************");
+                  
+                  eepromUpdate ();                
                 
                   #if SHUTTER
                   shutterCLOSE (); 
@@ -431,24 +367,7 @@ return;
                  shutterOPEN();
                  #endif   
                  //shots = 0;  
- 
-                 //EEPROM
-                 EEPROM.write(4,CurrentPicture);
-                 Serial.print ("Picture taken: ");
-                  Serial.println (EEPROM.read (4));  
-                  EEPROM.put(eeAddress,MyPicture);
-                   //   EEPROM.get (eeAddress,MyPicture);
-                      eeAddress += sizeof(MyPicture);  //Next eeAdress
-                      if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) {eeAddress = 0;}  //check for address overflow
-                    
-                  //     EEPROM.update (10,eeAddress);
-                  //    ActualPicture = ActualPicture+1;
-                  //    EEPROM.update (13,ActualPicture);
-                  
-                       EEPROM.put (10,eeAddress);
-                      ActualPicture = ActualPicture+1;
-                      EEPROM.put (13,ActualPicture);    
-                        
+       
                  return;       
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POST))))

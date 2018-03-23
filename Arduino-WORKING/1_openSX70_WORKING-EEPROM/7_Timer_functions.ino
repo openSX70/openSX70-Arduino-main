@@ -126,11 +126,11 @@ unsigned long currentMillisTimer = millis();
   if (type == 1) {
         digitalWrite (Pin, ledState);
   } else if (type == 2){
-    Serial.println ("TYPE 2");
+//    Serial.println ("TYPE 2");
     Write_DS2408_PIO(Pin, ledState);
   } else 
   {
-   Serial.println ("TYPE 0");
+//   Serial.println ("TYPE 0");
   beep(ledState,Pin);
   }
 

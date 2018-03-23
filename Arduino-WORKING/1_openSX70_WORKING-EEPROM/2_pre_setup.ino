@@ -202,3 +202,4 @@ void ShutterT();
 void Ydelay ();
 bool beep (bool state,int Pin);
 void simpleBlink (int times);  
+void eepromUpdate ();
