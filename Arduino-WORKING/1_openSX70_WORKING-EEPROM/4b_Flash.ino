@@ -16,7 +16,7 @@ void Flash ()
        {
       Serial.println ("FLASH FUNCTION!");
             #if SHUTTER
-                   HighSpeedPWM ();
+//                   HighSpeedPWM ();
  //                 analogWrite(Solenoid2, 255);
                   shutterCLOSE (); 
                   #endif
@@ -38,7 +38,7 @@ void Flash ()
                   delay (66);
 Serial.println ("AQUI          FFA   FFA   FFA   FFA");  
                   digitalWrite(FFA, HIGH);
-                  delay (45);
+                  delay (25);
    //               analogWrite (Solenoid2,0);
                   digitalWrite(FFA, LOW);
                   delay (26);

@@ -113,12 +113,18 @@ unsigned long currentMillisTimer = millis();
     // save the last time you blinked the LED
     previousMillis = currentMillis;
 
-    // if the LED is off turn it on and vice-versa:
+//**********NORMAL "LOGIC" Arduino pin to Piezzo+ and Piezzo- to GND (Aladdin)
     if (ledState == 0) {
       ledState = 1;
     } else {
       ledState = 0;
-    }
+/*
+//**********INVERSE "LOGIC" Arduino pin to Piezzo- and Piezzo+ to either 2.5V or 6V. (Lens & Bellows)
+    if (ledState == 1) {
+      ledState = 0;
+    } else {
+      ledState = 1;
+*/
 
 
     // set the LED with the ledState of the variable:
@@ -139,8 +145,7 @@ unsigned long currentMillisTimer = millis();
     beep (0,Pin);
 } //   END OF BlinkBeep FUNCTION
 
-
-
+}
 
 bool beep (bool state,int Pin) {
 //int PiezoPin = 5;
@@ -153,6 +158,7 @@ noTone(Pin);
 //Serial.println ("NO TONE");
 return;
 }
+
 
 void simpleBlink (int times) {
 if (times <= 0) {
