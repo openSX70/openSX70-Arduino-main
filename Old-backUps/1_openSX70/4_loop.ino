@@ -1,6 +1,5 @@
 void loop() {
 
-  Serial.println (Read_DS2408_PIO(0));
   
   //WHAT TO DO WHEN POWER-UP:
   //  S8     S9

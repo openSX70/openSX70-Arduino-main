@@ -22,7 +22,9 @@
 
 
 BH1750 lightmeter;
-const byte luxMode = BH1750_CONTINUOUS_HIGH_RES_MODE;
+//const byte luxMode = BH1750_CONTINUOUS_HIGH_RES_MODE;
+const byte luxMode = BH1750_CONTINUOUS_LOW_RES_MODE;
+
 // BH1750_CONTINUOUS_HIGH_RES_MODE
 // BH1750_CONTINUOUS_HIGH_RES_MODE_2
 // BH1750_CONTINUOUS_LOW_RES_MODE
@@ -126,8 +128,9 @@ enum positions_t {A100 = -98, A600, POSFLASH, POST, POSB};
  *  POSB = -94
  */
 
-int ShutterSpeed[] = { 40, 50, 56, 58, 62, 66, 84, 120, 180, 550, 1050, A100, A600, POSFLASH, POST, POSB };
+//int ShutterSpeed[] = { 40, 50, 56, 58, 62, 66, 84, 120, 180, 550, 1050, A100, A600, POSFLASH, POST, POSB };
 
+int ShutterSpeed[] = { 10, 15, 20, 40, 62, 66, 84, 120, 180, 550, 1050, A100, A600, POSFLASH, POST, POSB };
 
 
 int shots = 0;
