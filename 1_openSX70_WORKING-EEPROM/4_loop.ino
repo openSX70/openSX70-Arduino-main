@@ -413,8 +413,14 @@ return;
             }   // END Of else if (pressTime > longPress) 
              }
                                       
-          if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
+                            if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
+                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))
+                              {
+                                DongleFlash();
+                                return;
+                              
+                              }
           //byte ActualSlot = (Read_DS2408_PIO(0));
 
                                       #if ISDEBUG 
