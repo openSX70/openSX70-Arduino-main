@@ -465,9 +465,7 @@ Serial.print (" / ");
                                     delay(500);
     
                                     #endif
-                                    device_count = ds.find(&devices);
                                       
-                                    
     return;
   }
   else

@@ -107,9 +107,10 @@ byte Read_DS2408_PIO(int Slot) {
 
   } // END OF if ((digitalRead(S2) == HIGH) && (device_count > 0)){  //CASE DONGLE INSERTED
 
-// pinMode(S2, INPUT_PULLUP); // perhaps not such a good idea internal pullup??
+pinMode(S2, INPUT_PULLUP); // perhaps not such a good idea internal pullup??
 
-  if (digitalRead(S2) == LOW)  {  //////////////////////////////////////////////////////////// CASE FLASH
+  if (digitalRead(S2) == LOW)  { 
+    //////////////////////////////////////////////////////////// CASE FLASH
     return 100; // FLASH
 
   } // END OF if (digitalRead(S2) == LOW)  {  // CASE FLASH
