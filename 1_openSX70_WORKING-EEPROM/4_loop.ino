@@ -420,6 +420,11 @@ return;
                                 DongleFlash();
                                 return;
                               
+                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (A600))))
+                              {
+                                DongleFlashNormal();
+                                return;
+                                                              
                               }
           //byte ActualSlot = (Read_DS2408_PIO(0));
 
