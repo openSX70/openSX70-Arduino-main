@@ -14,7 +14,11 @@ void Flash ()
 
        }*/
        {
- 
+
+                    
+                    byte PictureType = 2;
+                    CurrentPicture = EEPROM.read(4) ; 
+                    eepromUpdate ();
              #if SHUTTER
                    HighSpeedPWM ();
                   analogWrite(Solenoid2, 255);
@@ -66,6 +70,10 @@ void Flash ()
 void DongleFlash () 
     {
 
+                    byte PictureType = 4;
+                    CurrentPicture = EEPROM.read(4) ; 
+
+                    eepromUpdate ();
  
        if (takePicture == true)
       /* {
@@ -78,6 +86,8 @@ void DongleFlash ()
                   Serial.println ("FFA, LOW");
 
        }*/
+
+       
        {
  
              #if SHUTTER
@@ -132,6 +142,10 @@ void DongleFlash ()
 
     void DongleFlashNormal () 
     {
+                    byte PictureType = 5;
+                    CurrentPicture = EEPROM.read(4) ; 
+
+                    eepromUpdate ();
 
  
        if (takePicture == true)
