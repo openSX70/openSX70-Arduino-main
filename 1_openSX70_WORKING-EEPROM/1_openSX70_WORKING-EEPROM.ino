@@ -1,4 +1,4 @@
-
+  
 // openSX70 code with tabs
 // HELLO SX70!!!!!
 //Remember I am not a programmer, this is probably a mess. Use at your own risk.
