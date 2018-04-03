@@ -158,8 +158,6 @@ int eeAddress;
 
 //13 --> Picture counter int ActualPicture
 
-int ActualPicture;
-byte CurrentPicture;
 
 //15-100 --> empty for future settings auto exposure etc...
 //101 --> intial record
@@ -179,6 +177,13 @@ byte CurrentPicture;
   };
 
   byte Pack = 1;
+  
+int ActualPicture;
+byte CurrentPicture;
+byte PictureType;
+int eepromSpeed;
+uint16_t lux;
+
 
   
 //***************************************************************************************************************************************
@@ -207,3 +212,6 @@ bool beep (bool state,int Pin);
 void simpleBlink (int times);  
 void eepromUpdate ();
 void DongleFlash ();
+void DongleFlashNormal ();
+void eepromDump ();
+void eepromDumpCSV ();

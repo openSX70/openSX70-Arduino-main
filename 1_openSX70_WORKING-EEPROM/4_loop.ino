@@ -22,16 +22,15 @@ void loop() {
     //EJECT DARK SLIDE
   {
     CurrentPicture = 0;
-      EEPROM.write(4,CurrentPicture);
-            Write_DS2408_PIO (6, 0);
+    EEPROM.write(4,CurrentPicture);
+    Write_DS2408_PIO (6, 0);
       
      darkslideEJECT();
                                    #if ISDEBUG 
                                   Serial.println("STATE1: EJECT DARK SLIDE");      
                                   #endif
   }
-  //
-  CurrentPicture = EEPROM.read(4) ; 
+  //  CurrentPicture = EEPROM.read(4) ; 
   #endif
   #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH *********************************************************************************************************************************
@@ -50,30 +49,6 @@ void loop() {
       Write_DS2408_PIO (6, 1);
 //      Serial.begin (9600);
 //      Serial.println ("Write f^*ng PIO");
-//EEPROM 
-
-
-byte PictureType = 0;
-// PictureType = 0 ---> MANUAL
-// PictureType = 1 ---> A100
-// PictureType = 2 ---> FLASH DONGLELESS
-// PictureType = 4 ---> FLASH F8 DONGLE 
-// PictureType = 6 ---> A600
-
-//
-//uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-
-
-//
-// int ActualPicture;
-//byte CurrentPicture;
-//byte PictureType;
-int ShutterSpeed;
-uint16_t lux;
-
-Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, ShutterSpeed,  lux};
-
-EEPROM.get (eeAddress,MyPicture);
 
 
 
@@ -81,80 +56,15 @@ if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  0))  // DUMP EEPROM INFO
   
   {
 
+eepromDump ();
 
-EEPROM.get(10,eeAddress);
-
-int ReadAddress  = (eeAddress - (sizeof(MyPicture)*8));
-
-Serial.println("======================= Entering loop =======================");
-Serial.print("INITIAL eeAddress before loop: ");
-Serial.println (eeAddress);
-  
-Serial.print("ReadAddress before loop: ");
-Serial.println (ReadAddress);
-  
-for (int i = 0; i < 8; i++)
-
-{
-int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
- // int sequence = i+1;
-// 
-
-  EEPROM.get(thisRecordAddress, MyPicture);
-  Serial.println("=======================================================");
-  Serial.print("eeAddress read (thisRecordAddress): ");
-  Serial.println (thisRecordAddress);
-//  Serial.print ("Pack: ");
-//  Serial.println (Pack);
-//  Serial.print ("Pack order: ");
-//  Serial.println (sequence);
-  Serial.print( " Picture: " );
-  Serial.println( MyPicture.StructPicture );
-  Serial.print ("Current Picture: ");
-  Serial.println (MyPicture.PackPicture);
-  Serial.print( " Type raw: " );
-  Serial.println( MyPicture.StructType );
-
-  // PictureType = 0 ---> MANUAL
-// PictureType = 1 ---> A100
-// PictureType = 2 ---> FLASH DONGLELESS
-// PictureType = 4 ---> FLASH F8 DONGLE 
-// PictureType = 6 ---> A600
-// PictureType = +10 ---> MIRROR DELAY
-// PictureType = +100 ---> MULTIPLE EXPOSURE
-// PictureType = +200 ---> TIMER DELAY
-
-
-  Serial.print( " Type: " );
-  if (MyPicture.StructType == 0){
-  Serial.println( "MANUAL" );  }    
-  if (MyPicture.StructType == 1){
-  Serial.println( "AUTO 100" ) ; }
-  if (MyPicture.StructType == 2){
-  Serial.println( "FLASH DONGLELESS" );}
-  if (MyPicture.StructType == 4){
-  Serial.println( "FLASH F8 DONGLE" ); }
-  if (MyPicture.StructType == 6){
-  Serial.println( "AUTO 600" );  }
-  
-  Serial.print( " ShutterSpeed: " );
-  Serial.println( MyPicture.StructSpeed );
-  Serial.print( " Lux: " );
-
-  Serial.println( MyPicture.StructLux );
-
-  //
-  Pack = Pack+1;
-  delay(50);
-  
-}
 //Serial.print("======================= After loop =======================");
 //Serial.print ("Read: ");
 //Serial.println (ReadAddress);
 //    delay (1000);
   
 //added return
-  return;
+//  return;
   }
      
 //======================================================================================================
@@ -163,78 +73,8 @@ int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
 
 if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  1))
   {
-    EEPROM.get(10,eeAddress);
 
-     Serial.begin (9600);
-
-     Serial.println("eeAddress,Pack,Pack order,Picture,Type Raw, Type, ShutterSpeed, Lux");
-
-int ReadAddress  = (eeAddress - ((sizeof(MyPicture)*8)*Pack));
-
-//Serial.println("======================= Entering loop =======================");
-//Serial.print("INITIAL eeAddress before loop: ");
-//Serial.println (eeAddress);
-  
-//Serial.print("ReadAddress before loop: ");
-//Serial.println (ReadAddress);
-  
-for (int i = 0; i < 8; i++)
-
-{
-  int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
-
-  EEPROM.get(thisRecordAddress, MyPicture);
-  Serial.print (thisRecordAddress);
-  Serial.print (",");
-  Serial.print (Pack);
-  Serial.print (",");
-  Serial.print (MyPicture.PackPicture);
-  Serial.print (",");
-  Serial.print( MyPicture.StructPicture );
-  Serial.print (",");
-  Serial.print( MyPicture.StructType );
-//  Serial.println (CurrentPicture);
-//  Serial.print (",");
-
-  // PictureType = 0 ---> MANUAL
-// PictureType = 1 ---> A100
-// PictureType = 2 ---> FLASH DONGLELESS
-// PictureType = 4 ---> FLASH F8 DONGLE 
-// PictureType = 6 ---> A600
-// PictureType = 7 ---> B
-// PictureType = +10 ---> MIRROR DELAY
-// PictureType = +100 ---> MULTIPLE EXPOSURE
-// PictureType = +200 ---> TIMER DELAY
-
-
-  if (MyPicture.StructType == 0){
-  Serial.print( ",MANUAL," );  }    
-  if (MyPicture.StructType == 1){
-  Serial.print( ",AUTO 100," ) ; }
-  if (MyPicture.StructType == 2){
-  Serial.print( ",FLASH DONGLELESS," );}
-  if (MyPicture.StructType == 4){
-  Serial.print( ",FLASH F8 DONGLE," ); }
-  if (MyPicture.StructType == 6){
-  Serial.print( ",AUTO 600," );  }
-  
-  Serial.print( MyPicture.StructSpeed );
-  Serial.print (",");
-
-  Serial.println( MyPicture.StructLux );
-
-  
-  //delay(500); 
-  
-//added return 
-  //return;
-}
-//Serial.print("======================= After loop =======================");
-//Serial.print ("Read: ");
-//Serial.println (ReadAddress);
-//    delay (1000);
-  //}
-  Pack = Pack+1;
+eepromDumpCSV();
 
 }
 //======================================================================================================

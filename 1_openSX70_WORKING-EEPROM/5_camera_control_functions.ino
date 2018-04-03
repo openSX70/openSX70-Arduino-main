@@ -292,47 +292,5 @@ void HighSpeedPWM ()
 
  }
 //***************************************************************************************************************************************
-void eepromUpdate ()
-{
 
-                            //EEPROM OK
-                        EEPROM.get (13,ActualPicture);
-                        CurrentPicture = (CurrentPicture+1);
-                     
-                      #if ISDEBUG
-                      Serial.print ("POSITION B:  ");
-                      Serial.println( Read_DS2408_PIO(0));
-                      #endif
-                        byte PictureType = 0;
-                  uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-                  int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
-                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
-                      Serial.println ("*****************************");
-                      Serial.println (ActualPicture);
-                      Serial.println (CurrentPicture);
-                      Serial.println (PictureType);
-                      Serial.println (Shutter);
-                      Serial.println (lux);
-                      Serial.println ("*****************************");
-                      
-
-                   //EEPROM
-                 EEPROM.write(4,CurrentPicture);
-                 Serial.print ("Picture taken: ");
-                  Serial.println (EEPROM.read (4));  
-                  EEPROM.put(eeAddress,MyPicture);
-                   //   EEPROM.get (eeAddress,MyPicture);
-                      eeAddress += sizeof(MyPicture);  //Next eeAdress
-                      if(eeAddress+sizeof(MyPicture) >= EEPROM.length()) {eeAddress = 0;}  //check for address overflow
-                    
-                  //     EEPROM.update (10,eeAddress);
-                  //    ActualPicture = ActualPicture+1;
-                  //    EEPROM.update (13,ActualPicture);
-                  
-                       EEPROM.put (10,eeAddress);
-                      ActualPicture = ActualPicture+1;
-                      EEPROM.put (13,ActualPicture);    
-
-                 return;     
-}
 
