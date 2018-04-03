@@ -15,7 +15,7 @@ void Flash ()
        }*/
        {
 
-        
+                    CurrentPicture = EEPROM.read(4) ; 
                     byte PictureType = 2;                    
                     eepromUpdate ();
 

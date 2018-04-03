@@ -88,6 +88,7 @@ return;
   //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW)
   {
+                                 CurrentPicture = EEPROM.read(4) ; 
                                  #if ISDEBUG 
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
                                  #endif
@@ -122,7 +123,8 @@ return;
              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POSB)))) //////////////POSITION B
 
                   {
-                    eepromUpdate ();
+                  
+                  eepromUpdate ();
              
                   #if SHUTTER
                   shutterCLOSE (); 
@@ -222,7 +224,9 @@ return;
 
             int pressTime = REDbutton(S1);
         
-       if ((ShutterSpeed[Read_DS2408_PIO(0)]) != (POSB))
+//       if ((ShutterSpeed[Read_DS2408_PIO(0)]) != (POSB))
+       if (ShutterSpeed[Read_DS2408_PIO(0)])
+  
              {
               
             if ((pressTime > shortPress) && (pressTime < longPress)) {
@@ -255,14 +259,14 @@ return;
                                       
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
-                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))
-                              {
-                                DongleFlash();
-                                return;
-                              
-                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (A600))))
+                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (A600))))
                               {
                                 DongleFlashNormal();
+                                return;
+                              
+                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))
+                              {
+                                DongleFlash();
                                 return;
                                                               
                               }
