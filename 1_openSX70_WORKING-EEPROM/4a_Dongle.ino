@@ -9,11 +9,10 @@ void Dongle(int DongleSlot)
     if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     {
                           Serial.println ("take picture");
+
+                    byte PictureType = 0;                    
                     eepromUpdate ();
     
-                    byte PictureType = 0;
-
-                  
                   #if SHUTTER
                   shutterCLOSE (); 
                   #endif

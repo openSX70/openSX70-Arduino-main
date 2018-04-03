@@ -123,9 +123,10 @@ int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
   Serial.println( "FLASH DONGLELESS" );}
   if (MyPicture.StructType == 4){
   Serial.println( "FLASH F8 DONGLE" ); }
+  if (MyPicture.StructType == 5){
+  Serial.println( "FLASH DONGLE" ); }
   if (MyPicture.StructType == 6){
   Serial.println( "AUTO 600" );  }
-  
   Serial.print( " ShutterSpeed: " );
   Serial.println( MyPicture.StructSpeed );
   Serial.print( " Lux: " );
@@ -207,6 +208,9 @@ for (int i = 0; i < 8; i++)
   if (MyPicture.StructType == 2){
   Serial.print( ",FLASH DONGLELESS," );}
   if (MyPicture.StructType == 4){
+if (MyPicture.StructType == 5){
+  Serial.print( ",FLASH DONGLE," ); }
+
   Serial.print( ",FLASH F8 DONGLE," ); }
   if (MyPicture.StructType == 6){
   Serial.print( ",AUTO 600," );  }
