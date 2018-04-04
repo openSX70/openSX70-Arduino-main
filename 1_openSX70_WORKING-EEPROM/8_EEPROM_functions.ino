@@ -7,11 +7,19 @@ void eepromUpdate ()
                         CurrentPicture = (CurrentPicture+1);
                      
                       #if ISDEBUG
-                      Serial.print ("POSITION B:  ");
+                      Serial.print ("POSITION:  ");
                       Serial.println( Read_DS2408_PIO(0));
                       #endif
-                        byte PictureType = 0;
-                  uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+//                        byte PictureType = 0;
+
+/*                  uint16_t 
+                  float lux1 = lightmeter.readLightLevel(); // Reading BH1750
+                  delay (5);
+                  float lux2 = lightmeter.readLightLevel(); // Reading BH1750
+                  lux = ((lux1+lux2)/2);
+*/
+                  lux = lightmeter.readLightLevel(); // Reading BH1750
+
                   int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
                   Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
                       Serial.println ("*****************************");

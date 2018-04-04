@@ -191,8 +191,8 @@ void shutterCLOSE()
                                       #if ISDEBUG 
                                     Serial.println ("Delay 25ms");
                                     #endif
-                                    delay (25);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
-                                    analogWrite (Solenoid1, 195);
+                                    delay (15);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
+                                    analogWrite (Solenoid1, 125);
   return;
   }   //end of void motorON()
 

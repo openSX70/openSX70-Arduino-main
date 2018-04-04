@@ -83,20 +83,9 @@ void DongleFlash ()
    //                 eepromUpdate ();
  
        if (takePicture == true)
-      /* {
-        
-                  digitalWrite(FFA, HIGH);
-                  Serial.println ("FFA, HIGH");
-                  delay (45);
-   //               analogWrite (Solenoid2,0);
-                  digitalWrite(FFA, LOW);
-                  Serial.println ("FFA, LOW");
-
-       }*/
-
        
        {
- 
+
                    byte PictureType = 6;                    
                     eepromUpdate ();
 

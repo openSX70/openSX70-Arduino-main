@@ -119,6 +119,7 @@ return;
 //              byte ActualSlot = (Read_DS2408_PIO(0));
 
 
+//              Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
               
              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POSB)))) //////////////POSITION B
 
@@ -127,7 +128,7 @@ return;
                  //Serial.println ("POS B");
 
                   eepromUpdate ();
-                  void ShutterB();
+                  ShutterB();
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
 //=================================================================================================================================================================
@@ -138,7 +139,7 @@ return;
                  //Serial.println ("POS T");
                   
                   eepromUpdate ();                
-                 void ShutterT();
+                 ShutterT();
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POST))))
 
@@ -206,7 +207,8 @@ Serial.print (" / ");
                                       Serial.print (SD2);
                                       Serial.print (" Shutter Speed: ");
                                       Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
-                                        uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+                                       // uint16_t 
+                                        lux = lightmeter.readLightLevel(); // Reading BH1750
                                       Serial.print(F("Lux:  "));
                                       Serial.print(lux);
                                       Serial.println(" lx");
@@ -237,7 +239,8 @@ Serial.print (" / ");
                                     #endif
                                     #if LIGHTMETER
                                     Serial.println (": Reading LIGHT METER");
-                                    uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+                                    //uint16_t 
+                                    lux = lightmeter.readLightLevel(); // Reading BH1750
                                     Serial.print(lux);
                                     Serial.println(" lux");
                                     delay(500);
