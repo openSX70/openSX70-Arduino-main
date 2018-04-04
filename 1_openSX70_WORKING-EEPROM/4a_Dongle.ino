@@ -60,7 +60,7 @@ void Dongle(int DongleSlot)
           //CurrentPicture = (CurrentPicture+1);
 */    
     byte PictureType = 0;
-
+    
           #if SHUTTER
           shutterCLOSE ();  // I CLOSE THE SHUTTER
           #endif
