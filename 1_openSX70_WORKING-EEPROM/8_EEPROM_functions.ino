@@ -135,6 +135,10 @@ int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
   Serial.println( "FLASH DONGLE" ); }
   if (MyPicture.StructType == 6){
   Serial.println( "AUTO 600" );  }
+  if (MyPicture.StructType == 7){
+  Serial.println( "BULB" );  }
+  if (MyPicture.StructType == 8){
+  Serial.println( "T" );  }
   Serial.print( " ShutterSpeed: " );
   Serial.println( MyPicture.StructSpeed );
   Serial.print( " Lux: " );
@@ -204,9 +208,6 @@ for (int i = 0; i < 8; i++)
 // PictureType = 4 ---> FLASH F8 DONGLE 
 // PictureType = 6 ---> A600
 // PictureType = 7 ---> B
-// PictureType = +10 ---> MIRROR DELAY
-// PictureType = +100 ---> MULTIPLE EXPOSURE
-// PictureType = +200 ---> TIMER DELAY
 
 
   if (MyPicture.StructType == 0){
@@ -222,6 +223,12 @@ if (MyPicture.StructType == 5){
   Serial.print( ",FLASH F8 DONGLE," ); }
   if (MyPicture.StructType == 6){
   Serial.print( ",AUTO 600," );  }
+  if (MyPicture.StructType == 7){
+  Serial.print( ",BULB," );  }
+
+  if (MyPicture.StructType == 8){
+  Serial.print( ",T," );  }
+
   
   Serial.print( MyPicture.StructSpeed );
   Serial.print (",");

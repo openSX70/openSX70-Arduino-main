@@ -126,7 +126,7 @@ return;
                   {
                     
                  //Serial.println ("POS B");
-
+                  PictureType = 7;
                   eepromUpdate ();
                   ShutterB();
                   
@@ -137,9 +137,9 @@ return;
                   {
 
                  //Serial.println ("POS T");
-                  
+                  PictureType = 8;
                   eepromUpdate ();                
-                 ShutterT();
+                  ShutterT();
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POST))))
 
@@ -152,6 +152,7 @@ return;
        if (ShutterSpeed[Read_DS2408_PIO(0)])
   
              {
+              PictureType = 0;
               
             if ((pressTime > shortPress) && (pressTime < longPress)) {
                                        #if ISDEBUG 

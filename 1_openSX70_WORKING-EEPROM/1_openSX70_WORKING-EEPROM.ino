@@ -43,7 +43,11 @@
                                             // PictureType = 1 ---> A100
                                             // PictureType = 2 ---> FLASH DONGLELESS
                                             // PictureType = 4 ---> FLASH F8 DONGLE 
+                                            // PictureType = 5 ---> FLASH DONGLE 
                                             // PictureType = 6 ---> A600
+                                            // PictureType = 7 ---> Bulb
+                                            // PictureType = 8 ---> T
+                                            
               
               //           int StructSpeed:ShutterSpeed  --> ShutterSpeed
               //           uint16_t StructLux:lux --> Lux as read by BH170 just before picture-taking

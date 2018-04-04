@@ -24,7 +24,7 @@
 BH1750 lightmeter;
 //const byte luxMode = BH1750_CONTINUOUS_HIGH_RES_MODE;
 const byte luxMode = BH1750_CONTINUOUS_HIGH_RES_MODE_2;
-// const byte luxMode = BH1750_CONTINUOUS_LOW_RES_MODE;
+//const byte luxMode = BH1750_ONE_TIME_HIGH_RES_MODE_2;
 
 // BH1750_CONTINUOUS_HIGH_RES_MODE
 // BH1750_CONTINUOUS_HIGH_RES_MODE_2
@@ -183,8 +183,8 @@ int ActualPicture;
 byte CurrentPicture;
 byte PictureType;
 int eepromSpeed;
-//uint16_t lux;
-float lux;
+uint16_t lux;
+//float lux;
 
 
   

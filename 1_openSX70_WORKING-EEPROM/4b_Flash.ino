@@ -157,7 +157,7 @@ void DongleFlash ()
        }*/
        {
  
-                    byte PictureType = 5;                    
+     //               byte PictureType = 5;                    
                     eepromUpdate ();
 
              #if SHUTTER
