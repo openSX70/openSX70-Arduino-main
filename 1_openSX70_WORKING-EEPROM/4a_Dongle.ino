@@ -18,6 +18,8 @@ void Dongle(int DongleSlot)
                   #endif
 
                   #if MOTOR
+                  delay (200); //added to fix 
+                  
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
