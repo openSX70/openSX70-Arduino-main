@@ -46,7 +46,7 @@ void Flash ()
 //                  delay (66);
                   delay (80);
                   digitalWrite(FFA, HIGH);
-                  delay (1);
+                  delay (5);
                   analogWrite (Solenoid2,0);
                   digitalWrite(FFA, LOW);
                   delay (10);
