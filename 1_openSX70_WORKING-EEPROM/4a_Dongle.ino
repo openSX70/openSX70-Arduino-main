@@ -18,8 +18,9 @@ void Dongle(int DongleSlot)
                   #endif
 
                   #if MOTOR
-                  delay (200); //added to fix 
-                  
+//                  delay (200); //added to fix bad photos
+                  delay (100); //added to fix bad photos WITH LESS delay
+                                    
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
@@ -39,7 +40,7 @@ void Dongle(int DongleSlot)
                   #endif
 
                   #if MOTOR
-                  delay (200);                             //AGAIN is this delay necessary?
+//                  delay (200);                             //AGAIN is this delay necessary?
                   mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
                   delay (200);                             //AGAIN is this delay necessary?
                   #endif

@@ -263,7 +263,7 @@ void Click()
   
 
 //  ActualSlot = Read_DS2408_PIO(0);
-
+/*
   if ((ShutterSpeed[Read_DS2408_PIO(0)]) == POST)
   {
     // case T
@@ -310,7 +310,7 @@ void Click()
                   #endif
                   return;
   }
-
+*/
   if ((ShutterSpeed[Read_DS2408_PIO(0)]) > 0)
 
   {
