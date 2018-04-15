@@ -135,8 +135,9 @@ enum positions_t {A100 = -98, A600, POSFLASH, POST, POSB};
 
 //int ShutterSpeed[] = { 10, 12, 15, 16, 18, 20, 35, 50, 66, 120, 180, A100, A600, POSFLASH, POST, POSB };
 
-int ShutterSpeed[] = { 9, 10, 12, 13, 15, 20, 25, 45, 66, 120, 180, A100, A600, POSFLASH, POST, POSB };
+//int ShutterSpeed[] = { 9, 10, 12, 13, 15, 20, 25, 45, 66, 120, 180, A100, A600, POSFLASH, POST, POSB };
 
+int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 45, 90, 150, 300, 1240, A100, A600, POSFLASH, POST, POSB };
 
 int shots = 0;
 
