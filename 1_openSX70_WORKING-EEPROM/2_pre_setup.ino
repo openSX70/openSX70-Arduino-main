@@ -105,6 +105,7 @@ const int switchPin3 = A2; // the number of the switch’s pin
 const int switchPin4 = A3; // the number of the switch’s pin
 */
 
+unsigned long DoubleExposureTimer = 0;
 
 bool takePicture = false;
 

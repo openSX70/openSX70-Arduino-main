@@ -5,6 +5,37 @@ void Dongle(int DongleSlot)
                                         Serial.println (DongleSlot);
                                         #endif
 
+unsigned long currentMillisTimer = millis();
+           
+           if ((currentMillisTimer-DoubleExposureTimer) >= 60000 && shots >= 1)
+         
+         {
+           eepromUpdate ();
+
+            shots = 0;
+ 
+             #if MOTOR
+            mirrorDOWN ();
+
+            delay (50);                             //100-->50 AGAIN is this delay necessary?
+            #endif
+                  #if !MOTOR
+                  delay (500);
+                  #endif
+
+            #if SHUTTER
+            shutterOPEN();    
+           #endif
+           Write_DS2408_PIO (6, 0); 
+         }  else if ((currentMillisTimer-DoubleExposureTimer) >= 30000 && shots >= 1)
+
+         {
+          Write_DS2408_PIO (6, 1); 
+          
+         } 
+
+
+
     
     if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     {
@@ -42,7 +73,8 @@ void Dongle(int DongleSlot)
                   #if MOTOR
 //                  delay (200);                             //AGAIN is this delay necessary?
                   mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-                  delay (200);                             //AGAIN is this delay necessary?
+                  delay (50);                             //AGAIN is this delay necessary?
+                  //CHANGED 200->50
                   #endif
 
                  #if SHUTTER
@@ -62,7 +94,9 @@ void Dongle(int DongleSlot)
      EEPROM.get (13,ActualPicture);
           //CurrentPicture = (CurrentPicture+1);
 */    
-    byte PictureType = 0;
+          byte PictureType = 0;
+         
+          DoubleExposureTimer = millis();
     
           #if SHUTTER
           shutterCLOSE ();  // I CLOSE THE SHUTTER
@@ -92,7 +126,9 @@ void Dongle(int DongleSlot)
         
          // CASE 3 DOUBLE EXPOSURE ULTERIOR SHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED) 
 
-          
+
+
+         
          if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots >= 1)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) ULTERIOR SHOTS!!!!
           {
  
@@ -121,7 +157,7 @@ void Dongle(int DongleSlot)
              #if MOTOR
             mirrorDOWN ();
 
-            delay (100);                             //AGAIN is this delay necessary?
+            delay (50);                             //AGAIN is this delay necessary? 100-->50
             #endif
                   #if !MOTOR
                   delay (500);

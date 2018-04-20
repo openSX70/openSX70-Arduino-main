@@ -110,8 +110,10 @@ Serial.println (ActualPicture);
 
 //byte CurrentPicture = EEPROM.read (4);
 
+  if (digitalRead(S8) != HIGH || digitalRead(S9) != LOW)
+{
 simpleBlink (8 - (EEPROM.read (4)));
-
+}
 
 
 

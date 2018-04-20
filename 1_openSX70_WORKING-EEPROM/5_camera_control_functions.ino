@@ -245,9 +245,10 @@ void darkslideEJECT()
                               #if ISDEBUG 
                             Serial.println ("darkslideEJECT");
                             #endif
-  
+  shutterCLOSE();
   mirrorUP();
   mirrorDOWN();
+  shutterOPEN();
   return;
 }   // end of void darkslideEJECT()
 

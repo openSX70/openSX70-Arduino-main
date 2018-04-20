@@ -1,12 +1,8 @@
 void loop() {
 
-/*
-  if (digitalRead (S2) == LOW) {
-  Serial.println ("A A A A A A A");
-  } else {
-  Serial.println ("B B B B B B B ");
-  }
-*/
+
+//device_count = ds.find(&devices);
+
   //Serial.println (Read_DS2408_PIO(0));
   
   //WHAT TO DO WHEN POWER-UP:
@@ -24,8 +20,10 @@ void loop() {
     CurrentPicture = 0;
     EEPROM.write(4,CurrentPicture);
     Write_DS2408_PIO (6, 0);
-      
+            Write_DS2408_PIO (6, 1);
      darkslideEJECT();
+            Write_DS2408_PIO (6, 0);
+            
                                    #if ISDEBUG 
                                   Serial.println("STATE1: EJECT DARK SLIDE");      
                                   #endif
@@ -149,9 +147,9 @@ return;
             int pressTime = REDbutton(S1);
         
 //       if ((ShutterSpeed[Read_DS2408_PIO(0)]) != (POSB))
-       if (ShutterSpeed[Read_DS2408_PIO(0)])
+// //       if (ShutterSpeed[Read_DS2408_PIO(0)])
   
-             {
+ // //            {
               PictureType = 0;
               
             if ((pressTime > shortPress) && (pressTime < longPress)) {
@@ -180,7 +178,7 @@ return;
             takePicture = true;
              
             }   // END Of else if (pressTime > longPress) 
-             }
+ // //            }
                                       
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
