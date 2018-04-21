@@ -1,8 +1,11 @@
 void loop() {
 
 
-//device_count = ds.find(&devices);
-
+//
+if (device_count == 0)
+{
+device_count = ds.find(&devices);
+}
   //Serial.println (Read_DS2408_PIO(0));
   
   //WHAT TO DO WHEN POWER-UP:

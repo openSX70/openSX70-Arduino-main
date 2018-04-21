@@ -56,7 +56,7 @@ const int S2 = 2;  //this for Flash insertion detection
 DS2408 ds(ONE_WIRE_BUS_PORT);
 
 Devices devices;
-uint8_t device_count;
+uint8_t device_count = 0;
 
 // DS2408*****************************************************************
 
