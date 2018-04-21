@@ -153,6 +153,8 @@ unsigned long currentMillisTimer = millis();
             eepromUpdate ();
 
             shots = 0;
+
+            Write_DS2408_PIO (6, 0);
  
              #if MOTOR
             mirrorDOWN ();
