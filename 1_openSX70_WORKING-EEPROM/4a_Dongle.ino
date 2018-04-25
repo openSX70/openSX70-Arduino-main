@@ -5,6 +5,11 @@ void Dongle(int DongleSlot)
                                         Serial.println (DongleSlot);
                                         #endif
 
+
+//=========================================================================================================================================================                   
+     // CASE 0 FORCED EJECTION TO SAFEGUARD SOLENOID#1 IN MULTIPLE EXPOSURES AFTER 1 MINUTE (60000ms)       
+//=========================================================================================================================================================
+
 unsigned long currentMillisTimer = millis();
            
            if ((currentMillisTimer-DoubleExposureTimer) >= 60000 && shots >= 1)
@@ -35,6 +40,9 @@ unsigned long currentMillisTimer = millis();
          } 
 
 
+//=========================================================================================================================================================                   
+     // CASE 1 NORMAL OPERATION NORMAL OPERATION NORMAL OPERATION NORMAL OPERATION NORMAL OPERATION NORMAL OPERATION NORMAL OPERATION NORMAL OPERATION            
+//=========================================================================================================================================================
 
     
     if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
@@ -86,8 +94,11 @@ unsigned long currentMillisTimer = millis();
     
      } // END of  if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     
-                   
+//=========================================================================================================================================================                   
      // CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)           
+//=========================================================================================================================================================
+
+    
      if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots == 0)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) FIRST SHOT!!!!
       {   
 /*
@@ -123,9 +134,9 @@ unsigned long currentMillisTimer = millis();
 
           } // end of  if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots == 0)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) FIRST SHOT!!!!
 
-        
+//=========================================================================================================================================================        
          // CASE 3 DOUBLE EXPOSURE ULTERIOR SHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED) 
-
+//=========================================================================================================================================================
 
 
          
@@ -145,8 +156,10 @@ unsigned long currentMillisTimer = millis();
           } // end of  if (digitalRead(S1) == LOW && Read_DS2408_PIO(1) ==  1 && shots >= 1)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) ULTERIOR SHOTS!!!!
 
           
-          
+//=========================================================================================================================================================          
           // CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
+//=========================================================================================================================================================
+          
          if (takePicture == true && Read_DS2408_PIO(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
           {
             
