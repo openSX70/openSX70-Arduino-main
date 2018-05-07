@@ -18,8 +18,9 @@ void eepromUpdate ()
                   float lux2 = lightmeter.readLightLevel(); // Reading BH1750
                   lux = ((lux1+lux2)/2);
 */
+#if LIGHTMETER
                   lux = lightmeter.readLightLevel(); // Reading BH1750
-
+#endif
                   int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
                   Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
                       Serial.println ("*****************************");

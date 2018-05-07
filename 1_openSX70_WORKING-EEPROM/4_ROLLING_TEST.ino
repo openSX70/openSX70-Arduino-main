@@ -1,5 +1,5 @@
-/* void loop()
-{
+ /*
+ void loop()
 
 
 {
@@ -87,7 +87,7 @@ while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
      }
 //START LOOP HERE FOR ROLLING TESTS
 
-/*
+
 Serial.println ("TEST SHUTTER ONLY");
  beep (1,6);
  delay (100);
@@ -143,7 +143,7 @@ delay (2000);
                                       Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
                                       #endif
 Serial.println ("TEST PICTURE-TAKING ONLY");
- /*
+ 
 beep (1,6);
  delay (100);
  beep (0,6);

@@ -20,13 +20,14 @@ digitalWrite(FFA, LOW);           // make sure I don't fire the flash!
 
 //#if ISDEBUG
 Serial.begin (9600);
-Serial.println ("Welcome to openSX70");
+Serial.println ("WelcomE to openSX70");
 Serial.print ("Version: ");
 Serial.println(F(__FILE__ " " __DATE__ " " __TIME__));
 //#endif
 
 //Motor is OUTPUT
 pinMode(Motor, OUTPUT);
+
 
 //I make sure that the Motor is OFF
 digitalWrite(Motor, LOW);
@@ -46,7 +47,7 @@ analogWrite(Solenoid2, 0);
 
 
 device_count = ds.find(&devices);
-
+Serial.println ("device_count = ds.find(&devices);");
 // THIS IS FUNDAMENTAL
 
 

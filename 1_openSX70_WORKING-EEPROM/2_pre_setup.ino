@@ -10,7 +10,7 @@
 //*************
 
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 1
+#define LIGHTMETER 0
 //*************
 
 // LIGHT METER STUFF BH1750*****************************************************************
@@ -118,7 +118,7 @@ bool takePicture = false;
 
 //enum positions_t {POS1 = -100, POS2, A100, A600, POSFLASH, POST, POSB};
 
-enum positions_t {A100 = -98, A600, POSFLASH, POST, POSB};
+enum positions_t {A100 = -99, A600, POSFLASH, POST, POSB};
 
 /* TO CLARIFY:
  *  POS1 = -100
