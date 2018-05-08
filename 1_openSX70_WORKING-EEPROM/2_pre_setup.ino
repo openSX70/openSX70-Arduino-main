@@ -118,17 +118,27 @@ bool takePicture = false;
 
 //enum positions_t {POS1 = -100, POS2, A100, A600, POSFLASH, POST, POSB};
 
-enum positions_t {A100 = -99, A600, POSFLASH, POST, POSB};
+/* THIS IS A600 POSITION FOR THE TIME BEING NO AUTO SLOT!
+enum positions_t {A600 = -100, POSFLASH, POSFLASHF8, POST, POSB};
 
-/* TO CLARIFY:
- *  POS1 = -100
- *  POS2 = -99
- *  A100 = -98
- *  A600 = -97
- *  POSFLASH = -96
- *  POST = -95
- *  POSB = -94
+ TO CLARIFY:
+
+ *  A600 = -100
+ *  POSFLASH = -99
+ *  POSFLASHF8 = -98
+ *  POST = -97
+ *  POSB = -96
  */
+
+enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
+/*
+ TO CLARIFY:
+
+ *   POSFLASH = - 100
+ *  POSFLASHF8 = -99
+ *  POST = -98
+ *  POSB = -97
+*/
 
 //int ShutterSpeed[] = { 40, 50, 56, 58, 62, 66, 84, 120, 180, 550, 1050, A100, A600, POSFLASH, POST, POSB };
 
@@ -138,7 +148,10 @@ enum positions_t {A100 = -99, A600, POSFLASH, POST, POSB};
 
 //int ShutterSpeed[] = { 9, 10, 12, 13, 15, 20, 25, 45, 66, 120, 180, A100, A600, POSFLASH, POST, POSB };
 
-int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 45, 90, 150, 300, 1240, A100, A600, POSFLASH, POST, POSB };
+//int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 45,90, 150, 300, 1240, A600, POSFLASH, POSFLASHF8, POST, POSB };
+
+
+int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 90, 150, 300, 1240, POSFLASH, POSFLASHF8, POST, POSB };
 
 int shots = 0;
 

@@ -183,12 +183,12 @@ return;
                                       
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
-                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (A600))))
+                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))
                               {
                                 DongleFlashNormal();
                                 return;
                               
-                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))
+                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASHF8))))
                               {
                                 DongleFlash();
                                 return;
