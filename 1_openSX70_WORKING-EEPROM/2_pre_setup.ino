@@ -13,9 +13,13 @@
 #define LIGHTMETER 0
 //*************
 
+//CAMERA MODEL ALPHA OR MODEL2 (only one!!!)
+#define ALPHA 0
+#define MODEL2 1
+//*************
+
 // LIGHT METER STUFF BH1750*****************************************************************
 #if LIGHTMETER
-
 
 #include <Wire.h>
 #include <BH1750.h>
