@@ -33,7 +33,12 @@ device_count = ds.find(&devices);
   #endif
   #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH *********************************************************************************************************************************
-    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) || (CurrentPicture >= 8))
+//    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) || (CurrentPicture >= 8))
+
+// changed this to allow shooting until counter is actually 0, in case "something" happens and I loose count!
+    
+    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) && (CurrentPicture >= 8))
+ 
     
     //CurrentPicture = 0;
     // FOR THE MOMENT I JUST TURN ON THE LED ON DONGLE
