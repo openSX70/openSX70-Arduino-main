@@ -14,8 +14,8 @@
 //*************
 
 //CAMERA MODEL ALPHA OR MODEL2 (only one!!!)
-#define ALPHA 0
-#define MODEL2 1
+#define ALPHA 1
+#define MODEL2 0
 //*************
 
 // LIGHT METER STUFF BH1750*****************************************************************
