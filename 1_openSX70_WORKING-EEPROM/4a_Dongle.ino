@@ -12,7 +12,8 @@ void Dongle(int DongleSlot)
 
 unsigned long currentMillisTimer = millis();
            
-           if ((currentMillisTimer-DoubleExposureTimer) >= 60000 && shots >= 1)
+           if ((currentMillisTimer-DoubleExposureTimer) >= 300000 && shots >= 1)
+         //F***K it, if I break my camera, I need longer for double exposures!! Changed forced expulsion to 5 minutes
          
          {
            eepromUpdate ();
@@ -32,7 +33,9 @@ unsigned long currentMillisTimer = millis();
             shutterOPEN();    
            #endif
            Write_DS2408_PIO (6, 0); 
-         }  else if ((currentMillisTimer-DoubleExposureTimer) >= 30000 && shots >= 1)
+         }  else if ((currentMillisTimer-DoubleExposureTimer) >= 60000 && shots >= 1)
+
+         //F***K it, if I break my camera, I need longer for double exposures!! Changed light up to 1 minute
 
          {
           Write_DS2408_PIO (6, 1); 
