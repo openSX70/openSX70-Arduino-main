@@ -188,7 +188,7 @@ void DongleFlash ()
                   analogWrite (Solenoid2,0);
 //                  digitalWrite(FFA, LOW);
                   Write_DS2408_PIO (7,0);
-                  delay (10u);
+                  delay (10);
                   shutterCLOSE();
                   #endif
                   

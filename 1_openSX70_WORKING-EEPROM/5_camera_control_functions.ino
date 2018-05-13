@@ -136,11 +136,24 @@ void ShutterB()
                   #endif
 
                   #if SHUTTER
+                  if (Read_DS2408_PIO(2) ==  1) //CASE DONGLE FLASH AT THE END OF B
+                  {
+                  analogWrite(Solenoid2, 255);
+                  }
                   shutterOPEN ();
-                   
+                   if (Read_DS2408_PIO(2) ==  1) //CASE DONGLE FLASH AT THE END OF B
+                  {
+                  analogWrite(Solenoid2, 130);
+                  }
                         while (digitalRead(S1) == LOW)
                         ;
-                        
+                   if (Read_DS2408_PIO(2) ==  1) //CASE DONGLE FLASH AT THE END OF B
+                  {
+                  Write_DS2408_PIO (7,1);
+                  delay (1);
+                  analogWrite (Solenoid2,0);
+                  Write_DS2408_PIO (7,0);                  
+                  }
                         shutterCLOSE ();
                   #endif
                   

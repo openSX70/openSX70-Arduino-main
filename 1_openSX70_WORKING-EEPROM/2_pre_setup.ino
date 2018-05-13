@@ -12,11 +12,14 @@
 //LIGHTMETER ON BOARD?
 #define LIGHTMETER 0
 //*************
+//This must be 0 for Len's and Bellows boards from SEEEDFUSION  :-(
 
 //CAMERA MODEL ALPHA OR MODEL2 (only one!!!)
 #define ALPHA 1
 #define MODEL2 0
 //*************
+//This is experimental, actually Model2's don't seem to work, or mine is a lemon
+
 
 // LIGHT METER STUFF BH1750*****************************************************************
 #if LIGHTMETER
@@ -160,6 +163,11 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 //20180512 wheel need more EV and 1/2 slots.
 int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
+//OPTION line above are the wheel "raw" speeds (have to detract aprox. 10ms and keep in mind smaller aperture) 
+// this are the "SLOTS":
+//int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
+// to change the speed in the slot position just change the number corresponding.
+
 int shots = 0;
 
 int pressTime = 0;     //intialize pressTime            
@@ -169,11 +177,14 @@ int pressTime = 0;     //intialize pressTime
          // it needs to be timed for debounce purposes, that is, you need a "solid" press to take a picture
   
 const int shortPress = 100;
-  
+//OPTION this is the minimum time in ms you have to press the red button to take a picture
+
+
          //longPress is when you want to "something else", in my case delay the taking of the picture for x (10) seconds.
          //since 1000ms = 1 seconds, this is just a bit more than 1 second.
 
   const int  longPress = 1200;
+//OPTION if you press longer than this value you start the "selftimer" delay of (normally) 10 seconds.
 
 // EEPROM STUFF
 //EEPROM INITIALIZATION fixed positions

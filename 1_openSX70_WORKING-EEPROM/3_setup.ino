@@ -111,11 +111,15 @@ Serial.println (ActualPicture);
 
 //byte CurrentPicture = EEPROM.read (4);
 
+
+//OPTION this is the so called LED counter coment auto this part to disable the counter.
+//LED COUNTER 
   if (digitalRead(S8) != HIGH || digitalRead(S9) != LOW)
 {
 simpleBlink (8 - (EEPROM.read (4)));
 }
 
+//LED COUNTER END
 
 
 if (digitalRead(S5) != LOW || digitalRead(S3) != LOW)
