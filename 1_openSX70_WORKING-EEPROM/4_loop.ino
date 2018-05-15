@@ -4,6 +4,14 @@ void loop() {
 if (device_count == 0)
 {
 device_count = ds.find(&devices);
+#if SIMPLEDEBUG
+Serial.print ("LOOP: device_count = ds.find(&devices);--->");
+Serial.println (device_count);
+#endif
+          Write_DS2408_PIO (6, 1);
+          delay (200);
+         Write_DS2408_PIO (6, 0);
+
 }
   
   //WHAT TO DO WHEN POWER-UP:
@@ -206,17 +214,19 @@ return;
                                       byte SD2 = Read_DS2408_PIO(2);
                                       Serial.print ("Selector: ");
                                       Serial.print (Read_DS2408_PIO(0));
-Serial.print (" / ");
+                                      Serial.print (" / ");
                                       Serial.print (SD1);
                                       Serial.print (" / ");
                                       Serial.print (SD2);
                                       Serial.print (" Shutter Speed: ");
                                       Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
                                        // uint16_t 
+                                      /*
                                         lux = lightmeter.readLightLevel(); // Reading BH1750
                                       Serial.print(F("Lux:  "));
                                       Serial.print(lux);
                                       Serial.println(" lx");
+                                      */
                                       delay(500);
                                       #endif
 
@@ -249,7 +259,6 @@ Serial.print (" / ");
                                     Serial.print(lux);
                                     Serial.println(" lux");
                                     delay(500);
-    
                                     #endif
                                       
     return;

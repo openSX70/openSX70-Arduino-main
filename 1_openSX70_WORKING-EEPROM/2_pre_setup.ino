@@ -1,6 +1,10 @@
 #define ISDEBUG 0
 //*************
 
+#define SIMPLEDEBUG 0
+//*************
+
+
 //TEST ONLY SHUTTER ASSEMBLY
 #define SHUTTER 1
 //*************

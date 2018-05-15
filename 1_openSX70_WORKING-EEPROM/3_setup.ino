@@ -18,12 +18,12 @@ pinMode(FFA, OUTPUT);
 
 digitalWrite(FFA, LOW);           // make sure I don't fire the flash!
 
-//#if ISDEBUG
+#if SIMPLEDEBUG
 Serial.begin (9600);
 Serial.println ("WelcomE to openSX70");
 Serial.print ("Version: ");
 Serial.println(F(__FILE__ " " __DATE__ " " __TIME__));
-//#endif
+#endif
 
 //Motor is OUTPUT
 pinMode(Motor, OUTPUT);
@@ -47,19 +47,25 @@ analogWrite(Solenoid2, 0);
 
 
 device_count = ds.find(&devices);
-Serial.println ("device_count = ds.find(&devices);");
+#if SIMPLEDEBUG
+Serial.print ("SETUP: device_count = ds.find(&devices);--->");
+Serial.println (device_count);
+#endif
 // THIS IS FUNDAMENTAL
 
 
 // EEPROM STUFF INITIALIZING SEQUENCE
-Serial.begin (9600);
+//    Serial.begin (9600);
     char initJP [2];
     initJP[0] = EEPROM.read(0);
     initJP[1] = EEPROM.read(1);
 
     if (initJP[0] != 'S' || initJP[1] != 'X')
         {
+  #if SIMPLEDEBUG
   Serial.println ("Initializing EEPROM....");
+  #endif
+  
   EEPROM.write(0,'S');
   EEPROM.write(1,'X');
   int eeAddress = 101;
@@ -71,7 +77,10 @@ Serial.begin (9600);
   {
 
 if ((Read_DS2408_PIO(1) == 1) && (Read_DS2408_PIO(2) == 1)) {
+  #if SIMPLEDEBUG
   Serial.println ("RE-nitializing EEPROM....");
+  #endif
+  
   EEPROM.write(0,'S');
   EEPROM.write(1,'X');
   int eeAddress = 101;
@@ -79,15 +88,17 @@ if ((Read_DS2408_PIO(1) == 1) && (Read_DS2408_PIO(2) == 1)) {
   int ActualPicture= 1;
   EEPROM.put (13,ActualPicture);
 }
-Serial.println ("EEPROM already initialized...");
 
 EEPROM.get(10,eeAddress);  // where to write
 EEPROM.get (13, ActualPicture); //the picture taken counter
+
+#if SIMPLEDEBUG
+Serial.println ("EEPROM already initialized...");
 Serial.print ("eeAddress: ");
 Serial.println (eeAddress);
 Serial.print ("ActualPicture: ");
 Serial.println (ActualPicture);
-
+#endif
   }
 /*
 EEPROM.get(10,eeAddress);  // where to write
@@ -114,11 +125,12 @@ Serial.println (ActualPicture);
 
 //OPTION this is the so called LED counter coment auto this part to disable the counter.
 //LED COUNTER 
-  if (digitalRead(S8) != HIGH || digitalRead(S9) != LOW)
+   //if (digitalRead(S8) != HIGH || digitalRead(S9) != LOW)
+   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW) //NORMAL OPERATION
 {
+delay (100);
 simpleBlink (8 - (EEPROM.read (4)));
 }
-
 //LED COUNTER END
 
 

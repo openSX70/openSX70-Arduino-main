@@ -50,8 +50,9 @@ unsigned long currentMillisTimer = millis();
     
     if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     {
+                          #if SIMPLEDEBUG
                           Serial.println ("take picture");
-
+                          #endif
                     byte PictureType = 0;                    
                     eepromUpdate ();
     
