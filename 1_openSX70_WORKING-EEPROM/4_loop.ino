@@ -11,7 +11,9 @@ Serial.println (device_count);
           Write_DS2408_PIO (6, 1);
           delay (200);
          Write_DS2408_PIO (6, 0);
-
+#if SIMPLEDEBUG
+Serial.println ("BLINK after DS2408 init in loop");
+#endif
 }
   
   //WHAT TO DO WHEN POWER-UP:

@@ -45,7 +45,7 @@ analogWrite(Solenoid2, 0);
     pinMode(A5, INPUT_PULLUP);
     #endif
 
-
+delay (100); // delay to see if I fix some dongles not blinking the first time init
 device_count = ds.find(&devices);
 #if SIMPLEDEBUG
 Serial.print ("SETUP: device_count = ds.find(&devices);--->");
@@ -128,8 +128,11 @@ Serial.println (ActualPicture);
    //if (digitalRead(S8) != HIGH || digitalRead(S9) != LOW)
    if (digitalRead(S8) == LOW && digitalRead(S9) == LOW) //NORMAL OPERATION
 {
-delay (100);
+
 simpleBlink (8 - (EEPROM.read (4)));
+#if SIMPLEDEBUG
+Serial.println ("BLINK NUMBER OF SHOTS");
+#endif
 }
 //LED COUNTER END
 
