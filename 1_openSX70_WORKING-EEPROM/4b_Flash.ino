@@ -14,6 +14,9 @@ void Flash ()
 
        }*/
        {
+                 #if SIMPLEDEBUG
+                  Serial.println ("CAMERA FLASH");
+                 #endif
 
                     CurrentPicture = EEPROM.read(4) ; 
                     byte PictureType = 2;                    
@@ -46,7 +49,7 @@ void Flash ()
 //                  delay (66);
                   delay (80);
                   digitalWrite(FFA, HIGH);
-                  delay (5);
+                  delay (10);
                   analogWrite (Solenoid2,0);
                   digitalWrite(FFA, LOW);
                   delay (10);
@@ -75,7 +78,9 @@ void DongleFlash ()
     {
 
 
- 
+                 #if SIMPLEDEBUG
+                  Serial.println ("DONGLE FLASH F8");
+                 #endif 
 
    //                 byte PictureType = 4;
    //                 CurrentPicture = EEPROM.read(4) ; 
@@ -144,6 +149,10 @@ void DongleFlash ()
     {
 
  
+                 #if SIMPLEDEBUG
+                  Serial.println ("DONGLE FLASH NORMAL");
+                 #endif 
+
        if (takePicture == true)
       /* {
         
