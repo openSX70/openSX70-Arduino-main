@@ -58,21 +58,13 @@ class BH1750 {
     };
 
     BH1750(byte addr = 0x23);
-    bool begin(Mode mode = CONTINUOUS_HIGH_RES_MODE, byte sensitivity = 1);
-    bool configure(Mode mode, byte sensitivity);
+    bool begin(Mode mode = CONTINUOUS_HIGH_RES_MODE);
+    bool configure(Mode mode);
     uint16_t readLightLevel(bool maxWait = false);
 
   private:
     int BH1750_I2CADDR;
     Mode BH1750_MODE = UNCONFIGURED;
-	byte BH1750_sensitivity; //Multiplier for sensitivity
-
-	const byte BH1750_DEFAULT_MEASREGVAL = 69;
-
-	bool i2cwrite(int i2caddr, uint8_t val);
-	bool i2cSetMeasTime(byte val);
-	byte MeasTimeRegvalFromSensi(byte sensitivity){ return (BH1750_DEFAULT_MEASREGVAL * sensitivity);}
-	void WaitForMeasurement(bool maxWait);
 
 };
 
