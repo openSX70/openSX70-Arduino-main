@@ -256,11 +256,10 @@ return;
                                     #endif
                                     #if LIGHTMETER
                                     Serial.println (": Reading LIGHT METER");
-                                    //uint16_t 
-                                    lux = lightmeter.readLightLevel(); // Reading BH1750
-                                    Serial.print(lux);
-                                    Serial.println(" lux");
-                                    delay(500);
+                                      uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+                                      Serial.print(F("Lux:  "));
+                                      Serial.print(lux);
+                                      Serial.println(" lux");
                                     #endif
                                       
     return;
