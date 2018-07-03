@@ -45,15 +45,27 @@ void setup() {
   Serial.println("HELLO openSX70!");
   #endif
 
- device_count = ds.find(&devices);
+  device_count = ds.find(&devices);
+  for (int i = 0; i < 8; i++)
+    Serial.print(devices[0][i], HEX);
+  Serial.println("");
+
+  ds.reset();
+  ds.write(0x96);
+  for (int i = 0; i < 8; i++)
+    ds.write(devices[0][i]);
+  ds.write(0x3C);
+  ds.reset(); 
+  
 } //        end of void setup()
 
 
 //****************************************************************************************************** 
 
 void loop() {
-Serial.println ("HELLO");                                                                                                 
   
+Serial.println ("HELLO");                                                                                                 
+ 
   
 /*
  //***********************************************************************

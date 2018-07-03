@@ -48,6 +48,14 @@ analogWrite(Solenoid2, 0);
 
 delay (100); // delay to see if I fix some dongles not blinking the first time init
 device_count = ds.find(&devices);
+
+ds.reset();
+ds.write(0x96);
+for (int i = 0; i < 8; i++)
+    ds.write(devices[0][i]);
+ds.write(0x3C);
+ds.reset(); 
+  
 #if SIMPLEDEBUG
 Serial.print ("SETUP: device_count = ds.find(&devices);--->");
 Serial.println (device_count);

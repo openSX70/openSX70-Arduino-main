@@ -13,6 +13,7 @@
 // 23/03/2018 EEPROM working, eepromUpdate function, pos B and pos T working. 
 // 27/03/2018 Prototype# Len's and Bellows flash! Newer speeds! Testing BH1750 BH1750_CONTINUOUS_LOW_RES_MODE.
 // 28/03/2018 Ordered boards today!!! fixed timer led on dongle.
+//  3/07/2018 Fix for non-blinking LED!!! (thanks Pitsie!)
 
 
               // FIRST I ASSIGN THE Sx SWITCHES OF THE SX70 TO PINS ON THE ARDUINO
