@@ -229,7 +229,7 @@ return;
                                       Serial.print(lux);
                                       Serial.println(" lx");
                                       */
-                                      delay(500);
+                                      //delay(500);
                                       #endif
 
 
@@ -255,6 +255,7 @@ return;
                                     Serial.print (Read_DS2408_PIO(0));
                                     #endif
                                     #if LIGHTMETER
+                                    Serial.begin (9600);
                                     Serial.println (": Reading LIGHT METER");
                                       uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
                                       Serial.print(F("Lux:  "));
@@ -268,10 +269,10 @@ return;
   {
                                   // re check if dongle has been re-connected!
 
-                                  #if ISDEBUG 
+                                  //#if ISDEBUG 
                                   Serial.print (Read_DS2408_PIO(0));
                                   Serial.println (":   DONT KNOW, SHOULD NOT BE HERE! ");
-                                  #endif
+                                  //#endif
   }
 
 

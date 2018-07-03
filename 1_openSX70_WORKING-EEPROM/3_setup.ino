@@ -40,7 +40,8 @@ analogWrite(Solenoid2, 0);
     
     #if LIGHTMETER
     // Light Meter initialization
-    lightmeter.begin(luxMode); // Inicialize BH1750
+     Wire.begin();
+    lightmeter.begin(luxMode, 3); // Inicializar BH1750
     pinMode(A4, INPUT_PULLUP);
     pinMode(A5, INPUT_PULLUP);
     #endif

@@ -14,7 +14,7 @@
 //*************
 
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 0
+#define LIGHTMETER 1
 //*************
 //This must be 0 for Len's and Bellows boards from SEEEDFUSION  :-(
 
@@ -25,17 +25,17 @@
 //This is experimental, actually Model2's don't seem to work, or mine is a lemon
 
 
+
+
 // LIGHT METER STUFF BH1750*****************************************************************
 #if LIGHTMETER
 
-#include <Wire.h>
 #include <BH1750.h>
-
 
 BH1750 lightmeter;
 //const byte luxMode = BH1750_CONTINUOUS_HIGH_RES_MODE;
 const BH1750::Mode luxMode = BH1750::Mode::CONTINUOUS_HIGH_RES_MODE;
-
+//lightmeter.begin(luxMode, 3); // Inicializar BH1750
 // BH1750_CONTINUOUS_HIGH_RES_MODE
 // BH1750_CONTINUOUS_HIGH_RES_MODE_2
 // BH1750_CONTINUOUS_LOW_RES_MODE
@@ -44,12 +44,31 @@ const BH1750::Mode luxMode = BH1750::Mode::CONTINUOUS_HIGH_RES_MODE;
 // BH1750_ONE_TIME_LOW_RES_MODE
 #endif
 
-// ONE WIRE STUFF DS2408*****************************************************************
-
 #include <EEPROM.h>
+
+
+// OneWire and DS2408 STUFF*****************************************************************
+//LIBRARIES MESS (SORTED?)
+
+//Seems to bePaul Stoffregen (paul@pjrc.com) version 2.3 but its different size and doesn't compile. Changed the name from original OneWire to OneWire-master to differentiate.
+//#include <OneWire-master.h>
+
+//Paul Stoffregen (paul@pjrc.com) version 2.3 LATEST VERSION??? STILL DS2408 TEST MODE ERROR!!
+#include <OneWire.h>
+
+//Paul Stoffregen (paul@pjrc.com) version 2.3 LATEST VERSION??? STILL DS2408 TEST MODE ERROR!!
+//#include <OneWire-teensy.h>
+
+
+//I USED THIS Nicholas Zambetti 2006 the one I used ALL ALONG. Not anymore...
+//#include <Wire.h>
+
 
 #include <DS2408.h>
 //Based on DS2408/Arduino/lightLed/lightLed.ino
+
+// END OF OneWire and DS2408 STUFF*****************************************************************
+
 
 const int S2 = 2;  //this for Flash insertion detection
                       //this CLOSED when there is a FLASHBAR inserted
