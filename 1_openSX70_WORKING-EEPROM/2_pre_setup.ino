@@ -184,7 +184,11 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 //int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 90, 150, 300, 1240, POSFLASH, POSFLASHF8, POST, POSB };
 
 //20180512 wheel need more EV and 1/2 slots.
-int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+//int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+//20180704 Julien on slot 0 too slow?
+
+int ShutterConstant = 9;
+int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 //OPTION line above are the wheel "raw" speeds (have to detract aprox. 10ms and keep in mind smaller aperture) 
 // this are the "SLOTS":
