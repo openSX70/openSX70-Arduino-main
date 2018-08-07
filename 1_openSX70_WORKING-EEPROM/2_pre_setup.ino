@@ -188,7 +188,11 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 //20180704 Julien on slot 0 too slow?
 
 int ShutterConstant = 9;
-int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+//int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+
+//20180807 making the 0 option even faster
+
+int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 //OPTION line above are the wheel "raw" speeds (have to detract aprox. 10ms and keep in mind smaller aperture) 
 // this are the "SLOTS":
@@ -202,16 +206,26 @@ int pressTime = 0;     //intialize pressTime
          // Lets define what is considered a longPress and a shortPress
          // shortPress is when you want to take a "regular" picture
          // it needs to be timed for debounce purposes, that is, you need a "solid" press to take a picture
-  
-const int shortPress = 100;
+
+//Some people press the red button until it ejects, this is NOT happening with openSX70 as it is right now.
+//I might try to "fix" this in the future, maybe by making the self timer activation by a double click. It is not a priority right now.
+
+//Cristina is killing me with this, she just presses too short or too long (going unadvertedly to self timer) so I am going to change the values a bit.
+
+//const int shortPress = 100;
+
+const int shortPress = 70;
 //OPTION this is the minimum time in ms you have to press the red button to take a picture
 
 
          //longPress is when you want to "something else", in my case delay the taking of the picture for x (10) seconds.
          //since 1000ms = 1 seconds, this is just a bit more than 1 second.
 
-  const int  longPress = 1200;
-//OPTION if you press longer than this value you start the "selftimer" delay of (normally) 10 seconds.
+  //const int  longPress = 1200;
+
+  const int  longPress = 1500;
+  
+  //OPTION if you press longer than this value you start the "selftimer" delay of (normally) 10 seconds.
 
 // EEPROM STUFF
 //EEPROM INITIALIZATION fixed positions
