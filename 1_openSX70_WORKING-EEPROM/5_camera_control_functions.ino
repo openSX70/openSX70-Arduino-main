@@ -274,7 +274,7 @@ void darkslideEJECT()
 
 //***************************************************************************************************************************************
 
-void Click()
+void Click(int Exposure)
 {
                             #if ISDEBUG 
 //                            ActualSlot = Read_DS2408_PIO(0);
@@ -341,7 +341,16 @@ void Click()
     #endif
     
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
+        if (Exposure == 0){
         delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+          
+        } else {
+
+        delay (Exposure);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+        
+          
+        }
+        
         ////////CLICK!
     shutterCLOSE ();                                         //close the shutter
     return;
@@ -351,6 +360,36 @@ void Click()
                   }
 
 } //end of void Click()
+
+
+
+void Click2()
+{
+  
+
+  if ((ShutterSpeed[Read_DS2408_PIO(0)]) == 200)
+
+  {
+        #if ISDEBUG
+    Serial.print ("--------------------------------------------------CLICK:  ");
+    Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
+    #endif
+    
+    shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
+        delay (time);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+        ////////CLICK!
+    shutterCLOSE ();                                         //close the shutter
+    return;
+            } else {
+
+                    return;
+                  }
+
+} //end of void Click2()
+
+
+
+
 
 void Ydelay ()
 {

@@ -42,6 +42,12 @@ const BH1750::Mode luxMode = BH1750::Mode::CONTINUOUS_HIGH_RES_MODE;
 // BH1750_ONE_TIME_HIGH_RES_MODE
 // BH1750_ONE_TIME_HIGH_RES_MODE_2
 // BH1750_ONE_TIME_LOW_RES_MODE
+
+uint16_t oldLux = 0;
+int factor = 0;
+int time = 0;
+
+
 #endif
 
 #include <EEPROM.h>
@@ -278,7 +284,7 @@ void shutterOPEN();
 void mirrorDOWN();
 void mirrorUP();
 void darkslideEJECT();
-void Click();
+void Click(int Exposure);
 void BeepTimerDelay();
 void BlinkTimerDelay();
 void LEDTimerDelay();

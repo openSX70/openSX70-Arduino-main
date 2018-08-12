@@ -234,7 +234,8 @@ return;
 
 
 
-          Dongle (Read_DS2408_PIO(0));
+//          Dongle (Read_DS2408_PIO(0));
+            Dongle (0);   //MANUAL MODE
           return;
                               }
 
@@ -255,13 +256,78 @@ return;
                                     Serial.print (Read_DS2408_PIO(0));
                                     #endif
                                     #if LIGHTMETER
-                                    Serial.begin (9600);
-                                    Serial.println (": Reading LIGHT METER");
                                       uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+                                     if (lux >= 1300) {
+                                      factor = 1440; 
+                                     // return;
+                                     }
+                                     if (lux < 1300 && lux > 300) {
+                                      factor = 3700;
+                                     // return;
+                                     }
+
+                                      if (lux < 300 && lux > 40) {
+                                      factor = 1440;
+                                     // return;
+                                     }
+
+                                    if (lux < 40 && lux > 7) {
+                                      factor = 850;
+                                     // return;
+                                     }
+                                       if (lux < 7) {
+                                        return; 
+                                      }
+
+                                      if (lux != oldLux) {
+                                      
                                       Serial.print(F("Lux:  "));
                                       Serial.print(lux);
-                                      Serial.println(" lux");
-                                    #endif
+                                      Serial.print(" lux -- ");  
+                                      time = (factor/lux)+8;
+                                      Serial.print (time);
+                                      Serial.println(" raw time ");
+                                      
+                                      }
+                                      #endif
+
+                                       if (takePicture == true )    //NORMAL AUTO OPERATION
+    {
+                         
+                    byte PictureType = 0;                    
+                    eepromUpdate ();
+    
+                  shutterCLOSE (); 
+                  // delay (200); //added to fix bad photos
+                  delay (100); //added to fix bad photos WITH LESS delay
+                                    
+                  mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
+                  while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
+                   ;
+                  Ydelay();
+                  
+                   Click (time); 
+                  
+//                  delay (200);                             //AGAIN is this delay necessary?
+                  mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
+                  delay (50);                             //AGAIN is this delay necessary?
+                  //CHANGED 200->50
+                 shutterOPEN();
+                 shots = 0;  
+
+                 return;  
+    
+     } // END of  if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
+//    #endif
+
+           
+
+                //Dongle (time); //AUTO 600 EXPERIMENTAL
+                oldLux = lux;                                      
+                                    
+//if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && Read_DS2408_PIO(0) ==  200 && shots == 0)    //NORMAL AUTO OPERATION
+ 
+                                    
                                       
     return;
   }

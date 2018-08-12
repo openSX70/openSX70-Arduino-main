@@ -1,8 +1,9 @@
-void Dongle(int DongleSlot) 
+void Dongle(int Exposure) 
     {
                                         #if ISDEBUG 
                                         Serial.print ("                                                 Dongle:");
-                                        Serial.println (DongleSlot);
+                //                        Serial.println (DongleSlot);
+                                          Serial.println (ExpoType);
                                         #endif
 
 
@@ -75,7 +76,12 @@ unsigned long currentMillisTimer = millis();
                   #endif
 
                   #if SHUTTER
-                   Click (); 
+                  if (Exposure = 0) {
+                   Click (0);  
+                  } else {
+                    Click (Exposure);
+                  }
+                   
                   #endif
                   
                   #if !MOTOR
@@ -129,7 +135,7 @@ unsigned long currentMillisTimer = millis();
           #endif
                   
           #if SHUTTER
-          Click ();                 // NOW I am going to take the picture: SMILE!
+          Click (0);                 // NOW I am going to take the picture: SMILE!
 
           delay (500);            //debounce will go here
           shots++;
@@ -148,7 +154,7 @@ unsigned long currentMillisTimer = millis();
           {
  
           #if SHUTTER    
-          Click();
+          Click(0);
 
           delay (500); //debounce will go here
           
