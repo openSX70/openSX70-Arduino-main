@@ -274,7 +274,7 @@ void darkslideEJECT()
 
 //***************************************************************************************************************************************
 
-void Click(int Exposure)
+void Click(int ExpDelay)
 {
                             #if ISDEBUG 
 //                            ActualSlot = Read_DS2408_PIO(0);
@@ -341,13 +341,14 @@ void Click(int Exposure)
     #endif
     
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
-        if (Exposure == 0){
+        if (ExpDelay == 0){
         delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
           
         } else {
 
-        delay (Exposure);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
-        
+        delay (ExpDelay);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+        Serial.print("        actual delay: ");
+        Serial.println (ExpDelay);
           
         }
         
@@ -363,31 +364,6 @@ void Click(int Exposure)
 
 
 
-void Click2()
-{
-  
-
-  if ((ShutterSpeed[Read_DS2408_PIO(0)]) == 200)
-
-  {
-        #if ISDEBUG
-    Serial.print ("--------------------------------------------------CLICK:  ");
-    Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
-    #endif
-    
-    shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
-        delay (time);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
-        ////////CLICK!
-    shutterCLOSE ();                                         //close the shutter
-    return;
-            } else {
-
-                    return;
-                  }
-
-} //end of void Click2()
-
-
 
 
 
@@ -401,7 +377,7 @@ void Ydelay ()
                         else 
                         {
                     delay (200);                              //LONG DELAY SELECTED 
-                    Serial.println ("LONG DELAY**************************************************************************************************************************************");     
+                    //Serial.println ("LONG DELAY**************************************************************************************************************************************");     
                         }
 return;
 }

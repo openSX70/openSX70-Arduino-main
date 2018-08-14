@@ -256,11 +256,18 @@ return;
                                     Serial.print (Read_DS2408_PIO(0));
                                     #endif
                                     #if LIGHTMETER
-                                      uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-                                     if (lux >= 1300) {
-                                      factor = 1440; 
+                                     uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
+
+                                     if (lux >= 2001) {
+                                      factor = 5000; 
                                      // return;
                                      }
+                                     if (lux >= 1300 && lux < 2000) {
+                                     // factor = 1440; 
+                                     factor = 4000;
+                                     // return;
+                                     }
+                                     
                                      if (lux < 1300 && lux > 300) {
                                       factor = 3700;
                                      // return;
@@ -284,7 +291,7 @@ return;
                                       Serial.print(F("Lux:  "));
                                       Serial.print(lux);
                                       Serial.print(" lux -- ");  
-                                      time = (factor/lux)+8;
+                                      time = (factor/lux)+10;
                                       Serial.print (time);
                                       Serial.println(" raw time ");
                                       
@@ -294,7 +301,7 @@ return;
                                        if (takePicture == true )    //NORMAL AUTO OPERATION
     {
                          
-                    byte PictureType = 0;                    
+                    byte PictureType = 6;                    
                     eepromUpdate ();
     
                   shutterCLOSE (); 
@@ -304,16 +311,19 @@ return;
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
-                  Ydelay();
-                  
-                   Click (time); 
-                  
+//                  Ydelay();
+                    delay(40); //Just "normal" "Y" delay
+
+                  shutterOPEN();
+                  // Click (time); 
+                  delay (time);
+                  shutterCLOSE();
 //                  delay (200);                             //AGAIN is this delay necessary?
                   mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
                   delay (50);                             //AGAIN is this delay necessary?
                   //CHANGED 200->50
                  shutterOPEN();
-                 shots = 0;  
+                 shots = shots++;  
 
                  return;  
     
