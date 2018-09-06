@@ -268,21 +268,26 @@ return;
                                      // return;
                                      }
                                      
-                                     if (lux < 1300 && lux > 300) {
-                                      factor = 3700;
+                                     if (lux < 1300 && lux > 600) {
+                                      factor = 3000;
                                      // return;
                                      }
 
-                                      if (lux < 300 && lux > 40) {
-                                      factor = 1440;
+                                      if (lux <= 600 && lux > 300) {
+                                      factor = 1200;
                                      // return;
                                      }
 
-                                    if (lux < 40 && lux > 7) {
-                                      factor = 850;
+                                    if (lux <= 300 && lux > 150) {
+                                      factor = 600;
                                      // return;
                                      }
-                                       if (lux < 7) {
+
+                                   if (lux <= 150 && lux > 50) {
+                                      factor = 300;
+                                     // return;
+                                     }
+                                       if (lux <= 50) {
                                         return; 
                                       }
 
@@ -291,6 +296,7 @@ return;
                                       Serial.print(F("Lux:  "));
                                       Serial.print(lux);
                                       Serial.print(" lux -- ");  
+     //                                 time = (factor/lux)+10;
                                       time = (factor/lux)+10;
                                       Serial.print (time);
                                       Serial.println(" raw time ");
