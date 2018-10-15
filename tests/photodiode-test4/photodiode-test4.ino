@@ -7,63 +7,58 @@ float voltage = 50;
 int level = 1;
 }
 
-float test (int type){
-
-if (type == 1) {
+void RES1()
+{
 //Connect 8M
 //Disconnect rest
 pinMode (A2, INPUT);
 pinMode (A3, INPUT);
 pinMode (A1, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A1, LOW);
-int sensorValue = analogRead(A0);
-voltage = (sensorValue * (100.0 / 1023.0));
-return voltage;
+return;
 }
-if (type == 2) {
+void RES2()
+{ 
 //Connect 1M
 //Disconnect rest
 pinMode (A1, INPUT);
 pinMode (A3, INPUT);
 pinMode (A2, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A2, LOW);
-int sensorValue = analogRead(A0);
-voltage = (sensorValue * (100.0 / 1023.0));
-return voltage;
+return;
 }
-if (type == 3) {
+void RES3()
+{
 //Connect 100K
 //Disconnect rest
 pinMode (A1, INPUT);
 pinMode (A2, INPUT);
 pinMode (A3, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A3, LOW);
-int sensorValue = analogRead(A0);
-voltage = (sensorValue * (100.0 / 1023.0));
-return voltage;
+return;
 }
 
-
- 
-} // end of function test
-
-void loop() {
+ void loop() {
   // put your main code here, to run repeatedly:
-voltage = test (level);
 
-Serial.print ("level: (");
-Serial.print (level);
-Serial.print (")");
-Serial.println(voltage);
+RES1();
+int sensorValue = analogRead(A0);
 
-if ((voltage = 100) && (level <3))
-  {
-  level = level++;
-  
-} else if ((voltage <= 0) && (level < 0)) {
-  level = level - 1;
- 
+if (sensorValue >= 1023)
+{
+RES2();
+int sensorValue = analogRead(A0);
+if (sensorValue >= 1023)
+{
+RES3();
 }
+}
+sensorValue = analogRead(A0);
+
+//Serial.print ("level: (");
+//Serial.print (level);
+//Serial.print (")");
+Serial.println(sensorValue);
 
 
 }
