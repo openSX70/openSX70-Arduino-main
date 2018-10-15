@@ -15,6 +15,8 @@
 // 28/03/2018 Ordered boards today!!! fixed timer led on dongle.
 //  3/07/2018 Fix for non-blinking LED!!! (thanks Pitsie!)
 //  7/08/2018 Changed some shutter speed timings (faster "0" position) and the redbutton timings.
+//  15/10/2018 Removed all related to BH1750 and moved to photodiode in new PCB "ALPHA"
+
 
 
               // FIRST I ASSIGN THE Sx SWITCHES OF THE SX70 TO PINS ON THE ARDUINO
@@ -52,5 +54,4 @@
                                             
               
               //           int StructSpeed:ShutterSpeed  --> ShutterSpeed
-              //           uint16_t StructLux:lux --> Lux as read by BH170 just before picture-taking
-               
+                 

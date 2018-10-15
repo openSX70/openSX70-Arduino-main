@@ -9,33 +9,39 @@ int level = 1;
 
 void RES1()
 {
-//Connect 8M
+//Connect 9M44
 //Disconnect rest
 pinMode (A2, INPUT);
 pinMode (A3, INPUT);
 pinMode (A1, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A1, LOW);
-return;
+Serial.println ("Res 9M44");
+
+return ;
 }
 void RES2()
 { 
-//Connect 1M
+//Connect 100K
 //Disconnect rest
 pinMode (A1, INPUT);
 pinMode (A3, INPUT);
 pinMode (A2, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A2, LOW);
-return;
+Serial.println ("Res 100K");
+
+return ;
 }
 void RES3()
 {
-//Connect 100K
+//Connect 10K
 //Disconnect rest
 pinMode (A1, INPUT);
 pinMode (A2, INPUT);
 pinMode (A3, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A3, LOW);
-return;
+Serial.println ("Res 10K");
+
+return ;
 }
 
  void loop() {
@@ -58,6 +64,7 @@ sensorValue = analogRead(A0);
 //Serial.print ("level: (");
 //Serial.print (level);
 //Serial.print (")");
+Serial.print ("Sensor Value: ");
 Serial.println(sensorValue);
 
 

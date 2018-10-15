@@ -37,19 +37,8 @@ digitalWrite(Motor, LOW);
 analogWrite(Solenoid1, 0);
 analogWrite(Solenoid2, 0);
 
-    
-    #if LIGHTMETER
-    // Light Meter initialization
-     Wire.begin();
-    lightmeter.begin(luxMode, 3); // Inicializar BH1750
-    pinMode(A4, INPUT_PULLUP);
-    pinMode(A5, INPUT_PULLUP);
-    Serial.begin (9600);
-    Serial.println (": Reading LIGHT METER");
-    int factor = 0;
-    #endif
-
-delay (100); // delay to see if I fix some dongles not blinking the first time init
+ 
+//delay (100); // delay to see if I fix some dongles not blinking the first time init
 device_count = ds.find(&devices);
 
 ds.reset();

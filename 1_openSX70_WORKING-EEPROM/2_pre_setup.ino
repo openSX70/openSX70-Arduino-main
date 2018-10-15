@@ -27,29 +27,6 @@
 
 
 
-// LIGHT METER STUFF BH1750*****************************************************************
-#if LIGHTMETER
-
-#include <BH1750.h>
-
-BH1750 lightmeter;
-//const byte luxMode = BH1750_CONTINUOUS_HIGH_RES_MODE;
-const BH1750::Mode luxMode = BH1750::Mode::CONTINUOUS_HIGH_RES_MODE;
-//lightmeter.begin(luxMode, 3); // Inicializar BH1750
-// BH1750_CONTINUOUS_HIGH_RES_MODE
-// BH1750_CONTINUOUS_HIGH_RES_MODE_2
-// BH1750_CONTINUOUS_LOW_RES_MODE
-// BH1750_ONE_TIME_HIGH_RES_MODE
-// BH1750_ONE_TIME_HIGH_RES_MODE_2
-// BH1750_ONE_TIME_LOW_RES_MODE
-
-uint16_t oldLux = 0;
-int factor = 0;
-int time = 0;
-
-
-#endif
-
 #include <EEPROM.h>
 
 
@@ -251,14 +228,12 @@ int eeAddress;
 // Picture sequence
 // Type (manual, a100,a600, flash etc...)
 // ShutterSpeed actual for auto reference/record
-// lux measured
  
   struct Picture  {
   int StructPicture;
   byte PackPicture;
   byte StructType;
   int StructSpeed;
-  uint16_t StructLux;
   };
 
   byte Pack = 1;
@@ -267,8 +242,7 @@ int ActualPicture;
 byte CurrentPicture;
 byte PictureType;
 int eepromSpeed;
-uint16_t lux;
-//float lux;
+float lux = 99; // for NEW auto
 
 
   

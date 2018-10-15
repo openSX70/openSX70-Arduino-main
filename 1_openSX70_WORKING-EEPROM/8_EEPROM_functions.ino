@@ -1,7 +1,7 @@
 
 void eepromUpdate ()
 {
-
+  
                             //EEPROM OK
                         EEPROM.get (13,ActualPicture);
                         CurrentPicture = (CurrentPicture+1);
@@ -12,23 +12,15 @@ void eepromUpdate ()
                       #endif
 //                        byte PictureType = 0;
 
-/*                  uint16_t 
-                  float lux1 = lightmeter.readLightLevel(); // Reading BH1750
-                  delay (5);
-                  float lux2 = lightmeter.readLightLevel(); // Reading BH1750
-                  lux = ((lux1+lux2)/2);
-*/
-#if LIGHTMETER
-                  lux = lightmeter.readLightLevel(); // Reading BH1750
-#endif
                   int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
-                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
+//                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
+
+                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter };
                       Serial.println ("*****************************");
                       Serial.println (ActualPicture);
                       Serial.println (CurrentPicture);
                       Serial.println (PictureType);
                       Serial.println (Shutter);
-                      Serial.println (lux);
                       Serial.println ("*****************************");
                       
 
@@ -65,18 +57,15 @@ byte PictureType = 0;
 // PictureType = 4 ---> FLASH F8 DONGLE 
 // PictureType = 6 ---> A600
 
-//
-//uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-
 
 //
 // int ActualPicture;
 //byte CurrentPicture;
 //byte PictureType;
 //int ShutterSpeed;
-//uint16_t lux;
 
-Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed,  lux};
+//Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed,  lux};
+Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed };
 
 EEPROM.get (eeAddress,MyPicture);
 
@@ -144,7 +133,7 @@ int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
   Serial.println( MyPicture.StructSpeed );
   Serial.print( " Lux: " );
 
-  Serial.println( MyPicture.StructLux );
+//  Serial.println( MyPicture.StructLux );
 
   //
  
@@ -166,9 +155,10 @@ void eepromDumpCSV ()
 //    byte CurrentPicture;
 //    byte PictureType;
 //    int ShutterSpeed;
-//    uint16_t lux;
 
-  Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed,  lux};
+//  Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed, lux};
+
+  Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed };
 
       EEPROM.get(10,eeAddress);
 
@@ -234,7 +224,7 @@ if (MyPicture.StructType == 5){
   Serial.print( MyPicture.StructSpeed );
   Serial.print (",");
 
-  Serial.println( MyPicture.StructLux );
+//  Serial.println( MyPicture.StructLux );
 
   
   //delay(500); 
@@ -250,4 +240,3 @@ if (MyPicture.StructType == 5){
   Pack = Pack+1;
   return;
 }
-

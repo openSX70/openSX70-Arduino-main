@@ -222,13 +222,6 @@ return;
                                       Serial.print (SD2);
                                       Serial.print (" Shutter Speed: ");
                                       Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
-                                       // uint16_t 
-                                      /*
-                                        lux = lightmeter.readLightLevel(); // Reading BH1750
-                                      Serial.print(F("Lux:  "));
-                                      Serial.print(lux);
-                                      Serial.println(" lx");
-                                      */
                                       //delay(500);
                                       #endif
 
@@ -256,52 +249,7 @@ return;
                                     Serial.print (Read_DS2408_PIO(0));
                                     #endif
                                     #if LIGHTMETER
-                                     uint16_t lux = lightmeter.readLightLevel(); // Reading BH1750
-
-                                     if (lux >= 2001) {
-                                      factor = 5000; 
-                                     // return;
-                                     }
-                                     if (lux >= 1300 && lux < 2000) {
-                                     // factor = 1440; 
-                                     factor = 4000;
-                                     // return;
-                                     }
-                                     
-                                     if (lux < 1300 && lux > 600) {
-                                      factor = 3000;
-                                     // return;
-                                     }
-
-                                      if (lux <= 600 && lux > 300) {
-                                      factor = 1200;
-                                     // return;
-                                     }
-
-                                    if (lux <= 300 && lux > 150) {
-                                      factor = 600;
-                                     // return;
-                                     }
-
-                                   if (lux <= 150 && lux > 50) {
-                                      factor = 300;
-                                     // return;
-                                     }
-                                       if (lux <= 50) {
-                                        return; 
-                                      }
-
-                                      if (lux != oldLux) {
-                                      
-                                      Serial.print(F("Lux:  "));
-                                      Serial.print(lux);
-                                      Serial.print(" lux -- ");  
-     //                                 time = (factor/lux)+10;
-                                      time = (factor/lux)+10;
-                                      Serial.print (time);
-                                      Serial.println(" raw time ");
-                                      
-                                      }
+                                    //here goes light metering
                                       #endif
 
                                        if (takePicture == true )    //NORMAL AUTO OPERATION
@@ -322,7 +270,7 @@ return;
 
                   shutterOPEN();
                   // Click (time); 
-                  delay (time);
+  //                delay (time);  // this set by lux! NEW
                   shutterCLOSE();
 //                  delay (200);                             //AGAIN is this delay necessary?
                   mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
@@ -337,9 +285,7 @@ return;
 //    #endif
 
            
-
-                //Dongle (time); //AUTO 600 EXPERIMENTAL
-                oldLux = lux;                                      
+                                      
                                     
 //if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && Read_DS2408_PIO(0) ==  200 && shots == 0)    //NORMAL AUTO OPERATION
  
