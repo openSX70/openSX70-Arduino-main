@@ -341,18 +341,39 @@ void Click(int ExpDelay)
     #endif
     
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
+        
         if (ExpDelay == 0){
-        delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+        
+        
+        delay (ShutterConstant);
+        
+        if (Read_DS2408_PIO(2) ==  1) { //flash AT THE BEGINNING IF S2 IS ON
+        Write_DS2408_PIO (7,1);
+        delay (1);
+        Write_DS2408_PIO (7,0);
+        }  else if (Read_DS2408_PIO(2) ==  0) {
+          delay (1);
+        }
+          
+        delay (ShutterSpeed[Read_DS2408_PIO(0)] );                        // NOW COMES THE DELAY THAT IS THE PHOTO!
           
         } else {
 
         delay (ExpDelay);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
-        Serial.print("        actual delay: ");
-        Serial.println (ExpDelay);
+//        Serial.print("        actual delay: ");
+//        Serial.println (ExpDelay);
           
         }
         
         ////////CLICK!
+
+    if (Read_DS2408_PIO(2) ==  0) { //flash AT THE EBD IF S2 IS OFF (NORMAL)
+        Write_DS2408_PIO (7,1);
+        delay (1);
+        Write_DS2408_PIO (7,0);
+        }
+
+    
     shutterCLOSE ();                                         //close the shutter
     return;
             } else {
@@ -369,6 +390,7 @@ void Click(int ExpDelay)
 
 void Ydelay ()
 {
+/*
                     if (Read_DS2408_PIO(2) ==  0) {
                     //NORMAL DELAY
                     delay (40);                                 //S3 is now open start Y-delay (40ms)
@@ -378,7 +400,16 @@ void Ydelay ()
                         {
                     delay (200);                              //LONG DELAY SELECTED 
                     //Serial.println ("LONG DELAY**************************************************************************************************************************************");     
-                        }
+                     }
+  */
+
+// ONLY ONE DELAY S2 IS FOR FLASH IN THIS SOFTWARE!
+
+//OPTION COMMENTED CODE ABOVE IS FOR SELECTION OF Y-DELAY FROM 40ms (STANDARD) TO 200ms FOR (DELAY) I NOW HAVE ONLY ONE DELAY 100ms 
+//YOU CAN CHANGE THAT DELAY BELOW, NO LESS THAN 40ms (WHY? Y-DELAY!!!)
+
+delay (100);
+
 return;
 }
 //***************************************************************************************************************************************
@@ -416,5 +447,3 @@ void HighSpeedPWM ()
 
  }
 //***************************************************************************************************************************************
-
-

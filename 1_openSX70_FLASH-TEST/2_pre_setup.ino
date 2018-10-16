@@ -170,14 +170,23 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 //int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //20180704 Julien on slot 0 too slow?
 
-int ShutterConstant = 9;
+const int ShutterConstant = 7;
+// OPTION
+//this is the time it takes the shutter to START to open 
+
+
+
 //int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 //20180807 making the 0 option even faster
 
-int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+//int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
-//OPTION line above are the wheel "raw" speeds (have to detract aprox. 10ms and keep in mind smaller aperture) 
+
+int ShutterSpeed[] = { 3, 5, 6, 7, 11, 18, 25, 38, 46, 83, 143, 293, POSFLASH, POSFLASHF8, POST, POSB };
+
+//OPTION line above are the wheel speeds aproximated to the actual shutter speed ( +  ShutterConstant would be what I called before "RAW")
+// this is for flash
 // this are the "SLOTS":
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
 // to change the speed in the slot position just change the number corresponding.
