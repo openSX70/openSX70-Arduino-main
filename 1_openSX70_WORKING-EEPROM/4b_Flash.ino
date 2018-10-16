@@ -96,16 +96,16 @@ void DongleFlash ()
 
              
              #if SHUTTER
-//                   HighSpeedPWM ();
-//                analogWrite(Solenoid2, 255);
+//         HighSpeedPWM ();
+//         analogWrite(Solenoid2, 255);
                   shutterCLOSE (); 
-                  #endif
-                  
+             #endif
+                
                   #if MOTOR 
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
-      //           analogWrite (Solenoid2, 130);
+//         analogWrite (Solenoid2, 130);
                   Ydelay ();                               //S3 is now open start Y-delay (40ms)
                   #endif
  
@@ -117,8 +117,8 @@ void DongleFlash ()
                   shutterOPEN (); 
 //                  delay (66);
                   delay (80);
-                  Write_DS2408_PIO (7,1);
-//                  digitalWrite(FFA, HIGH);
+                  Write_DS2408_PIO (7,1); // this is for dongle (jack flash)
+//                  digitalWrite(FFA, HIGH); //this is for in-camera flash
                   delay (1);
 //                  analogWrite (Solenoid2,0);
 //                  digitalWrite(FFA, LOW);
