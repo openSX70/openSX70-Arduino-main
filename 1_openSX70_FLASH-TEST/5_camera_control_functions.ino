@@ -297,15 +297,6 @@ void Click(int ExpDelay)
       
       #if SHUTTER
      shutterOPEN (); 
-     
-     while (pressTime > shortPress)
-     int pressTime = REDbutton(S1);
-      shutterCLOSE();
-      #endif    
-
-     
-          
-  }
 
   if ((ShutterSpeed[Read_DS2408_PIO(0)]) == POSFLASH)
   {
