@@ -9,13 +9,13 @@ int level = 1;
 
 void RES1()
 {
-//Connect 9M44
+//Connect 1M
 //Disconnect rest
 pinMode (A2, INPUT);
 pinMode (A3, INPUT);
 pinMode (A1, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A1, LOW);
-Serial.println ("Res 9M44");
+Serial.println ("Res 1M");
 
 return ;
 }
