@@ -3,43 +3,40 @@ byte  level = 1;
 void setup() {
   // initialize serial communication at 9600 bits per second:
   Serial.begin(57600);
-float voltage = 50;
-int level = 1;
+//float voltage = 50;
+//int level = 1;
 }
 
 void RES1()
 {
-//Connect 1M
+//Connect 100K
 //Disconnect rest
 pinMode (A2, INPUT);
 pinMode (A3, INPUT);
 pinMode (A1, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A1, LOW);
-Serial.println ("Res 1M");
 
 return ;
 }
 void RES2()
 { 
-//Connect 100K
+//Connect 47K
 //Disconnect rest
 pinMode (A1, INPUT);
 pinMode (A3, INPUT);
 pinMode (A2, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A2, LOW);
-Serial.println ("Res 100K");
 
 return ;
 }
 void RES3()
 {
-//Connect 10K
+//Connect 4K7
 //Disconnect rest
 pinMode (A1, INPUT);
 pinMode (A2, INPUT);
 pinMode (A3, OUTPUT);  // No se si esto es necesario…
 digitalWrite (A3, LOW);
-Serial.println ("Res 10K");
 
 return ;
 }
@@ -49,7 +46,23 @@ return ;
 
 RES1();
 int sensorValue = analogRead(A0);
-
+if (sensorValue > 0) {
+Serial.print ("100K: ");
+Serial.println(sensorValue);
+}
+RES2();
+sensorValue = analogRead(A0);
+if (sensorValue > 0) {
+Serial.print ("47K: ");
+Serial.println(sensorValue);
+}
+RES3();
+sensorValue = analogRead(A0);
+if (sensorValue > 0) {
+Serial.print ("4K7: ");
+Serial.println(sensorValue);
+}
+/*
 if (sensorValue >= 1023)
 {
 RES2();
@@ -67,5 +80,5 @@ sensorValue = analogRead(A0);
 Serial.print ("Sensor Value: ");
 Serial.println(sensorValue);
 
-
+*/
 }
