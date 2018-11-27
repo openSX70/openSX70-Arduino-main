@@ -7,7 +7,7 @@ void setup() {
  
 void R11()
 {
-//Connect 1K
+//Connect 50K
 //Disconnect rest
 //R11 on the PCB
 pinMode (A7, INPUT);
@@ -19,7 +19,7 @@ return ;
 }
 void R15()
 {
-//Connect 10K
+//Connect 500K
 //Disconnect rest
 //R15 on the PCB
 pinMode (A7, INPUT);
@@ -29,7 +29,7 @@ digitalWrite (A4, LOW);
  
 return ;
 }
- 
+ /*
 void R14()
 {
 //Connect 100R
@@ -42,12 +42,14 @@ digitalWrite (A7, LOW);
  
 return ;
 }
- 
+ */
 void loop() {
   // read sensor and print values
- 
+/* 
 R14();
 delay (10);
+sensorValue = analogRead(A3);
+sensorValue = analogRead(A3);
 sensorValue = analogRead(A3);
 if (sensorValue == 0)
 {
@@ -63,21 +65,23 @@ Serial.print ("  100R: ");
 Serial.print(sensorValue);
 delay (500);
 }
- 
+ */
 R11();
 delay (10);
+//sensorValue = analogRead(A3);
+sensorValue = analogRead(A3);
 sensorValue = analogRead(A3);
 if (sensorValue == 0)
 {
-Serial.print ("          1K: null");
+Serial.print ("          50K: null");
 } 
 else if (sensorValue == 1023) 
 {
-Serial.print ("          1K: max");
+Serial.print ("          50K: max");
 }
 else 
 {
-Serial.print ("          1K: ");
+Serial.print ("          50K: ");
 Serial.print(sensorValue);
 delay (500);
 }
@@ -86,22 +90,25 @@ delay (500);
 R15();
 delay (10);
 sensorValue = analogRead(A3);
+sensorValue = analogRead(A3);
+sensorValue = analogRead(A3);
 if (sensorValue == 0)
 {
-Serial.println ("          10K: null");
+Serial.println ("          500K: null");
 Serial.println("--------------------------------------------------------");
 } 
 else if (sensorValue == 1023) 
 {
-Serial.print ("          10K: max");
+Serial.println ("          500K: max");
 Serial.println("--------------------------------------------------------");
 }
 else 
 {
-Serial.print ("          10K: ");
+Serial.print ("          500K: ");
 Serial.println (sensorValue);
 Serial.println("--------------------------------------------------------");
 delay (500);
 }
+
 }
- 
+  
