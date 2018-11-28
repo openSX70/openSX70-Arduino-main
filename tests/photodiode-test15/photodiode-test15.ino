@@ -35,7 +35,7 @@ void setup() {
     readings2[thisReading2] = 0;}
 }
  
- 
+ /*
 void R11()
 {
 //Connect 1K
@@ -44,11 +44,10 @@ void R11()
 pinMode (A7, INPUT);
 pinMode (A4, INPUT);
 pinMode (A5, OUTPUT);  // this is the one "connected"
-delay (20);
 digitalWrite (A5, LOW);
  
 return ;
-}
+}*/
 void R15()
 {
 //Connect 10K
@@ -57,12 +56,11 @@ void R15()
 pinMode (A7, INPUT);
 pinMode (A5, INPUT);
 pinMode (A4, OUTPUT);  // this is the one "connected"
-delay (20);
 digitalWrite (A4, LOW);
  
 return ;
 }
- 
+/* 
 void R14()
 {
 //Connect 100R
@@ -71,24 +69,22 @@ void R14()
 pinMode (A4, INPUT);
 pinMode (A5, INPUT);
 pinMode (A7, OUTPUT);  // this is the one "connected"
-delay (20);
 digitalWrite (A7, LOW);
  
 return ;
-}
+}*/
  
 void loop() {
   // read sensor and print values
- 
+/* 
 R14();
 
-// dummy reading of the sensor to wake it
-sensorValue = analogRead(inputPin);
+//sensorValue = analogRead(A3);
 // subtract the last reading:
   total0 = total0 - readings0[readIndex0];
   // read from the sensor:
   readings0[readIndex0] = analogRead(inputPin);
-  //delay (10);
+  delay (10);
     // add the reading to the total:
   total0 = total0 + readings0[readIndex0];
   // advance to the next position in the array:
@@ -108,9 +104,6 @@ sensorValue = analogRead(inputPin);
  
 R11();
 
-
-// dummy reading of the sensor to wake it
-sensorValue = analogRead(inputPin);
 //sensorValue = analogRead(A3);
 // subtract the last reading:
   total1 = total1 - readings1[readIndex1];
@@ -136,19 +129,16 @@ sensorValue = analogRead(inputPin);
 
 // delay (500);
 
- 
+ */
  
 R15();
 
-
-// dummy reading of the sensor to wake it
-sensorValue = analogRead(inputPin);
 //sensorValue = analogRead(A3);
 // subtract the last reading:
   total2 = total2 - readings2[readIndex2];
   // read from the sensor:
   readings2[readIndex2] = analogRead(inputPin);
-  // delay (10);
+  delay (10);
   // add the reading to the total:
   total2 = total2 + readings2[readIndex2];
   // advance to the next position in the array:
