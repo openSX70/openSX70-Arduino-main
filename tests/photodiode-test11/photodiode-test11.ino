@@ -29,10 +29,10 @@ digitalWrite (A4, LOW);
  
 return ;
 }
- /*
+ 
 void R14()
 {
-//Connect 100R
+//Connect 10K
 //Disconnect rest
 //R14 on the PCB
 pinMode (A4, INPUT);
@@ -42,10 +42,10 @@ digitalWrite (A7, LOW);
  
 return ;
 }
- */
+
 void loop() {
   // read sensor and print values
-/* 
+ 
 R14();
 delay (10);
 sensorValue = analogRead(A3);
@@ -53,19 +53,19 @@ sensorValue = analogRead(A3);
 sensorValue = analogRead(A3);
 if (sensorValue == 0)
 {
-Serial.print ("  100R: null");
+Serial.print ("  10K: null");
 } 
 else if (sensorValue == 1023) 
 {
-Serial.print ("  100R: max");
+Serial.print ("  10K: max");
 }
 else 
 {
-Serial.print ("  100R: ");
+Serial.print ("  10K: ");
 Serial.print(sensorValue);
 delay (500);
 }
- */
+
 R11();
 delay (10);
 //sensorValue = analogRead(A3);
