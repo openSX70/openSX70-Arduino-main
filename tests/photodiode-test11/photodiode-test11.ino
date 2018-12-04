@@ -75,11 +75,11 @@ delay (10);
 sensorValue = analogRead(A3);
 if (sensorValue == 0)
 {
-Serial.print ("          HIGH LIGHT 10K: null");
+Serial.print ("          HIGH LIGHT 10K: too low");
 } 
 else if (sensorValue == 1023) 
 {
-Serial.print ("          HIGH LIGHT 10K: max");
+Serial.print ("          HIGH LIGHT 10K: too much");
 }
 else 
 {
@@ -96,12 +96,12 @@ sensorValue = analogRead(A3);
 //sensorValue = analogRead(A3);
 if (sensorValue == 0)
 {
-Serial.println ("          LOW LIGHT 1M: null");
+Serial.println ("          LOW LIGHT 1M: too low");
 Serial.println("--------------------------------------------------------");
 } 
 else if (sensorValue == 1023) 
 {
-Serial.println ("          LOW LIGHT 1M: max");
+Serial.println ("          LOW LIGHT 1M: too much");
 Serial.println("--------------------------------------------------------");
 }
 else 
