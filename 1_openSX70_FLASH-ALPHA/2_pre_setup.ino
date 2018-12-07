@@ -183,7 +183,10 @@ const int ShutterConstant = 7;
 //int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 
-int ShutterSpeed[] = { 3, 5, 6, 7, 11, 18, 25, 38, 46, 83, 143, 293, POSFLASH, POSFLASHF8, POST, POSB };
+//int ShutterSpeed[] = { 3, 5, 6, 7, 11, 18, 25, 38, 46, 83, 143, 293, POSFLASH, POSFLASHF8, POST, POSB };
+
+  int ShutterSpeed[] = { 1, 3, 4, 5, 9, 16, 24, 37, 45, 82, 140, 290, POSFLASH, POSFLASHF8, POST, POSB };
+
 
 //OPTION line above are the wheel speeds aproximated to the actual shutter speed ( +  ShutterConstant would be what I called before "RAW")
 // this is for flash
