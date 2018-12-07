@@ -3,7 +3,7 @@ void Dongle(int Exposure)
                                         #if ISDEBUG 
                                         Serial.print ("                                                 Dongle:");
                 //                        Serial.println (DongleSlot);
-//                                          Serial.println (ExpoType);
+                                          Serial.println (ExpoType);
                                         #endif
 
 

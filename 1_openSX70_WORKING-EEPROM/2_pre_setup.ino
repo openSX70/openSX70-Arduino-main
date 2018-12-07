@@ -14,7 +14,7 @@
 //*************
 
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 0
+#define LIGHTMETER 1
 //*************
 //This must be 0 for Len's and Bellows boards from SEEEDFUSION  :-(
 
@@ -177,10 +177,9 @@ int ShutterConstant = 9;
 
 int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
-//OPTION line above are the wheel "raw" speeds (have to detract aprox. 9-10ms and keep in mind smaller aperture) 
+//OPTION line above are the wheel "raw" speeds (have to detract aprox. 10ms and keep in mind smaller aperture) 
 // this are the "SLOTS":
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
-//int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, FLASH, FLASH-F8, T, B };
 // to change the speed in the slot position just change the number corresponding.
 
 int shots = 0;
