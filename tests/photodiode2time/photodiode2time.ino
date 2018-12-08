@@ -1,4 +1,5 @@
 
+int sensorValue;
 
 void setup() {
   // put your setup code here, to run once:
@@ -9,15 +10,18 @@ void setup() {
 int Auto600 (int inputPin, int numReadings)
 {
 int readings[numReadings];      // the readings from the analog input
-int readIndex = 0;              // the index of the current reading
-int total = 0;                  // the running total
-int average = 0;                // the average
+int readIndex ;              // the index of the current reading
+int total ;                  // the running total
+int average;                // the average
 
  // initialize all the readings to 0:
-  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
-    readings[thisReading] = 0;}
-
+  for (int thisReading = 0; thisReading < numReadings; thisReading++)   
+  
+{  readings[thisReading] = 0;}
+ 
 int sensorValue = analogRead(inputPin);
+        Serial.print ("sensorValue: ");
+        Serial.println (sensorValue);
 // subtract the last reading:
   total = total - readings[readIndex];
   // read from the sensor:
@@ -34,31 +38,59 @@ int sensorValue = analogRead(inputPin);
     readIndex = 0;
   // calculate the average:
   average = total / numReadings;
+        Serial.print ("average: ");
 
+        Serial.println (average);
 
-float t = (-0.03846154*(sensorValue) + 20.23077);
+float t = (-0.03846154*(average) + 20.23077);
 int Auto600 = (int) t;
 //float t = (-0.0385*(sensor) + 20.2307);
-
+/*
 if (Auto600 < 1) {
   Auto600 = 1;
-} else if   (Auto600 > 18)
+} else if   (sensorValue >= 500)
 {
   //LED ROJO
   Auto600 = 0;
   return;
-}
+}*/
 
 return Auto600;
-
 }
 }
 
+ 
+void R11()
+{
+//Connect 1M5 LOW
+//Disconnect rest
+//R11 on the PCB
+//pinMode (A7, INPUT);
+pinMode (A4, INPUT);
+pinMode (A5, OUTPUT);  // this is the one "connected"
+digitalWrite (A5, LOW);
+ 
+return ;
+}
+
+void R15()
+{
+//Connect 750K HIGH
+//Disconnect rest
+//R15 on the PCB
+//pinMode (A7, INPUT);
+pinMode (A5, INPUT);
+pinMode (A4, OUTPUT);  // this is the one "connected"
+digitalWrite (A4, LOW);
+ 
+return ;
+}
 void loop() {
   // put your main code here, to run repeatedly:
-
-  int exposureTime = Auto600 (A3,5);
-  Serial.print (exposureTime);
+  R15();
+  int exposureTime = Auto600 (A3,10);
+  Serial.print ("exposure time: ");
+  Serial.println (exposureTime);
   
 
 }
