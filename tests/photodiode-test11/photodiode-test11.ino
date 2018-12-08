@@ -30,6 +30,19 @@ digitalWrite (A4, LOW);
  
 return ;
 }
+
+float exposureTime (int sensor) {
+float t = (-0,03846154*(sensor) + 20,23077);
+if (t < 1) {
+  t=1;
+} else if   (t > 18)
+{
+  //LED ROJO
+  return;
+}
+
+return t;
+}
 /*
 void R14()
 {
