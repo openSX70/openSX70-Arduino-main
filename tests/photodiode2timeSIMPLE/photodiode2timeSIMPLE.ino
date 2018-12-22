@@ -9,8 +9,9 @@ int Auto600 (int inputPin)
 {
  
 int sensorValue = analogRead(inputPin);
- sensorValue = analogRead(inputPin);
-
+// sensorValue = analogRead(inputPin);
+Serial.print ("               SensorValue = ");
+Serial.println (sensorValue);
 
 float t = (-0.03846154*(sensorValue) + 20.23077);
 int t2 = (int) t;
@@ -18,14 +19,9 @@ int t2 = (int) t;
 
 if (t2 < 1) {
   t2 = 1;
-} else if   (sensorValue >= 500)
-{
-  //LED ROJO
-  t2 = 10000;
   return;
-} else
-
-return t2;
+}
+return t2; 
 }
 
 
@@ -50,14 +46,13 @@ void R15()
 //R15 on the PCB
 //pinMode (A7, INPUT);
 pinMode (A5, INPUT);
-pinMode (A4, OUTPUT);  // this is the one "connected"
-digitalWrite (A4, LOW);
+pinMode (A4, OUTPUT);  // this is the one "connected"digitalWrite (A4, LOW);
  
 return ;
 }
 void loop() {
   // put your main code here, to run repeatedly:
-  R15();
+  R11();
   int exposureTime = Auto600 (A3);
   Serial.print ("exposure time: ");
   Serial.println (exposureTime);

@@ -170,13 +170,18 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 //int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //20180704 Julien on slot 0 too slow?
 
-int ShutterConstant = 9;
-//int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+//int ShutterConstant = 9;
+//int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+
+//20181222
+int ShutterConstant = 7;
+int ShutterSpeed[] = { 11, 14, 15, 16, 20, 27, 34, 47, 55, 92, 152, 302, POSFLASH, POSFLASHF8, POST, POSB };
+// from "apogee" aprox 1/2 time to close (for flash???)
 
 //20180807 making the 0 option even faster
 
 //int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
-int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+//int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 //OPTION line above are the wheel "raw" speeds (have to detract aprox. 9-10ms and keep in mind smaller aperture) 
 // this are the "SLOTS":
