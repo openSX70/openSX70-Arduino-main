@@ -170,24 +170,31 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 //int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //20180704 Julien on slot 0 too slow?
 
-//int ShutterConstant = 9;
-//int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
-
-//20181222
-int ShutterConstant = 7;
-int ShutterSpeed[] = { 11, 14, 15, 16, 20, 27, 34, 47, 55, 92, 152, 302, POSFLASH, POSFLASHF8, POST, POSB };
-// from "apogee" aprox 1/2 time to close (for flash???)
 
 //20180807 making the 0 option even faster
 
 //int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
-//OPTION line above are the wheel "raw" speeds (have to detract aprox. 9-10ms and keep in mind smaller aperture) 
+
+//int ShutterConstant = 9;
+//int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+
+//20181222
+//OPTION ShutterConstant is the time the shutter takes to begin to open it *might* change from camera to camera
+int ShutterConstant = 7;
+
+
+//OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
 // this are the "SLOTS":
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, FLASH, FLASH-F8, T, B };
 // to change the speed in the slot position just change the number corresponding.
+int ShutterSpeed[] = { 11, 14, 15, 16, 20, 27, 34, 47, 55, 92, 152, 302, POSFLASH, POSFLASHF8, POST, POSB };
+
+// from "apogee" aprox 1/2 time to close (for flash???)
+// if ShutterSpeed is 10ms then it takes aprox 5ms to close fro  apogee 
+
 
 int shots = 0;
 
