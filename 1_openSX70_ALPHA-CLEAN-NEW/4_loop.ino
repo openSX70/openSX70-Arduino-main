@@ -134,7 +134,7 @@ return;
 
 
 //              Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
-              
+//=================================================================================================================================================================
              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POSB)))) //////////////POSITION B
 
                   {
@@ -162,50 +162,34 @@ return;
 
             int pressTime = REDbutton(S1);
         
-//       if ((ShutterSpeed[Read_DS2408_PIO(0)]) != (POSB))
-// //       if (ShutterSpeed[Read_DS2408_PIO(0)])
-  
- // //            {
+
               PictureType = 0;
               
             if ((pressTime > shortPress) && (pressTime < longPress)) {
-                                       #if ISDEBUG 
-                                      Serial.println("---------------------------");
-                                      Serial.print ("SHORT:");
-                                      Serial.println (pressTime);
-                                      Serial.println("---------------------------");
-                                      #endif  
-
+                                     
             takePicture = true;
               
             }  // END OF if ((pressTime > shortPress) && (pressTime < longPress)) {
             
             else if (pressTime > longPress) {
-                                       #if ISDEBUG 
-                                      Serial.println("---------------------------");
-                                      Serial.print ("LONG: ");
-                                      Serial.println (pressTime);
-                                      Serial.println("---------------------------");
-                                      #endif  
-                                        
-//            BeepTimerDelay();   //Piezo beeps
+                                                                             
           BlinkTimerDelay();  //Dongle LED blinks
 //          LEDTimerDelay();    //Built-in LED blinks          
             takePicture = true;
              
             }   // END Of else if (pressTime > longPress) 
- // //            }
+
                                       
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
-                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))
+                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))      //BUILT-IN FLASH
                               {
                                 DongleFlashNormal();
                                 return;
                               
-                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASHF8))))
+                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASHF8))))      //BUILT-IN FLASH
                               {
-                                DongleFlash();
+                                DongleFlashF8();
                                 return;
                                                               
                               }
@@ -239,7 +223,7 @@ return;
                                       Serial.print (Read_DS2408_PIO(0));
                                       Serial.println (":  FLASH");
                                       #endif
-                                      Flash();
+                                      BuiltInFlash();
     return;
   
   }
