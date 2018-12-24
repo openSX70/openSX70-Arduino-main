@@ -220,7 +220,8 @@ void DongleFlashF8 ()
     }
     void FastFlash ()
                   {
-                  digitalWrite(FFA, HIGH);
+                  Write_DS2408_PIO (7,1);
                   delay (1);
-                  digitalWrite(FFA, LOW);
+                  Write_DS2408_PIO (7,0);
+                  return;   
                   }

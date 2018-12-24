@@ -277,6 +277,8 @@ void darkslideEJECT()
 void Click(int ExpDelay)
 {
 
+int PhotoDelay = ((ShutterConstant - 1) + ((ShutterSpeed[Read_DS2408_PIO(0)])/2));
+
   if ((ShutterSpeed[Read_DS2408_PIO(0)]) > 0)
 
   {
@@ -287,11 +289,15 @@ void Click(int ExpDelay)
     
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
         if (ExpDelay == 0){
-        delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+          delay (PhotoDelay); //ShutterSpeed-1 /2 part 1
+          FastFlash();
+          delay (PhotoDelay); //ShutterSpeed-1 /2 part 1
+          
+//        delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
           
         } else {
 
-        delay (ExpDelay);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+        delay (ExpDelay);                        // I THINK ExpDelay IS FOR AUTO MODE
         Serial.print("        actual delay: ");
         Serial.println (ExpDelay);
           
