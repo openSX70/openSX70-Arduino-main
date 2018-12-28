@@ -192,7 +192,7 @@ const int ShutterConstant = 7;
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, FLASH, FLASH-F8, T, B };
 // to change the speed in the slot position just change the number corresponding.
-int ShutterSpeed[] = { 2, 3, 6, 8, 15, 30, 36, 42, 60, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+int ShutterSpeed[] = { 2, 4, 6, 8, 15, 30, 35, 42, 60, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 // from "apogee" aprox 1/2 time to close (for flash???)
 // if ShutterSpeed is 10ms then it takes aprox 5ms to close from apogee 

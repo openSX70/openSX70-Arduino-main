@@ -277,24 +277,100 @@ void darkslideEJECT()
 void Click(int ExpDelay)
 {
 
-int PhotoDelay = ((ShutterConstant - 1) + ((ShutterSpeed[Read_DS2408_PIO(0)])/2));
+float PhotoDelay1 = (ShutterSpeed[Read_DS2408_PIO(0)])  ; ;
 
-  if ((ShutterSpeed[Read_DS2408_PIO(0)]) > 0)
+PhotoDelay1 = (PhotoDelay1 / 2);
 
-  {
-   #if ISDEBUG
-    Serial.print ("--------------------------------------------------CLICK:  ");
+//unsigned long PhotoDelay2 = ((ShutterSpeed[Read_DS2408_PIO(0)]) / 2) ;
+
+PhotoDelay1 =  PhotoDelay1 + (ShutterConstant - 1);
+
+float PhotoDelay2 = (ShutterSpeed[Read_DS2408_PIO(0)])  ;
+
+PhotoDelay2 = (PhotoDelay2 / 2) ;
+
+float PhotoDelay3 = (ShutterConstant + (ShutterSpeed[Read_DS2408_PIO(0)]))-1;
+
+
+ if ((ShutterSpeed[Read_DS2408_PIO(0)]) > 0)
+
+        if (ExpDelay == 0){
+
+          {
+            if (Read_DS2408_PIO(2) ==  0) {  //S2 OFF
+  
+                                Serial.begin (57600);
+                                Serial.println ("--------------------------------------------------TOTAL EXPOSURE CLICK S2 OFF:  ");
+                                Serial.print ("---------------------CLICK:");
+                                Serial.println (PhotoDelay1 + PhotoDelay2 +1 );
+
+                                Serial.print (PhotoDelay1 );
+                                Serial.print ( " ms + FLASH (1ms) + ");
+                                Serial.print (PhotoDelay2);
+                                Serial.println (" ms");
+                                Serial.print ("PhotoDelay1:  ");
+                                Serial.println (PhotoDelay1 );
+
+                                Serial.print ("PhotoDelay2:  ");
+                                Serial.println (PhotoDelay2 );
+
+                                Serial.print ("ShutterConstant: ");
+                                Serial.println (ShutterConstant);
+
+                                Serial.print ("ShutterConstant - 1: ");
+                                Serial.println (ShutterConstant - 1);
+  
+                                Serial.print ("ShutterSpeed: ");
+                                Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
+                                Serial.print ("ShutterSpeed / 2: ");
+                                Serial.println (ShutterSpeed[Read_DS2408_PIO(0)] / 2);
+                                Serial.println ("--------------------------------------------------------");
+    
+                                shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
+        if (ExpDelay == 0){
+          delay (PhotoDelay1); //ShutterSpeed-1 /2 part 1
+          FastFlash();
+          delay (PhotoDelay2); //ShutterSpeed-1 /2 part 1
+          
+//        delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
+        }
+        } else  if (Read_DS2408_PIO(2) ==  1) {
+    Serial.begin (57600);
+    Serial.println ("--------------------------------------------------TOTAL EXPOSURE CLICK S2 ON:  ");
+    Serial.print ("---------------------CLICK:");
+    Serial.println (PhotoDelay3 +1 );
+
+    Serial.print (PhotoDelay3 );
+    Serial.print ( "ms + FLASH + CLOSE");
+    
+    Serial.print ("PhotoDelay3:  ");
+    Serial.println (PhotoDelay3 );
+
+    Serial.print ("ShutterConstant: ");
+    Serial.println (ShutterConstant);
+
+    Serial.print ("ShutterConstant - 1: ");
+    Serial.println (ShutterConstant - 1);
+
+/*    
+    Serial.print ("ShutterSpeed: ");
     Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
-    #endif
+    
+    Serial.print ("ShutterSpeed / 2: ");
+    Serial.println (ShutterSpeed[Read_DS2408_PIO(0)] / 2);
+*/
+    Serial.println ("--------------------------------------------------------");
     
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
         if (ExpDelay == 0){
-          delay (PhotoDelay); //ShutterSpeed-1 /2 part 1
+          delay (PhotoDelay1); //ShutterSpeed-1 /2 part 1
           FastFlash();
-          delay (PhotoDelay); //ShutterSpeed-1 /2 part 1
+          delay (PhotoDelay2); //ShutterSpeed-1 /2 part 1
           
 //        delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
-          
+
+
+        }
         } else {
 
         delay (ExpDelay);                        // I THINK ExpDelay IS FOR AUTO MODE
@@ -306,11 +382,8 @@ int PhotoDelay = ((ShutterConstant - 1) + ((ShutterSpeed[Read_DS2408_PIO(0)])/2)
         ////////CLICK!
     shutterCLOSE ();                                         //close the shutter
     return;
-            } else {
-
-                    return;
-                  }
-
+            }
+            }
 } //end of void Click()
 
 
@@ -320,7 +393,10 @@ int PhotoDelay = ((ShutterConstant - 1) + ((ShutterSpeed[Read_DS2408_PIO(0)])/2)
 
 void Ydelay ()
 {
-                    if (Read_DS2408_PIO(2) ==  0) {
+  delay (100);
+  //OPTION: SET ONLY 1 "MIDDLE GROUND" DELAY AT 100ms
+  
+/*                    if (Read_DS2408_PIO(2) ==  0) {
                     //NORMAL DELAY
                     delay (40);                                 //S3 is now open start Y-delay (40ms)
                    
@@ -330,6 +406,7 @@ void Ydelay ()
                     delay (200);                              //LONG DELAY SELECTED 
                     //Serial.println ("LONG DELAY**************************************************************************************************************************************");     
                         }
+*/                        
 return;
 }
 //***************************************************************************************************************************************
