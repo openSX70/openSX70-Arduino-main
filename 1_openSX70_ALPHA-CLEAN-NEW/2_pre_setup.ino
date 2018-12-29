@@ -186,6 +186,9 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 //OPTION ShutterConstant is the time the shutter takes to begin to open it *might* change from camera to camera
 const int ShutterConstant = 7;
 // Actual time is ShutterConstant + 1ms (flash) + ShutterSpeed
+//OPTION ShutterF8 is the time the shutter takes from beginning to open to full open f8.
+const int ShutterF8 = 38;
+//
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
 // this are the "SLOTS":
