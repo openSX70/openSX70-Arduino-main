@@ -304,7 +304,7 @@ void Click(int ExpDelay)
           ShutterDelay3 = ShutterConstantFlash + ShutterDelay;
 
           
-                    Serial.begin (57600);
+                    Serial.begin (9600);
                     Serial.print ("ShutterConstant: ");
                     Serial.print (ShutterConstant);
                     Serial.println (" ms ");
@@ -317,6 +317,10 @@ void Click(int ExpDelay)
                     Serial.println (" ms ");
                     Serial.print ("HalfShutterDelay: ");
                     Serial.print (HalfShutterDelay);
+                    Serial.println (" ms ");
+
+                    Serial.print ("Total exposure time including flash: ");
+                    Serial.print (ShutterConstant+ShutterDelay);
                     Serial.println (" ms ");
                     
                     Serial.print ("ShutterDelay1: ");
@@ -387,7 +391,7 @@ float PhotoDelay3 = (ShutterConstant + (ShutterSpeed[Read_DS2408_PIO(0)]))-1;
           {
             if (Read_DS2408_PIO(2) ==  0) {  //S2 OFF
   
-                                Serial.begin (57600);
+                                Serial.begin (9600);
                                 Serial.println ("--------------------------------------------------TOTAL EXPOSURE CLICK S2 OFF:  ");
                                 Serial.print ("---------------------CLICK:");
                                 Serial.println (PhotoDelay1 + PhotoDelay2 +1 );
@@ -423,7 +427,7 @@ float PhotoDelay3 = (ShutterConstant + (ShutterSpeed[Read_DS2408_PIO(0)]))-1;
 //        delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
         }
         } else  if (Read_DS2408_PIO(2) ==  1) {
-    Serial.begin (57600);
+    Serial.begin (9600);
     Serial.println ("--------------------------------------------------TOTAL EXPOSURE CLICK S2 ON:  ");
     Serial.print ("---------------------CLICK:");
     Serial.println (PhotoDelay3 +1 );
@@ -533,3 +537,4 @@ void HighSpeedPWM ()
 
  }
 //***************************************************************************************************************************************
+

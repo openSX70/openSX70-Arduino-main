@@ -1,12 +1,16 @@
 
 void loop() {
+    ds.reset(); 
+    device_count = ds.find(&devices);
+
 
 if (device_count == 0)
 {
-device_count = ds.find(&devices);
+//device_count = ds.find(&devices);
 #if SIMPLEDEBUG
 Serial.print ("LOOP: device_count = ds.find(&devices);--->");
 Serial.println (device_count);
+delay (1000);
 #endif
           Write_DS2408_PIO (6, 1);
           delay (200);
@@ -195,7 +199,7 @@ return;
                               }
           //byte ActualSlot = (Read_DS2408_PIO(0));
 
-                                      #if ISDEBUG 
+                                      #if SIMPLEDEBUG 
                                       byte SD1 = Read_DS2408_PIO(1);
                                       byte SD2 = Read_DS2408_PIO(2);
                                       Serial.print ("Selector: ");
@@ -206,7 +210,7 @@ return;
                                       Serial.print (SD2);
                                       Serial.print (" Shutter Speed: ");
                                       Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
-                                      //delay(500);
+                                      delay(500);
                                       #endif
 
 
@@ -219,9 +223,10 @@ return;
   if (Read_DS2408_PIO(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
   {
    
-                                      #if ISDEBUG 
+                                      #if SIMPLEDEBUG 
                                       Serial.print (Read_DS2408_PIO(0));
                                       Serial.println (":  FLASH");
+                                      delay (400);
                                       #endif
                                       BuiltInFlash();
     return;
@@ -229,14 +234,19 @@ return;
   }
   if (Read_DS2408_PIO(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
   {
-                                    #if ISDEBUG 
-                                    Serial.print (Read_DS2408_PIO(0));
+                                    #if SIMPLEDEBUG
+                                    Serial.print ("Read_DS2408_PIO(0) = "); 
+                                    Serial.println (Read_DS2408_PIO(0));
                                     #endif
                                     #if LIGHTMETER
-                                    //here goes light metering
-                                      #endif
-
-                                       if (takePicture == true )    //NORMAL AUTO OPERATION
+                                    Serial.begin(9600);
+                                    Serial.print ("HIGH: ");
+                                    Serial.print (LightValue1());
+                                    Serial.print ("       LOW: ");
+                                    Serial.println(LightValue2());
+                                    #endif                                    
+                                    
+  /*                                  //   if (takePicture == true )    //NORMAL AUTO OPERATION
     {
                          
                     byte PictureType = 6;                    
@@ -268,7 +278,7 @@ return;
      } // END of  if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
 //    #endif
 
-           
+*/           
                                       
                                     
 //if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && Read_DS2408_PIO(0) ==  200 && shots == 0)    //NORMAL AUTO OPERATION
@@ -293,3 +303,4 @@ return;
 
 //***************************************************************************************************************************************
  
+

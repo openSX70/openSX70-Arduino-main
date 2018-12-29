@@ -14,7 +14,7 @@
 //*************
 
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 0
+#define LIGHTMETER 1
 //*************
 //This must be 0 for Len's and Bellows boards from SEEEDFUSION  :-(
 
@@ -261,7 +261,12 @@ int ActualPicture;
 byte CurrentPicture;
 byte PictureType;
 int eepromSpeed;
-float lux = 99; // for NEW auto
+//float lux = 99; // for NEW auto
+
+//Photodiode stuff
+
+int sensorValue;
+int lightMeter = A3;
 
 
   
@@ -295,3 +300,8 @@ void BuiltInFlash ();
 void DongleFlashF8 ();
 void DongleFlashNormal ();
 void FastFlash ();
+void R11();
+void R15();
+int LightValue1();
+int LightValue2();
+

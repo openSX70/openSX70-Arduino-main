@@ -76,11 +76,13 @@ unsigned long currentMillisTimer = millis();
                   #endif
 
                   #if SHUTTER
+                  Click (Exposure);
+                  /*
                   if (Exposure = 0) {
                    Click (0);  
                   } else {
                     Click (Exposure);
-                  }
+                  }*/
                    
                   #endif
                   
@@ -200,3 +202,4 @@ unsigned long currentMillisTimer = millis();
      
     
  
+

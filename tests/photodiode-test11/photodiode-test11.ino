@@ -8,27 +8,25 @@ void setup() {
  
 void R11()
 {
-//Connect 10K
+//Connect 1M5
 //Disconnect rest
 //R11 on the PCB
 //pinMode (A7, INPUT);
 pinMode (A4, INPUT);
 pinMode (A5, OUTPUT);  // this is the one "connected"
 digitalWrite (A5, LOW);
- 
 return ;
 }
 
 void R15()
 {
-//Connect 1M
+//Connect 750K
 //Disconnect rest
 //R15 on the PCB
 //pinMode (A7, INPUT);
 pinMode (A5, INPUT);
 pinMode (A4, OUTPUT);  // this is the one "connected"
 digitalWrite (A4, LOW);
- 
 return ;
 }
 

@@ -43,13 +43,15 @@ void setup() {
   #if ISDEBUG 
   Serial.begin(9600);                  // set up Serial library at 9600 bps
   Serial.println("HELLO openSX70!");
+  delay (500);
   #endif
 
-  device_count = ds.find(&devices);
+/*  device_count = ds.find(&devices);
   for (int i = 0; i < 8; i++)
     Serial.print(devices[0][i], HEX);
-  Serial.println("");
-
+  Serial.print("Device Count: ");
+  Serial.println (device_count);
+*/  
   ds.reset();
   ds.write(0x96);
   for (int i = 0; i < 8; i++)
@@ -63,6 +65,7 @@ void setup() {
 //****************************************************************************************************** 
 
 void loop() {
+   device_count = ds.find(&devices);
   
 Serial.println ("HELLO");                                                                                                 
  
@@ -90,8 +93,13 @@ Serial.println ("HELLO");
  
   uint8_t readDevice = ds.get_state(devices[0]);
   #if ISDEBUG 
+   Serial.print ("ReadDevice");
    Serial.print ("---------------------------------------------->");
    Serial.println (readDevice, BIN);
+   Serial.print ("device_count");
+   Serial.print ("---------------------------------------------->");
+   Serial.println (device_count);   
+   delay (1000);
   #endif
 
 // Was fLASH
