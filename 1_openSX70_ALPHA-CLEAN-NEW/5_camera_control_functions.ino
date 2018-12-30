@@ -303,6 +303,7 @@ void Click(int ExpDelay)
         }
           ShutterDelay3 = ShutterConstantFlash + ShutterDelay;
 
+               #if SIMPLEDEBUG 
           
                     Serial.begin (9600);
                     Serial.print ("ShutterConstant: ");
@@ -341,7 +342,7 @@ void Click(int ExpDelay)
                     Serial.print (ShutterDelay3);
                     Serial.println ( "ms----(Flash*)----close"); 
                   
-
+              #endif
 
           
   if (Read_DS2408_PIO(2) ==  0) 
@@ -486,7 +487,7 @@ float PhotoDelay3 = (ShutterConstant + (ShutterSpeed[Read_DS2408_PIO(0)]))-1;
 
 void Ydelay ()
 {
-  delay (100);
+  delay (80);
   //OPTION: SET ONLY 1 "MIDDLE GROUND" DELAY AT 100ms
   
 /*                    if (Read_DS2408_PIO(2) ==  0) {
@@ -537,4 +538,3 @@ void HighSpeedPWM ()
 
  }
 //***************************************************************************************************************************************
-

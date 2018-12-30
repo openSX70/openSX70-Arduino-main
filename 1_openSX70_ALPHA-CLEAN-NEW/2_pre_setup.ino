@@ -184,7 +184,7 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 
 //20181224
 //OPTION ShutterConstant is the time the shutter takes to begin to open it *might* change from camera to camera
-const int ShutterConstant = 7;
+const int ShutterConstant = 5;
 // Actual time is ShutterConstant + 1ms (flash) + ShutterSpeed
 //OPTION ShutterF8 is the time the shutter takes from beginning to open to full open f8.
 const int ShutterF8 = 38;
@@ -304,4 +304,3 @@ void R11();
 void R15();
 int LightValue1();
 int LightValue2();
-

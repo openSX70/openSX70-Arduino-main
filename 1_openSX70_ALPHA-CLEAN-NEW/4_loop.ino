@@ -1,12 +1,12 @@
 
 void loop() {
-    ds.reset(); 
-    device_count = ds.find(&devices);
+//    ds.reset(); 
+//    device_count = ds.find(&devices);
 
 
 if (device_count == 0)
 {
-//device_count = ds.find(&devices);
+device_count = ds.find(&devices);
 #if SIMPLEDEBUG
 Serial.print ("LOOP: device_count = ds.find(&devices);--->");
 Serial.println (device_count);
@@ -303,4 +303,3 @@ return;
 
 //***************************************************************************************************************************************
  
-
