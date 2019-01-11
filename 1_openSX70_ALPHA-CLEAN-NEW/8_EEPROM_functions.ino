@@ -15,7 +15,7 @@ void eepromUpdate ()
                   int Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
 //                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
 
-                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter };
+                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, sensorValueLOW, sensorValueHIGH };
                       Serial.println ("*****************************");
                       Serial.println (ActualPicture);
                       Serial.println (CurrentPicture);
@@ -158,7 +158,7 @@ void eepromDumpCSV ()
 
 //  Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed, lux};
 
-  Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed };
+  Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed, sensorValueLOW, sensorValueHIGH };
 
       EEPROM.get(10,eeAddress);
 

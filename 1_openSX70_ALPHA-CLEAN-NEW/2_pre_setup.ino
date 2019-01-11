@@ -253,6 +253,8 @@ int eeAddress;
   byte PackPicture;
   byte StructType;
   int StructSpeed;
+  byte StructlightVlow;
+  byte StructlightVhigh;
   };
 
   byte Pack = 1;
@@ -261,11 +263,11 @@ int ActualPicture;
 byte CurrentPicture;
 byte PictureType;
 int eepromSpeed;
-//float lux = 99; // for NEW auto
 
 //Photodiode stuff
 
-int sensorValue;
+byte sensorValueLOW;
+byte sensorValueHIGH;
 int lightMeter = A3;
 
 

@@ -29,14 +29,14 @@ int LightValue1()
 {
 R11();
 //delay (1);
-sensorValue = analogRead(lightMeter);
+byte sensorValue = analogRead(lightMeter);
 return sensorValue;
 }
 int LightValue2()
 {
 R15();
 //delay (1);
-sensorValue = analogRead(lightMeter);
+byte sensorValue = analogRead(lightMeter);
 return sensorValue;
 }
 #endif
