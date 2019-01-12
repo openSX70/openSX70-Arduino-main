@@ -18,7 +18,7 @@ void BuiltInFlash ()
                   Serial.println ("CAMERA FLASH");
                  #endif
 
-                    CurrentPicture = EEPROM.read(4) ; 
+                    CurrentPicturePack = EEPROM.read(4) ; 
                     byte PictureType = 2;                    
                     eepromUpdate ();
 

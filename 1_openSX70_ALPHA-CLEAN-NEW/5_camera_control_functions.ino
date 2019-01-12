@@ -288,7 +288,7 @@ void Click(int ExpDelay)
        int ShutterDelay1;
        int ShutterDelay2;
        int ShutterDelay3;
-       int ShutterConstantFlash = ShutterConstant -1;
+       int ShutterConstantFlash = ShutterConstant - FlashDelay;
        int HalfShutterDelay = ShutterDelay / 2 ;
       if ((ShutterDelay) <= (ShutterF8))
         {
@@ -343,7 +343,7 @@ void Click(int ExpDelay)
                     Serial.println ( "ms----(Flash*)----close"); 
                   
               #endif
-
+  
           
   if (Read_DS2408_PIO(2) ==  0) 
       {  //S2 OFF FLASH AT THE BEGGINING

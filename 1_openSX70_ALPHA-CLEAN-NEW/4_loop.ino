@@ -32,8 +32,8 @@ Serial.println ("BLINK after DS2408 init in loop");
   if (digitalRead(S8) == HIGH && digitalRead(S9) == LOW)
     //EJECT DARK SLIDE
   {
-    CurrentPicture = 0;
-    EEPROM.write(4,CurrentPicture);
+    CurrentPicturePack = 0;
+    EEPROM.write(4,CurrentPicturePack);
     Write_DS2408_PIO (6, 0);
             Write_DS2408_PIO (6, 1);
      darkslideEJECT();
@@ -45,13 +45,13 @@ Serial.println ("BLINK after DS2408 init in loop");
   }
   //  CurrentPicture = EEPROM.read(4) ; 
   #endif
-  #if MOTOR 
+              //  #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH *********************************************************************************************************************************
 //    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) || (CurrentPicture >= 8))
 
 // changed this to allow shooting until counter is actually 0, in case "something" happens and I loose count!
     
-    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) && (CurrentPicture >= 8))
+    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) && (CurrentPicturePack >= 8))
  
     
     //CurrentPicture = 0;
@@ -101,12 +101,12 @@ eepromDumpCSV();
 return;
       
 }
-#endif
+//#endif
 
   //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW)
   {
-                                 CurrentPicture = EEPROM.read(4) ; 
+                                 CurrentPicturePack = EEPROM.read(4) ; 
                                  #if ISDEBUG 
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
                                  #endif

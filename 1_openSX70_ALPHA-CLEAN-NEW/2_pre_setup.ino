@@ -184,10 +184,11 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 
 //20181224
 //OPTION ShutterConstant is the time the shutter takes to begin to open it *might* change from camera to camera
-const int ShutterConstant = 5;
-// Actual time is ShutterConstant + 1ms (flash) + ShutterSpeed
+const int ShutterConstant = 7;
+// Actual time is ShutterConstant + FlashDelay + ShutterSpeed
 //OPTION ShutterF8 is the time the shutter takes from beginning to open to full open f8.
 const int ShutterF8 = 38;
+const byte FlashDelay = 2;
 //
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
@@ -251,7 +252,7 @@ int eeAddress;
   struct Picture  
     {
     int StructPicture;         //total count of pictures since init
-    byte PackPicture;          //pic count within this pack
+    byte StructPackPicture;          //pic count within this pack
     byte StructType;           //picture type
 
         // PictureType = 0 ---> MANUAL
@@ -263,20 +264,20 @@ int eeAddress;
         // PictureType = +100 ---> MULTIPLE EXPOSURE
         // PictureType = +200 ---> TIMER DELAY
     
-    int StructSpeed;           //shutter speed
-    byte StructlightVlow;      //photodiode read LOW
-    byte StructlightVhigh;     //photodiode read HIGH
+    byte StructSpeed;           //shutter speed
+    int StructLightVlow ;      //photodiode read LOW
+    int StructLightVhigh ;     //photodiode read HIGH
     };
 
 
       byte Pack = 1;
   
       int ActualPicture;
-      byte CurrentPicture;
+      byte CurrentPicturePack;
       byte PictureType;
-      int eepromSpeed;
-      byte sensorValueLOW;    //Photodiode stuff
-      byte sensorValueHIGH;   //Photodiode stuff
+      byte eepromSpeed;
+      int sensorValueLOW;    //Photodiode stuff
+      int sensorValueHIGH;   //Photodiode stuff
 
 
 int lightMeter = A3;  //Pin that the photodiode is READ (different from the resistors!!!)
