@@ -253,19 +253,21 @@ int eeAddress;
     int StructPicture;         //total count of pictures since init
     byte PackPicture;          //pic count within this pack
     byte StructType;           //picture type
+
+        // PictureType = 0 ---> MANUAL
+        // PictureType = 1 ---> A100
+        // PictureType = 2 ---> FLASH DONGLELESS
+        // PictureType = 4 ---> FLASH F8 DONGLE 
+        // PictureType = 6 ---> A600
+        // PictureType = +10 ---> MIRROR DELAY
+        // PictureType = +100 ---> MULTIPLE EXPOSURE
+        // PictureType = +200 ---> TIMER DELAY
+    
     int StructSpeed;           //shutter speed
     byte StructlightVlow;      //photodiode read LOW
     byte StructlightVhigh;     //photodiode read HIGH
     };
 
-    // PictureType = 0 ---> MANUAL
-    // PictureType = 1 ---> A100
-    // PictureType = 2 ---> FLASH DONGLELESS
-    // PictureType = 4 ---> FLASH F8 DONGLE 
-    // PictureType = 6 ---> A600
-    // PictureType = +10 ---> MIRROR DELAY
-    // PictureType = +100 ---> MULTIPLE EXPOSURE
-    // PictureType = +200 ---> TIMER DELAY
 
       byte Pack = 1;
   
