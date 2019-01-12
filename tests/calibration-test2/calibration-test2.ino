@@ -24,7 +24,7 @@ void setup() {
 
   // put your setup code here, to run once:
 pinMode(S1, INPUT_PULLUP);
-pinMode(FFA, OUTPUT);
+//pinMode(FFA, OUTPUT);
 
     device_count = ds.find(&devices);
 
@@ -56,7 +56,7 @@ analogWrite(Solenoid1, 0);
 
 //R15();
 */
-int samples = 100;
+int samples = 200;
 unsigned long timevalue [samples];
 //unsigned long high [samples];
 unsigned long low [samples];
