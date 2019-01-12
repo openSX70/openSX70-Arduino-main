@@ -248,27 +248,36 @@ int eeAddress;
 // Type (manual, a100,a600, flash etc...)
 // ShutterSpeed actual for auto reference/record
  
-  struct Picture  {
-  int StructPicture;
-  byte PackPicture;
-  byte StructType;
-  int StructSpeed;
-  byte StructlightVlow;
-  byte StructlightVhigh;
-  };
+  struct Picture  
+    {
+    int StructPicture;         //total count of pictures since init
+    byte PackPicture;          //pic count within this pack
+    byte StructType;           //picture type
+    int StructSpeed;           //shutter speed
+    byte StructlightVlow;      //photodiode read LOW
+    byte StructlightVhigh;     //photodiode read HIGH
+    };
 
-  byte Pack = 1;
+    // PictureType = 0 ---> MANUAL
+    // PictureType = 1 ---> A100
+    // PictureType = 2 ---> FLASH DONGLELESS
+    // PictureType = 4 ---> FLASH F8 DONGLE 
+    // PictureType = 6 ---> A600
+    // PictureType = +10 ---> MIRROR DELAY
+    // PictureType = +100 ---> MULTIPLE EXPOSURE
+    // PictureType = +200 ---> TIMER DELAY
+
+      byte Pack = 1;
   
-int ActualPicture;
-byte CurrentPicture;
-byte PictureType;
-int eepromSpeed;
+      int ActualPicture;
+      byte CurrentPicture;
+      byte PictureType;
+      int eepromSpeed;
+      byte sensorValueLOW;    //Photodiode stuff
+      byte sensorValueHIGH;   //Photodiode stuff
 
-//Photodiode stuff
 
-byte sensorValueLOW;
-byte sensorValueHIGH;
-int lightMeter = A3;
+int lightMeter = A3;  //Pin that the photodiode is READ (different from the resistors!!!)
 
 
   
