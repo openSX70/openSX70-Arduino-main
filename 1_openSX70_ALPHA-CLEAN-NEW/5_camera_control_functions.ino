@@ -284,6 +284,10 @@ void Click(int ExpDelay)
   } else  
     //MANUAL this is where we set the manual aperture
     {
+       //added to know the value of photodiode
+        sensorValueLOW = LightValue1();
+        sensorValueHIGH = LightValue2();
+       
        int ShutterDelay = (ShutterSpeed[Read_DS2408_PIO(0)]);
        int ShutterDelay1;
        int ShutterDelay2;

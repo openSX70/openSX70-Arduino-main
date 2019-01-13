@@ -23,6 +23,8 @@ void eepromUpdate ()
                       Serial.println (CurrentPicturePack);
                       Serial.println (PictureType);
                       Serial.println (Shutter);
+                      Serial.println (sensorValueLOW);
+                      Serial.println (sensorValueHIGH);
                       Serial.println ("*****************************");
                       
 

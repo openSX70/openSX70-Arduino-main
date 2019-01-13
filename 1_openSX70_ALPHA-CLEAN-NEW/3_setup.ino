@@ -17,9 +17,9 @@ pinMode(S9, INPUT);
 pinMode(FFA, OUTPUT);
 
 digitalWrite(FFA, LOW);           // make sure I don't fire the flash!
-
-#if SIMPLEDEBUG
 Serial.begin (9600);
+#if SIMPLEDEBUG
+//Serial.begin (9600);
 Serial.println ("WelcomE to openSX70");
 Serial.print ("Version: ");
 Serial.println(F(__FILE__ " " __DATE__ " " __TIME__));
