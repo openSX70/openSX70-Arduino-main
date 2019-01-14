@@ -280,7 +280,7 @@ int eeAddress;
       int sensorValueHIGH;   //Photodiode stuff
 
 
-int lightMeter = A3;  //Pin that the photodiode is READ (different from the resistors!!!)
+const int lightMeter = A3;  //Pin that the photodiode is READ (different from the resistors!!!)
 
      
 
@@ -317,5 +317,5 @@ void DongleFlashNormal ();
 void FastFlash ();
 void R11();
 void R15();
-int LightValue1();
-int LightValue2();
+int LightValueLOW();
+int LightValueHIGH();

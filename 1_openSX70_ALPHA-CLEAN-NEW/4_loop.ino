@@ -104,6 +104,16 @@ return;
 //#endif
 
   //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
+/*
+        sensorValueLOW = LightValue1();
+        sensorValueHIGH = LightValue2();
+                           Serial.println ("-------------------------------");
+                    Serial.print ( "Light Value LOW: "); 
+                    Serial.println (sensorValueLOW);
+                    Serial.print ( "Light Value HIGH: "); 
+                    Serial.println (sensorValueHIGH);
+
+  */
   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW)
   {
                                  CurrentPicturePack = EEPROM.read(4) ; 
@@ -241,9 +251,9 @@ return;
                                     #if LIGHTMETER
                                     Serial.begin(9600);
                                     Serial.print ("HIGH: ");
-                                    Serial.print (LightValue1());
+                                    Serial.print (LightValueLOW());
                                     Serial.print ("       LOW: ");
-                                    Serial.println(LightValue2());
+                                    Serial.println(LightValueHIGH());
                                     #endif                                    
                                     
   /*                                  //   if (takePicture == true )    //NORMAL AUTO OPERATION

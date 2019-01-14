@@ -25,19 +25,19 @@ pinMode (A4, OUTPUT);  // this is the one "connected"
 digitalWrite (A4, LOW);
 return ;
 }
-int LightValue1()
+int LightValueLOW()
 {
 R11();
 //
-delay (2);
+delay (10);
 int sensorValue = analogRead(lightMeter);
 return sensorValue;
 }
-int LightValue2()
+int LightValueHIGH()
 {
 R15();
 //
-delay (2);
+delay (10);
 int sensorValue = analogRead(lightMeter);
 return sensorValue;
 }

@@ -285,8 +285,10 @@ void Click(int ExpDelay)
     //MANUAL this is where we set the manual aperture
     {
        //added to know the value of photodiode
-        sensorValueLOW = LightValue1();
-        sensorValueHIGH = LightValue2();
+      //  R11();
+      //  sensorValueLOW = analogRead(lightMeter);
+        sensorValueLOW = LightValueLOW();
+        sensorValueHIGH = LightValueHIGH();
        
        int ShutterDelay = (ShutterSpeed[Read_DS2408_PIO(0)]);
        int ShutterDelay1;
@@ -307,7 +309,7 @@ void Click(int ExpDelay)
         }
           ShutterDelay3 = ShutterConstantFlash + ShutterDelay;
 
-               #if SIMPLEDEBUG 
+  //             #if SIMPLEDEBUG 
           
                     Serial.begin (9600);
                     Serial.print ("ShutterConstant: ");
@@ -345,8 +347,14 @@ void Click(int ExpDelay)
                     Serial.print ("S2 ON:  open----");
                     Serial.print (ShutterDelay3);
                     Serial.println ( "ms----(Flash*)----close"); 
+                    Serial.println ("-------------------------------");
+                    Serial.print ( "Light Value LOW: "); 
+                    Serial.println (LightValueLOW());
+                    Serial.print ( "Light Value HIGH: "); 
+                    Serial.println (LightValueHIGH());
+ 
                   
-              #endif
+//              #endif
   
           
   if (Read_DS2408_PIO(2) ==  0) 
