@@ -69,7 +69,9 @@ byte PictureType = 0;
 //int ShutterSpeed;
 
 //Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed,  lux};
-Picture MyPicture = {ActualPicture,CurrentPicturePack, PictureType, eepromSpeed };
+//Picture MyPicture = {ActualPicture,CurrentPicturePack, PictureType, eepromSpeed };
+
+  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, eepromSpeed, sensorValueLOW, sensorValueHIGH };
 
 EEPROM.get (eeAddress,MyPicture);
 
@@ -135,14 +137,12 @@ int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
   Serial.println( "T" );  }
   Serial.print( " ShutterSpeed: " );
   Serial.println( MyPicture.StructSpeed );
-  Serial.print( " Lux: " );
 
-//  Serial.println( MyPicture.StructLux );
+  Serial.print( " LOW: " );
+  Serial.println( MyPicture.StructLightVlow );
+  Serial.print( " HIGH: " );
+  Serial.println( MyPicture.StructLightVhigh );
 
-  //
- 
-
-  
   
 }
    Pack = Pack+1;
