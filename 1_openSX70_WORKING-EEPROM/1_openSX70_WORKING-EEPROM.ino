@@ -1,9 +1,4 @@
-
-  
 // openSX70 code with tabs
-// HELLO SX70!!!!!
-//Remember I am not a programmer, this is probably a mess. Use at your own risk.
-//You can do whatever you want for personal use but NOT for commercial purposes.
 //As for the electronics are really simple but will try to make an schematic when I find the time
 //This will work with "normal" arduinos (UNO etc...)
 //You have been warned!
