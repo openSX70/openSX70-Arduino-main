@@ -276,19 +276,24 @@ void darkslideEJECT()
 
 void Click(int ExpDelay)
 {
-
  
   if (ExpDelay > 0)
   {
     //AUTO mode ExDelay is the shutter speed from built in light meter
+          Serial.print ("(AUTO) ExpDelay = ");
+      Serial.println (ExpDelay);
+
   } else  
     //MANUAL this is where we set the manual aperture
     {
+      Serial.print ("(MANUAL) ExpDelay = ");
+      Serial.println (ExpDelay);
+      
        //added to know the value of photodiode
       //  R11();
       //  sensorValueLOW = analogRead(lightMeter);
-        sensorValueLOW = LightValueLOW();
-        sensorValueHIGH = LightValueHIGH();
+        //sensorValueLOW = LightValueLOW();
+       // sensorValueHIGH = LightValueHIGH();
        
        int ShutterDelay = (ShutterSpeed[Read_DS2408_PIO(0)]);
        int ShutterDelay1;
@@ -348,10 +353,16 @@ void Click(int ExpDelay)
                     Serial.print (ShutterDelay3);
                     Serial.println ( "ms----(Flash*)----close"); 
                     Serial.println ("-------------------------------");
-                    Serial.print ( "Light Value LOW: "); 
-                    Serial.println (LightValueLOW());
-                    Serial.print ( "Light Value HIGH: "); 
-                    Serial.println (LightValueHIGH());
+                    Serial.print ( "Light Value LOW (direct): ");
+                    R11();
+                    Serial.println (analogRead(lightMeter));
+
+                    //PJ here is weird 3x something value no matter what I have tried
+                    
+
+
+               //     Serial.print ( "Light Value HIGH: "); 
+               //     Serial.println (LightValueHIGH());
  
                   
 //              #endif

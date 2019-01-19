@@ -3,6 +3,10 @@ void loop() {
 //    ds.reset(); 
 //    device_count = ds.find(&devices);
 
+Serial.println (LightValueLOW2());
+
+//PJ here reading is good
+
 
 if (device_count == 0)
 {

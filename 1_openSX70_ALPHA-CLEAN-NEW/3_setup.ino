@@ -130,6 +130,7 @@ Serial.println (ActualPicture);
    if (digitalRead(S8) == LOW && digitalRead(S9) == LOW) //NORMAL OPERATION
 {
 
+
 simpleBlink (8 - (EEPROM.read (4)));
 #if SIMPLEDEBUG
 Serial.println ("BLINK NUMBER OF SHOTS");

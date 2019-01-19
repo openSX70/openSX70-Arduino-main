@@ -279,7 +279,6 @@ int eeAddress;
 
 
 const int lightMeter = A3;  //Pin that the photodiode is READ (different from the resistors!!!)
-
      
 
   
