@@ -143,7 +143,7 @@ enum positions_t {A600 = -100, POSFLASH, POSFLASHF8, POST, POSB};
  *  POSB = -96
  */
 
-enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
+enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB}; 
 /*
  TO CLARIFY:
 
