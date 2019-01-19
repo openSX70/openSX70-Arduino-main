@@ -28,8 +28,6 @@
 
 
 #include <EEPROM.h>
-
-
 // OneWire and DS2408 STUFF*****************************************************************
 //LIBRARIES MESS (SORTED?)
 
