@@ -355,6 +355,7 @@ void Click(int ExpDelay)
                     Serial.println ("-------------------------------");
                     Serial.print ( "Light Value LOW (direct): ");
                     R11();
+                    delay (400);
                     Serial.println (analogRead(lightMeter));
 
                     //PJ here is weird 3x something value no matter what I have tried

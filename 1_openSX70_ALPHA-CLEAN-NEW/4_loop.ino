@@ -3,7 +3,7 @@ void loop() {
 //    ds.reset(); 
 //    device_count = ds.find(&devices);
 
-Serial.println (LightValueLOW2());
+//Serial.println (LightValueLOW2());
 
 //PJ here reading is good
 

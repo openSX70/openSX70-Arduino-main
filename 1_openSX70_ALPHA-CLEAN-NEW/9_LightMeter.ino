@@ -42,24 +42,3 @@ int sensorValue = analogRead(lightMeter);
 return sensorValue;
 }
 #endif
-
-int LightValueLOW2()
-//PJ this is my last test with function all-in-one
-{
-//This is for LOW light condition
-//Connect 1M5
-//Disconnect rest
-//R11 on the PCB
-//pinMode (A7, INPUT);
-pinMode (A4, INPUT);
-pinMode (A5, OUTPUT);  // this is the one "connected"
-digitalWrite (A5, LOW);
-//
-delay (10);
-// int sensorValue = analogRead(lightMeter);
-int LightValueLOW2 = analogRead(lightMeter);
-//return sensorValue;
-return LightValueLOW2;
-}
-
-
