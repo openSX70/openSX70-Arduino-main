@@ -5,7 +5,7 @@ void loop() {
 
 sensorValueLOW2 = (LightValueLOW());
 
-Serial.println (sensorValueLOW2);
+// Serial.println (sensorValueLOW2);
 
 //PJ here reading is good
 
