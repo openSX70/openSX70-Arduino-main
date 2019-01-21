@@ -3,7 +3,7 @@ void loop() {
 //    ds.reset(); 
 //    device_count = ds.find(&devices);
 
-int sensorValueLOW2 = (LightValueLOW());
+sensorValueLOW2 = (LightValueLOW());
 
 Serial.println (sensorValueLOW2);
 
