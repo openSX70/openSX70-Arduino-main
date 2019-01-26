@@ -3,10 +3,13 @@ void loop() {
 //    ds.reset(); 
 //    device_count = ds.find(&devices);
 
-sensorValueLOW2 = (LightValueLOW());
+sensorValueLOW = (LightValueLOW());
+//delay (50);
+sensorValueHIGH = (LightValueHIGH());
 
-// Serial.println (sensorValueLOW2);
-
+// Serial.print (sensorValueLOW);
+// Serial.print ("               ");
+// Serial.println (sensorValueHIGH);
 //PJ here reading is good
 
 

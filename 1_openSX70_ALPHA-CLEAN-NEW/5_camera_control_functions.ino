@@ -314,7 +314,7 @@ void Click(int ExpDelay)
         }
           ShutterDelay3 = ShutterConstantFlash + ShutterDelay;
 
-             #if SIMPLEDEBUG 
+         //    #if SIMPLEDEBUG 
           
                     Serial.begin (9600);
                     Serial.print ("ShutterConstant: ");
@@ -353,15 +353,18 @@ void Click(int ExpDelay)
                     Serial.print (ShutterDelay3);
                     Serial.println ( "ms----(Flash*)----close"); 
                     Serial.println ("-------------------------------");
-                    Serial.print ( "Light Value LOW (direct): ");
+                //    Serial.print ( "Light Value LOW (direct): ");
 
                //     Serial.print ( "Light Value HIGH: "); 
                //     Serial.println (LightValueHIGH());
  
                   
-              #endif
-                      Serial.print ( "Light Value LOW (direct): ");
-                      Serial.println (sensorValueLOW2);
+           //   #endif
+                      Serial.print ( "Light Value LOW: ");
+                      Serial.println (sensorValueLOW);
+                      Serial.print ( "Light Value HIGH: ");
+                      Serial.println (sensorValueHIGH);
+                      
           
   if (Read_DS2408_PIO(2) ==  0) 
       {  //S2 OFF FLASH AT THE BEGGINING
