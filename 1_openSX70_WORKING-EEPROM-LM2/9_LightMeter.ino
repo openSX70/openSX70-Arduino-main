@@ -1,5 +1,8 @@
+//PJ this are my LM functions
+#if LIGHTMETER
 void R11()
 {
+//This is for LOW light condition
 //Connect 1M5
 //Disconnect rest
 //R11 on the PCB
@@ -12,6 +15,7 @@ return ;
 
 void R15()
 {
+  //This is for HIGH light condition
 //Connect 750K
 //Disconnect rest
 //R15 on the PCB
@@ -21,17 +25,22 @@ pinMode (A4, OUTPUT);  // this is the one "connected"
 digitalWrite (A4, LOW);
 return ;
 }
-
-int LightValueLOW(){
+int LightValueLOW()
+{
 R11();
-delay (20);
+//
+delay (10);
 int sensorValue = analogRead(lightMeter);
 return sensorValue;
 }
-int LightValueHIGH(){
+int LightValueHIGH()
+{
 R15();
-delay (20);
+//
+delay (10);
 int sensorValue = analogRead(lightMeter);
 return sensorValue;
 }
+#endif
+
 

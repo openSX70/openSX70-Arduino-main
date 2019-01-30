@@ -1,17 +1,15 @@
-
 void loop() {
-//    ds.reset(); 
-//    device_count = ds.find(&devices);
 
-sensorValueLOW = (LightValueLOW());
-//delay (50);
-sensorValueHIGH = (LightValueHIGH());
-
-// Serial.print (sensorValueLOW);
-// Serial.print ("               ");
-// Serial.println (sensorValueHIGH);
-//PJ here reading is good
-
+sensorValue = (LightValueLOW());
+if (sensorValue >= 1023) {
+sensorValue =(LightValueHIGH());
+Serial.print ("                             HIGH: ");
+Serial.println(sensorValue);
+} else {
+Serial.print ("LOW: ");
+Serial.println(sensorValue);
+}
+  
 
 if (device_count == 0)
 {
@@ -19,7 +17,6 @@ device_count = ds.find(&devices);
 #if SIMPLEDEBUG
 Serial.print ("LOOP: device_count = ds.find(&devices);--->");
 Serial.println (device_count);
-delay (1000);
 #endif
           Write_DS2408_PIO (6, 1);
           delay (200);
@@ -41,8 +38,8 @@ Serial.println ("BLINK after DS2408 init in loop");
   if (digitalRead(S8) == HIGH && digitalRead(S9) == LOW)
     //EJECT DARK SLIDE
   {
-    CurrentPicturePack = 0;
-    EEPROM.write(4,CurrentPicturePack);
+    CurrentPicture = 0;
+    EEPROM.write(4,CurrentPicture);
     Write_DS2408_PIO (6, 0);
             Write_DS2408_PIO (6, 1);
      darkslideEJECT();
@@ -54,13 +51,13 @@ Serial.println ("BLINK after DS2408 init in loop");
   }
   //  CurrentPicture = EEPROM.read(4) ; 
   #endif
-              //  #if MOTOR 
+  #if MOTOR 
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH *********************************************************************************************************************************
 //    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) || (CurrentPicture >= 8))
 
 // changed this to allow shooting until counter is actually 0, in case "something" happens and I loose count!
     
-    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) && (CurrentPicturePack >= 8))
+    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) && (CurrentPicture >= 8))
  
     
     //CurrentPicture = 0;
@@ -110,22 +107,12 @@ eepromDumpCSV();
 return;
       
 }
-//#endif
+#endif
 
   //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
-/*
-        sensorValueLOW = LightValue1();
-        sensorValueHIGH = LightValue2();
-                           Serial.println ("-------------------------------");
-                    Serial.print ( "Light Value LOW: "); 
-                    Serial.println (sensorValueLOW);
-                    Serial.print ( "Light Value HIGH: "); 
-                    Serial.println (sensorValueHIGH);
-
-  */
   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW)
   {
-                                 CurrentPicturePack = EEPROM.read(4) ; 
+                                 CurrentPicture = EEPROM.read(4) ; 
                                  #if ISDEBUG 
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
                                  #endif
@@ -157,7 +144,7 @@ return;
 
 
 //              Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
-//=================================================================================================================================================================
+              
              if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POSB)))) //////////////POSITION B
 
                   {
@@ -185,40 +172,56 @@ return;
 
             int pressTime = REDbutton(S1);
         
-
+//       if ((ShutterSpeed[Read_DS2408_PIO(0)]) != (POSB))
+// //       if (ShutterSpeed[Read_DS2408_PIO(0)])
+  
+ // //            {
               PictureType = 0;
               
             if ((pressTime > shortPress) && (pressTime < longPress)) {
-                                     
+                                       #if ISDEBUG 
+                                      Serial.println("---------------------------");
+                                      Serial.print ("SHORT:");
+                                      Serial.println (pressTime);
+                                      Serial.println("---------------------------");
+                                      #endif  
+
             takePicture = true;
               
             }  // END OF if ((pressTime > shortPress) && (pressTime < longPress)) {
             
             else if (pressTime > longPress) {
-                                                                             
+                                       #if ISDEBUG 
+                                      Serial.println("---------------------------");
+                                      Serial.print ("LONG: ");
+                                      Serial.println (pressTime);
+                                      Serial.println("---------------------------");
+                                      #endif  
+                                        
+//            BeepTimerDelay();   //Piezo beeps
           BlinkTimerDelay();  //Dongle LED blinks
 //          LEDTimerDelay();    //Built-in LED blinks          
             takePicture = true;
              
             }   // END Of else if (pressTime > longPress) 
-
+ // //            }
                                       
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
-                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))      //BUILT-IN FLASH
+                                if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASH))))
                               {
                                 DongleFlashNormal();
                                 return;
                               
-                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASHF8))))      //BUILT-IN FLASH
+                              } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASHF8))))
                               {
-                                DongleFlashF8();
+                                DongleFlash();
                                 return;
                                                               
                               }
           //byte ActualSlot = (Read_DS2408_PIO(0));
 
-                                      #if SIMPLEDEBUG 
+                                      #if ISDEBUG 
                                       byte SD1 = Read_DS2408_PIO(1);
                                       byte SD2 = Read_DS2408_PIO(2);
                                       Serial.print ("Selector: ");
@@ -229,7 +232,7 @@ return;
                                       Serial.print (SD2);
                                       Serial.print (" Shutter Speed: ");
                                       Serial.println ((ShutterSpeed[Read_DS2408_PIO(0)]));
-                                      delay(500);
+                                      //delay(500);
                                       #endif
 
 
@@ -242,30 +245,24 @@ return;
   if (Read_DS2408_PIO(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
   {
    
-                                      #if SIMPLEDEBUG 
+                                      #if ISDEBUG 
                                       Serial.print (Read_DS2408_PIO(0));
                                       Serial.println (":  FLASH");
-                                      delay (400);
                                       #endif
-                                      BuiltInFlash();
+                                      Flash();
     return;
   
   }
   if (Read_DS2408_PIO(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
   {
-                                    #if SIMPLEDEBUG
-                                    Serial.print ("Read_DS2408_PIO(0) = "); 
-                                    Serial.println (Read_DS2408_PIO(0));
+                                    #if ISDEBUG 
+                                    Serial.print (Read_DS2408_PIO(0));
                                     #endif
                                     #if LIGHTMETER
-                                    Serial.begin(9600);
-                                    Serial.print ("HIGH: ");
-                                    Serial.print (LightValueLOW());
-                                    Serial.print ("       LOW: ");
-                                    Serial.println(LightValueHIGH());
-                                    #endif                                    
-                                    
-  /*                                  //   if (takePicture == true )    //NORMAL AUTO OPERATION
+                                    //here goes light metering
+                                      #endif
+
+                                       if (takePicture == true )    //NORMAL AUTO OPERATION
     {
                          
                     byte PictureType = 6;                    
@@ -283,7 +280,7 @@ return;
 
                   shutterOPEN();
                   // Click (time); 
-  //                delay (LuxTime);  // this set by lux! NEW
+  //                delay (time);  // this set by lux! NEW
                   shutterCLOSE();
 //                  delay (200);                             //AGAIN is this delay necessary?
                   mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
@@ -297,7 +294,7 @@ return;
      } // END of  if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
 //    #endif
 
-*/           
+           
                                       
                                     
 //if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && Read_DS2408_PIO(0) ==  200 && shots == 0)    //NORMAL AUTO OPERATION
