@@ -26,6 +26,11 @@
 
 
 
+//Alpha Boards have two leds visible in a sonar-type VF.
+
+const int led1 = 13;
+const int led2 = 5;
+
 
 #include <EEPROM.h>
 
