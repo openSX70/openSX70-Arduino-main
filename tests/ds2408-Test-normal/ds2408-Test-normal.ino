@@ -1,4 +1,4 @@
-#define origamiV1 1
+#define origamiV1 0
 
 //#include <OneWire.h>
 #include <DS2408.h>
