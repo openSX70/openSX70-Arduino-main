@@ -1,3 +1,7 @@
+#define origamiV1 1
+
+//suport for origami V1 boards.
+
 #define ISDEBUG 0
 //*************
 

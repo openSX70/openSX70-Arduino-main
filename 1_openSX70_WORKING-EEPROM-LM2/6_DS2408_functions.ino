@@ -70,6 +70,7 @@ byte Read_DS2408_PIO(int Slot) {
     if (Slot == 0) {
 
       uint8_t readDevice = ds.get_state(devices[0]);
+#if !origamiV1
 
       if (readDevice & 0b00000001) {
         bitSet(selector, 0);
@@ -104,6 +105,44 @@ byte Read_DS2408_PIO(int Slot) {
       return Switch;
     } else
       return 0;
+#endif
+#if origamiV1
+
+      if (readDevice & 0b00000001) {
+        bitSet(selector, 3);
+      } else bitClear(selector, 0);
+      if (readDevice & 0b00000010) {
+        bitSet(selector, 2);
+      } else bitClear(selector, 1);
+      if (readDevice & 0b00000100) {
+        bitSet(selector, 1);
+      } else bitClear(selector, 2);
+      if (readDevice & 0b000001000) {
+        bitSet(selector, 0);
+      } else bitClear(selector, 3);
+      return selector;
+    } //END OF Slot=0
+
+    byte Switch;
+    if (Slot == 2) {
+      uint8_t readDevice = ds.get_state(devices[0]);
+
+      if (readDevice & 0b00010000) {
+        bitSet(Switch, 0);
+      } else bitClear(Switch, 0);
+      return Switch;
+    }
+    if (Slot == 1) {
+      uint8_t readDevice = ds.get_state(devices[0]);
+
+      if (readDevice & 0b00100000) {
+        bitSet(Switch, 0);
+      } else bitClear(Switch, 0);
+      return Switch;
+    } else
+      return 0;
+#endif
+
 
   } // END OF if ((digitalRead(S2) == HIGH) && (device_count > 0)){  //CASE DONGLE INSERTED
 
@@ -140,3 +179,4 @@ byte Write_DS2408_PIO(byte port, bool ON) {
   }
 } //END OF Write_DS2408_PIO
 //******************************************************************************************************
+

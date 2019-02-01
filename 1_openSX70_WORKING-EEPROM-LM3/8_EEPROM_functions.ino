@@ -15,7 +15,9 @@ void eepromUpdate ()
                   byte Shutter = (ShutterSpeed[Read_DS2408_PIO(0)]);
 //                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
 
-                  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, Shutter, sensorValueLOW, sensorValueHIGH };
+//                  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, Shutter, sensorValueLOW, sensorValueHIGH };
+                  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, Shutter, sensorValue, sensorValueHIGH };
+
 
 
                       Serial.println ("*****************************");
@@ -23,7 +25,7 @@ void eepromUpdate ()
                       Serial.println (CurrentPicturePack);
                       Serial.println (PictureType);
                       Serial.println (Shutter);
-                      Serial.println (sensorValueLOW);
+                      Serial.println (sensorValue);
                       Serial.println (sensorValueHIGH);
                       Serial.println ("*****************************");
                       
@@ -71,7 +73,7 @@ byte PictureType = 0;
 //Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed,  lux};
 //Picture MyPicture = {ActualPicture,CurrentPicturePack, PictureType, eepromSpeed };
 
-  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, eepromSpeed, sensorValueLOW, sensorValueHIGH };
+  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, eepromSpeed, sensorValue, sensorValueHIGH };
 
 EEPROM.get (eeAddress,MyPicture);
 
@@ -162,7 +164,7 @@ void eepromDumpCSV ()
 
 //  Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed, lux};
 
-  Picture MyPicture = {ActualPicture,CurrentPicturePack, PictureType, eepromSpeed, sensorValueLOW, sensorValueHIGH };
+  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, eepromSpeed, sensorValue, sensorValueHIGH };
 
       EEPROM.get(10,eeAddress);
 
