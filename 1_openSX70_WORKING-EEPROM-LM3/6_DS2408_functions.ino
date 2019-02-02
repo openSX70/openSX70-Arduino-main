@@ -110,16 +110,16 @@ byte Read_DS2408_PIO(int Slot) {
 
       if (readDevice & 0b00000001) {
         bitSet(selector, 3);
-      } else bitClear(selector, 0);
+      } else bitClear(selector, 3);
       if (readDevice & 0b00000010) {
         bitSet(selector, 2);
-      } else bitClear(selector, 1);
+      } else bitClear(selector, 2);
       if (readDevice & 0b00000100) {
         bitSet(selector, 1);
-      } else bitClear(selector, 2);
+      } else bitClear(selector, 1);
       if (readDevice & 0b000001000) {
         bitSet(selector, 0);
-      } else bitClear(selector, 3);
+      } else bitClear(selector, 0);
       return selector;
     } //END OF Slot=0
 
@@ -179,4 +179,3 @@ byte Write_DS2408_PIO(byte port, bool ON) {
   }
 } //END OF Write_DS2408_PIO
 //******************************************************************************************************
-
