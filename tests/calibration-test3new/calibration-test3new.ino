@@ -9,21 +9,28 @@ unsigned long timevalue [samples];
 //unsigned long high [samples];
 unsigned long low [samples];
 
+const int numberOfSamples = 200;
+
+struct samples {
+
+long timeValue;
+int lightValue;
+  
+};
+
+struct samples mySamples[numberOfSamples];
+
+
 
 void setup() {
+
+      R11();
+
 
   // put your setup code here, to run once:
 pinMode(S1, INPUT_PULLUP);
 //pinMode(FFA, OUTPUT);
 
-    device_count = ds.find(&devices);
-
-ds.reset();
-ds.write(0x96);
-for (int i = 0; i < 8; i++)
-    ds.write(devices[0][i]);
-ds.write(0x3C);
-ds.reset(); 
 
 pinMode(Solenoid1, OUTPUT);
  Serial.begin(9600);
@@ -46,10 +53,10 @@ analogWrite(Solenoid1, 0);
 
 //R15();
 */
-int samples = 200;
-unsigned long timevalue [samples];
+
+//unsigned long timevalue [samples];
 //unsigned long high [samples];
-unsigned long low [samples];
+//unsigned long low [samples];
 
 
 }

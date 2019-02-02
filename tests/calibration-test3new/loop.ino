@@ -2,65 +2,43 @@
 
 void loop() {
 
-while ((Read_DS2408_PIO(1) == 1) && (Read_DS2408_PIO(2) == 1)) 
-    {
-    R11();
-    Write_DS2408_PIO(6,1);
-/*  analogWrite(Solenoid1, 0);
-Serial.print ("Shutter open: ");
-Serial.println (analogRead(lightMeter));
+//    R11();
 
-Serial.print ("closing shutter...");
-analogWrite(Solenoid1, 255);
-delay (100);
-Serial.print ("Shutter closed: ");
-Serial.println (analogRead(lightMeter));
-delay (100);
-analogWrite(Solenoid1, 0);
-*/
-
-    analogWrite(Solenoid1, 255);
+//    analogWrite(Solenoid1, 255);
 //delay(20);
 //analogWrite(Solenoid1, 0);
 
 
   if (digitalRead(S1) == LOW) {
 
+  delay (50);
+    
+  unsigned long initialMillis = millis();  
   
   analogWrite(Solenoid1, 255);
-  delay (50);
-  unsigned long initialMillis = millis();
   //analogWrite(Solenoid1, 0);  
-  timevalue[0] = {(millis() - initialMillis) };
+ // timevalue[0] = {(millis() - initialMillis) };
 
-  unsigned long  sensor;
+//  unsigned long  sensor;
 
-  sensor =  analogRead(lightMeter) ;
-
-  low[0] = {sensor};
+ 
 
   analogWrite(Solenoid1, 0);
 
-  for (int i = 1 ; i < samples; i++)
+  for (int i = 1 ; i < numberOfSamples; i++)
   {
-  sensor =  analogRead(lightMeter) ;
-
-  low[i] = {sensor} ;
-
-  Serial.println (sensor);
-
-  timevalue[i]  = {(millis() - initialMillis)} ;
-
-
+  mySamples[i].lightValue =  analogRead(lightMeter) ;
+  mySamples[i].timeValue = {(millis() - initialMillis)} ;
+ 
   }
 analogWrite(Solenoid1, 0);
 
  for (int i = 1 ; i < samples; i++)
 {
 Serial.print ("time: ");
-Serial.print (timevalue[i]);
+Serial.print (mySamples[i].timeValue);
 Serial.print (" ms  LOW: ");
-Serial.println (low[i]);
+Serial.println (mySamples[i].lightValue);
 
 }
 
@@ -71,13 +49,8 @@ delay (50);
 
 
 
-} 
-{
- 
-}
-}
-
   analogWrite(Solenoid1, 0);
-  Write_DS2408_PIO(6,0);
-Serial.println ("DISABLE");
+ 
+//Serial.println ("DISABLE");
+}
 }
