@@ -1,4 +1,8 @@
-const int S1 = 12;     //Red button SHUTTER RELEASE
+
+
+
+
+onst int S1 = 12;     //Red button SHUTTER RELEASE
 const int FFA = 4;
 int sensorValue;
 int lightMeter = A3;
@@ -13,7 +17,7 @@ const int numberOfSamples = 200;
 
 struct samples {
 
-long timeValue;
+unsigned long timeValue;
 int lightValue;
   
 };
@@ -34,28 +38,10 @@ pinMode(Solenoid1, OUTPUT);
  Serial.begin(9600);
 
 Serial.println ("openSX70 calibration");
-/*
-R11();
-analogWrite(Solenoid1, 0);
-Serial.print ("Shutter open: ");
-Serial.println (analogRead(lightMeter));
-
-Serial.print ("closing shutter...");
-analogWrite(Solenoid1, 255);
-delay (100);
-Serial.print ("Shutter closed: ");
-Serial.println (analogRead(lightMeter));
-delay (100);
-analogWrite(Solenoid1, 0);
-
-
-//R15();
-*/
 
 //unsigned long timevalue [samples];
 //unsigned long high [samples];
 //unsigned long low [samples];
-
 
 }
 

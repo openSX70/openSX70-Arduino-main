@@ -4,19 +4,25 @@ void loop() {
 
   if (digitalRead(S1) == LOW) {
 
-  delay (50);  //some crappy debouncing
+  delay (500);  //some crappy debouncing
     
-  
+
+  R15();
+    
   analogWrite(Solenoid1, 255); //close the shutter
 
   delay (100); //wait for shutter to close!
   
 
 
-  R15();
 //  delay (100); //waiting...
   
 Serial.print (" CLOSED read (SHOULD BE ZERO): ");
+
+for (int i= 0; i<100;i++)
+{
+analogRead(lightMeter);
+}
 Serial.println (analogRead(lightMeter));
 
   
@@ -32,7 +38,7 @@ unsigned long initialMillis = millis();  //set the mark to start counting time i
   delayMicroseconds (10000);  
   //delay (1);
   }
-analogWrite(Solenoid1, 0);
+analogWrite(Solenoid1, 0); //OPEN SHUTTER
 
  for (int i = 1 ; i < numberOfSamples; i++)
 {
@@ -47,11 +53,8 @@ analogWrite(Solenoid1, 0); //shutter open please please!!
 
 Serial.println ("Shutter closed, capture ended");
 
-delay (50);
-
-
-
-  analogWrite(Solenoid1, 0);
+  delay (50);
+  analogWrite(Solenoid1, 0); //just in case open shutter
  
 //Serial.println ("DISABLE");
 }
