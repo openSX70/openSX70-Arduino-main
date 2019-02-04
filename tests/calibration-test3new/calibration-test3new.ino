@@ -24,8 +24,6 @@ struct samples mySamples[numberOfSamples];
 
 void setup() {
 
-      R11();
-
 
   // put your setup code here, to run once:
 pinMode(S1, INPUT_PULLUP);

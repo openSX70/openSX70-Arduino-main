@@ -1,8 +1,12 @@
+const int S1 = 12;     //Red button SHUTTER RELEASE
 int sensorValue;
 int lightMeter = A3;
+const int Solenoid1 = 3; 
+
+
 void setup() {
   // initialize serial communication at 57600 bits per second:
-  Serial.begin(57600);
+  Serial.begin(9600);
 }
  
  
@@ -29,11 +33,9 @@ pinMode (A4, OUTPUT);  // this is the one "connected"
 digitalWrite (A4, LOW);
 return ;
 }
-
-void loop() {
-  // read sensor and print values
-
-R11();
+void reportLight()
+{
+  R11();
 delay (10);
 sensorValue = analogRead(lightMeter);
 if (sensorValue == 0)
@@ -74,5 +76,17 @@ Serial.println (sensorValue);
 Serial.println("---------------------------------------------------");
 delay (500);
 }
+}
+
+void loop() {
+  // read sensor and print values
+ while (digitalRead(S1) == LOW) {
+ analogWrite(Solenoid1, 255); //close the shutter
+ reportLight();
+ }
+ analogWrite(Solenoid1, 0); //OPEN the shutter
+ reportLight(); 
+ 
+
 }
   
