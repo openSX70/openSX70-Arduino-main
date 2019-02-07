@@ -3,6 +3,7 @@ void loop() {
 //    ds.reset(); 
 //    device_count = ds.find(&devices);
 
+#if LIGHTMETER
 sensorValueLOW = (LightValueLOW());
 //delay (50);
 sensorValueHIGH = (LightValueHIGH());
@@ -11,7 +12,7 @@ sensorValueHIGH = (LightValueHIGH());
 // Serial.print ("               ");
 // Serial.println (sensorValueHIGH);
 //PJ here reading is good
-
+#endif
 
 if (device_count == 0)
 {

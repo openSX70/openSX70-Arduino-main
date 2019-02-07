@@ -1,8 +1,4 @@
-
-
-
-
-onst int S1 = 12;     //Red button SHUTTER RELEASE
+const int S1 = 12;     //Red button SHUTTER RELEASE
 const int FFA = 4;
 int sensorValue;
 int lightMeter = A3;

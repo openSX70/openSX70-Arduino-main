@@ -61,6 +61,4 @@
 // 22/01/2019
 
 //01/02/2019 added support for origamiv1 dongles.
-
-
-
+//07/02/2019 LightMeter stuff is no good, probably need an op-amp

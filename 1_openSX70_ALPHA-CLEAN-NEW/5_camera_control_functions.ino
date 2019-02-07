@@ -509,7 +509,7 @@ float PhotoDelay3 = (ShutterConstant + (ShutterSpeed[Read_DS2408_PIO(0)]))-1;
 void Ydelay ()
 {
   delay (80);
-  //OPTION: SET ONLY 1 "MIDDLE GROUND" DELAY AT 100ms
+  //OPTION: SET ONLY 1 "MIDDLE GROUND" DELAY AT 80ms
   
 /*                    if (Read_DS2408_PIO(2) ==  0) {
                     //NORMAL DELAY

@@ -18,7 +18,7 @@
 //*************
 
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 1
+#define LIGHTMETER 0
 //*************
 //This must be 0 for Len's and Bellows boards from SEEEDFUSION  :-(
 
@@ -306,7 +306,7 @@ void Dongle (int DongleSlot);
 void HighSpeedPWM ();
 void ShutterB();
 void ShutterT();
-void Ydelay ();
+void   ();
 bool beep (bool state,int Pin);
 void simpleBlink (int times);  
 void eepromUpdate ();
