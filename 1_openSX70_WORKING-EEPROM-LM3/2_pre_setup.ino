@@ -1,4 +1,4 @@
-#define origamiV1 1
+#define origamiV1 0
 
 //suport for origami V1 boards.
 

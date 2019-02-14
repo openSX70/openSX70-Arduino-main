@@ -1,4 +1,5 @@
-#define origamiV1 0
+#define origamiV1 1
+
 //suport for origami V1 boards.
 
 #define ISDEBUG 0
@@ -31,6 +32,8 @@
 
 
 #include <EEPROM.h>
+
+
 // OneWire and DS2408 STUFF*****************************************************************
 //LIBRARIES MESS (SORTED?)
 
@@ -144,7 +147,7 @@ enum positions_t {A600 = -100, POSFLASH, POSFLASHF8, POST, POSB};
  *  POSB = -96
  */
 
-enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
+enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB}; 
 /*
  TO CLARIFY:
 
@@ -171,37 +174,20 @@ enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB};
 //int ShutterSpeed[] = { 11, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //20180704 Julien on slot 0 too slow?
 
+int ShutterConstant = 9;
+//int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 //20180807 making the 0 option even faster
 
 //int ShutterSpeed[] = { 10, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
-//int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+
+int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 
-//int ShutterConstant = 9;
-//int ShutterSpeed[] = { 9, 12, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
-
-
-
-//20181224
-//OPTION ShutterConstant is the time the shutter takes to begin to open it *might* change from camera to camera
-const int ShutterConstant = 7;
-// Actual time is ShutterConstant + FlashDelay + ShutterSpeed
-//OPTION ShutterF8 is the time the shutter takes from beginning to open to full open f8.
-const int ShutterF8 = 38;
-const byte FlashDelay = 3;
-//
-
-//OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
+//OPTION line above are the wheel "raw" speeds (have to detract aprox. 10ms and keep in mind smaller aperture) 
 // this are the "SLOTS":
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
-//int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, FLASH, FLASH-F8, T, B };
 // to change the speed in the slot position just change the number corresponding.
-int ShutterSpeed[] = { 2, 4, 6, 8, 15, 30, 35, 42, 60, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
-
-// from "apogee" aprox 1/2 time to close (for flash???)
-// if ShutterSpeed is 10ms then it takes aprox 5ms to close from apogee 
-
 
 int shots = 0;
 
@@ -249,7 +235,8 @@ int eeAddress;
 // Picture sequence
 // Type (manual, a100,a600, flash etc...)
 // ShutterSpeed actual for auto reference/record
- 
+
+  
   struct Picture  
     {
     int StructPicture;         //total count of pictures since init
@@ -272,50 +259,51 @@ int eeAddress;
 
 
       byte Pack = 1;
-  
+
       int ActualPicture;
       byte CurrentPicturePack;
       byte PictureType;
       byte eepromSpeed;
       int sensorValueLOW;    //Photodiode stuff
       int sensorValueHIGH;   //Photodiode stuff
+      int sensorValue;
 
 
 const int lightMeter = A3;  //Pin that the photodiode is READ (different from the resistors!!!)
-     
-int sensorValueLOW2;
   
 //***************************************************************************************************************************************
 //FUNCTION PROTOTYPES
 byte Read_DS2408_PIO(int Slot);
 byte Write_DS2408_PIO(byte port, bool ON);
 int REDbutton(int button);
-void motorON();         //turns motor ON
-void motorOFF();        //turns motor OFF
+void motorON();
+void motorOFF();
 void shutterCLOSE();
 void shutterOPEN();
 void mirrorDOWN();
 void mirrorUP();
 void darkslideEJECT();
-void Click(int ExpDelay); //picture taking Exposure must be exposure time.
+void Click(int Exposure);
 void BeepTimerDelay();
 void BlinkTimerDelay();
 void LEDTimerDelay();
 void Dongle (int DongleSlot);
 void HighSpeedPWM ();
+void Flash ();
 void ShutterB();
 void ShutterT();
+void Ydelay ();
 bool beep (bool state,int Pin);
 void simpleBlink (int times);  
 void eepromUpdate ();
+void DongleFlash ();
+void DongleFlashNormal ();
 void eepromDump ();
 void eepromDumpCSV ();
-void BuiltInFlash ();
 void DongleFlashF8 ();
 void DongleFlashNormal ();
 void FastFlash ();
 void R11();
 void R15();
 int LightValueLOW();
-
 int LightValueHIGH();
