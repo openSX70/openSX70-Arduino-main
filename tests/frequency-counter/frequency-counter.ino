@@ -2,8 +2,8 @@
 // Author: Nick Gammon
 // Date: 17th January 2012
 
-const int GND_Pin = 3;                   // GND pin for the light sensor
-const int VDD_Pin = 4;                   // Vdd pin for the light sensor
+//const int GND_Pin = 3;                   // GND pin for the light sensor
+//const int VDD_Pin = 4;                   // Vdd pin for the light sensor
 
 // Input: Pin D5
 
@@ -97,10 +97,10 @@ ISR (TIMER2_COMPA_vect)
 
 void setup () 
   {
-  pinMode(GND_Pin, OUTPUT);              // Enable GND pin for the light sensor
-  pinMode(VDD_Pin, OUTPUT);              // Enable Vdd pin for the light sensor
-  digitalWrite(GND_Pin, LOW);            // Set GND value
-  digitalWrite(VDD_Pin, HIGH);           // Set Vdd value
+  //pinMode(GND_Pin, OUTPUT);              // Enable GND pin for the light sensor
+  //pinMode(VDD_Pin, OUTPUT);              // Enable Vdd pin for the light sensor
+  //digitalWrite(GND_Pin, LOW);            // Set GND value
+  //digitalWrite(VDD_Pin, HIGH);           // Set Vdd value
 
 
   Serial.begin(115200);       
