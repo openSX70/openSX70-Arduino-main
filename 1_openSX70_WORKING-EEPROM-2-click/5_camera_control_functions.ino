@@ -201,18 +201,10 @@ void shutterCLOSE()
                                     #endif
                                     HighSpeedPWM ();
                                     analogWrite(Solenoid1, 255);
-                                    #if ALPHA
-  //                                  Serial.println ("ALPHA");
-                                    delay (15);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
-                                    analogWrite (Solenoid1, 125);
+  
+                                    delay (PowerDownDelay);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
+                                    analogWrite (Solenoid1, PowerDown);
                                     return;
-                                    #endif
-                                    #if MODEL2
-//                                    Serial.println ("MODEL2");
-                                    delay (20);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
-                                    analogWrite (Solenoid1, 155);
-                                    return;
-                                    #endif
   //return;
   }   //end of void motorON()
 

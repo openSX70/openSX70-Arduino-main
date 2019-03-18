@@ -28,8 +28,8 @@ Serial.println ("BLINK after DS2408 init in loop");
   if (digitalRead(S8) == HIGH && digitalRead(S9) == LOW)
     //EJECT DARK SLIDE
   {
-    CurrentPicture = 0;
-    EEPROM.write(4,CurrentPicture);
+    CurrentPicturePack = 0;
+    EEPROM.write(4,CurrentPicturePack);
     Write_DS2408_PIO (6, 0);
             Write_DS2408_PIO (6, 1);
      darkslideEJECT();
@@ -47,7 +47,7 @@ Serial.println ("BLINK after DS2408 init in loop");
 
 // changed this to allow shooting until counter is actually 0, in case "something" happens and I loose count!
     
-    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) && (CurrentPicture >= 8))
+    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) && (CurrentPicturePack >= 8))
  
     
     //CurrentPicture = 0;
@@ -102,7 +102,7 @@ return;
   //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW)
   {
-                                 CurrentPicture = EEPROM.read(4) ; 
+                                 CurrentPicturePack = EEPROM.read(4) ; 
                                  #if ISDEBUG 
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
                                  #endif
@@ -221,7 +221,7 @@ return;
                               
                               } else if (((ShutterSpeed[Read_DS2408_PIO(0)] == (POSFLASHF8))))
                               {
-                                DongleFlash();
+                                DongleFlashF8();
                                 return;
                                                               
                               }
@@ -255,13 +255,13 @@ return;
                                       Serial.print (Read_DS2408_PIO(0));
                                       Serial.println (":  FLASH");
                                       #endif
-                                      Flash();
+                                      BuiltInFlash();
     return;
   
   }
   if (Read_DS2408_PIO(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
   {
-                                    #if ISDEBUG 
+   /*                                 #if ISDEBUG 
                                     Serial.print (Read_DS2408_PIO(0));
                                     #endif
                                     #if LIGHTMETER
@@ -308,7 +308,7 @@ return;
                                     
                                       
     return;
-  }
+*/  }
   else
   {
                                   // re check if dongle has been re-connected!

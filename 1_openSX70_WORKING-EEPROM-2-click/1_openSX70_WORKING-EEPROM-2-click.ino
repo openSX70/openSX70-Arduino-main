@@ -50,4 +50,5 @@
                                             
               
               //           int StructSpeed:ShutterSpeed  --> ShutterSpeed
-                 
+
+//  16/3/2019 WORK WITH THIS SOFTWARE             

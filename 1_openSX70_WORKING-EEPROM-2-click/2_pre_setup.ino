@@ -22,9 +22,10 @@
 //*************
 //This must be 0 for Len's and Bellows boards from SEEEDFUSION  :-(
 
-//CAMERA MODEL ALPHA OR MODEL2 (only one!!!)
-#define ALPHA 1
-#define MODEL2 0
+//OPTION POWER DOWN 
+//Alpha or Model 2 might different values
+const byte PowerDownDelay = 15; //time it takes to be fully closed
+const byte PowerDown = 125; //max 255 = full power/POWERUP mode
 //*************
 //This is experimental, actually Model2's don't seem to work, or mine is a lemon
 
@@ -196,7 +197,12 @@ int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH
 
 int shots = 0;
 
-int pressTime = 0;     //intialize pressTime            
+
+//OPTION RED Button timing variables
+int debounce = 20;          // ms debounce period to prevent flickering when pressing or releasing the button
+int DCgap = 250;            // max ms between clicks for a double click event
+int holdTime = 500;        // ms hold period: how long to wait for press+hold event
+       
 
          // Lets define what is considered a longPress and a shortPress
          // shortPress is when you want to take a "regular" picture
@@ -207,20 +213,6 @@ int pressTime = 0;     //intialize pressTime
 
 //Cristina is killing me with this, she just presses too short or too long (going unadvertedly to self timer) so I am going to change the values a bit.
 
-//const int shortPress = 100;
-
-const int shortPress = 70;
-//OPTION this is the minimum time in ms you have to press the red button to take a picture
-
-
-         //longPress is when you want to "something else", in my case delay the taking of the picture for x (10) seconds.
-         //since 1000ms = 1 seconds, this is just a bit more than 1 second.
-
-  //const int  longPress = 1200;
-
-  const int  longPress = 1500;
-  
-  //OPTION if you press longer than this value you start the "selftimer" delay of (normally) 10 seconds.
 
 // EEPROM STUFF
 //EEPROM INITIALIZATION fixed positions
@@ -241,23 +233,36 @@ int eeAddress;
 // Type (manual, a100,a600, flash etc...)
 // ShutterSpeed actual for auto reference/record
  
-  struct Picture  {
-  int StructPicture;
-  byte PackPicture;
-  byte StructType;
-  int StructSpeed;
-  };
+  struct Picture  
+    {
+    int StructPicture;         //total count of pictures since init
+    byte StructPackPicture;          //pic count within this pack
+    byte StructType;           //picture type
 
-  byte Pack = 1;
+        // PictureType = 0 ---> MANUAL
+        // PictureType = 1 ---> A100
+        // PictureType = 2 ---> FLASH DONGLELESS
+        // PictureType = 4 ---> FLASH F8 DONGLE 
+        // PictureType = 6 ---> A600
+        // PictureType = +10 ---> MIRROR DELAY
+        // PictureType = +100 ---> MULTIPLE EXPOSURE
+        // PictureType = +200 ---> TIMER DELAY
+    
+    byte StructSpeed;           //shutter speed
+    int StructLightVlow ;      //photodiode read LOW
+    int StructLightVhigh ;     //photodiode read HIGH
+    };
+
+
+      byte Pack = 1;
   
-int ActualPicture;
-byte CurrentPicture;
-byte PictureType;
-int eepromSpeed;
-float lux = 99; // for NEW auto
+      int ActualPicture;
+      byte CurrentPicturePack;
+      byte PictureType;
+      byte eepromSpeed;
+      int sensorValueLOW;    //Photodiode stuff
+      int sensorValueHIGH;   //Photodiode stuff
 
-
-  
 //***************************************************************************************************************************************
 //FUNCTION PROTOTYPES
 byte Read_DS2408_PIO(int Slot);
@@ -276,14 +281,14 @@ void BlinkTimerDelay();
 void LEDTimerDelay();
 void Dongle (int DongleSlot);
 void HighSpeedPWM ();
-void Flash ();
+void BuiltInFlash();
 void ShutterB();
 void ShutterT();
 void Ydelay ();
-bool beep (bool state,int Pin);
+//bool beep (bool state,int Pin);
 void simpleBlink (int times);  
 void eepromUpdate ();
-void DongleFlash ();
+void DongleFlashF8();
 void DongleFlashNormal ();
 void eepromDump ();
 void eepromDumpCSV ();

@@ -1,4 +1,4 @@
-void Flash () 
+void BuiltInFlash() 
     {
 
  
@@ -18,7 +18,7 @@ void Flash ()
                   Serial.println ("CAMERA FLASH");
                  #endif
 
-                    CurrentPicture = EEPROM.read(4) ; 
+                    CurrentPicturePack = EEPROM.read(4) ; 
                     byte PictureType = 2;                    
                     eepromUpdate ();
 
@@ -49,7 +49,7 @@ void Flash ()
 //                  delay (66);
                   delay (80);
                   digitalWrite(FFA, HIGH);
-                  delay (10);
+                  delay (2);
                   analogWrite (Solenoid2,0);
                   digitalWrite(FFA, LOW);
                   delay (10);
@@ -74,7 +74,7 @@ void Flash ()
        }
     }
 
-void DongleFlash () 
+void DongleFlashF8 () 
     {
 
 
@@ -218,3 +218,11 @@ void DongleFlash ()
                  return;   
        }
     }
+    void FastFlash ()
+                  {
+                  Write_DS2408_PIO (7,1);
+                  delay (1);
+                  //Serial.println ("Flash!");
+                  Write_DS2408_PIO (7,0);
+                  return;   
+                  }
