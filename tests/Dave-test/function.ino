@@ -20,7 +20,7 @@ boolean waitForUp = false;        // when held, whether to wait for the up event
 boolean holdEventPast = false;    // whether or not the hold event happened already
 //boolean longHoldEventPast = false;// whether or not the long hold event happened already
 
-int checkButton() {    
+byte checkButton() {    
    int event = 0;
    buttonVal = digitalRead(buttonPin);
    // Button pressed down

@@ -103,7 +103,7 @@ void setup ()
   //digitalWrite(VDD_Pin, HIGH);           // Set Vdd value
 
 
-  Serial.begin(115200);       
+  Serial.begin(9600);       
   Serial.println("Frequency Counter");
   } // end of setup
 
