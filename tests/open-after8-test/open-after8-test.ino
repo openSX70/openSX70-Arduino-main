@@ -25,7 +25,10 @@ void setup() {
 
   pinMode(flashPin, OUTPUT);           // make sure I don't fire the flash!
   digitalWrite(flashPin, LOW);
-//  pinMode(selectorPin, INPUT_PULLUP);  // initialize the pushbutton pin as an input:
+    Serial.print ("                       analogRead: ");
+    byte aRead = analogRead(selectorPin);
+    Serial.println (aRead);
+
   pinMode(buttonPin, INPUT_PULLUP);
 
   Serial.begin(9600);                  // set up Serial library at 9600 bps

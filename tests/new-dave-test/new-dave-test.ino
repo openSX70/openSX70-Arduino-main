@@ -5,21 +5,25 @@
   For use with the TSL235R sensor, connected to digital pins 3,4,5
 */
  
-const int GND_Pin = 3;                   // GND pin for the light sensor
-const int VDD_Pin = 4;                   // Vdd pin for the light sensor
+//const int GND_Pin = 3;                   // GND pin for the light sensor
+//const int VDD_Pin = 4;                   // Vdd pin for the light sensor
 const int output_compare = 327;        // How many pulses before triggering interrupt
 unsigned int old_millis;                 // Temporary variable for displaying time between interrupts
- 
+const int buttonPin = 3;     //Red button SHUTTER RELEASE
+int checkButton();
+int b; 
 void setup()
 {
-  pinMode(GND_Pin, OUTPUT);              // Enable GND pin for the light sensor
-  pinMode(VDD_Pin, OUTPUT);              // Enable Vdd pin for the light sensor
+//  pinMode(GND_Pin, OUTPUT);              // Enable GND pin for the light sensor
+//  pinMode(VDD_Pin, OUTPUT);              // Enable Vdd pin for the light sensor
  
-  digitalWrite(GND_Pin, LOW);            // Set GND value
-  digitalWrite(VDD_Pin, HIGH);           // Set Vdd value
+//  digitalWrite(GND_Pin, LOW);            // Set GND value
+//  digitalWrite(VDD_Pin, HIGH);           // Set Vdd value
+
+  pinMode(buttonPin, INPUT_PULLUP);
  
   Serial.begin(9600);                    // Start serial monitor
- 
+ /*
   cli();                                 // Stop interrupts
   TCCR1A=0;                              // Reset timer/counter control register A
   bitSet(TCCR1B ,CS12);                  // Counter Clock source is external pin
@@ -28,10 +32,30 @@ void setup()
   TIMSK1 |= (1 << TOIE1);                // Enable compare A Match Interrupt
   TIMSK1 |= (1 << OCIE1A);               // enable compare B Match Interrupt
   sei();                                 // Restart interrupts
+ */
+  cli();
+  TIMSK1 &= ~(1 << TOIE1);                // Disable compare A Match Interrupt (overflow)
+  TIMSK1 &= ~(1 << OCIE1A);                // Disable compare B Match Interrupt 
+  sei();
  }
  
+ 
 void loop()
-{                                       // Nothing to see here
+{ 
+  b = checkButton();
+  if ((b == 1) || (b==3))
+
+  {
+     cli();                                 // Stop interrupts
+  TCCR1A=0;                              // Reset timer/counter control register A
+  TCNT1 = 0;                            // Reset the hardware counter
+  bitSet(TCCR1B ,CS12);                  // Counter Clock source is external pin
+  bitSet(TCCR1B ,CS11);                  // Clock on rising edge
+  OCR1A = output_compare;                // Set output compare value
+  TIMSK1 |= (1 << TOIE1);                // Enable compare A Match Interrupt
+  TIMSK1 |= (1 << OCIE1A);               // enable compare B Match Interrupt
+  sei(); 
+  }
 }
  
 ISR(TIMER1_COMPA_vect)                  // Output Compare interrupt service routine 
@@ -39,8 +63,13 @@ ISR(TIMER1_COMPA_vect)                  // Output Compare interrupt service rout
   Serial.print("Time since last event = ");
   Serial.print(millis()-old_millis);
   Serial.println(" ms");
-  TCNT1 = 0;                            // Reset the hardware counter
+                             // Reset the hardware counter
   old_millis = millis();
+    cli();
+  TCNT1 = 0; 
+  TIMSK1 &= ~(1 << TOIE1);                // Disable compare A Match Interrupt (overflow)
+  TIMSK1 &= ~(1 << OCIE1A);                // Disable compare B Match Interrupt 
+  sei();
 }
  
 ISR(TIMER1_OVF_vect)                    // Overflow Flag interrupt service routine 

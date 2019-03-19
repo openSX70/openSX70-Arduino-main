@@ -25,7 +25,7 @@ void setup() {
 
   pinMode(flashPin, OUTPUT);           // make sure I don't fire the flash!
   digitalWrite(flashPin, LOW);
-//  pinMode(selectorPin, INPUT_PULLUP);  // initialize the pushbutton pin as an input:
+  pinMode(selectorPin, INPUT);  // initialize the pushbutton pin as an input:
   pinMode(buttonPin, INPUT_PULLUP);
 //    pinMode(selectorPin, OUTPUT); 
 //    pinMode(selectorPin,LOW);
