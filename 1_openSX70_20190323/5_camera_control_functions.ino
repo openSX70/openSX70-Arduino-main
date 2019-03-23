@@ -348,7 +348,8 @@ void Click(int ExpDelay)
         ////////CLICK!
     shutterCLOSE ();                                         //close the shutter
     delay (10);
-                                        counter = TCNT1;
+                                        
+    counter = TCNT1;
     Serial.begin(9600);
     Serial.print ("                       counter: ");
     Serial.print (counter);

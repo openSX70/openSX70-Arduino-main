@@ -28,6 +28,8 @@ void startCounter() //function NOT used now
   bitSet(TCCR1B ,CS11);                  // Clock on rising edge
   //OCR1A = output_compare;                // Set output compare value
   //TIMSK1 |= (1 << TOIE1);                // Enable compare A Match Interrupt
-  TIMSK1 |= (1 << OCIE1A);               // enable compare B Match Interrupt
+
+  
+//  TIMSK1 |= (1 << OCIE1A);               // enable compare B Match Interrupt
   sei();                               // Restart interrupts
  }

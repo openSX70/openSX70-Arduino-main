@@ -29,8 +29,13 @@ int counter;
 
 //OPTION POWER DOWN 
 //Alpha or Model 2 might different values
+
+const byte PowerDownDelay = 1; //time it takes to be fully closed
+const byte PowerDown = 255; //max 255 = full power/POWERUP mode
+/*
 const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 125; //max 255 = full power/POWERUP mode
+*/
 //*************
 //This is experimental, actually Model2's don't seem to work, or mine is a lemon
 
