@@ -1,5 +1,5 @@
 #include "DS2408.h"
-#include <WProgram.h>
+#include <Arduino.h>
 #include <stdio.h>
 
 

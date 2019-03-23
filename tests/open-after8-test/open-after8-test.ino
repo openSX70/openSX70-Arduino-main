@@ -9,27 +9,29 @@ const int buttonPin = 12;     // the number of the pushbutton pin
 const int flashPin =  11;      // firing the flash through the Mosfet
 const int selectorPin = A0;    // detects if a flash is inserted (FFC mode "1")
 byte SelectorAfter8();
-
-DS2408 ds(ONE_WIRE_BUS_PORT);
-
-Devices devices;
-uint8_t device_count;
-
-
-//******************************************************************************************************
-
-void setup() {
-
-
-// initialize the LED pin as an output:
-
-  pinMode(flashPin, OUTPUT);           // make sure I don't fire the flash!
-  digitalWrite(flashPin, LOW);
-    Serial.print ("                       analogRead: ");
-    byte aRead = analogRead(selectorPin);
-    Serial.println (aRead);
-
-  pinMode(buttonPin, INPUT_PULLUP);
+int previousRead = 0;
+    
+    DS2408 ds(ONE_WIRE_BUS_PORT);
+    
+    Devices devices;
+    uint8_t device_count;
+    
+    
+    //******************************************************************************************************
+    
+    void setup() {
+    
+    
+    // initialize the LED pin as an output:
+    
+      pinMode(flashPin, OUTPUT);           // make sure I don't fire the flash!
+      digitalWrite(flashPin, LOW);
+        Serial.print ("                       analogRead: ");
+        byte aRead = analogRead(selectorPin);
+        Serial.println (aRead);
+    
+      pinMode(buttonPin, INPUT_PULLUP);
+      //pinMode(buttonPin, INPUT);
 
   Serial.begin(9600);                  // set up Serial library at 9600 bps
   Serial.println("HELLO openSX70!");
@@ -46,7 +48,7 @@ void loop() {
 
  //   pinMode(selectorPin, INPUT); 
     
-//    Serial.print ("AFTER8 INSERTED ");
+//    Serial.print ("AFTER8 INSERTED "); 
     Serial.println (analogRead(selectorPin));
 
   device_count = ds.find(&devices);
@@ -124,20 +126,14 @@ byte selector = B0000;
 
 
     device_count = ds.find(&devices);
-    // pinMode(selectorPin, OUTPUT); 
-    //
 
-    
-  //pinMode(selectorPin, INPUT);  // initialize the pushbutton pin as an input:  
-
-//  if  ((device_count == 0) && (digitalRead(selectorPin) == HIGH)) {  ////////////////////////////////////////////////////////////CASE NOTHING CONNECTED
-
-//  if  ((device_count == 0) != ((analogRead(selectorPin) <= 1023) && (analogRead(selectorPin) >= 700)))
+  
   if  ((device_count == 0) && (analogRead(selectorPin) >= 700))
   {
+    Serial.print ("previousRead: ");
+    Serial.println (previousRead);    
     Serial.print ("after8 selector: ");
     Serial.println (SelectorAfter8());
-    return;
     
   } else {
    
@@ -154,6 +150,7 @@ byte selector = B0000;
 //******************************************************************************************************
 byte SelectorAfter8()
 {
+  byte label;
   int j = 1; // integer used in scanning the array designating column number
 //2-dimensional array for asigning the buttons and there high and low values
 /*
@@ -190,9 +187,27 @@ int SelectorPos[16][3] = {{0, 990,1023},  // Pos 0  --> 2000
    // checks the ButtonVal against the high and low vales in the array
    if( (analogRead (selectorPin)) >= SelectorPos[i][j] &&  (analogRead (selectorPin)) <= SelectorPos[i][j+1])
    {
-     byte label = SelectorPos[i][0];
-     return label;
+    label = SelectorPos[i][0];
+
    }
  }
+ /*
+ Serial.print ("label: ");
+ Serial.println (label);
+ Serial.print ("previousRead: ");
+ Serial.println(previousRead);
+ */
+ if ((label == 0) && ((previousRead != 1) || (previousRead != 15)))
+    {
+    label = 200;
+       
+    } else
+          {
+          
+          previousRead = label ;
+          //label = 200;
+          }
+
+          return label;    
 
 }

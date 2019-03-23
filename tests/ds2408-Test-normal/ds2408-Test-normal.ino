@@ -9,7 +9,9 @@
 
 const int buttonPin = 12;     // the number of the pushbutton pin
 const int flashPin =  11;      // firing the flash through the Mosfet
-const int selectorPin = 2;    // detects if a flash is inserted (FFC mode "1")
+//const int selectorPin = 2;    // detects if a flash is inserted (FFC mode "1")
+
+const int selectorPin = A4;    // detects if a flash is inserted (FFC mode "1")
 
 DS2408 ds(ONE_WIRE_BUS_PORT);
 
@@ -157,4 +159,3 @@ byte selector = B0000;
 
 } // END OF loop
 //******************************************************************************************************
-
