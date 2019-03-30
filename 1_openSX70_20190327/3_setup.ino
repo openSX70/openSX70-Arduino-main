@@ -160,26 +160,6 @@ Serial.println ("BLINK NUMBER OF SHOTS");
 //LED COUNTER END
 
 
-  cli();                                 // Stop interrupts
-  TIFR1=0xFF;                             //needed to "kill" "lost" interrupts 
-  
-   TCCR1A=0;                              // Reset timer/counter control register A
-  TCCR1B = 0;                                                         //ADDED
-  TCNT1 = 0;                              //mycounter = TCNT1 would be the total count
-  bitSet(TCCR1B ,CS12);                  // Counter Clock source is external pin
-  bitSet(TCCR1B ,CS11);                  // Clock on rising edge
-  //OCR1A = output_compare;                // Set output compare value
-  //  TIMSK1 |= (1 << TOIE1);                // Enable compare A Match Interrupt
-
-  
-// TIMSK1 |= (1 << OCIE1A);               // enable compare B Match Interrupt
-//      TCCR1B = 1; //start counter????
-
-  sei();                               // Restart interrupts
-
-
-
-
 if (digitalRead(S5) != LOW || digitalRead(S3) != LOW)
 {
   mirrorDOWN();

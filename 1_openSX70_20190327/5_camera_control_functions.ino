@@ -3,7 +3,63 @@
 //                                CAMERA CONTROL
 
 // --------------------------------------------------------------------------------------------------------------------------------------
+//***************************************************************************************************************************************
+/*
+int REDbutton(int button) {
 
+               #if ISDEBUG 
+              //Serial.println("REDbutton");      
+              #endif
+
+    
+    // REDbutton (button pin)
+    // REDbutton is a standalone function
+    // by Joaquín de Prada
+  
+// REDbutton variables  
+static boolean buttonActive = false;
+static unsigned long buttonTimer = 0;
+static unsigned long STARTbuttonTimer = 0 ;
+// END of REDbutton variables
+    
+    pinMode(button, INPUT_PULLUP);
+ 
+    
+int result= 0 ;
+
+                 #if ISDEBUG 
+                 //Serial.print ("SHUTTERSPEED:  ");    
+                 //Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
+                 #endif
+
+if (digitalRead(button) == LOW) {
+            if (buttonActive == false) {
+               #if ISDEBUG 
+              Serial.println("button pressed");      
+              #endif
+            STARTbuttonTimer = millis(); 
+            buttonActive = true ;
+                                        }
+     
+     } else  {
+
+
+      if (buttonActive == true) {
+            buttonTimer = millis();
+               #if ISDEBUG 
+            Serial.println("button just released");
+            Serial.print("pressed time inside function:  ");
+              #endif
+            result = (buttonTimer - STARTbuttonTimer);
+               #if ISDEBUG 
+            Serial.println(result);
+              #endif
+            buttonActive = false ;
+     }
+     }
+                      return result;
+
+     } // END OF REDbutton function */
 //***************************************************************************************************************************************
 void ShutterT()
 {
@@ -87,14 +143,14 @@ void ShutterB()
                   shutterOPEN ();
                    if (Read_DS2408_PIO(2) ==  1) //CASE DONGLE FLASH AT THE END OF B
                   {
-                  analogWrite(Solenoid2, 130);
+                  analogWrite(Solenoid2, 255);
                   }
                         while (digitalRead(S1) == LOW)
                         ;
                    if (Read_DS2408_PIO(2) ==  1) //CASE DONGLE FLASH AT THE END OF B
                   {
                   Write_DS2408_PIO (7,1);
-                  delay (1);
+                  delay (2);
                   analogWrite (Solenoid2,0);
                   Write_DS2408_PIO (7,0);                  
                   }
@@ -148,7 +204,6 @@ void shutterCLOSE()
   
                                     delay (PowerDownDelay);                                        //Wait for the SOL#1 in BC position, more tests perhaps need changed to 25
                                     analogWrite (Solenoid1, PowerDown);
-
                                     return;
   //return;
   }   //end of void motorON()
@@ -276,7 +331,7 @@ void Click(int ExpDelay)
     Serial.print ("--------------------------------------------------CLICK:  ");
     Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
     #endif
-    void startCounter();
+    
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
         if (ExpDelay == 0){
         delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
@@ -291,16 +346,11 @@ void Click(int ExpDelay)
         
         ////////CLICK!
     shutterCLOSE ();                                         //close the shutter
-    delay (10);
-    cli();
-    counter = TCNT1;
-    sei();
-    Serial.begin(9600);
-    Serial.print ("                       counter: ");
-    Serial.print (counter);
-
     return;
-            } 
+            } else {
+
+                    return;
+                  }
 
 } //end of void Click()
 

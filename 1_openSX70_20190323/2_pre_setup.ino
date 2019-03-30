@@ -23,7 +23,7 @@
 #define LIGHTMETER 0
 
 const int output_compare = 1000;        // How many pulses before triggering interrupt
-int counter;
+unsigned long counter;
 //*************
 //This must be 0 for Len's and Bellows boards from SEEEDFUSION  :-(
 
