@@ -19,12 +19,17 @@ void eepromUpdate ()
 
 
                       Serial.println ("*****************************");
+                      Serial.print ("Actual picture: ");
                       Serial.println (ActualPicture);
+                      Serial.print ("Current picture Pack: ");
                       Serial.println (CurrentPicturePack);
+                      Serial.print ("Picture type: ");
                       Serial.println (PictureType);
+                      Serial.print ("Shutter in ms: ");
                       Serial.println (Shutter);
+                      Serial.print ("Counter: ");                      
                       Serial.println (counter);
-                      Serial.println (sensorValueHIGH);
+//                      Serial.println (sensorValueHIGH);
                       Serial.println ("*****************************");
                       
 

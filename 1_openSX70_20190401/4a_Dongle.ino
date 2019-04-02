@@ -55,7 +55,7 @@ unsigned long currentMillisTimer = millis();
                           Serial.println ("take picture");
                           #endif
                     byte PictureType = 0;                    
-                    eepromUpdate ();
+//                    eepromUpdate ();
     
                   #if SHUTTER
                   shutterCLOSE (); 
@@ -98,6 +98,7 @@ unsigned long currentMillisTimer = millis();
                  #if SHUTTER
                  shutterOPEN();
                  #endif   
+                  eepromUpdate ();
                  shots = 0;  
 
                  return;  

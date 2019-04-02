@@ -22,7 +22,7 @@
 //LIGHTMETER ON BOARD?
 #define LIGHTMETER 0
 
-const int output_compare = 500;        // How many pulses before triggering interrupt
+const int output_compare = 1500;        // How many pulses before triggering interrupt
 unsigned long counter;
 //unsigned long startMillis;
 //unsigned long endMillis;

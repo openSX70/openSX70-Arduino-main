@@ -291,13 +291,13 @@ void Click(int ExpDelay)
         
         ////////CLICK!
     shutterCLOSE ();                                         //close the shutter
-    delay (10);
+    //delay (10);
     cli();
     counter = TCNT1;
     sei();
-    Serial.begin(9600);
-    Serial.print ("                       counter: ");
-    Serial.print (counter);
+//    Serial.begin(9600);
+//    Serial.print ("                       counter: ");
+//    Serial.print (counter);
 
     return;
             } 
