@@ -276,7 +276,7 @@ void Click(int ExpDelay)
     Serial.print ("--------------------------------------------------CLICK:  ");
     Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
     #endif
-    startCounter();
+   startCounterCalibration();
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
         if (ExpDelay == 0){
         delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!

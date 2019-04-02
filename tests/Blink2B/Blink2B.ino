@@ -11,6 +11,7 @@
 // Pin 13 has the LED on Teensy 3.0
 // give it a name:
 int led1 = 13;
+//int led2 = A3; //changed to A5 from U2 on
 int led2 = A5; //changed to A5 from U2 on
 unsigned int cycle = 1;
 
