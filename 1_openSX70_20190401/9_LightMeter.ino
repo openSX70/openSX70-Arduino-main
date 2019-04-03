@@ -94,7 +94,7 @@ void finish()
   
 //  endMillis = millis();
   shutterCLOSE();
-  delay (100);
+  delay (20);
   mirrorDOWN();
 delay (100);
   mirrorUP;
