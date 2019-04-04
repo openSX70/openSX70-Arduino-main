@@ -23,7 +23,7 @@
 #define LIGHTMETER 0
 //MAGIC NUMBER FOR 125 SX70 TYPE FILM!!! 
 //FIRST TEST
-const int output_compare = 500;        // How many pulses before triggering interrupt
+const int output_compare = 450;        // How many pulses before triggering interrupt
 
 unsigned long counter;
 //unsigned long startMillis;
