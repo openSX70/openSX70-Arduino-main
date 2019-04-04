@@ -21,19 +21,19 @@
 
 //LIGHTMETER ON BOARD?
 #define LIGHTMETER 0
+//MAGIC NUMBER FOR 125 SX70 TYPE FILM!!! 
+//FIRST TEST
+const int output_compare = 500;        // How many pulses before triggering interrupt
 
-const int output_compare = 1500;        // How many pulses before triggering interrupt
 unsigned long counter;
 //unsigned long startMillis;
 //unsigned long endMillis;
 
-//*************
-//This must be 0 for Len's and Bellows boards from SEEEDFUSION  :-(
 
 //OPTION POWER DOWN 
 //Alpha or Model 2 might different values
 
-const byte PowerDownDelay = 1; //time it takes to be fully closed
+const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 255; //max 255 = full power/POWERUP mode
 /*
 const byte PowerDownDelay = 15; //time it takes to be fully closed
@@ -169,7 +169,7 @@ enum positions_t {A600 = -100, POSFLASH, POSFLASHF8, POST, POSB};
  */
 
 //enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB}; 
-enum positions_t {POSFLASH = -100, AUTO, POST, POSB}; 
+enum positions_t {POSFLASH = -100, AUTO100, POST, POSB}; 
 /*
  TO CLARIFY:
 
@@ -207,7 +207,7 @@ int ShutterConstant = 9;
 
 
 //OPTION
-int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, AUTO, POST, POSB };
+int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, AUTO100, POST, POSB };
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
 // this are the "SLOTS":

@@ -96,8 +96,10 @@ void finish()
   shutterCLOSE();
   delay (20);
   mirrorDOWN();
-delay (100);
+delay (200);
   mirrorUP;
+delay (200);
+ shutterOPEN();
   
 //  Serial.print ("exposure time = ");
 //  Serial.println(endMillis-startMillis);

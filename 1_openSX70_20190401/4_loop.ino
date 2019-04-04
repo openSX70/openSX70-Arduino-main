@@ -226,7 +226,7 @@ return;
                                 return;
                                                               
                               }
-                            if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO)))
+                            if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO100)))
                             {
                               Auto100();
                               return;
