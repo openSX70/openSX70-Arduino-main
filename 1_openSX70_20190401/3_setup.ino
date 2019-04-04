@@ -4,8 +4,8 @@ void setup() {
 
 //Alpha Boards have two leds visible in a sonar-type VF.
 
-  pinMode(led1, OUTPUT);  //BLUE   
-  pinMode(led2, OUTPUT);  //RED
+  pinMode(led1, OUTPUT);  //BLUE   (or whatever)
+  pinMode(led2, OUTPUT);  //RED   (or whatever)
 
   pinMode(Solenoid1, OUTPUT);
   pinMode(Solenoid2, OUTPUT);

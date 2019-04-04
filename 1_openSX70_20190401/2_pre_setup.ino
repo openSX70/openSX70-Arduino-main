@@ -24,8 +24,8 @@
 //MAGIC NUMBER FOR 125 SX70 TYPE FILM!!! 
 //FIRST TEST
 const int output_compare = 450;        // How many pulses before triggering interrupt
-
 unsigned long counter;
+
 //unsigned long startMillis;
 //unsigned long endMillis;
 
@@ -34,7 +34,7 @@ unsigned long counter;
 //Alpha or Model 2 might different values
 
 const byte PowerDownDelay = 15; //time it takes to be fully closed
-const byte PowerDown = 255; //max 255 = full power/POWERUP mode
+const byte PowerDown = 200; //max 255 = full power/POWERUP mode
 /*
 const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 125; //max 255 = full power/POWERUP mode
