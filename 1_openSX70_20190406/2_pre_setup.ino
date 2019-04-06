@@ -20,11 +20,12 @@
 //*************
 
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 0
+#define LIGHTMETER 1
 //MAGIC NUMBER FOR 125 SX70 TYPE FILM!!! 
 //FIRST TEST
-const int output_compare = 450;        // How many pulses before triggering interrupt
-
+int output_compare = 450;        // How many pulses before triggering interrupt
+                                  //NOW this value is for dongleless auto
+                                  
 unsigned long counter;
 //unsigned long startMillis;
 //unsigned long endMillis;
@@ -169,7 +170,8 @@ enum positions_t {A600 = -100, POSFLASH, POSFLASHF8, POST, POSB};
  */
 
 //enum positions_t {POSFLASH = -100, POSFLASHF8, POST, POSB}; 
-enum positions_t {POSFLASH = -100, AUTO100, POST, POSB}; 
+//enum positions_t {POSFLASH = -100, AUTO100, POST, POSB}; 
+enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; 
 /*
  TO CLARIFY:
 
@@ -206,15 +208,21 @@ int ShutterConstant = 9;
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 
 
+
+//int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, AUTO600, AUTO100, POST, POSB };
+
 //OPTION
-int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, AUTO100, POST, POSB };
+int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
 // this are the "SLOTS":
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
-//int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO100, FLASH-F8, T, B };
+//int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };
 // to change the speed in the slot position just change the number corresponding.
 
+int FastestFlashSpeed = 25;
+//this speed and faster will trigger flash
 
 int shots = 0;
 
@@ -314,4 +322,6 @@ void DongleFlashNormal ();
 void eepromDump ();
 void eepromDumpCSV ();
 void startCounter();
-void Auto100();
+void AutoExposure();
+int checkButton();
+void startCounterCalibration();
