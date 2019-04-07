@@ -5,65 +5,34 @@
 
 // --------------------------------------------------------------------------------------------------------------------------------------
 //***************************************************************************************************************************************
-/*
-void loop() {
-
-  // TEST Write_DS2408_PIO function!
-  //***********************************************************************
-  while (digitalRead(buttonPin) == LOW) {
-    Write_DS2408_PIO (DSled, 1);
-  }
-  {
-    Write_DS2408_PIO (DSled, 0);
-
-  }
-  //***********************************************************************
-
-*/
-/*
-  if (DS2408(0) < 100)
-  {
-    byte ActualSlot = DS2408(0);
-    Serial.print ("Selector: ");
-    Serial.println (ActualSlot);
-
-    byte S1 = DS2408(1);
-    Serial.print ("S1: ");
-    Serial.println (S1);
-
-    byte S2 = DS2408(2);
-    Serial.print ("S2: ");
-    Serial.println (S2);
-    return;
-  }
-  if (DS2408(0) == 100)
-  {
-    Serial.println ("FLASH");
-    return;
-  }
-  if (DS2408(0) == 200)
-  {
-    Serial.println ("NOTHING");
-    return;
-  }
-  else
-  {
-    Serial.println ("DONT KNOW ");
-  }
-  //  int DS2408();
-  return;
-
-} // END OF loop
-//******************************************************************************************************
-*/
 
 byte Read_DS2408_PIO(int Slot) {
    // Slot = 0 selector    // return value 0-15 (selector) 100 = Flash inserted 200 = NOTHING INSERTED
    // Slot = 1 S1
    // Slot = 2 S2
      
+// device_count = ds.find(&devices) //I do this at the beginning of loop()
+ 
+pinMode(S2, INPUT_PULLUP); // perhaps not such a good idea internal pullup??
+  delay (5);
+  if  ((device_count == 0) && (digitalRead(S2) == HIGH)) {  ////////////////////////////////////////////////////////////CASE NOTHING CONNECTED
+
+   Serial.println("NOTHING CONNECTED");
+   //delay (1000);
+   return 200;
+  } 
+
+
+  if (digitalRead(S2) == LOW)  { 
+    Serial.println ("flash");
+    //////////////////////////////////////////////////////////// CASE FLASH
+    return 100; // FLASH
+
+  } // END OF if (digitalRead(S2) == LOW)  {  // CASE FLASH
+  
   byte selector = B0000;
   uint8_t readDevice = ds.get_state(devices[0]);
+ 
   if ((digitalRead(S2) == HIGH) && (readDevice > 0)) { ////////////////////////////////////////////////////////////CASE DONGLE INSERTED
 
     // BIT: 7 6 5 4 3 2 1 0
@@ -146,21 +115,14 @@ byte Read_DS2408_PIO(int Slot) {
     }
 } // END OF if ((digitalRead(S2) == HIGH) && (device_count > 0)){  //CASE DONGLE INSERTED
 
-pinMode(S2, INPUT_PULLUP); // perhaps not such a good idea internal pullup??
 
-  if (digitalRead(S2) == LOW)  { 
-    Serial.println ("flash");
-    //////////////////////////////////////////////////////////// CASE FLASH
-    return 100; // FLASH
-
-  } // END OF if (digitalRead(S2) == LOW)  {  // CASE FLASH
-  else 
+/*  else 
   {
   Serial.println ("nothing");
   
   return 200; //NOTHING
-  }
-  
+  } */
+    
 } //END OF Read_DS2408_PIO() function
 
 //******************************************************************************************************

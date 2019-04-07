@@ -231,14 +231,14 @@ return;
                             if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO100)))
                             {
                               output_compare = 450; //OPTION magic number for ISO 125 or 160 or whatever it is
-                              Serial.println ("A1");
+//                              Serial.println ("A1");
                               AutoExposure();
                               return;
                             }
                             if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO600)))
                             {
-                              output_compare = 125; //OPTION magic number for ISO 600
-                               Serial.println ("A6");
+                              output_compare = 130; //OPTION magic number for ISO 600
+//                               Serial.println ("A6");
                               AutoExposure();
                               return;
                             }
@@ -280,7 +280,7 @@ return;
   if (Read_DS2408_PIO(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
   {
     Serial.println ("200");
-    return;
+    
                                     #if LIGHTMETER
 
                                   
@@ -290,15 +290,13 @@ return;
                                     //here goes light metering
                                   //    #endif
 
-                                       if (takePicture == true )    //NORMAL AUTO OPERATION
-    {
-                    void AutoExposure();                       
-
-                 byte PictureType = 6;                    
-                 eepromUpdate ();
-                 shots = shots++;  
-                 #endif
-
+            if (takePicture == true )    //NORMAL AUTO OPERATION
+                  {
+                  void AutoExposure();                       
+                  byte PictureType = 6;                    
+                  eepromUpdate ();
+                  shots = shots++;  
+                  #endif
                  return;  
     
      } // END of  if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION

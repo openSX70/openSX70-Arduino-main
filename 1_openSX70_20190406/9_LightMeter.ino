@@ -15,6 +15,7 @@ ISR(TIMER1_OVF_vect)                        // Overflow Flag interrupt service r
  
 void startCounter()
 {
+                    takePicture = false;
   cli();                                                        // Stop interrupts
   TIFR1=0xFF;                                          //needed to "kill" "lost" interrupts
   TCCR1A=0;                                            // Reset timer/counter control register A
