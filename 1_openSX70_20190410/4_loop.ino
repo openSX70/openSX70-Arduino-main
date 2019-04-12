@@ -237,7 +237,7 @@ return;
                             }
                             if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO600)))
                             {
-                              output_compare = 190; //OPTION magic number for ISO 600
+                              output_compare = 200; //OPTION magic number for ISO 600
 //                               Serial.println ("A6");
                               AutoExposure();
                               return;
