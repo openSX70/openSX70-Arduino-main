@@ -111,14 +111,14 @@ if ((Read_DS2408_PIO(1) == 1) && (Read_DS2408_PIO(2) == 1)) {
 
 EEPROM.get(10,eeAddress);  // where to write
 EEPROM.get (13, ActualPicture); //the picture taken counter
-
+/*
 #if SIMPLEDEBUG
 Serial.println ("EEPROM already initialized...");
 Serial.print ("eeAddress: ");
 Serial.println (eeAddress);
 Serial.print ("ActualPicture: ");
 Serial.println (ActualPicture);
-#endif
+#endif */
   }
 /*
 EEPROM.get(10,eeAddress);  // where to write

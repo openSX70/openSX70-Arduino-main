@@ -1,3 +1,4 @@
+
   void Dongle(int Exposure) 
     {
                                         #if ISDEBUG 
@@ -51,8 +52,32 @@ unsigned long currentMillisTimer = millis();
     
     if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     {
-                          #if SIMPLEDEBUG
-                          Serial.println ("take picture");
+      
+
+         if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO100)))
+                            {
+                              output_compare = 490; //OPTION magic number for ISO 125 or 160 or whatever it is
+                              Serial.println ("A1");
+                                AutoExposure();
+                                      byte PictureType = 1;                    
+                                      eepromUpdate ();
+                                      shots = shots++;  
+                              return;
+                            }
+                            if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO600)))
+                            {
+                              output_compare = 200; //OPTION magic number for ISO 600
+                               Serial.println ("A6");
+                              AutoExposure();
+                                      byte PictureType = 6;                    
+                                      eepromUpdate ();
+                                      shots = shots++;  
+                              return;
+                            }                  
+                          
+                          
+/*                          #if SIMPLEDEBUG
+                          Serial.println ("take Manual picture");
                           #endif
                     byte PictureType = 0;                    
 //                    eepromUpdate ();
@@ -76,12 +101,7 @@ unsigned long currentMillisTimer = millis();
                   #endif
 
                   #if SHUTTER
-                  if (Exposure = 0) {
-                   Click (0);  
-                  } else {
-                    Click (Exposure);
-                  }
-                   
+                  Click (0);  
                   #endif
                   
                   #if !MOTOR
@@ -102,7 +122,7 @@ unsigned long currentMillisTimer = millis();
                  shots = 0;  
 
                  return;  
-    
+ */   
      } // END of  if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
     
 //=========================================================================================================================================================                   

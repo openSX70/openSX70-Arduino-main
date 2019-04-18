@@ -184,16 +184,21 @@ return;
             
                 }
                                      
+
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
-                                ManualExposure();
+                                Dongle(0);
+                              }
+
+                                
+/*/////////////////                                ManualExposure();
                                 return;
                               }
                             if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO100)))
                             {
                               output_compare = 490; //OPTION magic number for ISO 125 or 160 or whatever it is
-//                              Serial.println ("A1");
-                              AutoExposure();
+                              Serial.println ("A1");
+                                AutoExposure();
                                       byte PictureType = 1;                    
                                       eepromUpdate ();
                                       shots = shots++;  
@@ -202,13 +207,16 @@ return;
                             if ((ShutterSpeed[Read_DS2408_PIO(0)] == (AUTO600)))
                             {
                               output_compare = 200; //OPTION magic number for ISO 600
-//                               Serial.println ("A6");
+                               Serial.println ("A6");
                               AutoExposure();
                                       byte PictureType = 6;                    
                                       eepromUpdate ();
                                       shots = shots++;  
                               return;
                             }
+
+                            *////////////////////
+                            
 /*          //byte ActualSlot = (Read_DS2408_PIO(0));
 
                                       #if ISDEBUG 
@@ -235,28 +243,30 @@ return;
                                   if (Read_DS2408_PIO(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
                                   {
                                    
-                                  #if ISDEBUG 
-                                  Serial.print (Read_DS2408_PIO(0));
+                                  #if SIMPLEDEBUG 
+                                  //Serial.print (Read_DS2408_PIO(0));
                                   Serial.println (":  FLASH");
                                   #endif
                                   FlashBAR();
                                   return;
-                                                                    }
+                                   }
   
-                                    if (Read_DS2408_PIO(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
+                                  if (Read_DS2408_PIO(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
                                    {
-                                   Serial.println ("200");
+                                  Serial.println ("200");
     
-                                    #if LIGHTMETER
+                                  #if LIGHTMETER
                                     //here goes light metering
                                     output_compare = 200; //OPTION magic number for ISO 600
-//                                   Serial.println ("A6DL");
+                                   Serial.println ("A6DL");
                                       AutoExposure();
                                       byte PictureType = 6;                    
                                       eepromUpdate ();
                                       shots = shots++;  
                                      #endif
+                                                                        Serial.println ("A6DL");
                                      return;
+                                   }
                                      
 /* ////////////////
             if (takePicture == true )    //NORMAL AUTO OPERATION
@@ -267,31 +277,20 @@ return;
                   shots = shots++;  
                   #endif
                  return;  
-    */
-     } // END of  if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && shots == 0)    //NORMAL OPERATION
-//    #endif
-
-           
-                                      
-                                    
-//if (takePicture == true  && Read_DS2408_PIO(1) ==  0 && Read_DS2408_PIO(0) ==  200 && shots == 0)    //NORMAL AUTO OPERATION
-                                   
                                           
     return;
- }
-  else
+ }*/
+   else
   {
                                   // re check if dongle has been re-connected!
 
-                                  //#if ISDEBUG 
+                                  #if SIMPLEDEBUG 
                                   Serial.print (Read_DS2408_PIO(0));
                                   Serial.println (":   DONT KNOW, SHOULD NOT BE HERE! ");
-                                  //#endif
+                                  #endif
   }
  
-
-
-  }
+ 
 } //END OF loop      
 
 //***************************************************************************************************************************************

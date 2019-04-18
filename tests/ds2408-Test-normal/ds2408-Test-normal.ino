@@ -18,6 +18,11 @@ DS2408 ds(ONE_WIRE_BUS_PORT);
 Devices devices;
 uint8_t device_count;
 
+#ifdef CXA_PURE_VIRTUAL_FIX
+extern "C" void __cxa_pure_virtual(void);
+void __cxa_pure_virtual(void) { while(1); }
+#endif
+
 
 //******************************************************************************************************
 

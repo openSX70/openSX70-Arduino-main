@@ -7,7 +7,7 @@
 #define ISDEBUG 0
 //*************
 
-#define SIMPLEDEBUG 0
+#define SIMPLEDEBUG 1
 //*************
 
 
@@ -21,7 +21,7 @@
 
 //OPTION
 //LIGHTMETER ON BOARD?
-#define LIGHTMETER 1
+#define LIGHTMETER 0
 //MAGIC NUMBER FOR 125 SX70 TYPE FILM!!! 
 //FIRST TEST
 int output_compare ;        // How many pulses before triggering interrupt
@@ -327,3 +327,4 @@ void startCounter();
 void AutoExposure();
 int checkButton();
 void startCounterCalibration();
+void ManualExposure();

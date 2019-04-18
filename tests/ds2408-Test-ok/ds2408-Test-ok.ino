@@ -30,7 +30,7 @@ void setup() {
   Serial.begin(9600);                  // set up Serial library at 9600 bps
   Serial.println("HELLO openSX79!");
 
- device_count = ds.find(&devices);
+ //device_count = ds.find(&devices);
 
                                                                                                  
 } //        end of void setup()
@@ -121,4 +121,3 @@ byte selector = B0000;
 
 } // END OF loop
 //******************************************************************************************************
-
