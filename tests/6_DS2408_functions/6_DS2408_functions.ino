@@ -43,15 +43,18 @@ void setup() {
   Serial.begin(9600);                  // set up Serial library at 9600 bps
   Serial.println("HELLO openSX70!");
 
-// device_count = ds.find(&devices);
+//device_count = ds.find(&devices);
 // Serial.print ("device_count = ");
 // Serial.print (device_count);
 
 intializeDS2408();
+//device_count = ds.find(&devices);
+
 }
 
 void loop() {
 
+    
 device_count = ds.find(&devices);
 
 Serial.print ("LOOP: device_count = ds.find(&devices);--->");
@@ -61,7 +64,7 @@ if (device_count == 0)
 //device_count = ds.find(&devices);
 //#if SIMPLEDEBUG
 
-delay (1000);
+//delay (1000);
 //#endif
           Write_DS2408_PIO (6, 1);
           delay (200);
@@ -128,7 +131,12 @@ byte Read_DS2408_PIO(int Slot) {
    // Slot = 2 S2
      
   byte selector = B0000;
-  uint8_t readDevice = ds.get_state(devices[0]);
+
+ //for(int index=0; index < device_count; index++) {4
+ //     uint8_t readDevice = ds.get_state(devices[index]);
+  
+//  
+uint8_t readDevice = ds.get_state(devices[0]);
   
 //  intializeDS2408();
   
@@ -138,12 +146,14 @@ byte Read_DS2408_PIO(int Slot) {
    return 200;
     }
   
-  if ((digitalRead(S2) == HIGH) && (readDevice > 0)) { ////////////////////////////////////////////////////////////CASE DONGLE INSERTED
+  if ((digitalRead(S2) == HIGH) && (device_count > 0)) { ////////////////////////////////////////////////////////////CASE DONGLE INSERTED
 
     // BIT: 7 6 5 4 3 2 1 0
     if (Slot == 0) {
 
-      uint8_t readDevice = ds.get_state(devices[0]);
+ //for(int index=0; index < device_count; index++) {
+ //     uint8_t readDevice = ds.get_state(devices[index]);
+
 
       if (readDevice & 0b00000001) {
         bitSet(selector, 0);
@@ -162,7 +172,7 @@ byte Read_DS2408_PIO(int Slot) {
 
     byte Switch;
     if (Slot == 1) {
-      uint8_t readDevice = ds.get_state(devices[0]);
+//      uint8_t readDevice = ds.get_state(devices[0]);
 
       if (readDevice & 0b00010000) {
         bitSet(Switch, 0);
@@ -170,7 +180,7 @@ byte Read_DS2408_PIO(int Slot) {
       return Switch;
     }
     if (Slot == 2) {
-      uint8_t readDevice = ds.get_state(devices[0]);
+//      uint8_t readDevice = ds.get_state(devices[0]);
 
       if (readDevice & 0b00100000) {
         bitSet(Switch, 0);
@@ -178,7 +188,7 @@ byte Read_DS2408_PIO(int Slot) {
       return Switch;
     } else
       return 0;
-
+    
   } // END OF if ((digitalRead(S2) == HIGH) && (device_count > 0)){  //CASE DONGLE INSERTED
 
 pinMode(S2, INPUT_PULLUP); // perhaps not such a good idea internal pullup??
@@ -225,9 +235,5 @@ for (int i = 0; i < 8; i++)
     ds.write(devices[0][i]);
 ds.write(0x3C);
 ds.reset(); 
-#if SIMPLEDEBUG
-Serial.print ("SETUP: device_count = ds.find(&devices);--->");
-Serial.println (device_count);
-#endif
 // THIS IS FUNDAMENTAL
 }
