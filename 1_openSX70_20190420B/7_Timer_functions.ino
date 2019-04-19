@@ -24,7 +24,7 @@ BlinkBeep (70,1400,6,0);
 
 BlinkBeep (1200,1200,6,0);
 
-#if ISDEBUG
+#if SIMPLEDEBUG
 unsigned long endTimer = millis();
 unsigned long time = ((endTimer-startTimer)/1000);
 Serial.print(time);
@@ -52,7 +52,7 @@ BlinkBeep (200,2500,5,1);
 
 BlinkBeep (80,2500,5,1);
 
-#if ISDEBUG
+#if SIMPLEDEBUG
 unsigned long endTimer = millis();
 unsigned long time = ((endTimer-startTimer)/1000);
 Serial.print(time);
@@ -81,7 +81,7 @@ BlinkBeep (200,2500,6,2);
 //cancelButton();
 BlinkBeep (80,2500,6,2);
 //cancelButton();
-#if ISDEBUG
+#if SIMPLEDEBUG
 unsigned long endTimer = millis();
 unsigned long time = ((endTimer-startTimer)/1000);
 Serial.print(time);

@@ -61,23 +61,16 @@ void AutoExposure()
                     eepromUpdate ();
 
              
-             #if SHUTTER
 //         HighSpeedPWM ();
 //         analogWrite(Solenoid2, 255);
                   shutterCLOSE (); 
-             #endif
                 
-                  #if MOTOR 
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
 //         analogWrite (Solenoid2, 130);
                   Ydelay ();                               //S3 is now open start Y-delay (40ms)
-                  #endif
  
-                  #if !MOTOR
-                  delay (500);
-                  #endif
 
 
                   startCounter();

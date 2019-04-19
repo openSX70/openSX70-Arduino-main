@@ -7,26 +7,19 @@
 //***************************************************************************************************************************************
 void ShutterT()
 {
-                 #if ISDEBUG 
+                 #if SIMPLEDEBUG 
                  Serial.println ("SHUTTER T");    
                  #endif
 
-                  #if SHUTTER
                   shutterCLOSE (); 
-                  #endif
                   
-                  #if MOTOR 
+                  
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN˚
                    ;
                   delay (40);                               //S3 is now open start Y-delay (40ms)
-                  #endif
- 
-                  #if !MOTOR
-                  delay (500);
-                  #endif
-
-                  #if SHUTTER
+                   
+                  
                   shutterOPEN ();
                    
                         while (digitalRead(S1) == HIGH)
@@ -36,50 +29,29 @@ void ShutterT()
                         {
                         shutterCLOSE ();
                         }
-                  #endif
                   
-                  #if !MOTOR
-                  delay (1000);
-                  #endif
-
-                  #if MOTOR
                   delay (200);                             //AGAIN is this delay necessary?
                   mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
                   delay (200);                             //AGAIN is this delay necessary?
-                  #endif
 
-                 #if SHUTTER
                  shutterOPEN();
-                 #endif   
                  //shots = 0;  
-       
                  return;       
 
-
 }
-
 void ShutterB()
 {
-               #if ISDEBUG 
+               #if SIMPLEDEBUG 
                Serial.println ("SHUTTER B");    
                #endif
 
-                  #if SHUTTER
                   shutterCLOSE (); 
-                  #endif
                   
-                  #if MOTOR 
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN˚
                    ;
                   delay (40);                               //S3 is now open start Y-delay (40ms)
-                  #endif
  
-                  #if !MOTOR
-                  delay (500);
-                  #endif
-
-                  #if SHUTTER
                   if (Read_DS2408_PIO(2) ==  1) //CASE DONGLE FLASH AT THE END OF B
                   {
                   analogWrite(Solenoid2, 255);
@@ -99,21 +71,13 @@ void ShutterB()
                   Write_DS2408_PIO (7,0);                  
                   }
                         shutterCLOSE ();
-                  #endif
-                  
-                  #if !MOTOR
-                  delay (1000);
-                  #endif
 
-                  #if MOTOR
+
                   delay (200);                             //AGAIN is this delay necessary?
                   mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
                   delay (200);                             //AGAIN is this delay necessary?
-                  #endif
 
-                 #if SHUTTER
                  shutterOPEN();
-                 #endif   
                  //shots = 0;  
 
               return;    
@@ -122,7 +86,7 @@ void ShutterB()
 //***************************************************************************************************************************************
 void motorON()
 {
-                                        #if ISDEBUG 
+                                        #if SIMPLEDEBUG 
                                       Serial.println ("motorON");
                                       #endif
   digitalWrite(Motor, HIGH);
@@ -131,7 +95,7 @@ void motorON()
 //***************************************************************************************************************************************
 void motorOFF()
 {
-                                      #if ISDEBUG 
+                                      #if SIMPLEDEBUG 
                                     Serial.println ("motorOFF");
                                     #endif
   digitalWrite(Motor, LOW);
@@ -140,7 +104,7 @@ void motorOFF()
 //***************************************************************************************************************************************
 void shutterCLOSE()
 {
-                                      #if ISDEBUG 
+                                      #if SIMPLEDEBUG 
                                     Serial.println ("shutterCLOSE");
                                     #endif
                                     HighSpeedPWM ();
@@ -156,7 +120,7 @@ void shutterCLOSE()
 //***************************************************************************************************************************************
 void shutterOPEN()
 {
-                            #if ISDEBUG 
+                            #if SIMPLEDEBUG 
                           Serial.println ("shutterOPEN");
                           #endif
 analogWrite (Solenoid1,0);
@@ -167,7 +131,7 @@ return;
 
 void mirrorDOWN()
 {
-                            #if ISDEBUG 
+                            #if SIMPLEDEBUG 
                           Serial.println ("mirrorDOWN");
                           #endif
   motorON ();
@@ -181,7 +145,7 @@ void mirrorDOWN()
 
 void mirrorUP()
 {
-                            #if ISDEBUG 
+                            #if SIMPLEDEBUG 
                           Serial.println ("mirrorUP");
                           #endif
   motorON ();
@@ -199,7 +163,7 @@ void mirrorUP()
 
 void darkslideEJECT()
 {
-                              #if ISDEBUG 
+                              #if SIMPLEDEBUG 
                             Serial.println ("darkslideEJECT");
                             #endif
   shutterCLOSE();
@@ -213,7 +177,7 @@ void darkslideEJECT()
 
 void Click(int ExpDelay)
 {
-                            #if ISDEBUG 
+                            #if SIMPLEDEBUG 
 //                            ActualSlot = Read_DS2408_PIO(0);
 //                            Serial.print ("ClickClickClickClickClickClickClickClickClickClickClickClickClickClickClick: ");
 //                            Serial.println (ShutterSpeed[ActualSlot]);
@@ -227,18 +191,16 @@ void Click(int ExpDelay)
     // case T
      pressTime = 0;
           
-      #if ISDEBUG
+      #if SIMPLEDEBUG
       Serial.println ("MODE T");
       delay (1000);
       #endif
       
-      #if SHUTTER
-     shutterOPEN (); 
+           shutterOPEN (); 
      
      while (pressTime > shortPress)
      int pressTime = REDbutton(S1);
       shutterCLOSE();
-      #endif    
 
      
           
@@ -247,15 +209,15 @@ void Click(int ExpDelay)
   if ((ShutterSpeed[Read_DS2408_PIO(0)]) == POSFLASH)
   {
     // case FLASH DONGLE
-                                  #if ISDEBUG
+                                  #if SIMPLEDEBUG
                                   Serial.println ("MODE FLASH IN DONGLE POSITION");
                                   #endif
 //delay (10000);
-                            #if ISDEBUG 
+                            #if SIMPLEDEBUG 
                             //ActualSlot = Read_DS2408_PIO(0);
                             Serial.println ("Click: FLASH ");
                             #endif
-                  #if SHUTTER
+
                   shutterOPEN (); 
                   delay (51);
                  Write_DS2408_PIO (7,1);
@@ -265,7 +227,6 @@ void Click(int ExpDelay)
                   Write_DS2408_PIO (7,0);
                   delay (26);
                   shutterCLOSE();
-                  #endif
                   return;
   }
 */
@@ -273,7 +234,7 @@ void Click(int ExpDelay)
   if ((ShutterSpeed[Read_DS2408_PIO(0)]) > 0)
 
   {
-        #if ISDEBUG
+        #if SIMPLEDEBUG
     Serial.print ("--------------------------------------------------CLICK:  ");
     Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
     #endif

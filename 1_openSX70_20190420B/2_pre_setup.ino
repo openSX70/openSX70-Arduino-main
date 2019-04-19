@@ -1,27 +1,19 @@
 //OPTION for origamiV1 dongles
 
-#define origamiV1 0
+#define origamiV1 0 //this is for "normal" uDongles
+
+//#define origamiV1 1 //this is for "origamiV1" dongles, will be fixed in newer origamis.
 
 //suport for origami V1 boards.
 
-#define ISDEBUG 0
+//OPTION DEBUG INFORMATION ON SERIAL PORT (normal operation set to 0)
+
+#define SIMPLEDEBUG 0
 //*************
 
-#define SIMPLEDEBUG 1
-//*************
 
-
-//TEST ONLY SHUTTER ASSEMBLY
-#define SHUTTER 1
-//*************
-
-//TEST ONLY BACK OF THE CAMERA
-#define MOTOR 1
-//*************
-
-//OPTION
-//LIGHTMETER ON BOARD?
-#define LIGHTMETER 0
+//OPTION LIGHTMETER ON BOARD?
+#define LIGHTMETER 1
 //MAGIC NUMBER FOR 125 SX70 TYPE FILM!!! 
 //FIRST TEST
 int output_compare ;        // How many pulses before triggering interrupt
@@ -37,17 +29,16 @@ unsigned long counter;
 
 const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 225; //max 255 = full power/POWERUP mode
-/*
-const byte PowerDownDelay = 15; //time it takes to be fully closed
-const byte PowerDown = 125; //max 255 = full power/POWERUP mode
-*/
+
+
 //*************
 //This is experimental, actually Model2's don't seem to work, or mine is a lemon
 
 
 
-//Alpha Boards have two leds visible in a sonar-type VF.
-//OPTION LED
+
+//OPTION LED: Alpha Boards have two leds visible in a sonar-type VF. 
+//Might be connected to different arduino ports on reworked PCBs normally A3 or A5
 
 const int led1 = 13;
 const int led2 = A3;
@@ -69,15 +60,13 @@ const int led2 = A3;
 //#include <OneWire-teensy.h>
 
 
-//I USED THIS Nicholas Zambetti 2006 the one I used ALL ALONG. Not anymore...
-//#include <Wire.h>
-
-
 #include <DS2408.h>
 //Based on DS2408/Arduino/lightLed/lightLed.ino
 
 // END OF OneWire and DS2408 STUFF*****************************************************************
 
+
+//OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
 
 const int S2 = 2;  //this for Flash insertion detection
                       //this CLOSED when there is a FLASHBAR inserted
@@ -90,9 +79,6 @@ const int S2 = 2;  //this for Flash insertion detection
 //DS2408 ds(ONE_WIRE_BUS_PORT);
 //Read_DS2408_PIO ds(ONE_WIRE_BUS_PORT);
 
-//Devices devices;
-//uint8_t device_count;
-
 DS2408 ds(ONE_WIRE_BUS_PORT);
 
 Devices devices;
@@ -103,6 +89,7 @@ uint8_t device_count = 0;
 //High speed PWM
 const byte n = 224;  // for example, 71.111 kHz
 
+//SX70 to Arduino ports connections.
 
 const int S1 = 12;     //Red button SHUTTER RELEASE
                       //S1: LOW = CLOSED
@@ -111,27 +98,15 @@ const int S5 = 7;     //S5: LOW = CLOSED
 const int S8 = A1;     //S8: HIGH = CLOSED
 const int S9 = A0;     //S9: HIGH = CLOSED
 
-//const int Solenoid1 = 5;           // 6V High Power
-
-// in Aladdin :
 const int Solenoid1 = 3;           // 6V High Power
-
 const int Solenoid2 = 11;          // 6V High Power    
 
-
-
-
-// in Aladdin :
-
-//
 const int FFA = 4;
-
-//const int FFA = 3;
 
 
 // ONE WIRE OUTPUT "PIN"s
-const int DS_led = 6;
-const int DS_pc_flash = 7;
+//const int DS_led = 6;
+//const int DS_pc_flash = 7;
 
 
                 // MOTOR JUST TURNS ON OR OFF THE MOTOR

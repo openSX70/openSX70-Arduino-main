@@ -1,6 +1,10 @@
 
 void loop() {
 //takePicture = false;
+
+//=======================================================================================
+//OPTION this is only to blink the LED on the dongle if inserted late. Only the first time.
+
 if (device_count == 0)
 {
 device_count = ds.find(&devices);
@@ -15,6 +19,8 @@ Serial.println (device_count);
 Serial.println ("BLINK after DS2408 init in loop");
 #endif
 }
+//=======================================================================================  
+  
   
   //WHAT TO DO WHEN POWER-UP:
   //  S8     S9
@@ -22,9 +28,11 @@ Serial.println ("BLINK after DS2408 init in loop");
   // open  closed --> FILM REACH 0 (NO FLASH)
   // open   open  --> NORMAL OPERATION 10 TO 1
 
+
+
  
    // STATE 1: EJECT DARKSLIDE:*************************************************************************************************************************************************
-  #if MOTOR 
+  
   if (digitalRead(S8) == HIGH && digitalRead(S9) == LOW)
     //EJECT DARK SLIDE
   {
@@ -41,8 +49,7 @@ Serial.println ("BLINK after DS2408 init in loop");
                                   #endif
   }
   //  CurrentPicture = EEPROM.read(4) ; 
-  #endif
-  #if MOTOR 
+  
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH *********************************************************************************************************************************
 //    if ((digitalRead(S8) == LOW && digitalRead(S9) == HIGH) || (CurrentPicture >= 8))
 
@@ -54,7 +61,7 @@ Serial.println ("BLINK after DS2408 init in loop");
     //CurrentPicture = 0;
     // FOR THE MOMENT I JUST TURN ON THE LED ON DONGLE
      {
-                                   #if ISDEBUG 
+                                   #if SIMPLEDEBUG 
                                   Serial.println("STATE2: PACK IS EMPTY");      
                                   #endif
 
@@ -86,26 +93,23 @@ eepromDump ();
 //======================================================================================================
 // S1 = ON dump CSV and ask how many
 
-
 if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  1))
   {
-
-eepromDumpCSV();
-
-}
+  eepromDumpCSV();
+  }
 //======================================================================================================
 
 //added return
 return;
-      
-}
-#endif
+     
+  }
+
 
   //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
-  if (digitalRead(S8) == LOW && digitalRead(S9) == LOW)
+  if (digitalRead(S8) == LOW && digitalRead(S9) == LOW) //S8 and S9 are OPEN
   {
                                  CurrentPicturePack = EEPROM.read(4) ; 
-                                 #if ISDEBUG 
+                                 #if SIMPLEDEBUG 
                                 Serial.println("STATE3: NORMAL OPERATION (BIG LOOP)");      
                                  #endif
     
@@ -169,13 +173,13 @@ return;
        
             PictureType = 0;
 
-            if ((RedButton == 1) or (RedButton == 3) )
+            if ((RedButton == 1) or (RedButton == 3) )  //this is either one press and release or one long sustained press with no release (to "emulate" the original camera)
             {
              takePicture = true;
             } //else takePicture = false;
             
 
-            if (RedButton == 2) 
+            if (RedButton == 2)                         //this the 2 short press that enable the self-timer delay. Can be disabled of course
             {
             BlinkTimerDelay();  //Dongle LED blinks
             takePicture = true;
@@ -183,7 +187,8 @@ return;
             }
             
                 }
-                                     
+  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+
 
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
@@ -219,7 +224,7 @@ return;
                             
 /*          //byte ActualSlot = (Read_DS2408_PIO(0));
 
-                                      #if ISDEBUG 
+                                      #if SIMPLEDEBUG 
                                       byte SD1 = Read_DS2408_PIO(1);
                                       byte SD2 = Read_DS2408_PIO(2);
                                       Serial.print ("Selector: ");

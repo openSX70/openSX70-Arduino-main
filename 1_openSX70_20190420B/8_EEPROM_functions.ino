@@ -6,7 +6,7 @@ void eepromUpdate ()
                         EEPROM.get (13,ActualPicture);
                         CurrentPicturePack = (CurrentPicturePack+1);
                      
-                      #if ISDEBUG
+                      #if SIMPLEDEBUG
                       Serial.print ("POSITION:  ");
                       Serial.println( Read_DS2408_PIO(0));
                       #endif

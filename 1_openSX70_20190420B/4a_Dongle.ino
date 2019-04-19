@@ -1,10 +1,9 @@
 
   void Dongle(int Exposure) 
     {
-                                        #if ISDEBUG 
+                                        #if SIMPLEDEBUG 
                                         Serial.print ("                                                 Dongle:");
                 //                        Serial.println (DongleSlot);
-                                          Serial.println (ExpoType);
                                         #endif
 
 
@@ -22,18 +21,15 @@ unsigned long currentMillisTimer = millis();
 
             shots = 0;
  
-             #if MOTOR
+             
             mirrorDOWN ();
 
             delay (50);                             //100-->50 AGAIN is this delay necessary?
-            #endif
-                  #if !MOTOR
-                  delay (500);
-                  #endif
-
-            #if SHUTTER
+            
+            
+            
             shutterOPEN();    
-           #endif
+           
            Write_DS2408_PIO (6, 0); 
          }  else if ((currentMillisTimer-DoubleExposureTimer) >= 60000 && shots >= 1)
 
@@ -82,11 +78,8 @@ unsigned long currentMillisTimer = millis();
                     byte PictureType = 0;                    
 //                    eepromUpdate ();
     
-                  #if SHUTTER
                   shutterCLOSE (); 
-                  #endif
 
-                  #if MOTOR
 //                  delay (200); //added to fix bad photos
                   delay (100); //added to fix bad photos WITH LESS delay
                                     
@@ -94,31 +87,17 @@ unsigned long currentMillisTimer = millis();
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
                   Ydelay();
-                  #endif
                   
-                  #if !MOTOR
-                  delay (500);
-                  #endif
 
-                  #if SHUTTER
                   Click (0);  
-                  #endif
                   
-                  #if !MOTOR
-                  delay (1000);
-                  #endif
-
-                  #if MOTOR
 //                  delay (200);                             //AGAIN is this delay necessary?
                   mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
                   delay (50);                             //AGAIN is this delay necessary?
                   //CHANGED 200->50
-                  #endif
 
-                 #if SHUTTER
                  shutterOPEN();
-                 #endif   
-                  eepromUpdate ();
+                 eepromUpdate ();
                  shots = 0;  
 
                  return;  
@@ -140,27 +119,19 @@ unsigned long currentMillisTimer = millis();
          
           DoubleExposureTimer = millis();
     
-          #if SHUTTER
           shutterCLOSE ();  // I CLOSE THE SHUTTER
-          #endif
           
-          #if MOTOR                                            
           mirrorUP();                                 //Motor Starts: MIRROR COMES UP!!!
 
           while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
             ;
           Ydelay();                         //S3 is now open start Y-delay (40ms)
-          #endif
-          #if !MOTOR
           delay (500);
-          #endif
                   
-          #if SHUTTER
           Click (0);                 // NOW I am going to take the picture: SMILE!
 
           delay (500);            //debounce will go here
           shots++;
-          #endif
           return;
 
           } // end of  if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots == 0)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) FIRST SHOT!!!!
@@ -174,15 +145,12 @@ unsigned long currentMillisTimer = millis();
          if (takePicture == true && Read_DS2408_PIO(1) ==  1 && shots >= 1)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) ULTERIOR SHOTS!!!!
           {
  
-          #if SHUTTER    
-          Click(0);
+                 Click(0);
 
           delay (500); //debounce will go here
           
           shots++;
-
-          #endif
-          return;
+                    return;
           
           } // end of  if (digitalRead(S1) == LOW && Read_DS2408_PIO(1) ==  1 && shots >= 1)    //DOUBLE EXPOSURE and RED BUTTON PRESSED (S1) ULTERIOR SHOTS!!!!
 
@@ -199,20 +167,14 @@ unsigned long currentMillisTimer = millis();
             shots = 0;
 
             Write_DS2408_PIO (6, 0);
- 
-             #if MOTOR
+             
             mirrorDOWN ();
 
             delay (50);                             //AGAIN is this delay necessary? 100-->50
-            #endif
-                  #if !MOTOR
                   delay (500);
-                  #endif
 
-            #if SHUTTER
             shutterOPEN();    
-            #endif
-
+ 
             return;
             
            }// end of if (takePicture == true && Read_DS2408_PIO(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
