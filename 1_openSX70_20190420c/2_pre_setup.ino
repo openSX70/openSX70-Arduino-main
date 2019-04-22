@@ -46,6 +46,13 @@ const int led2 = A3;
 
 #include <EEPROM.h>
 
+//OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
+
+const int S2 = 2;  //this for Flash insertion detection
+                      //this CLOSED when there is a FLASHBAR inserted
+
+//const int S2 = A4;  //this for Flash insertion detection for reworked board
+
 
 // OneWire and DS2408 STUFF*****************************************************************
 //LIBRARIES MESS (SORTED?)
@@ -54,35 +61,22 @@ const int led2 = A3;
 //#include <OneWire-master.h>
 
 //Paul Stoffregen (paul@pjrc.com) version 2.3 LATEST VERSION??? STILL DS2408 TEST MODE ERROR!!
-#include <OneWire.h>
+//#include <OneWire.h>
 
 //Paul Stoffregen (paul@pjrc.com) version 2.3 LATEST VERSION??? STILL DS2408 TEST MODE ERROR!!
 //#include <OneWire-teensy.h>
-
+//Based on DS2408/Arduino/lightLed/lightLed.ino
 
 #include <DS2408.h>
-//Based on DS2408/Arduino/lightLed/lightLed.ino
+#define ONE_WIRE_BUS_PORT S2
+DS2408 ds(ONE_WIRE_BUS_PORT);
+Devices devices;
+uint8_t device_count;
 
 // END OF OneWire and DS2408 STUFF*****************************************************************
 
 
-//OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
 
-const int S2 = 2;  //this for Flash insertion detection
-                      //this CLOSED when there is a FLASHBAR inserted
-
-//const int S2 = A4;  //this for Flash insertion detection for reworked board
-
-#define ONE_WIRE_BUS_PORT S2
-
-
-//DS2408 ds(ONE_WIRE_BUS_PORT);
-//Read_DS2408_PIO ds(ONE_WIRE_BUS_PORT);
-
-DS2408 ds(ONE_WIRE_BUS_PORT);
-
-Devices devices;
-uint8_t device_count;
 
 // DS2408*****************************************************************
 

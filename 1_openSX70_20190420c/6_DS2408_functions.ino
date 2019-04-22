@@ -1,47 +1,41 @@
-  //***************************************************************************************************************************************
+//***************************************************************************************************************************************
 // --------------------------------------------------------------------------------------------------------------------------------------
 
 //                                DS2408 FUNCTIONS
 
 // --------------------------------------------------------------------------------------------------------------------------------------
-//***************************************************************************************************************************************
-/*
 
-//******************************************************************************************************
-*/
 
 byte Read_DS2408_PIO(int Slot) {
+
+   
    // Slot = 0 selector    // return value 0-15 (selector) 100 = Flash inserted 200 = NOTHING INSERTED
-   // Slot = 1 S1
-   // Slot = 2 S2
-
+   // Slot = 1 S1          //Return switch 1 on or off
+   // Slot = 2 S2         //Return switch 2 on or off
      
- //device_count = 0;
   byte selector = B0000;
+//Serial.print ("readDevice = ");
+//Serial.println (readDevice, HEX);
+  
 
- //for(int index=0; index < device_count; index++) {4
- //     uint8_t readDevice = ds.get_state(devices[index]);
-  
-  uint8_t readDevice = ds.get_state(devices[0]);
-  
-//  intializeDS2408();
-  
-  if  ((device_count == 0) && (digitalRead(S2) == HIGH))   ////////////////////////////////////////////////////////////CASE NOTHING CONNECTED
+   if  (((device_count == 0)) && (digitalRead(S2) == HIGH))   ////////////////////////////////////////////////////////////CASE NOTHING CONNECTED
     {
-    //Serial.println("NOTHING CONNECTED!!!");
    return 200;
     }
 
-//  uint8_t readDevice = ds.get_state(devices[0]);
   
-  if ((digitalRead(S2) == HIGH) && (device_count > 0)) { ////////////////////////////////////////////////////////////CASE DONGLE INSERTED
+  if ((digitalRead(S2) == HIGH) && ((device_count > 0))  ) { ////////////////////////////////////////////////////////////CASE DONGLE INSERTED
 
     // BIT: 7 6 5 4 3 2 1 0
+    
+    //uint8_t readDevice = ds.get_state(devices[0]);
+    
     if (Slot == 0) {
 
- //for(int index=0; index < device_count; index++) {
- //     uint8_t readDevice = ds.get_state(devices[index]);
+    uint8_t readDevice = ds.get_state(devices[0]);
 
+// for (int index=0; index < device_count; index++) {
+//      uint8_t readDevice = ds.get_state(devices[index]); }
 
       if (readDevice & 0b00000001) {
         bitSet(selector, 0);
@@ -60,7 +54,8 @@ byte Read_DS2408_PIO(int Slot) {
 
     byte Switch;
     if (Slot == 1) {
-//      uint8_t readDevice = ds.get_state(devices[0]);
+//
+uint8_t readDevice = ds.get_state(devices[0]);
 
       if (readDevice & 0b00010000) {
         bitSet(Switch, 0);
@@ -68,7 +63,7 @@ byte Read_DS2408_PIO(int Slot) {
       return Switch;
     }
     if (Slot == 2) {
-//      uint8_t readDevice = ds.get_state(devices[0]);
+        uint8_t readDevice = ds.get_state(devices[0]);
 
       if (readDevice & 0b00100000) {
         bitSet(Switch, 0);
@@ -77,19 +72,29 @@ byte Read_DS2408_PIO(int Slot) {
     } else
       return 0;
     
-  } // END OF if ((digitalRead(S2) == HIGH) && (device_count > 0)){  //CASE DONGLE INSERTED
+  } // END OF if ((digitalRead(S2) == HIGH) && (ds.find(&devices); > 0)){  //CASE DONGLE INSERTED
 
-pinMode(S2, INPUT_PULLUP); // perhaps not such a good idea internal pullup??
+//pinMode(S2, INPUT_PULLUP); // perhaps not such a good idea internal pullup??
 
+//   readDevice = ds.get_state(devices[0]);
   if (digitalRead(S2) == LOW)  { 
     //////////////////////////////////////////////////////////// CASE FLASH
     return 100; // FLASH
 
   } // END OF if (digitalRead(S2) == LOW)  {  // CASE FLASH
 
-  return 200; //NOTHING
+  if  ((device_count == 0) && (digitalRead(S2) == HIGH)) {  ////////////////////////////////////////////////////////////CASE NOTHING CONNECTED
 
-} //END OF Read_DS2408_PIO() function
+//   Serial.println("NOTHING CONNECTED");
+   //delay (1000);
+    return 200; //NOTHING
+
+}
+
+} //////////////////////////////////END OF Read_DS2408_PIO() function
+
+
+
 
 //******************************************************************************************************
 byte Write_DS2408_PIO(byte port, bool ON) {
@@ -113,10 +118,13 @@ byte Write_DS2408_PIO(byte port, bool ON) {
 } //END OF Write_DS2408_PIO
 //******************************************************************************************************
 
-void initializeDS2408()
+
+
+
+void intializeDS2408()
 {
   //INTITIALIZE DS2408
-//device_count = ds.find(&devices);
+//ds.find(&devices); = ds.find(&devices);
 ds.reset();
 ds.write(0x96);
 for (int i = 0; i < 8; i++)

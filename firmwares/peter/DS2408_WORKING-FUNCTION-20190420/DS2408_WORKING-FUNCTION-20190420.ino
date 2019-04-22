@@ -86,11 +86,7 @@ if (Read_DS2408_PIO(0) == 100)
 //                                DS2408 FUNCTIONS
 
 // --------------------------------------------------------------------------------------------------------------------------------------
-//***************************************************************************************************************************************
-/*
-          ME CAGO EN LA PUTA FUNCIÓN
-//******************************************************************************************************
-*/
+
 
 byte Read_DS2408_PIO(int Slot) {
 
@@ -103,12 +99,9 @@ byte Read_DS2408_PIO(int Slot) {
 //Serial.print ("readDevice = ");
 //Serial.println (readDevice, HEX);
   
-//  intializeDS2408();
-
 
    if  (((device_count == 0)) && (digitalRead(S2) == HIGH))   ////////////////////////////////////////////////////////////CASE NOTHING CONNECTED
     {
-   // Serial.println("NOTHING CONNECTED!!!");
    return 200;
     }
 
@@ -178,9 +171,13 @@ uint8_t readDevice = ds.get_state(devices[0]);
    //delay (1000);
     return 200; //NOTHING
 
-} //END OF Read_DS2408_PIO() function
-
 }
+
+} //////////////////////////////////END OF Read_DS2408_PIO() function
+
+
+
+
 //******************************************************************************************************
 byte Write_DS2408_PIO(byte port, bool ON) {
 // This is to turn on LED P6 or PC-FLASH socket (opto) P7
@@ -202,6 +199,9 @@ byte Write_DS2408_PIO(byte port, bool ON) {
   }
 } //END OF Write_DS2408_PIO
 //******************************************************************************************************
+
+
+
 
 void intializeDS2408()
 {

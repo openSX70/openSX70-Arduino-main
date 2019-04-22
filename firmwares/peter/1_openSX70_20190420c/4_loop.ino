@@ -2,23 +2,10 @@
 void loop() {
 //takePicture = false;
 
-//initializeDS2408();
-device_count = ds.find(&devices);
-/*
-uint8_t prev_count = ds.find(&devices); //this is an F****ing workaround to read the DS2408 count.
-if  ((prev_count || device_count) == 1) 
-{
-  device_count = 1;
-} else  
-
-{
-  device_count = 0;
-}
-
-*/
-Serial.print("---------------->");
-//Serial.println(prev_count);
-Serial.println(device_count);
+// READ DS2408
+device_count = ds.find(&devices);    
+uint8_t readDevice = ds.get_state(devices[0]);
+// READ DS2408
 
 
 //=======================================================================================
@@ -218,7 +205,10 @@ return;
 //            Serial.println (Read_DS2408_PIO(0));
 
             if (takePicture == true)
+
                             {
+                            Serial.print ("                           Read_DS2408_PIO = ");
+                            Serial.println ((Read_DS2408_PIO(0)));
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
                                 Serial.println ("MANUAL SPEED");

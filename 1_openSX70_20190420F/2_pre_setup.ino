@@ -18,6 +18,10 @@
 //FIRST TEST
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
+//OPTION MAGIC NUMBERS
+
+int A600 = 205; 
+int A100= 485;
                                   
 unsigned long counter;
 //unsigned long startMillis;
@@ -46,26 +50,6 @@ const int led2 = A3;
 
 #include <EEPROM.h>
 
-
-// OneWire and DS2408 STUFF*****************************************************************
-//LIBRARIES MESS (SORTED?)
-
-//Seems to bePaul Stoffregen (paul@pjrc.com) version 2.3 but its different size and doesn't compile. Changed the name from original OneWire to OneWire-master to differentiate.
-//#include <OneWire-master.h>
-
-//Paul Stoffregen (paul@pjrc.com) version 2.3 LATEST VERSION??? STILL DS2408 TEST MODE ERROR!!
-#include <OneWire.h>
-
-//Paul Stoffregen (paul@pjrc.com) version 2.3 LATEST VERSION??? STILL DS2408 TEST MODE ERROR!!
-//#include <OneWire-teensy.h>
-
-
-#include <DS2408.h>
-//Based on DS2408/Arduino/lightLed/lightLed.ino
-
-// END OF OneWire and DS2408 STUFF*****************************************************************
-
-
 //OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
 
 const int S2 = 2;  //this for Flash insertion detection
@@ -73,16 +57,23 @@ const int S2 = 2;  //this for Flash insertion detection
 
 //const int S2 = A4;  //this for Flash insertion detection for reworked board
 
+
+// OneWire and DS2408 STUFF*****************************************************************
+#include <DS2408.h>
 #define ONE_WIRE_BUS_PORT S2
-
-
-//DS2408 ds(ONE_WIRE_BUS_PORT);
-//Read_DS2408_PIO ds(ONE_WIRE_BUS_PORT);
-
 DS2408 ds(ONE_WIRE_BUS_PORT);
-
 Devices devices;
 uint8_t device_count;
+
+byte selector ;
+bool switch1 ;
+bool switch2 ;
+static bool Wswitch1 = 0;
+
+// END OF OneWire and DS2408 STUFF*****************************************************************
+
+
+
 
 // DS2408*****************************************************************
 
@@ -303,4 +294,4 @@ void AutoExposure();
 int checkButton();
 void startCounterCalibration();
 void ManualExposure();
-void intializeDS2408();
+void initializeDS2408();

@@ -1,4 +1,11 @@
 void setup() {
+
+
+//SAY HELLO (remove)
+    Serial.begin(9600);
+    Serial.println ("openSX70!!!!!!!!!!!!!!!");
+
+
 // this code only runs once:
 //Solenoid #1 and #2 PINS are OUTPUTS
 
@@ -83,7 +90,7 @@ void intializeDS2408();
       else 
   {
 
-if ((Read_DS2408_PIO(1) == 1) && (Read_DS2408_PIO(2) == 1)) {
+if ((switch1 == 1) && (switch2 == 1)) {
   #if SIMPLEDEBUG
   Serial.println ("RE-nitializing EEPROM....");
   #endif
@@ -129,18 +136,25 @@ Serial.println (ActualPicture);
 
 //byte CurrentPicture = EEPROM.read (4);
 
+device_count = ds.find(&devices);
+uint8_t readDevice = ds.get_state(devices[0]);
+//selector = Read_DS2408_PIO(0);
+//switch1 = Read_DS2408_PIO(1);
+//switch2 = Read_DS2408_PIO(2);
+
+initializeDS2408(); //Pitsie fix for non-blinking LED on dongle
 
 //OPTION this is the so called LED counter coment auto this part to disable the counter.
 //LED COUNTER 
+      
    //if (digitalRead(S8) != HIGH || digitalRead(S9) != LOW)
-   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW) //NORMAL OPERATION
-{
-
-simpleBlink (8 - (EEPROM.read (4)));
-#if SIMPLEDEBUG
-Serial.println ("BLINK NUMBER OF SHOTS");
-#endif
-}
+   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW && device_count > 0) //NORMAL OPERATION
+      {
+      simpleBlink (8 - (EEPROM.read (4)));
+      #if SIMPLEDEBUG
+      Serial.println ("BLINK NUMBER OF SHOTS");
+      #endif
+      }
 //LED COUNTER END
 
 #if LIGHTMETER
@@ -160,10 +174,6 @@ cli();                                 // Stop interrupts
 
 sei();                               // Restart interrupts
 #endif
-
-//SAY HELLO (remove)
-    Serial.begin(9600);
-    Serial.println ("openSX70!!!!!!!!!!!!!!!");
 
 //BRING MIRROR DOWN IF HALFWAY OR UP
 

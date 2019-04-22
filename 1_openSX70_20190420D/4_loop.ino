@@ -2,39 +2,17 @@
 void loop() {
 //takePicture = false;
 
-//initializeDS2408();
-device_count = ds.find(&devices);
-/*
-uint8_t prev_count = ds.find(&devices); //this is an F****ing workaround to read the DS2408 count.
-if  ((prev_count || device_count) == 1) 
-{
-  device_count = 1;
-} else  
-
-{
-  device_count = 0;
-}
-
-*/
-Serial.print("---------------->");
-//Serial.println(prev_count);
-Serial.println(device_count);
-
-
+// READ DS2408
+device_count = ds.find(&devices);    
+uint8_t readDevice = ds.get_state(devices[0]);
+// READ DS2408
 //=======================================================================================
 //OPTION this is only to blink the LED on the dongle if inserted late. Only the first time.
 if (device_count == 0)
 {
-#if SIMPLEDEBUG
-Serial.print ("LOOP: device_count = ds.find(&devices);--->");
-Serial.println (device_count);
-#endif
           Write_DS2408_PIO (6, 1);
           delay (200);
          Write_DS2408_PIO (6, 0);
-#if SIMPLEDEBUG
-Serial.println ("BLINK after DS2408 init in loop");
-#endif
 }
 //=======================================================================================  
   
@@ -218,7 +196,10 @@ return;
 //            Serial.println (Read_DS2408_PIO(0));
 
             if (takePicture == true)
+
                             {
+                            Serial.print ("                           Read_DS2408_PIO = ");
+                            Serial.println ((Read_DS2408_PIO(0)));
                             if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
                                 Serial.println ("MANUAL SPEED");

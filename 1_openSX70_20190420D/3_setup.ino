@@ -1,4 +1,7 @@
 void setup() {
+
+initializeDS2408();
+
 // this code only runs once:
 //Solenoid #1 and #2 PINS are OUTPUTS
 

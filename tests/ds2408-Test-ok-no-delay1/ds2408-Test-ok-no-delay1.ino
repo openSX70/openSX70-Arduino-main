@@ -28,8 +28,8 @@ void setup() {
   pinMode(buttonPin, INPUT_PULLUP);
 
   Serial.begin(9600);                  // set up Serial library at 9600 bps
-  Serial.println("HELLO openSX79!");
-
+  Serial.println("HELLO openSX70!!!!!!!!!!!!!!!!!!!!!!");
+    
  //device_count = ds.find(&devices);
 
                                                                                                  
@@ -45,12 +45,6 @@ void loop() {
   if (digitalRead(selectorPin) == LOW)  {  //////////////////////////////////////////////////////////// CASE FLASH
     Serial.println ("FLASH INSERTED");
 
-                  if (digitalRead(buttonPin) == LOW) {
-                      Serial.println("Button pressed: firing flash");
-                      digitalWrite(flashPin, HIGH);
-                      delay (15);
-                      digitalWrite(flashPin, LOW);
-                                                      }
     //delay (1000);
     return;
         

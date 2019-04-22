@@ -2,40 +2,49 @@
 void loop() {
 //takePicture = false;
 
-//initializeDS2408();
-device_count = ds.find(&devices);
+uint8_t readDevice = ds.get_state(devices[0]);
+selector = Read_DS2408_PIO(0);
+switch1 = Read_DS2408_PIO(1);
+switch2 = Read_DS2408_PIO(2);
+
+// READ DS2408
 /*
-uint8_t prev_count = ds.find(&devices); //this is an F****ing workaround to read the DS2408 count.
-if  ((prev_count || device_count) == 1) 
-{
-  device_count = 1;
-} else  
-
-{
-  device_count = 0;
-}
-
+uint8_t readDevice = ds.get_state(devices[0]);
+selector = Read_DS2408_PIO(0);
+switch1 = Read_DS2408_PIO(1);
+switch2 = Read_DS2408_PIO(2);
 */
-Serial.print("---------------->");
-//Serial.println(prev_count);
-Serial.println(device_count);
-
-
+/*
+Serial.print ("selector: ");
+Serial.print (selector);
+Serial.print (" switch1: ");
+Serial.print (switch1);
+Serial.print (" switch2: ");
+Serial.println (switch2);
+*/
+/*
+if (selector == 15) {
+Serial.println ("workaround");
+uint8_t readDevice = ds.get_state(devices[0]);
+//workaround
+selector = Read_DS2408_PIO(0);
+switch1 = Read_DS2408_PIO(1);
+switch2 = Read_DS2408_PIO(2);
+}*/
+// READ DS2408
 //=======================================================================================
 //OPTION this is only to blink the LED on the dongle if inserted late. Only the first time.
+
 if (device_count == 0)
 {
-#if SIMPLEDEBUG
-Serial.print ("LOOP: device_count = ds.find(&devices);--->");
-Serial.println (device_count);
-#endif
+device_count = ds.find(&devices);    
+
           Write_DS2408_PIO (6, 1);
           delay (200);
          Write_DS2408_PIO (6, 0);
-#if SIMPLEDEBUG
-Serial.println ("BLINK after DS2408 init in loop");
-#endif
 }
+
+
 //=======================================================================================  
   
   
@@ -92,7 +101,7 @@ Serial.println ("BLINK after DS2408 init in loop");
 
 
 
-if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  0))  // DUMP EEPROM INFO "NORMAL" Read_DS2408_PIO(2) ==  0
+if ((digitalRead(S1) == LOW) && (switch2 ==  0))  // DUMP EEPROM INFO "NORMAL" Read_DS2408_PIO(2) ==  0
   
   {
 
@@ -110,7 +119,7 @@ eepromDump ();
 //======================================================================================================
 // S1 = ON dump CSV and ask how many
 
-if ((digitalRead(S1) == LOW) && (Read_DS2408_PIO(2) ==  1))
+if ((digitalRead(S1) == LOW) && (switch2 ==  1))
   {
   eepromDumpCSV();
   }
@@ -157,21 +166,26 @@ return;
 
 
 //              Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
-              
-             if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POSB)))) //////////////POSITION B
+
+//=================================================================================================================================================================
+             
+             if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[selector] == (POSB)))) //////////////POSITION B
 
                   {
                     
-                 //Serial.println ("POS B");
+                 Serial.println ("POS B");
+                 return;
                   PictureType = 7;
                   eepromUpdate ();
                   ShutterB();
                   
                }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
 //=================================================================================================================================================================
-             if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[Read_DS2408_PIO(0)] == (POST)))) //////////////POSITION T
+             if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[selector] == (POST)))) //////////////POSITION T
   
                   {
+                                    Serial.println ("POS T");
+return;
                  #if SIMPLEDEBUG
                  Serial.println ("POS T");
                  #endif
@@ -218,8 +232,11 @@ return;
 //            Serial.println (Read_DS2408_PIO(0));
 
             if (takePicture == true)
+
                             {
-                            if (Read_DS2408_PIO(0) < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
+                            Serial.print ("                           Read_DS2408_PIO NOW selector = ");
+                            Serial.println (selector);
+                            if (selector < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
                                 Serial.println ("MANUAL SPEED");
                                 return;
@@ -227,7 +244,7 @@ return;
                               }
 
 
-                            if (Read_DS2408_PIO(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
+                            if (selector == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
                                   {
                                 Serial.println ("FLASHBAR");
                                 
@@ -239,7 +256,7 @@ return;
                                   return;
                                    }
   
-                             if (Read_DS2408_PIO(0) == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
+                             if (selector == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
                                    {
                                   Serial.println ("200");
                                   Serial.println ("DONGLELESS AUTO");
