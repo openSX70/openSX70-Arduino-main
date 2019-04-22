@@ -2,8 +2,6 @@
 //ALSO FLASH ON 3.3V (ALL RUNNING AT 3.3V).
 //DONGLE  WITHOUT LDO 2.8V
 //AUTO FOR PROTO X
-//DS2408 FIX BY PETER!!!
-
 
 // openSX70 code with tabs
 //As for the electronics are really simple but will try to make an schematic when I find the time

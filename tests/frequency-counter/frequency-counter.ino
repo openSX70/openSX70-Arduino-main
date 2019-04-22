@@ -30,7 +30,7 @@ void startCounting (unsigned int ms)
   TCCR2B = 0;
 
   // Timer 1 - counts events on pin D5
-  TIMSK1 = bit (TOIE1);   // interrupt on Timer 1 overflow
+  //TIMSK1 = bit (TOIE1);   // interrupt on Timer 1 overflow
 
   // Timer 2 - gives us our 1 ms counting interval
   // 16 MHz clock (62.5 ns per tick) - prescaled by 128
@@ -40,9 +40,9 @@ void startCounting (unsigned int ms)
   OCR2A  = 124;            // count up to 125  (zero relative!!!!)
 
   // Timer 2 - interrupt on match (ie. every 1 ms)
-  TIMSK2 = bit (OCIE2A);   // enable Timer2 Interrupt
+  //TIMSK2 = bit (OCIE2A);   // enable Timer2 Interrupt
 
-  TCNT1 = 0;      // Both counters to zero
+  TCNT1 = ;      // Both counters to zero
   TCNT2 = 0;     
 
   // Reset prescalers
@@ -52,6 +52,12 @@ void startCounting (unsigned int ms)
   // start Timer 1
   // External clock source on T1 pin (D5). Clock on rising edge.
   TCCR1B =  bit (CS10) | bit (CS11) | bit (CS12);
+
+  while(1)
+{
+  unsigned int timer1CounterValue = TCNT1;
+  Serial.println(timer1CounterValue);
+}
   }  // end of startCounting
 
 ISR (TIMER1_OVF_vect)

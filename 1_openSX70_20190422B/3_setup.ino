@@ -12,7 +12,7 @@ void setup() {
 //Alpha Boards have two leds visible in a sonar-type VF.
 
   pinMode(led1, OUTPUT);  //BLUE   
-  pinMode(led2, OUTPUT);  //RED
+  //pinMode(led2, OUTPUT);  //RED
 
   pinMode(Solenoid1, OUTPUT);
   pinMode(Solenoid2, OUTPUT);
@@ -21,9 +21,9 @@ void setup() {
   digitalWrite(led1, HIGH);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                 
   delay (600);
   digitalWrite(led1, LOW);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                 
-  digitalWrite(led2, HIGH);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                 
+  //digitalWrite(led2, HIGH);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                 
   delay (600);
-  digitalWrite(led2, LOW);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                 
+  //digitalWrite(led2, LOW);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                 
 
 /*
   digitalWrite(led1, HIGH);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                

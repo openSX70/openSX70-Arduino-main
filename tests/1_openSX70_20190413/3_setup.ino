@@ -1,11 +1,4 @@
 void setup() {
-
-
-//SAY HELLO (remove)
-    Serial.begin(9600);
-    Serial.println ("openSX70!!!!!!!!!!!!!!!");
-
-
 // this code only runs once:
 //Solenoid #1 and #2 PINS are OUTPUTS
 
@@ -17,7 +10,7 @@ void setup() {
   pinMode(Solenoid1, OUTPUT);
   pinMode(Solenoid2, OUTPUT);
 
-// OPTION I turn on LEDs once on power-up:
+// I turn on LEDs once:
   digitalWrite(led1, HIGH);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                 
   delay (600);
   digitalWrite(led1, LOW);   // turn the LED on (HIGH is the voltage level)                                                                                                                                                                                                 
@@ -66,7 +59,23 @@ digitalWrite(Motor, LOW);
 analogWrite(Solenoid1, 0);
 analogWrite(Solenoid2, 0);
 
-void intializeDS2408();
+ 
+//delay (100); // delay to see if I fix some dongles not blinking the first time init
+device_count = ds.find(&devices);
+
+ds.reset();
+ds.write(0x96);
+for (int i = 0; i < 8; i++)
+    ds.write(devices[0][i]);
+ds.write(0x3C);
+ds.reset(); 
+  
+#if SIMPLEDEBUG
+Serial.print ("SETUP: device_count = ds.find(&devices);--->");
+Serial.println (device_count);
+#endif
+// THIS IS FUNDAMENTAL
+
 
 // EEPROM STUFF INITIALIZING SEQUENCE
 //    Serial.begin (9600);
@@ -90,7 +99,7 @@ void intializeDS2408();
       else 
   {
 
-if ((switch1 == 1) && (switch2 == 1)) {
+if ((Read_DS2408_PIO(1) == 1) && (Read_DS2408_PIO(2) == 1)) {
   #if SIMPLEDEBUG
   Serial.println ("RE-nitializing EEPROM....");
   #endif
@@ -105,14 +114,14 @@ if ((switch1 == 1) && (switch2 == 1)) {
 
 EEPROM.get(10,eeAddress);  // where to write
 EEPROM.get (13, ActualPicture); //the picture taken counter
-/*
+
 #if SIMPLEDEBUG
 Serial.println ("EEPROM already initialized...");
 Serial.print ("eeAddress: ");
 Serial.println (eeAddress);
 Serial.print ("ActualPicture: ");
 Serial.println (ActualPicture);
-#endif */
+#endif
   }
 /*
 EEPROM.get(10,eeAddress);  // where to write
@@ -136,49 +145,40 @@ Serial.println (ActualPicture);
 
 //byte CurrentPicture = EEPROM.read (4);
 
-//device_count = ds.find(&devices);
-//uint8_t readDevice = ds.get_state(devices[0]);
-//selector = Read_DS2408_PIO(0);
-//switch1 = Read_DS2408_PIO(1);
-//switch2 = Read_DS2408_PIO(2);
-
-device_count = ds.findsingle(&dongleDevice);    
-
-if (device_count != 0)
-  initializeDS2408(); //Pitsie fix for non-blinking LED on dongle
 
 //OPTION this is the so called LED counter coment auto this part to disable the counter.
 //LED COUNTER 
-      
    //if (digitalRead(S8) != HIGH || digitalRead(S9) != LOW)
-   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW && device_count > 0) //NORMAL OPERATION
-      {
-      simpleBlink (8 - (EEPROM.read (4)));
-      #if SIMPLEDEBUG
-      Serial.println ("BLINK NUMBER OF SHOTS");
-      #endif
-      }
+   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW) //NORMAL OPERATION
+{
+
+simpleBlink (8 - (EEPROM.read (4)));
+#if SIMPLEDEBUG
+Serial.println ("BLINK NUMBER OF SHOTS");
+#endif
+}
 //LED COUNTER END
 
-#if 0
-// SETUP STUFF FOR INTERRUPTS.
-cli();                                 // Stop interrupts
+
+  cli();                                 // Stop interrupts
   TIFR1=0xFF;                             //needed to "kill" "lost" interrupts 
   
-  TCCR1A=0;                              // Reset timer/counter control register A
+   TCCR1A=0;                              // Reset timer/counter control register A
   TCCR1B = 0;                                                         //ADDED
   TCNT1 = 0;                              //mycounter = TCNT1 would be the total count
   bitSet(TCCR1B ,CS12);                  // Counter Clock source is external pin
   bitSet(TCCR1B ,CS11);                  // Clock on rising edge
   //OCR1A = output_compare;                // Set output compare value
   //  TIMSK1 |= (1 << TOIE1);                // Enable compare A Match Interrupt
-  // TIMSK1 |= (1 << OCIE1A);               // enable compare B Match Interrupt
-  //      TCCR1B = 1; //start counter????
 
-sei();                               // Restart interrupts
-#endif
+  
+// TIMSK1 |= (1 << OCIE1A);               // enable compare B Match Interrupt
+//      TCCR1B = 1; //start counter????
 
-//BRING MIRROR DOWN IF HALFWAY OR UP
+  sei();                               // Restart interrupts
+
+    Serial.begin(9600);
+    Serial.println ("openSX70");
 
 if (digitalRead(S5) != LOW || digitalRead(S3) != LOW)
 {

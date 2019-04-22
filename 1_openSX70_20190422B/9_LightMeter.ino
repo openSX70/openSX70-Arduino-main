@@ -18,15 +18,15 @@ void startCounter()
 {
                     takePicture = false;
   cli();                                                        // Stop interrupts
-  TCCR0A = 0;    // stop timer 0
-  TCCR0B = 0;    
+  //TCCR0A = 0;    // stop timer 0
+  //TCCR0B = 0;    
   
   
   TCCR1A=0;                                            // Reset timer/counter control register A
   TCCR1B = 0;
   TIFR1=0xFF;                                          //needed to "kill" "lost" interrupts
   
-  TCNT1 = 5555;                                            //mycounter = TCNT1 would be the total count
+  TCNT1 = 0;                                            //mycounter = TCNT1 would be the total count
   //bitSet(TCCR1B ,CS12);                        // Counter Clock source is external pin
   //bitSet(TCCR1B ,CS11);                        // Clock on rising edge
   GTCCR = bit (PSRASY);        // reset prescaler now
@@ -42,10 +42,7 @@ void startCounter()
 
   TCCR1B =  bit (CS10) | bit (CS11) | bit (CS12);
 
-  while(1)
-  {
-    Serial.println(TCNT1);
-  }
+  
 }
 
 void startCounterCalibration()
@@ -65,7 +62,7 @@ void AutoExposure()
 
 {
   //////AUTOEXPOSURE DEBUG
-#if 0  
+
                   shutterCLOSE (); 
                 
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
@@ -78,9 +75,7 @@ void AutoExposure()
                   shutterOPEN (); 
 //                  startMillis = millis;
 //                  shots =  ++shots;  
-#endif
-//OJO test
-startCounter();
+
                   return;  
 }
 

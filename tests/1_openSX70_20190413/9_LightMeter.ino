@@ -3,7 +3,6 @@ ISR(TIMER1_COMPA_vect)                  // Output Compare interrupt service rout
   TIMSK1 &= ~(1 << TOIE1);                 // Disable compare A Match Interrupt (overflow)
   TIMSK1 &= ~(1 << OCIE1A);              // Disable compare B Match Interrupt
   TCNT1 = 0;                                            // Reset the hardware counter
-  Serial.print("I");
   finish();
 }
  
@@ -18,39 +17,20 @@ void startCounter()
 {
                     takePicture = false;
   cli();                                                        // Stop interrupts
-  TCCR0A = 0;    // stop timer 0
-  TCCR0B = 0;    
-  
-  
-  TCCR1A=0;                                            // Reset timer/counter control register A
-  TCCR1B = 0;
   TIFR1=0xFF;                                          //needed to "kill" "lost" interrupts
-  
-  TCNT1 = 5555;                                            //mycounter = TCNT1 would be the total count
-  //bitSet(TCCR1B ,CS12);                        // Counter Clock source is external pin
-  //bitSet(TCCR1B ,CS11);                        // Clock on rising edge
-  GTCCR = bit (PSRASY);        // reset prescaler now
-  
+  TCCR1A=0;                                            // Reset timer/counter control register A
+  TCNT1 = 0;                                            //mycounter = TCNT1 would be the total count
+  bitSet(TCCR1B ,CS12);                        // Counter Clock source is external pin
+  bitSet(TCCR1B ,CS11);                        // Clock on rising edge
   OCR1A = output_compare;                // Set output compare value
-  
-
   TIMSK1 |= (1 << TOIE1);                // Enable compare A Match Interrupt
   TIMSK1 |= (1 << OCIE1A);               // enable compare B Match Interrupt
 
   sei();                                                      // Restart interrupts
-
-
-  TCCR1B =  bit (CS10) | bit (CS11) | bit (CS12);
-
-  while(1)
-  {
-    Serial.println(TCNT1);
-  }
 }
 
 void startCounterCalibration()
 {
-  
   cli();                                                        // Stop interrupts
   TIFR1=0xFF;                                          //needed to "kill" "lost" interrupts
   TCCR1A=0;                                            // Reset timer/counter control register A
@@ -64,48 +44,67 @@ void startCounterCalibration()
 void AutoExposure()
 
 {
-  //////AUTOEXPOSURE DEBUG
-#if 0  
+                 #if SIMPLEDEBUG
+                  Serial.println ("AUTO100");
+                 #endif 
+
+   //                 byte PictureType = 1;
+   //                 CurrentPicture = EEPROM.read(4) ; 
+   //
+   //                 eepromUpdate ();
+ 
+       if ((takePicture == true) && (progressPicture == false))
+       
+       {
+                  progressPicture = false;
+                  byte PictureType = 1;                    
+                  eepromUpdate ();
+
+             
+             #if SHUTTER
+//         HighSpeedPWM ();
+//         analogWrite(Solenoid2, 255);
                   shutterCLOSE (); 
+             #endif
                 
+                  #if MOTOR 
                   mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
                   while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
                    ;
 //         analogWrite (Solenoid2, 130);
                   Ydelay ();                               //S3 is now open start Y-delay (40ms)
+                  #endif
+ 
+                  #if !MOTOR
+                  delay (500);
+                  #endif
+
 
                   startCounter();
                   shutterOPEN (); 
 //                  startMillis = millis;
-//                  shots =  ++shots;  
-#endif
-//OJO test
-startCounter();
+                  shots = 0;  
                   return;  
+
+
+       }
 }
 
 void finish()
 {
-       shutterCLOSE();
-       delay (200); //Was 20
-        //switch1 = Read_DS2408_PIO(1);
-        //Serial.print ("finish, switch1 =");
-        //Serial.println (switch1);
- 
-               if (switch1 == 1)
-                  {
-                  shots = ++shots;
-                  return;
-                  } else if (switch1 == 0)
-                  {
-                    delay (200);                             //AGAIN is this delay necessary?
-                    mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-                    delay (200);                  //WAS 60           //AGAIN is this delay necessary?
-                    shutterOPEN();
-                    shots = 0;  
-                    return;   
-                  }
-
+  
+//  endMillis = millis();
+  shutterCLOSE();
+  delay (20);
+  mirrorDOWN();
+delay (50); //changed from 200
+//  mirrorUP; WTF????
+//delay (200);
+ shutterOPEN();
+  
+//  Serial.print ("exposure time = ");
+//  Serial.println(endMillis-startMillis);
+  return;
 }
 
 

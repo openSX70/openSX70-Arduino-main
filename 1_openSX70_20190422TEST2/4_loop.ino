@@ -1,5 +1,6 @@
 void loop() {
 
+startCounter();
 int old_device_count = device_count;
 device_count = ds.findsingle(&dongleDevice);    
 if (device_count !=0 && old_device_count == 0) {

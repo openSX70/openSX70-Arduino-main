@@ -12,8 +12,9 @@ void setup() {
 //Alpha Boards have two leds visible in a sonar-type VF.
 
   pinMode(led1, OUTPUT);  //BLUE   
+//Check good
   pinMode(led2, OUTPUT);  //RED
-
+#if 0
   pinMode(Solenoid1, OUTPUT);
   pinMode(Solenoid2, OUTPUT);
 
@@ -36,7 +37,7 @@ void setup() {
                                                                                                                                                                                 
 //SX70 switches are INPUTS
 //I like to think that the SX70 has mechanical electronics :-)
-
+//CHeck bad
 pinMode(S1, INPUT_PULLUP);
 pinMode(S2, INPUT_PULLUP);
 pinMode(S3, INPUT_PULLUP);
@@ -66,7 +67,8 @@ digitalWrite(Motor, LOW);
 analogWrite(Solenoid1, 0);
 analogWrite(Solenoid2, 0);
 
-void intializeDS2408();
+//CHECK BAD
+//void intializeDS2408();
 
 // EEPROM STUFF INITIALIZING SEQUENCE
 //    Serial.begin (9600);
@@ -192,4 +194,5 @@ while (digitalRead(S5) != LOW || digitalRead(S3) != LOW)  // while S5 or S3 are 
   motorOFF();
 }
 */
+#endif
 }

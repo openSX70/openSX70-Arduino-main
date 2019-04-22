@@ -31,7 +31,7 @@ void startCounter()
   //bitSet(TCCR1B ,CS11);                        // Clock on rising edge
   GTCCR = bit (PSRASY);        // reset prescaler now
   
-  OCR1A = output_compare;                // Set output compare value
+  OCR1A = 1234;                // Set output compare value
   
 
   TIMSK1 |= (1 << TOIE1);                // Enable compare A Match Interrupt
@@ -39,9 +39,9 @@ void startCounter()
 
   sei();                                                      // Restart interrupts
 
-
   TCCR1B =  bit (CS10) | bit (CS11) | bit (CS12);
 
+  Serial.println("CCCC");
   while(1)
   {
     Serial.println(TCNT1);

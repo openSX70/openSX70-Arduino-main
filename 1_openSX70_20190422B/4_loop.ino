@@ -115,7 +115,7 @@ switch2 = Read_DS2408_PIO(2);
     // KEEP IN MIND THAT THIS **THE CAMERA** SAYING IT HAS ALREADY MADE 10 SHOTS.
     // I COULD SET MY OWN COUNTER (UP TO 8) AND MAKE IT MORE IMPOSSIBLE-8-SHOTS-FRIENDLY
       Write_DS2408_PIO (6, 1);
-        digitalWrite(led2, HIGH);
+       // digitalWrite(led2, HIGH);
 //      Serial.begin (9600);
 //      Serial.println ("Write f^*ng PIO");
 

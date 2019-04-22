@@ -29,16 +29,19 @@ void setup() {
 
 }
 void loop() {
+Write_DS2408_PIO (6, 1);
   
 // READ DS2408
-device_count = ds.findsingle(&dongleDevice);    
+device_count = ds.findsingle(&dongleDevice);
 readDevice = ds.get_state(dongleDevice);
 // READ DS2408
 
+
 if (device_count == 0)
 {
+ device_count = ds.findsingle(&dongleDevice);
           Write_DS2408_PIO (6, 1);
-          delay (200);
+          delay (2000);
          Write_DS2408_PIO (6, 0);
 #if SIMPLEDEBUG
 Serial.println ("BLINK after DS2408 init in loop");
