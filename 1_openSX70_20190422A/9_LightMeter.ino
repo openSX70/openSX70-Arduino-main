@@ -62,14 +62,12 @@ void AutoExposure()
 void finish()
 {
        shutterCLOSE();
-       delay (20);
+       delay (200); //Was 20
         //switch1 = Read_DS2408_PIO(1);
         //Serial.print ("finish, switch1 =");
         //Serial.println (switch1);
-
-        
- //       switch1 = 0; //WORKAROUND SO TO SPEACK
-               if (Wswitch1 == 1)
+ 
+               if (switch1 == 1)
                   {
                   shots = ++shots;
                   return;
@@ -77,7 +75,7 @@ void finish()
                   {
                     delay (200);                             //AGAIN is this delay necessary?
                     mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-                    delay (60);                             //AGAIN is this delay necessary?
+                    delay (200);                  //WAS 60           //AGAIN is this delay necessary?
                     shutterOPEN();
                     shots = 0;  
                     return;   

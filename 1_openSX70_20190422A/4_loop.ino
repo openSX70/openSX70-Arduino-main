@@ -298,7 +298,7 @@ return;
                                   return;
                                    }
   
-                             if (selector == 200)  //THIS CASE WILL BE AUTO PROBABLY AT 600ASA
+                             if (selector == 200)  //DONGLELESS!!!! THIS CASE WILL BE AUTO PROBABLY AT 600ASA
                                    {
                                 #if LIGHTMETER
                                 output_compare = A600;
