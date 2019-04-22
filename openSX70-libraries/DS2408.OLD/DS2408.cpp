@@ -165,7 +165,7 @@ uint8_t  DS2408::find(Devices* devices) {
     Device device;
     while(this->search(device)) {
         if(device[0] == DS2408_FAMILY) {
-            Serial.println("CountBLABLA!!");
+            Serial.println("Count!!");
             count++;
         }
     }
@@ -176,15 +176,4 @@ uint8_t  DS2408::find(Devices* devices) {
     for (int index = 0; index < count; index++)
         this->search((*devices)[index]);
     return count;
-}
-
-uint8_t  DS2408::findsingle(Device* devices) {
-    this->reset_search();
-
-    if (this->search(devices[0]) && devices[0][0] == DS2408_FAMILY)
-	{
-		return 1;
-	}
-	else
-		return 0;
 }

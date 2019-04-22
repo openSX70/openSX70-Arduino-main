@@ -10,7 +10,7 @@
  **/
 #define ONEWIRE_READ_CMD           0x33
 #define ONEWIRE_MATCH_CMD          0x55
-//#define ONEWIRE_SEARCH_CMD         0xF0
+#define ONEWIRE_SEARCH_CMD         0xF0
 #define ONEWIRE_SKIP_CMD           0xCC
 #define ONEWIRE_SEARCH_CMD         0xEC
 #define ONEWIRE_OVERRIDE_MATCH_CMD 0x69
@@ -137,8 +137,6 @@ struct DS2408: OneWire {
 
     // Other
     uint8_t find(Devices* devices);
-	uint8_t findsingle(Device* devices);
-	
 private:
     void select_device(Device device);
 };

@@ -1,5 +1,7 @@
 #include <DS2408.h>
 
+#include <DS2408.h>
+
 
 const int S2 = 2;  //this for Flash insertion detection
                       //this CLOSED when there is a FLASHBAR inserted
@@ -11,7 +13,7 @@ const int S2 = 2;  //this for Flash insertion detection
 
 DS2408 ds(ONE_WIRE_BUS_PORT);
 
-Devices devices;
+Device dongleDevice;
 
 uint8_t device_count;
 
@@ -29,8 +31,8 @@ void setup() {
 void loop() {
   
 // READ DS2408
-device_count = ds.find(&devices);    
-uint8_t readDevice = ds.get_state(devices[device_count]);
+device_count = ds.findsingle(&dongleDevice);    
+uint8_t readDevice = ds.get_state(dongleDevice);
 // READ DS2408
 
 if (device_count == 0)
@@ -112,7 +114,7 @@ byte Read_DS2408_PIO(int Slot) {
     
     if (Slot == 0) {
 
-    uint8_t readDevice = ds.get_state(devices[0]);
+    uint8_t readDevice = ds.get_state(dongleDevice);
 
 // for (int index=0; index < device_count; index++) {
 //      uint8_t readDevice = ds.get_state(devices[index]); }
@@ -132,10 +134,10 @@ byte Read_DS2408_PIO(int Slot) {
       return selector;
     } //END OF Slot=0
 
-    byte Switch;
+    byte Switch = 0;
     if (Slot == 1) {
 //
-uint8_t readDevice = ds.get_state(devices[0]);
+uint8_t readDevice = ds.get_state(dongleDevice);
 
       if (readDevice & 0b00010000) {
         bitSet(Switch, 0);
@@ -143,7 +145,7 @@ uint8_t readDevice = ds.get_state(devices[0]);
       return Switch;
     }
     if (Slot == 2) {
-        uint8_t readDevice = ds.get_state(devices[0]);
+        uint8_t readDevice = ds.get_state(dongleDevice);
 
       if (readDevice & 0b00100000) {
         bitSet(Switch, 0);
@@ -171,13 +173,14 @@ uint8_t readDevice = ds.get_state(devices[0]);
 
 }
 
+    return 200;
 } //////////////////////////////////END OF Read_DS2408_PIO() function
 
 
 
 
 //******************************************************************************************************
-byte Write_DS2408_PIO(byte port, bool ON) {
+void Write_DS2408_PIO(byte port, bool ON) {
 // This is to turn on LED P6 or PC-FLASH socket (opto) P7
 // port 6 = P6 = LED
 // port 7 = P7 = PC-FLASHM
@@ -185,14 +188,14 @@ byte Write_DS2408_PIO(byte port, bool ON) {
   
   if (ON == true )
   {
-    uint8_t readDevice = ds.get_state(devices[0]);
+    uint8_t readDevice = ds.get_state(dongleDevice);
     bitSet(OutPIO, port);
-    ds.set_state(devices[0], ~OutPIO);
+    ds.set_state(dongleDevice, ~OutPIO);
     return;
   } else {
-    uint8_t readDevice = ds.get_state(devices[0]);
+    uint8_t readDevice = ds.get_state(dongleDevice);
     bitClear(OutPIO, port);
-    ds.set_state(devices[0], ~OutPIO);
+    ds.set_state(dongleDevice, ~OutPIO);
     return;
   }
 } //END OF Write_DS2408_PIO
@@ -208,7 +211,7 @@ void intializeDS2408()
 ds.reset();
 ds.write(0x96);
 for (int i = 0; i < 8; i++)
-    ds.write(devices[0][i]);
+    ds.write(dongleDevice[i]);
 ds.write(0x3C);
 ds.reset(); 
 // THIS IS FUNDAMENTAL
