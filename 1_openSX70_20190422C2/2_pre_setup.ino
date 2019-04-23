@@ -32,7 +32,7 @@ unsigned long counter;
 //Alpha or Model 2 might different values
 
 const byte PowerDownDelay = 15; //time it takes to be fully closed
-const byte PowerDown = 225; //max 255 = full power/POWERUP mode
+const byte PowerDown = 255; //max 255 = full power/POWERUP mode
 
 
 //*************

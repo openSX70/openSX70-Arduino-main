@@ -273,7 +273,7 @@ return;
                             {
                             if (selector < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED
                               {
-                                Serial.println ("MANUAL SELECTOR SPEED");
+                                //Serial.println ("MANUAL SELECTOR SPEED");
                                 #if LIGHTMETER
                                 if ((ShutterSpeed[selector]) == AUTO600)
                                  {
@@ -295,13 +295,10 @@ return;
                                  return;
                                  }                               
                                 #endif
-                                #if !LIGHTMETER
-                                return;
-                                #endif
-                                
 //                            Serial.print ("                           Read_DS2408_PIO NOW selector = ");
 //                            Serial.println (selector);
-                                ManualExposure();                             
+                                ManualExposure();  
+                                eepromUpdate();                           
                                 return;
 
 

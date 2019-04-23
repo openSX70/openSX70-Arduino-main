@@ -16,8 +16,7 @@ void ManualExposure()
                    ;
                   Ydelay();
                   
-                  startCounterCalibration();
-                  Click (0);  
+                  startCounter();
                   
 
                if (switch1 == 1)
