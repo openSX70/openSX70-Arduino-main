@@ -2,10 +2,10 @@
 //****************************************************************************************************************************
 //OPTION for origamiV1 dongles
 
-//
-#define origamiV1 0 //this is for "normal" uDongles
+//#define origamiV1 0 //this is for "normal" uDongles
 
-//#define origamiV1 1 //this is for "origamiV1" dongles, will be fixed in newer origamis.
+//
+#define origamiV1 1 //this is for "origamiV1" dongles, will be fixed in newer origamis.
 
 //suport for origami V1 boards.
 
@@ -20,16 +20,20 @@
 #define LEDCOUNTER 1
 // #define LEDCOUNTER 0    // easy way to disable the initial remaining pictures counter
 
+//****************************************************************************************************************************
+//OPTION FOR VF DUAL COLOR LEDs AND HELP LIGHTMETER FUNCTION MUST HAVE LIGHTMETER ON BOARD!!!!
+#define VFled 0
 
+//#define VFled 0 //NO messing with shuch leds
 //****************************************************************************************************************************
 //OPTION LIGHTMETER ON BOARD?
 // if you define LIGHTMETER 0 then auto options and dongleless DO NOTHING
-
 #define LIGHTMETER 1      
 
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
 //OPTION MAGIC NUMBERS FOR TSL235
+//int A600 = 205; 
 int A600 = 225; 
 int A100= 485;
                                   
@@ -62,11 +66,12 @@ const int led2 = A3;
 #include <DS2408.h>
 
 //OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
-//
-const int S2 = 2;  //this for Flash insertion detection
+
+//const int S2 = 2;  //this for Flash insertion detection
                       //this CLOSED when there is a FLASHBAR inserted
 
-//const int S2 = A4;  //this for Flash insertion detection for reworked board
+//
+const int S2 = A4;  //this for Flash insertion detection for reworked board
 
 
 #define ONE_WIRE_BUS_PORT S2
@@ -144,7 +149,10 @@ enum positions_t {AUTO600 = -100, AUTO100, POST, POSB};
 int ShutterConstant = 9;
 
 //OPTION
-int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+//int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+int ShutterSpeed[] =   { 1, 2,  5,  5,  10, 15, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+//WARNING: it's the SAME as before but now it is ShutterConstant+ShutterSpeed[]
 
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
@@ -153,15 +161,10 @@ int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600,
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };
 // to change the speed in the slot position just change the number corresponding.
 
-
-//****************************************************************************************************************************
-//OPTION THIS IS THE "FASTEST" SPEED TO TRIGGER DONGLE FLASH (ON MANUAL) ALL SLOWER DO AS WELL
-
 int FastestFlashSpeed = 25;
 
 //this speed and SLOWER will trigger flash
 
-//****************************************************************************************************************************
 int shots = 0;
 
 //****************************************************************************************************************************
@@ -267,4 +270,6 @@ int checkButton();
 void startCounterCalibration();
 void ManualExposure();
 void initializeDS2408();
+int frequencyCounter();
+int nearest(int x, int myArray[], int elements, bool sorted);
 //****************************************************************************************************************************

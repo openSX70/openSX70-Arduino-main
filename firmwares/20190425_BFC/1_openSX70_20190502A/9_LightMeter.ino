@@ -19,7 +19,7 @@ void startCounter()
                     takePicture = false;
   cli();                                                        // Stop interrupts
   //TCCR0A = 0;    // stop timer 0
-  //  TCCR0B = 0;    
+  //TCCR0B = 0;    
   
   
   TCCR1A=0;                                            // Reset timer/counter control register A
@@ -58,24 +58,12 @@ void startCounterCalibration()
 }
 
 
-unsigned int frequencyCounter() 
-{
-  
-//  unsigned long previousMillis = millis();
-  startCounterCalibration();
-  delay (150);
-  counter = TCNT1;
-//    unsigned long laterMillis = millis();
-//    unsigned resultMillis = previousMillis - laterMillis;
-//  int PredictedExposure = (((A600/counter)*resultMillis));
-//  return PredictedExposure;
-return (counter/150);
-}   
-
-
 void AutoExposure()
 
 {
+  
+digitalWrite(led1, LOW);
+digitalWrite(led2, LOW);
   #if LIGHTMETER
   //////AUTOEXPOSURE DEBUG
 
@@ -117,4 +105,43 @@ void finish()
                     return;   
                   }
 
+}
+
+int frequencyCounter() 
+{
+  
+//  unsigned long previousMillis = millis();
+  startCounterCalibration();
+  delay (200);
+  unsigned long counter = TCNT1;
+  
+//    unsigned long laterMillis = millis();
+//    unsigned resultMillis = previousMillis - laterMillis;
+unsigned long frequency = (1+(counter/200));
+//Serial.print ("Frequency: ");
+//Serial.println (frequency);
+//Serial.print ("Magic Number AUTO600: ");
+//Serial.println (A600);
+unsigned int PredictedExposure = (A600/frequency);
+  return PredictedExposure;
+//return (AUTO600 /(counter/150));
+}   
+
+
+int nearest(int x, int myArray[], int elements, bool sorted)
+{
+  int idx = 0; // by default near first element
+
+  int distance = abs(myArray[idx] - x); 
+  for (int i = 1; i < elements; i++)
+  {
+    int d = abs(myArray[i] - x);
+    if (d < distance)
+    {
+      idx = i;
+      distance = d;
+    }
+    else if (sorted) return idx;
+  }
+  return idx;
 }

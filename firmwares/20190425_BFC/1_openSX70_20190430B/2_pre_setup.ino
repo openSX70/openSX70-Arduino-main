@@ -30,7 +30,7 @@
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
 //OPTION MAGIC NUMBERS FOR TSL235
-int A600 = 225; 
+int A600 = 205; 
 int A100= 485;
                                   
 unsigned long counter;
@@ -62,7 +62,7 @@ const int led2 = A3;
 #include <DS2408.h>
 
 //OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
-//
+
 const int S2 = 2;  //this for Flash insertion detection
                       //this CLOSED when there is a FLASHBAR inserted
 
@@ -153,15 +153,10 @@ int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600,
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };
 // to change the speed in the slot position just change the number corresponding.
 
-
-//****************************************************************************************************************************
-//OPTION THIS IS THE "FASTEST" SPEED TO TRIGGER DONGLE FLASH (ON MANUAL) ALL SLOWER DO AS WELL
-
 int FastestFlashSpeed = 25;
 
 //this speed and SLOWER will trigger flash
 
-//****************************************************************************************************************************
 int shots = 0;
 
 //****************************************************************************************************************************
@@ -267,4 +262,5 @@ int checkButton();
 void startCounterCalibration();
 void ManualExposure();
 void initializeDS2408();
+unsigned int frequencyCounter();
 //****************************************************************************************************************************

@@ -2,14 +2,10 @@
 // Author: Nick Gammon
 // Date: 17th January 2012
 
-//const int S0_Pin = 3;
-//const int S1_Pin = 4;                   //
-//const int S2_Pin = A0;
-//const int S3_Pin = A1;
-//const int OE_Pin = 10;
+//const int GND_Pin = 3;                   // GND pin for the light sensor
+//const int VDD_Pin = 4;                   // Vdd pin for the light sensor
+
 // Input: Pin D5
-
-
 
 // these are checked for in the main program
 volatile unsigned long timerCounts;
@@ -34,7 +30,7 @@ void startCounting (unsigned int ms)
   TCCR2B = 0;
 
   // Timer 1 - counts events on pin D5
-  //TIMSK1 = bit (TOIE1);   // interrupt on Timer 1 overflow
+  TIMSK1 = bit (TOIE1);   // interrupt on Timer 1 overflow
 
   // Timer 2 - gives us our 1 ms counting interval
   // 16 MHz clock (62.5 ns per tick) - prescaled by 128
@@ -44,7 +40,7 @@ void startCounting (unsigned int ms)
   OCR2A  = 124;            // count up to 125  (zero relative!!!!)
 
   // Timer 2 - interrupt on match (ie. every 1 ms)
-  //TIMSK2 = bit (OCIE2A);   // enable Timer2 Interrupt
+  TIMSK2 = bit (OCIE2A);   // enable Timer2 Interrupt
 
   TCNT1 = 0;      // Both counters to zero
   TCNT2 = 0;     
@@ -56,12 +52,6 @@ void startCounting (unsigned int ms)
   // start Timer 1
   // External clock source on T1 pin (D5). Clock on rising edge.
   TCCR1B =  bit (CS10) | bit (CS11) | bit (CS12);
-
-  while(1)
-{
-  unsigned int timer1CounterValue = TCNT1;
-  Serial.println(timer1CounterValue);
-}
   }  // end of startCounting
 
 ISR (TIMER1_OVF_vect)
@@ -105,30 +95,14 @@ ISR (TIMER2_COMPA_vect)
   counterReady = true;              // set global flag for end count period
   }  // end of TIMER2_COMPA_vect
 
-
-void setup ()
+void setup () 
   {
-/*
-pinMode(S0_Pin, OUTPUT);              //pinMode(S1_Pin, OUTPUT);              //
-pinMode(S2_Pin, OUTPUT);              //
-pinMode(S3_Pin, OUTPUT);              //
-pinMode(OE_Pin, OUTPUT);              //
+  //pinMode(GND_Pin, OUTPUT);              // Enable GND pin for the light sensor
+  //pinMode(VDD_Pin, OUTPUT);              // Enable Vdd pin for the light sensor
+  //digitalWrite(GND_Pin, LOW);            // Set GND value
+  //digitalWrite(VDD_Pin, HIGH);           // Set Vdd value
 
-//SETTING OPTIONS
 
-// 2% SCALING
-  digitalWrite(S1_Pin, HIGH);
-  digitalWrite(S0_Pin, LOW);
-
-//CLEAR PHOTODIODES
-  digitalWrite(S2_Pin, HIGH);
-  digitalWrite(S3_Pin, LOW);
-
-//ENABLING CHIP
-  digitalWrite (OE_Pin, LOW);
-
- 
-*/
   Serial.begin(9600);       
   Serial.println("Frequency Counter");
   } // end of setup

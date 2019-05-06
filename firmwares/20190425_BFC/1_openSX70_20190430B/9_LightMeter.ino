@@ -19,7 +19,7 @@ void startCounter()
                     takePicture = false;
   cli();                                                        // Stop interrupts
   //TCCR0A = 0;    // stop timer 0
-  //  TCCR0B = 0;    
+  //TCCR0B = 0;    
   
   
   TCCR1A=0;                                            // Reset timer/counter control register A
@@ -56,21 +56,6 @@ void startCounterCalibration()
   bitSet(TCCR1B ,CS11);                        // Clock on rising edge
     sei();                                                      // Restart interrupts
 }
-
-
-unsigned int frequencyCounter() 
-{
-  
-//  unsigned long previousMillis = millis();
-  startCounterCalibration();
-  delay (150);
-  counter = TCNT1;
-//    unsigned long laterMillis = millis();
-//    unsigned resultMillis = previousMillis - laterMillis;
-//  int PredictedExposure = (((A600/counter)*resultMillis));
-//  return PredictedExposure;
-return (counter/150);
-}   
 
 
 void AutoExposure()
@@ -118,3 +103,23 @@ void finish()
                   }
 
 }
+
+unsigned int frequencyCounter() 
+{
+  
+//  unsigned long previousMillis = millis();
+  startCounterCalibration();
+  delay (150);
+  unsigned long counter = TCNT1;
+  
+//    unsigned long laterMillis = millis();
+//    unsigned resultMillis = previousMillis - laterMillis;
+unsigned long frequency = (1+(counter/150));
+//Serial.print ("Frequency: ");
+//Serial.println (frequency);
+//Serial.print ("Magic Number AUTO600: ");
+//Serial.println (A600);
+unsigned int PredictedExposure = (A600/frequency);
+  return PredictedExposure;
+//return (AUTO600 /(counter/150));
+}   

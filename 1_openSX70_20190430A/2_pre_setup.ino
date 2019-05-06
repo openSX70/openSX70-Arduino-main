@@ -30,7 +30,7 @@
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
 //OPTION MAGIC NUMBERS FOR TSL235
-int A600 = 225; 
+int A600 = 205; 
 int A100= 485;
                                   
 unsigned long counter;
@@ -62,11 +62,11 @@ const int led2 = A3;
 #include <DS2408.h>
 
 //OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
-//
-const int S2 = 2;  //this for Flash insertion detection
+//const int S2 = 2;  //this for Flash insertion detection
                       //this CLOSED when there is a FLASHBAR inserted
 
-//const int S2 = A4;  //this for Flash insertion detection for reworked board
+//
+const int S2 = A7;  //this for Flash insertion detection for reworked board
 
 
 #define ONE_WIRE_BUS_PORT S2
@@ -267,4 +267,5 @@ int checkButton();
 void startCounterCalibration();
 void ManualExposure();
 void initializeDS2408();
+unsigned int frequencyCounter() ;
 //****************************************************************************************************************************

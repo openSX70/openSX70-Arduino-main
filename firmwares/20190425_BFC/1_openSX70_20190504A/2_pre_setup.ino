@@ -12,28 +12,21 @@
 //****************************************************************************************************************************
 
 //OPTION DEBUG INFORMATION ON SERIAL PORT (normal operation set to 0)
-
-#define SIMPLEDEBUG 0  //SHOW DEBUG INFORMATION ON SERIAL MONITOR (9600)
-//*************
-
-//****************************************************************************************************************************
-#define LEDCOUNTER 1
-// #define LEDCOUNTER 0    // easy way to disable the initial remaining pictures counter
-
-
-//****************************************************************************************************************************
+ 
 //OPTION LIGHTMETER ON BOARD?
 // if you define LIGHTMETER 0 then auto options and dongleless DO NOTHING
 
 #define LIGHTMETER 1      
 
+#if LIGHTMETER
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
 //OPTION MAGIC NUMBERS FOR TSL235
+//int A600 = 205; 
 int A600 = 225; 
 int A100= 485;
-                                  
 unsigned long counter;
+#endif
 
 //****************************************************************************************************************************
 
@@ -53,6 +46,10 @@ const byte PowerDown = 225; //max 255 = full power/POWERUP mode
 const int led1 = 13;
 const int led2 = A3;
 
+//OPTION FOR VF LEDS
+//
+#define VFled 0
+
 //****************************************************************************************************************************
 
 #include <EEPROM.h>
@@ -62,10 +59,10 @@ const int led2 = A3;
 #include <DS2408.h>
 
 //OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
+
 //
 const int S2 = 2;  //this for Flash insertion detection
-                      //this CLOSED when there is a FLASHBAR inserted
-
+                     //this CLOSED when there is a FLASHBAR inserted
 //const int S2 = A4;  //this for Flash insertion detection for reworked board
 
 
@@ -82,10 +79,6 @@ bool switch2 ;
 
 // END OF OneWire and DS2408 STUFF*****************************************************************
 
-
-
-
-// DS2408*****************************************************************
 
 //High speed PWM
 const byte n = 224;  // for example, 71.111 kHz
@@ -144,7 +137,10 @@ enum positions_t {AUTO600 = -100, AUTO100, POST, POSB};
 int ShutterConstant = 9;
 
 //OPTION
-int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+//int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+int ShutterSpeed[] =   { 1, 2, 3, 5, 10, 15, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+//WARNING: it's the SAME as before but now it is ShutterConstant+ShutterSpeed[]
 
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
@@ -153,15 +149,10 @@ int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600,
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };
 // to change the speed in the slot position just change the number corresponding.
 
-
-//****************************************************************************************************************************
-//OPTION THIS IS THE "FASTEST" SPEED TO TRIGGER DONGLE FLASH (ON MANUAL) ALL SLOWER DO AS WELL
-
 int FastestFlashSpeed = 25;
 
 //this speed and SLOWER will trigger flash
 
-//****************************************************************************************************************************
 int shots = 0;
 
 //****************************************************************************************************************************
@@ -261,10 +252,14 @@ void DongleFlashF8();
 void DongleFlashNormal ();
 void eepromDump ();
 void eepromDumpCSV ();
-void startCounter();
-void AutoExposure();
 int checkButton();
-void startCounterCalibration();
 void ManualExposure();
 void initializeDS2408();
+#if LIGHTMETER
+void AutoExposure();
+void startCounterCalibration();
+void startCounter();
+int frequencyCounter();
+int nearest(int x, int myArray[], int elements, bool sorted);
+#endif
 //****************************************************************************************************************************
