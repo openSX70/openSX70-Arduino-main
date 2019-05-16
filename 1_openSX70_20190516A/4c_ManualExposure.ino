@@ -25,7 +25,7 @@ void ManualExposure()
 //  Click(0);
 
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
-    ShutterSpeedDelay = (ShutterSpeed[selector]+ShutterConstant) ;
+    int ShutterSpeedDelay = (ShutterSpeed[selector]+ShutterConstant) ;
 
        delay (ShutterSpeedDelay);        
 
@@ -38,7 +38,8 @@ if (ShutterSpeedDelay >= FastestFlashSpeed)
     cli();
     counter = TCNT1;
     sei();
-  
+	Serial.print("Counter:");
+	Serial.println(counter);
   if (switch1 == 1)
   {
     shots = ++shots;
