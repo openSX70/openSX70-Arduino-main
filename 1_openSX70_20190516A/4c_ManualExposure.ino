@@ -27,6 +27,14 @@ void ManualExposure()
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
     int ShutterSpeedDelay = (ShutterSpeed[selector]+ShutterConstant) ;
 
+	Serial.print("ShutterSpeed[");
+	Serial.print(selector);
+	Serial.print("] :");
+	Serial.println(ShutterSpeed[selector]);
+
+	Serial.print("ShutterConstant:");
+	Serial.println(ShutterConstant);
+
        delay (ShutterSpeedDelay);        
 
 if (ShutterSpeedDelay >= FastestFlashSpeed)
