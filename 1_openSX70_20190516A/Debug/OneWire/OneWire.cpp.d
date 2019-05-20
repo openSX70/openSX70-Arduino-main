@@ -1,15 +1,15 @@
-C:\Users\JOAQUÍN\AppData\Local\Temp\VMBuilds\1_openSX70_20190516A\pro_8MHzatmega328\Debug\OneWire\OneWire.cpp.o: \
- c:\Users\JOAQUÍN\Documents\Arduino\libraries\OneWire\OneWire.cpp \
- c:\Users\JOAQUÍN\Documents\Arduino\libraries\OneWire\OneWire.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/Arduino.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/binary.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/WCharacter.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/WString.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/HardwareSerial.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/Stream.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/Print.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/Printable.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/USBAPI.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\cores\arduino/Arduino.h \
- C:\Users\JOAQUÍN\AppData\Local\arduino15\packages\arduino\hardware\avr\1.6.23\variants\eightanaloginputs/pins_arduino.h \
- c:\users\joaquín\appdata\local\arduino15\packages\arduino\hardware\avr\1.6.23\variants\standard\pins_arduino.h
+C:\Users\Joaquin\AppData\Local\Temp\VMBuilds\1_openSX70_20190516A\pro_8MHzatmega328\Debug\OneWire\OneWire.cpp.o: \
+ e:\Arduino\libraries\OneWire\OneWire.cpp \
+ e:\Arduino\libraries\OneWire\OneWire.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/Arduino.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/binary.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/WCharacter.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/WString.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/HardwareSerial.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/Stream.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/Print.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/Printable.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/USBAPI.h \
+ e:\Arduino\hardware\arduino\avr\cores\arduino/Arduino.h \
+ e:\Arduino\hardware\arduino\avr\variants\eightanaloginputs/pins_arduino.h \
+ e:\arduino\hardware\arduino\avr\variants\standard\pins_arduino.h

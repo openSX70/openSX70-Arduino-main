@@ -3,7 +3,7 @@
 //OPTION for origamiV1 dongles
 
 //
-#define origamiV1 0 //this is for "normal" uDongles
+#define origamiV1 1 //this is for "normal" uDongles
 
 //#define origamiV1 1 //this is for "origamiV1" dongles, will be fixed in newer origamis.
 
@@ -13,7 +13,7 @@
 
 //OPTION DEBUG INFORMATION ON SERIAL PORT (normal operation set to 0)
 
-#define SIMPLEDEBUG 1  //SHOW DEBUG INFORMATION ON SERIAL MONITOR (9600)
+#define SIMPLEDEBUG 0  //SHOW DEBUG INFORMATION ON SERIAL MONITOR (9600)
 //*************
 
 //****************************************************************************************************************************
@@ -153,7 +153,7 @@ int ShutterConstant = 9;
 
 //OPTION
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-int ShutterSpeed[] =   { 1, 3,  5,  6,  10, 15, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+int ShutterSpeed[] =   { 2, 3,  5,  6,  10, 15, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
@@ -271,6 +271,6 @@ int checkButton();
 void startCounterCalibration();
 void ManualExposure();
 void initializeDS2408();
-int frequencyCounter();
+int frequencyCounter(int ISO);
 int nearest(int x, int myArray[], int elements, bool sorted);
 //****************************************************************************************************************************
