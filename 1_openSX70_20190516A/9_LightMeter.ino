@@ -103,7 +103,7 @@ void finish()
                   }
 
 }
-
+/*
 int frequencyCounter(int ISO) 
 {
   
@@ -122,7 +122,38 @@ unsigned long frequency = (1+(counter/200));
 unsigned int PredictedExposure = (ISO/frequency);
   return PredictedExposure;
 //return (AUTO600 /(counter/150));
-}   
+} */  
+
+int PredictedExposure(int ISO)
+{
+	unsigned long previousMillis = 0;
+	unsigned long interval = 100;
+	
+	unsigned long currentMillis = millis();
+
+	if (currentMillis - previousMillis >= interval)
+	{
+		startCounterCalibration();
+		unsigned long timeMillis = currentMillis - previousMillis;
+		Serial.println("               INIT");
+	}
+	if (Cycle = 100)
+	{
+		timeMillis = (millis() - initialMillis);
+		unsigned long counter = TCNT1;
+		Cycle = 0;
+		int PredExp = (timeMillis / counter) * ISO;
+		Serial.print("timeMillis: ");
+		Serial.println(timeMillis);
+		Serial.print("counter: ");
+		Serial.println(counter);
+		Serial.print("ISO: ");
+		Serial.println(ISO);
+
+		return PredExp;
+
+	}
+}
 
 
 int nearest(int x, int myArray[], int elements, bool sorted)

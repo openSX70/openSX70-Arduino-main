@@ -41,7 +41,12 @@ int output_compare ;        // How many pulses before triggering interrupt
 int A600 = 225; 
 int A100= 495;
                                   
+#if LIGHTMETER
 unsigned long counter;
+unsigned long Cycle;
+//unsigned long initialMillis;
+//unsigned long timeMillis;
+#endif
 
 //****************************************************************************************************************************
 

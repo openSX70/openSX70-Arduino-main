@@ -35,13 +35,13 @@ void loop() {
 	  else
 		  ISO = A600;
 
-	   exposure = frequencyCounter(ISO);
-	  /*
-	  Serial.print("Predicted Exposure: ");
+	   exposure = PredictedExposure(ISO);
+	  
+	  Serial.print("                       Predicted Exposure: ");
 	  Serial.println(exposure);
 	  Serial.print("ShutterSpeed[selector]: ");
 	  Serial.println((ShutterSpeed[selector]));
-	 */
+	 
 
       digitalWrite(led1, LOW);
 //	  Serial.println("AUTO MODE ON");
