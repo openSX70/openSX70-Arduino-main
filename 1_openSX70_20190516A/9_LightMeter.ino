@@ -103,57 +103,50 @@ void finish()
                   }
 
 }
-/*
-int frequencyCounter(int ISO) 
-{
-  
-//  unsigned long previousMillis = millis();
-  startCounterCalibration();
-  delay (200);
-  unsigned long counter = TCNT1;
-  
-//    unsigned long laterMillis = millis();
-//    unsigned resultMillis = previousMillis - laterMillis;
-unsigned long frequency = (1+(counter/200));
-//Serial.print ("Frequency: ");
-//Serial.println (frequency);
-//Serial.print ("Magic Number AUTO600: ");
-//Serial.println (A600);
-unsigned int PredictedExposure = (ISO/frequency);
-  return PredictedExposure;
-//return (AUTO600 /(counter/150));
-} */  
+
 
 int PredictedExposure(int ISO)
 {
-	unsigned long previousMillis = 0;
+	static int PrevExp;
+	//ISO is the Magic Number 
 	unsigned long interval = 100;
-	
-	unsigned long currentMillis = millis();
+	//unsigned long counter; defined elsewhere 
+	float PredExp;
 
-	if (currentMillis - previousMillis >= interval)
+	//            unsigned long currentMillis = millis();
+
+
+	unsigned long timeMillis;
+
+	if ((millis() - previousMillis) >= interval)
 	{
+		counter = TCNT1;
+		TCNT1 = 0;
+		timeMillis = millis() - previousMillis;
+		previousMillis = millis();
 		startCounterCalibration();
-		unsigned long timeMillis = currentMillis - previousMillis;
-		Serial.println("               INIT");
+		
+		//PredExp = ISO * (timeMillis / (1 + counter));
+		//
+//		PredExp = ISO / ((counter + 1) / timeMillis);
+		PredExp = ISO / (1 + ((counter ) / timeMillis));
+		/*
+		Serial.print(timeMillis);
+		Serial.print(" / ");
+		Serial.print(counter);
+		Serial.print(" / ");
+		Serial.print(PredExp);
+		Serial.print(" / ");
+		*/
+		PrevExp = PredExp;
+		return PrevExp;
 	}
-	if (Cycle = 100)
-	{
-		timeMillis = (millis() - initialMillis);
-		unsigned long counter = TCNT1;
-		Cycle = 0;
-		int PredExp = (timeMillis / counter) * ISO;
-		Serial.print("timeMillis: ");
-		Serial.println(timeMillis);
-		Serial.print("counter: ");
-		Serial.println(counter);
-		Serial.print("ISO: ");
-		Serial.println(ISO);
+	else 
+		return PrevExp;
 
-		return PredExp;
 
-	}
 }
+
 
 
 int nearest(int x, int myArray[], int elements, bool sorted)

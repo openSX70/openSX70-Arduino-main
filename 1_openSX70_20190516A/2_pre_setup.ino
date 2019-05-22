@@ -3,7 +3,7 @@
 //OPTION for origamiV1 dongles
 
 //
-#define origamiV1 1 //this is for "normal" uDongles
+#define origamiV1 0 //this is for "normal" uDongles
 
 //#define origamiV1 1 //this is for "origamiV1" dongles, will be fixed in newer origamis.
 
@@ -40,8 +40,8 @@ int output_compare ;        // How many pulses before triggering interrupt
 //int A600 = 205; 
 int A600 = 225; 
 int A100= 495;
-                                  
-unsigned long counter;
+unsigned long counter;                                  
+ unsigned long previousMillis;
 
 //****************************************************************************************************************************
 

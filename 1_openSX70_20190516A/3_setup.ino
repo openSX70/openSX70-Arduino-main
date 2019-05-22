@@ -1,6 +1,6 @@
 void setup() {
 
-
+	previousMillis = 0;
   //SAY HELLO (remove)
   Serial.begin(9600);
   Serial.println ("openSX70!!!!!!!!!!!!!!!");
@@ -13,6 +13,8 @@ void setup() {
 
   pinMode(led1, OUTPUT);  //BLUE
   pinMode(led2, OUTPUT);  //RED
+
+  //digitalWrite(led1, LOW);
 
   pinMode(Solenoid1, OUTPUT);
   pinMode(Solenoid2, OUTPUT);

@@ -21,7 +21,7 @@ void loop() {
   }
 
   int exposure;
-  int ISO = A600;
+  int ISO;
 
 #if LIGHTMETER
 
@@ -31,53 +31,59 @@ void loop() {
   if (((ShutterSpeed[selector]) == AUTO600) || ((ShutterSpeed[selector]) == AUTO100) || (Read_DS2408_PIO(0) == 200))
   {
 	  if ((ShutterSpeed[selector]) == AUTO100)
-	      ISO = A100;
+		  ISO = A100;
 	  else
 		  ISO = A600;
+		
+	  exposure = PredictedExposure(ISO);
 
-	   exposure = PredictedExposure(ISO);
-	  
-	  Serial.print("                       Predicted Exposure: ");
-	  Serial.println(exposure);
-	  Serial.print("ShutterSpeed[selector]: ");
-	  Serial.println((ShutterSpeed[selector]));
-	 
+#if SIMPLEDEBUG
+		Serial.print(" Predicted Exposure: ");
+		Serial.println(exposure);
 
-      digitalWrite(led1, LOW);
-//	  Serial.println("AUTO MODE ON");
+		Serial.print("ShutterSpeed[selector]: ");
+		Serial.println((ShutterSpeed[selector]));
+	   
 
-    if (exposure >= ShutterSpeed[7])
-    {
-      digitalWrite(led2, HIGH);
-//	  Serial.print(ISO);
-//	  Serial.println("  Low light!!!");
-    }
-    else
-    {
-      digitalWrite(led2, LOW);
-    }
-  } else
-    digitalWrite(led2, LOW);
-  //  digitalWrite(led1, LOW);
+	        digitalWrite(led1, LOW);
+	   	  Serial.println("AUTO MODE ON");
+#endif
+	  if (exposure >= ShutterSpeed[7])
+	  {
+			digitalWrite(led2, HIGH);
+		  //		Serial.print(ISO);
+		  //		Serial.println("  Low light!!!");
+	  }
+	  else
+	  {
+		  //		Serial.println("  else light!!!");
 
-  //+ ShutterConstant;
-
+		  digitalWrite(led2, LOW);
+		  digitalWrite(led1, LOW);
+	  }
+  }
+  
   //int nearest(int x, int myArray[], int elements, bool sorted)
 
   if (switch2 == 1) {
 
+	  if ((selector >= 0) && (selector < 12))
+		  //ISO = A600;
+		  exposure = PredictedExposure(A600);
+	  {
 
 	  int slot = nearest(exposure, ShutterSpeed, 11, 1);
 	  /*
-		Serial.print ("Slot/selector: ");
+		Serial.print ("Slot/selector/Pred Exp: ");
 		Serial.print (slot);
 		Serial.print (" / ");
-		Serial.println (selector);
-	  */
+		Serial.print (selector);
+		Serial.print(" / ");
+		Serial.println(exposure);
+	  	*/ 
 
-	  if (selector >= 0 && selector <= 12)
-	  {
-		  if (selector < slot)
+
+	  if (selector < slot)
 		  {
 			  digitalWrite(led2, HIGH);
 			  digitalWrite(led1, LOW);
@@ -89,14 +95,20 @@ void loop() {
 		  }
 		  else if (selector == slot)
 		  {
-			  //    digitalWrite(led1, HIGH);
-			  //    digitalWrite(led2, HIGH);
-
+			
 			  digitalWrite(led1, LOW);
 			  digitalWrite(led2, LOW);
 		  }
+
+
 	  }
   }
+  else
+  {
+	  digitalWrite(led1, LOW);
+	  digitalWrite(led2, LOW);
+  }
+  
 #endif
 #endif
 
@@ -214,7 +226,7 @@ void loop() {
     // KEEP IN MIND THAT THIS **THE CAMERA** SAYING IT HAS ALREADY MADE 10 SHOTS.
     // I COULD SET MY OWN COUNTER (UP TO 8) AND MAKE IT MORE IMPOSSIBLE-8-SHOTS-FRIENDLY
     Write_DS2408_PIO (6, 1);
-    digitalWrite(led2, HIGH);
+    //digitalWrite(led2, HIGH);
     //      Serial.begin (9600);
     //      Serial.println ("Write f^*ng PIO");
 
