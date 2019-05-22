@@ -61,15 +61,18 @@ void loop() {
 		  digitalWrite(led2, LOW);
 		  digitalWrite(led1, LOW);
 	  }
-  }
+  } else
+	  digitalWrite(led1, LOW);
   
   //int nearest(int x, int myArray[], int elements, bool sorted)
 
-  if (switch2 == 1) {
+  if (switch2 == 1) 
+  
+  {  //LM "helper" function for A600, dunno how to choose the ISO in this case (Manual helper)
 
 	  if ((selector >= 0) && (selector < 12))
-		  //ISO = A600;
-		  exposure = PredictedExposure(A600);
+		  
+		  exposure = PredictedExposure(A600);	//  as mentioned asumed A600
 	  {
 
 	  int slot = nearest(exposure, ShutterSpeed, 11, 1);
@@ -99,15 +102,16 @@ void loop() {
 			  digitalWrite(led1, LOW);
 			  digitalWrite(led2, LOW);
 		  }
+		  else
+	  {
+		  digitalWrite(led1, LOW);
+		  digitalWrite(led2, LOW);
+	  }
 
 
 	  }
-  }
-  else
-  {
-	  digitalWrite(led1, LOW);
-	  digitalWrite(led2, LOW);
-  }
+  } 
+  
   
 #endif
 #endif
