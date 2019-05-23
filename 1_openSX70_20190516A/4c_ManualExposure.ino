@@ -1,5 +1,11 @@
 void ManualExposure()
+
+
 {
+	//lets turn off all the LED!!!!
+	digitalWrite(led2, LOW);
+	digitalWrite(led1, LOW);
+
 #if SIMPLEDEBUG
   Serial.println ("take Manual picture");
 #endif

@@ -29,7 +29,7 @@
 
 //****************************************************************************************************************************
 
-//OPTION LIGHTMETER ON BOARD?
+//OPTION LIGHTMETER ON BOARD?-----------
 // if you define LIGHTMETER 0 then auto options and dongleless DO NOTHING
 
 #define LIGHTMETER 1      
