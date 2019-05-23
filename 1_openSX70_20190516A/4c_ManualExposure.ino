@@ -22,7 +22,6 @@ void ManualExposure()
   Serial.print ("--------------------------------------------------CLICK:  ");
   Serial.println (ShutterSpeed[selector]);
 #endif
-//  Click(0);
 
     int ShutterSpeedDelay = (ShutterSpeed[selector]+ShutterConstant) ;
 #if SIMPLEDEBUG

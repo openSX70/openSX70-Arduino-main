@@ -413,10 +413,8 @@ void loop() {
 
 
 
-      if (Read_DS2408_PIO(0) == 200)
+      if (Read_DS2408_PIO(0) == 200) //dongleless
       {
-
-
         output_compare = A600;
         byte PictureType = 6;
         eepromUpdate ();
