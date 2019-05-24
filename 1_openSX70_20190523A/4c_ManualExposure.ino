@@ -1,5 +1,11 @@
 void ManualExposure()
+
+
 {
+	//lets turn off all the LED!!!!
+	digitalWrite(led2, LOW);
+	digitalWrite(led1, LOW);
+
 #if SIMPLEDEBUG
   Serial.println ("take Manual picture");
 #endif
@@ -16,16 +22,15 @@ void ManualExposure()
     ;
   Ydelay();
 
-  startCounterCalibration();
+//  startCounterCalibration();
 
 #if SIMPLEDEBUG
   Serial.print ("--------------------------------------------------CLICK:  ");
   Serial.println (ShutterSpeed[selector]);
 #endif
-//  Click(0);
 
     int ShutterSpeedDelay = (ShutterSpeed[selector]+ShutterConstant) ;
-#if SIMPLEDEBUG
+	#if SIMPLEDEBUG
 
 	Serial.print("ShutterSpeed[");
 	Serial.print(selector);

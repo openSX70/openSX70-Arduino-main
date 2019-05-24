@@ -21,7 +21,7 @@ void loop() {
   }
 
   int exposure;
-  int ISO;
+
 
 #if LIGHTMETER
 
@@ -70,8 +70,8 @@ void loop() {
   } else  if (switch2 == 1) 
 	  
   {  //LM "helper" function for A600, dunno how to choose the ISO in this case (Manual helper)
-	  digitalWrite(led1, LOW);
-	  digitalWrite(led2, LOW);
+	  //digitalWrite(led1, LOW);
+	  //digitalWrite(led2, LOW);
 
 	  if ((selector >= 0) && (selector < 12))
 	  {
@@ -413,10 +413,8 @@ void loop() {
 
 
 
-      if (Read_DS2408_PIO(0) == 200)
+      if (Read_DS2408_PIO(0) == 200) //dongleless
       {
-
-
         output_compare = A600;
         byte PictureType = 6;
         eepromUpdate ();
@@ -436,6 +434,15 @@ void loop() {
 
       if (selector < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED ON THE SELECTOR (WE HAVE A DONGLE)
       {
+
+		  if ((selector >= 0) && (selector < 12))
+		  {
+			  ManualExposure();
+			  eepromUpdate();
+			  return;
+		  }
+
+
         //Serial.println ("MANUAL SELECTOR SPEED");
 
         if ((ShutterSpeed[selector]) == AUTO600)
@@ -465,9 +472,7 @@ void loop() {
 #if SIMPLEDEBUG
         Serial.println ("MANUAL SELECTOR SPEED");
 #endif
-        ManualExposure();
-        eepromUpdate();
-        return;
+
       }
 
     }

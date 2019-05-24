@@ -42,6 +42,7 @@ int A600 = 225;
 int A100= 495;
 unsigned long counter;                                  
  unsigned long previousMillis;
+ int ISO;
 
 //****************************************************************************************************************************
 
@@ -162,7 +163,8 @@ int ShutterSpeed[] =   { 2, 3,  5,  6,  10, 15, 22, 34, 42, 80, 140, 290, AUTO60
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };
 // to change the speed in the slot position just change the number corresponding.
 
-int FastestFlashSpeed = 25;
+int FastestFlashSpeed = 25 + ShutterConstant;
+//FastestFlashSpeed = FastestFlashSpeed + ShutterConstant;
 
 //this speed and SLOWER will trigger flash
 
