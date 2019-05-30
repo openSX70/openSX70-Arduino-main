@@ -32,7 +32,7 @@
 //OPTION LIGHTMETER ON BOARD?
 // if you define LIGHTMETER 0 then auto options and dongleless DO NOTHING
 
-#define LIGHTMETER 1
+#define LIGHTMETER 1      
 
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
@@ -150,12 +150,12 @@ enum positions_t {AUTO600 = -100, AUTO100, POST, POSB};
 */
 
 
- int ShutterConstant = 15;
+int ShutterConstant = 14;
 
 //OPTION
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-int ShutterSpeed[] =   { 1, 3,  5,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+int ShutterSpeed[] =   { 1, 4,  6,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
@@ -163,8 +163,6 @@ int ShutterSpeed[] =   { 1, 3,  5,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO60
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };
 // to change the speed in the slot position just change the number corresponding.
-
-
 
 int FastestFlashSpeed = 25 + ShutterConstant;
 //FastestFlashSpeed = FastestFlashSpeed + ShutterConstant;

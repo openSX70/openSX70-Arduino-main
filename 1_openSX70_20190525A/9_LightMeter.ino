@@ -94,7 +94,7 @@ void finish()
  
                if (switch1 == 1)
                   {
-                  ++shots;
+                  shots = ++shots;
                   return;
                   } else if (switch1 == 0)
                   {
@@ -102,8 +102,7 @@ void finish()
                     mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
                     delay (300);                  //WAS 60           //AGAIN is this delay necessary?
                     shutterOPEN();
-                    shots = 0; 
-					eepromUpdate();
+                    shots = 0;  
                     return;   
                   }
 
@@ -133,18 +132,17 @@ int PredictedExposure(int ISO)
 		
 		//PredExp = ISO * (timeMillis / (1 + counter));
 		float ISOpercent; //shutter closing compensation now 30%
-		ISOpercent = ((ISO * 5)/100);
+		ISOpercent = ((ISO * 45)/100);
 		ISO = ISO + ISOpercent;
 		//
-//		PredExp = ISO / ( ((counter+1) / timeMillis));
+//		PredExp = ISO / ((counter + 1) / timeMillis);
 		PredExp = ISO / (1 + (counter / timeMillis));
-
 //		PredExp = (counter / timeMillis);
 //		PredExp = ISO / ( ((counter) / timeMillis));
 
 		//		PredExp = PredExp * 0,99;
 
- /*
+/*
 		Serial.print(ISO);
 		Serial.print(" / ");
 		Serial.print(timeMillis);
@@ -153,7 +151,7 @@ int PredictedExposure(int ISO)
 		Serial.print(" / ");
 		Serial.println(PredExp);
 //		Serial.print(" / ");
-+ */
+*/
 		PrevExp = PredExp;
 		return PrevExp;
 	}
@@ -182,3 +180,39 @@ int nearest(int x, int myArray[], int elements, bool sorted)
   }
   return idx;
 }
+/*
+void MyDelay()
+{
+	cli();
+	//TCCR0B = 0;  
+	TCNT0 = 0;  //Set counter 0 value to 0
+	count = 0; //set count to zero
+
+	//TCCR0 |= (1 << CS02) | (1 << CS00); // PRESCALER 1024
+	//TCCR0B |= (1 << CS01); // PRESCALER 8
+	TCCR0B = _BV(CS01);
+	/*
+	The clock is external crystal 8MHz.We apply a prescaler of 1024.
+					Now the clock freq to counter becomes 8000000/8 = 1 Mhz
+					Time period = 1/freq = 1/1000000 = 0.000001usec or 0.001 milli sec
+					Overflow occurs every 256*0.001 = 0.256 msec
+					To generate a time delay of 1 sec 1000/32.768 =  30.5 or 31
+					So the counter TCNT0 has to overflow 31 times to generate A TIME DELAY OF 1 SEC.
+	*/
+	//TIMSK0 |= (1 << OCIE0);            // enable compare interrupt
+	TIMSK0 = (1 << TOIE0);
+
+	sei();
+}
+
+
+ISR(TIMER0_OVF_vect)    // Timer0 ovf vector
+{
+	count++;
+	if (count = (ShutterSpeedDelay * 4))
+	{
+		TCNT0 = 0;          // initialize counter
+		finish();
+	}
+
+}*/

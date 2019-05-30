@@ -15,7 +15,7 @@ void eepromUpdate ()
                   byte Shutter = (ShutterSpeed[selector]);
 //                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
 
-                  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, Shutter, Counter, sensorValueHIGH };
+                  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, Shutter, counter, sensorValueHIGH };
 
 
                       Serial.println ("*****************************");
@@ -28,7 +28,7 @@ void eepromUpdate ()
                       Serial.print ("Shutter in ms: ");
                       Serial.println (Shutter);
                       Serial.print ("Counter: ");                      
-                      Serial.println (Counter);
+                      Serial.println (counter);
 //                      Serial.println (sensorValueHIGH);
                       Serial.println ("*****************************");
                       

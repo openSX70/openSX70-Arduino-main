@@ -174,7 +174,7 @@ void darkslideEJECT()
 }   // end of void darkslideEJECT()
 
 //***************************************************************************************************************************************
-/*
+
 void Click(int ExpDelay)
 {
                             #if SIMPLEDEBUG 
@@ -229,7 +229,7 @@ void Click(int ExpDelay)
                   shutterCLOSE();
                   return;
   }
-
+*/
   int ShutterSpeedDelay;
   if ((ShutterSpeed[selector]) > 0)
 
@@ -248,14 +248,14 @@ void Click(int ExpDelay)
         delay (ShutterSpeedDelay);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
           
         }
-        else {
+/*        else {
 
 //        delay (ExpDelay);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
 //        Serial.print("        actual delay: ");
 //        Serial.println (ExpDelay);
           
         }
-
+*/
         
         ////////CLICK!
 if (ShutterSpeedDelay >= FastestFlashSpeed)
@@ -276,7 +276,7 @@ if (ShutterSpeedDelay >= FastestFlashSpeed)
 
 } //end of void Click()
 
-*/
+
 
 
 

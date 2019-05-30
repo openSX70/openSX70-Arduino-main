@@ -94,7 +94,7 @@ void finish()
  
                if (switch1 == 1)
                   {
-                  ++shots;
+                  shots = ++shots;
                   return;
                   } else if (switch1 == 0)
                   {
@@ -102,8 +102,7 @@ void finish()
                     mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
                     delay (300);                  //WAS 60           //AGAIN is this delay necessary?
                     shutterOPEN();
-                    shots = 0; 
-					eepromUpdate();
+                    shots = 0;  
                     return;   
                   }
 

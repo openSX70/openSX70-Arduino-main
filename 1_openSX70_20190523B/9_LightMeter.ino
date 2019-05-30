@@ -94,7 +94,7 @@ void finish()
  
                if (switch1 == 1)
                   {
-                  ++shots;
+                  shots = ++shots;
                   return;
                   } else if (switch1 == 0)
                   {
@@ -102,8 +102,7 @@ void finish()
                     mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
                     delay (300);                  //WAS 60           //AGAIN is this delay necessary?
                     shutterOPEN();
-                    shots = 0; 
-					eepromUpdate();
+                    shots = 0;  
                     return;   
                   }
 
@@ -133,18 +132,17 @@ int PredictedExposure(int ISO)
 		
 		//PredExp = ISO * (timeMillis / (1 + counter));
 		float ISOpercent; //shutter closing compensation now 30%
-		ISOpercent = ((ISO * 5)/100);
+		ISOpercent = ((ISO * 45)/100);
 		ISO = ISO + ISOpercent;
 		//
-//		PredExp = ISO / ( ((counter+1) / timeMillis));
+//		PredExp = ISO / ((counter + 1) / timeMillis);
 		PredExp = ISO / (1 + (counter / timeMillis));
-
 //		PredExp = (counter / timeMillis);
 //		PredExp = ISO / ( ((counter) / timeMillis));
 
 		//		PredExp = PredExp * 0,99;
 
- /*
+/*
 		Serial.print(ISO);
 		Serial.print(" / ");
 		Serial.print(timeMillis);
@@ -153,7 +151,7 @@ int PredictedExposure(int ISO)
 		Serial.print(" / ");
 		Serial.println(PredExp);
 //		Serial.print(" / ");
-+ */
+*/
 		PrevExp = PredExp;
 		return PrevExp;
 	}

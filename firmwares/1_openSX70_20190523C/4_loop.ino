@@ -266,7 +266,7 @@ void loop() {
 	  
     }
     //======================================================================================================
-		
+
     //added return
     return;
 
@@ -420,7 +420,7 @@ void loop() {
       {
         output_compare = A600;
         byte PictureType = 6;
-       // eepromUpdate ();
+        eepromUpdate ();
 #if SIMPLEDEBUG
         Serial.println ("DONGLELESS AUTO600");
 #endif
@@ -441,7 +441,7 @@ void loop() {
 		  if ((selector >= 0) && (selector < 12))
 		  {
 			  ManualExposure();
-			 // eepromUpdate();
+			  eepromUpdate();
 			  return;
 		  }
 
@@ -452,7 +452,7 @@ void loop() {
         {
           output_compare = A600;
           byte PictureType = 6;
-         // eepromUpdate ();
+          eepromUpdate ();
 #if SIMPLEDEBUG
           Serial.println ("SELECTOR AUTO600");
 #endif
@@ -463,7 +463,7 @@ void loop() {
         {
           output_compare = A100;
           byte PictureType = 1;
-          //eepromUpdate ();
+          eepromUpdate ();
 #if SIMPLEDEBUG
           Serial.println ("SELECTOR AUTO100");
 #endif

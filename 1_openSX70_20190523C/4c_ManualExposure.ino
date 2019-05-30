@@ -30,9 +30,6 @@ void ManualExposure()
 #endif
 
     int ShutterSpeedDelay = (ShutterSpeed[selector]+ShutterConstant) ;
-
- 
-
 	#if SIMPLEDEBUG
 
 	Serial.print("ShutterSpeed[");
@@ -46,24 +43,21 @@ void ManualExposure()
 	Serial.print("ShutterSpeedDelay:");
 	Serial.println(ShutterSpeedDelay);
 
- #endif
-	sei();
+#endif
+
 	shutterOPEN();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
 	unsigned long initialMillis = millis();
-//	delay (ShutterSpeedDelay);   
-//	while (millis() <= (initialMillis + ShutterSpeedDelay))
-
-	while (millis() - initialMillis <= ShutterSpeedDelay)
-	{
-				;
-	}
+	//delay (ShutterSpeedDelay);   
+	while (millis() <= (initialMillis + ShutterSpeedDelay))
+		;
+	
 if (ShutterSpeedDelay >= FastestFlashSpeed)
      {
       FastFlash ();
 #if SIMPLEDEBUG
 	  Serial.println("FF");
 #endif
-     } 
+     }
 //    shutterCLOSE ();                                         //close the shutter
  /*   delay (10);
     cli();
