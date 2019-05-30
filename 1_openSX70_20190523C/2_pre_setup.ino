@@ -25,14 +25,14 @@
 
 //OPTION FOR VF LEDS
 //
-#define VFled 1
+#define VFled 0
 
 //****************************************************************************************************************************
 
 //OPTION LIGHTMETER ON BOARD?
 // if you define LIGHTMETER 0 then auto options and dongleless DO NOTHING
 
-#define LIGHTMETER 1      
+#define LIGHTMETER 0      
 
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
@@ -150,12 +150,14 @@ enum positions_t {AUTO600 = -100, AUTO100, POST, POSB};
 */
 
 
-int ShutterConstant = 14;
+int ShutterConstant = 22 ;
 
 //OPTION
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 int ShutterSpeed[] =   { 1, 4,  6,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+//int ShutterSpeed[] =   { 15, 16,  17,  18,  19, 20, 21, 22, 23, 24, 25, 26, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)

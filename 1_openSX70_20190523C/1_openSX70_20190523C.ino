@@ -1,4 +1,4 @@
-//1_openSX70_20190523A
+                                                                                              //1_openSX70_20190523A
 //LED "helper" lights for ISO600. 
 //AUTO low light indicator
 //Dongleless 600 auto
