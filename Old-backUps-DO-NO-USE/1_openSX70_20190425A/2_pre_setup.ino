@@ -37,7 +37,7 @@ unsigned long counter;
 
 //****************************************************************************************************************************
 
-//OPTION POWER DOWN 
+//OPTION POWER DOWN   
 //Alpha or Model 2 might different values
 
 const byte PowerDownDelay = 15; //time it takes to be fully closed

@@ -1,6 +1,6 @@
 void setup() {
 
-
+	previousMillis = 0;
   //SAY HELLO (remove)
   Serial.begin(9600);
   Serial.println ("openSX70!!!!!!!!!!!!!!!");
@@ -14,9 +14,12 @@ void setup() {
   pinMode(led1, OUTPUT);  //BLUE
   pinMode(led2, OUTPUT);  //RED
 
+  //digitalWrite(led1, LOW);
+
   pinMode(Solenoid1, OUTPUT);
   pinMode(Solenoid2, OUTPUT);
 
+/*
   // OPTION I turn on LEDs once on power-up:
   digitalWrite(led1, HIGH);   // turn the LED on (HIGH is the voltage level)
   delay (600);
@@ -25,14 +28,15 @@ void setup() {
   delay (600);
   digitalWrite(led2, LOW);   // turn the LED on (HIGH is the voltage level)
 
-  /*
     digitalWrite(led1, HIGH);   // turn the LED on (HIGH is the voltage level)
     digitalWrite(led2, HIGH);   // turn the LED on (HIGH is the voltage level)
     delay (600);
 
     digitalWrite(led1, LOW);   // turn the LED on (HIGH is the voltage level)
     digitalWrite(led2, LOW);   // turn the LED on (HIGH is the voltage level)
-  */
+
+*/
+
 
   //SX70 switches are INPUTS
   //I like to think that the SX70 has mechanical electronics :-)

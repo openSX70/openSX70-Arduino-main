@@ -241,7 +241,7 @@ void Click(int ExpDelay)
    startCounterCalibration();
     shutterOPEN ();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
         if (ExpDelay == 0){
-        ShutterSpeedDelay = ShutterSpeed[selector] ;
+        ShutterSpeedDelay = (ShutterSpeed[selector]+ShutterConstant) ;
 //        delay (ShutterSpeed[Read_DS2408_PIO(0)]);                        // NOW COMES THE DELAY THAT IS THE PHOTO!
 //Serial.println (ShutterSpeedDelay);
         
@@ -283,6 +283,11 @@ if (ShutterSpeedDelay >= FastestFlashSpeed)
 
 void Ydelay ()
 {
+
+//Only one 120ms delay. Switch 2 for other purposes!!
+  
+  delay (120);
+/*
                     if (switch2 ==  0) {
                     //NORMAL DELAY
                     delay (40);                                 //S3 is now open start Y-delay (40ms)
@@ -292,8 +297,10 @@ void Ydelay ()
                         {
                     delay (200);                              //LONG DELAY SELECTED 
                     //Serial.println ("LONG DELAY**************************************************************************************************************************************");     
-                        }
+                       }
+*/ 
 return;
+
 }
 //***************************************************************************************************************************************
 void HighSpeedPWM ()

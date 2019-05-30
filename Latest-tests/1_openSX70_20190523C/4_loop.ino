@@ -20,6 +20,108 @@ void loop() {
 
   }
 
+  int exposure;
+
+
+#if LIGHTMETER
+
+#if VFled
+
+  if (switch2 == 0)
+  {
+  
+	  if (((ShutterSpeed[selector]) == AUTO600) || ((ShutterSpeed[selector]) == AUTO100) || (Read_DS2408_PIO(0) == 200))
+	  {
+		  if ((ShutterSpeed[selector]) == AUTO100)
+			  ISO = A100;
+		  else
+			  ISO = A600;
+
+		  exposure = PredictedExposure(ISO);
+
+#if SIMPLEDEBUG
+		  Serial.print(" Predicted Exposure: ");
+		  Serial.println(exposure);
+
+		  Serial.print("ShutterSpeed[selector]: ");
+		  Serial.println((ShutterSpeed[selector]));
+
+
+		  digitalWrite(led1, LOW);
+		  Serial.println("AUTO MODE ON");
+#endif
+		  if (exposure >= ShutterSpeed[7])
+		  {
+			  digitalWrite(led2, HIGH);
+			  //		Serial.print(ISO);
+			  //		Serial.println("  Low light!!!");
+		  }
+		  else
+		  {
+			  //		Serial.println("  else light!!!");
+
+			  digitalWrite(led2, LOW);
+			  digitalWrite(led1, LOW);
+		  }
+		  //digitalWrite(led2, LOW);
+		  //digitalWrite(led1, LOW);
+
+	  }
+  } else  if (switch2 == 1) 
+	  
+  {  //LM "helper" function for A600, dunno how to choose the ISO in this case (Manual helper)
+	  //digitalWrite(led1, LOW);
+	  //digitalWrite(led2, LOW);
+
+	  if ((selector >= 0) && (selector < 12))
+	  {
+		  exposure = PredictedExposure(A600);	//  as mentioned asumed A600
+	  {
+
+		  //int nearest(int x, int myArray[], int elements, bool sorted)
+		  int slot = nearest(exposure, ShutterSpeed, 11, 1);
+	  /*
+		Serial.print ("Slot/selector/Pred Exp: ");
+		Serial.print (slot);
+		Serial.print (" / ");
+		Serial.print (selector);
+		Serial.print(" / ");
+		Serial.println(exposure);
+	  	*/ 
+
+
+	  if (selector < slot)
+		  {
+			  digitalWrite(led2, HIGH);
+			  digitalWrite(led1, LOW);
+		  }
+		  else if (selector > slot)
+		  {
+			  digitalWrite(led1, HIGH);
+			  digitalWrite(led2, LOW);
+		  }
+		  else if (selector == slot)
+		  {
+			
+			  digitalWrite(led1, LOW);
+			  digitalWrite(led2, LOW);
+		  }
+		  else
+	  {
+		  digitalWrite(led1, LOW);
+		  digitalWrite(led2, LOW);
+	  }
+
+		  }
+	  }
+  } 
+  
+  
+#endif
+#endif
+
+
+
   /*
     long frequency = frequencyCounter();
     Serial.print ("frequency : ");
@@ -110,6 +212,7 @@ void loop() {
 #if SIMPLEDEBUG
     Serial.println("STATE1: EJECT DARK SLIDE");
 #endif
+	return;
   }
   //  CurrentPicture = EEPROM.read(4) ;
 
@@ -132,7 +235,7 @@ void loop() {
     // KEEP IN MIND THAT THIS **THE CAMERA** SAYING IT HAS ALREADY MADE 10 SHOTS.
     // I COULD SET MY OWN COUNTER (UP TO 8) AND MAKE IT MORE IMPOSSIBLE-8-SHOTS-FRIENDLY
     Write_DS2408_PIO (6, 1);
-    digitalWrite(led2, HIGH);
+    //digitalWrite(led2, HIGH);
     //      Serial.begin (9600);
     //      Serial.println ("Write f^*ng PIO");
 
@@ -150,8 +253,9 @@ void loop() {
       //    delay (1000);
 
       //added return
-      //  return;
+        
     }
+	return;
 
     //======================================================================================================
     // S1 = ON dump CSV and ask how many
@@ -159,6 +263,7 @@ void loop() {
     if ((digitalRead(S1) == LOW) && (switch2 ==  1))
     {
       eepromDumpCSV();
+	  
     }
     //======================================================================================================
 
@@ -311,10 +416,8 @@ void loop() {
 
 
 
-      if (Read_DS2408_PIO(0) == 200)
+      if (Read_DS2408_PIO(0) == 200) //dongleless
       {
-
-
         output_compare = A600;
         byte PictureType = 6;
         eepromUpdate ();
@@ -334,6 +437,15 @@ void loop() {
 
       if (selector < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED ON THE SELECTOR (WE HAVE A DONGLE)
       {
+
+		  if ((selector >= 0) && (selector < 12))
+		  {
+			  ManualExposure();
+			  eepromUpdate();
+			  return;
+		  }
+
+
         //Serial.println ("MANUAL SELECTOR SPEED");
 
         if ((ShutterSpeed[selector]) == AUTO600)
@@ -363,9 +475,7 @@ void loop() {
 #if SIMPLEDEBUG
         Serial.println ("MANUAL SELECTOR SPEED");
 #endif
-        ManualExposure();
-        eepromUpdate();
-        return;
+
       }
 
     }

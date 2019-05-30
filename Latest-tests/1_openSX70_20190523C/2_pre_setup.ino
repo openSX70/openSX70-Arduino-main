@@ -22,6 +22,13 @@
 
 
 //****************************************************************************************************************************
+
+//OPTION FOR VF LEDS
+//
+#define VFled 1
+
+//****************************************************************************************************************************
+
 //OPTION LIGHTMETER ON BOARD?
 // if you define LIGHTMETER 0 then auto options and dongleless DO NOTHING
 
@@ -30,14 +37,16 @@
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
 //OPTION MAGIC NUMBERS FOR TSL235
-int A600 = 205; 
-int A100= 485;
-                                  
-unsigned long counter;
+//int A600 = 205; 
+int A600 = 225; 
+int A100= 495;
+unsigned long counter;                                  
+ unsigned long previousMillis;
+ int ISO;
 
 //****************************************************************************************************************************
 
-//OPTION POWER DOWN   
+//OPTION POWER DOWN 
 //Alpha or Model 2 might different values
 
 const byte PowerDownDelay = 15; //time it takes to be fully closed
@@ -141,10 +150,12 @@ enum positions_t {AUTO600 = -100, AUTO100, POST, POSB};
 */
 
 
-int ShutterConstant = 9;
+int ShutterConstant = 14;
 
 //OPTION
-int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+//int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
+//int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+int ShutterSpeed[] =   { 1, 4,  6,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
@@ -153,7 +164,8 @@ int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600,
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };
 // to change the speed in the slot position just change the number corresponding.
 
-int FastestFlashSpeed = 25;
+int FastestFlashSpeed = 25 + ShutterConstant;
+//FastestFlashSpeed = FastestFlashSpeed + ShutterConstant;
 
 //this speed and SLOWER will trigger flash
 
@@ -262,4 +274,6 @@ int checkButton();
 void startCounterCalibration();
 void ManualExposure();
 void initializeDS2408();
+int frequencyCounter(int ISO);
+int nearest(int x, int myArray[], int elements, bool sorted);
 //****************************************************************************************************************************
