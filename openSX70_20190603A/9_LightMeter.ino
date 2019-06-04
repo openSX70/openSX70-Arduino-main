@@ -131,15 +131,15 @@ int PredictedExposure(int ISO)
 		startCounterCalibration();
 		
 		//PredExp = ISO * (timeMillis / (1 + counter));
-		float ISOpercent; //shutter closing compensation now 30%
-		ISOpercent = ((ISO * 5)/100);
+		int ISOpercent; //shutter closing compensation now 30%
+		ISOpercent = ((ISO * 45) / 100);
 		ISO = ISO + ISOpercent;
 		//
-//		PredExp = ISO / ( ((counter+1) / timeMillis));
+//		PredExp = ISO / ((counter + 1) / timeMillis);
 		PredExp = ISO / (1 + (counter / timeMillis));
+		//		PredExp = (counter / timeMillis);
+		//		PredExp = ISO / ( ((counter) / timeMillis));
 
-//		PredExp = (counter / timeMillis);
-//		PredExp = ISO / ( ((counter) / timeMillis));
 
 		//		PredExp = PredExp * 0,99;
 

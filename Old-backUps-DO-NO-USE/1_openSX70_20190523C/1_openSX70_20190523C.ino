@@ -1,4 +1,8 @@
-  //THIS IS ONLY FOR EXPERIMENTAL REWORKED ALPHA-2 PCBS WITH AD654 AND S2 CONNECTED TO A4, led2 TO A3 (or A5) and counter on input 5 (OLD led 2)
+                                                                                              //1_openSX70_20190523A
+//LED "helper" lights for ISO600. 
+//AUTO low light indicator
+//Dongleless 600 auto
+//THIS IS ONLY FOR EXPERIMENTAL REWORKED ALPHA-2 PCBS WITH AD654 AND S2 CONNECTED TO A4, led2 TO A3 (or A5) and counter on input 5 (OLD led 2)
 //TSL235 LIGHT TO FREQUENCY SENSOR
 // WORK IN PROGRESS FREQUENCY COUNTER 
 // NEEDS NEW DS2408 LIBRARY OTHERWISE DOES *NOT* WORK

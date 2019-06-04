@@ -13,7 +13,7 @@
 
 //OPTION DEBUG INFORMATION ON SERIAL PORT (normal operation set to 0)
 
-#define SIMPLEDEBUG 1  //SHOW DEBUG INFORMATION ON SERIAL MONITOR (9600)
+#define SIMPLEDEBUG 0  //SHOW DEBUG INFORMATION ON SERIAL MONITOR (9600)
 //*************
 
 //****************************************************************************************************************************
@@ -29,10 +29,10 @@
 
 //****************************************************************************************************************************
 
-//OPTION LIGHTMETER ON BOARD?-----------
+//OPTION LIGHTMETER ON BOARD?
 // if you define LIGHTMETER 0 then auto options and dongleless DO NOTHING
 
-#define LIGHTMETER 1      
+#define LIGHTMETER 1
 
 int output_compare ;        // How many pulses before triggering interrupt
                                   //NOW this value is for dongleless auto
@@ -40,13 +40,9 @@ int output_compare ;        // How many pulses before triggering interrupt
 //int A600 = 205; 
 int A600 = 225; 
 int A100= 495;
-                                  
-#if LIGHTMETER
-unsigned long counter;
-unsigned long Cycle;
-//unsigned long initialMillis;
-//unsigned long timeMillis;
-#endif
+unsigned long counter;                                  
+ unsigned long previousMillis;
+ int ISO;
 
 //****************************************************************************************************************************
 
@@ -154,11 +150,26 @@ enum positions_t {AUTO600 = -100, AUTO100, POST, POSB};
 */
 
 
-int ShutterConstant = 9;
+int ShutterConstant = 9 ;
 
 //OPTION
+//int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-int ShutterSpeed[] =   { 1, 3,  5,  6,  10, 15, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+//int ShutterSpeed[] =   { 1, 4,  6,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+//int ShutterSpeed[] = { 1, 4,  6,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+//int ShutterSpeed[] = { 6, 10, 12 , 14,  16, 24, 34, 44, 66, 82, 152, 292, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+//////int ShutterSpeed[] = { 4, 8, 11 , 13,  15, 22, 34, 4, 26, 42, 112, 252, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+//int ShutterSpeed[] = { 4, 8, 11 , 13,  15, 22, 34, 5, 27, 44, 112, 252, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+/////int ShutterSpeed[] = { 15, 19, 22 , 24,  26, 33, 45, 66, 82, 135, 162, 300, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+int ShutterSpeed[] = { 17, 20, 23 , 25,  27, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
+//int ShutterSpeed[] =   { 15, 16,  17,  18,  19, 20, 21, 22, 23, 24, 25, 26, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
@@ -167,8 +178,9 @@ int ShutterSpeed[] =   { 1, 3,  5,  6,  10, 15, 22, 34, 42, 80, 140, 290, AUTO60
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };
 // to change the speed in the slot position just change the number corresponding.
 
-int FastestFlashSpeed = 25;
 
+//flashDelay is the time it takes to fire the flash (even if none is connected) when slow shutterspeeds
+int flashDelay = 39;
 //this speed and SLOWER will trigger flash
 
 int shots = 0;
@@ -276,6 +288,6 @@ int checkButton();
 void startCounterCalibration();
 void ManualExposure();
 void initializeDS2408();
-int frequencyCounter();
+int frequencyCounter(int ISO);
 int nearest(int x, int myArray[], int elements, bool sorted);
 //****************************************************************************************************************************

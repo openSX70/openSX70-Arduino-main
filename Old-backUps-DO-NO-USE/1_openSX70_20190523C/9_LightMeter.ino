@@ -12,6 +12,7 @@ ISR(TIMER1_OVF_vect)                        // Overflow Flag interrupt service r
   Serial.print("Overflow Occured!");
   TIMSK1 &= ~(1 << TOIE1);                 // Disable compare A Match Interrupt (overflow)
   TIMSK1 &= ~(1 << OCIE1A);              // Disable compare B Match Interrupt
+  //counter = 9999;
 }
  
 void startCounter()
@@ -54,7 +55,7 @@ void startCounterCalibration()
   TCNT1 = 0;                                            //mycounter = TCNT1 would be the total count
   bitSet(TCCR1B ,CS12);                        // Counter Clock source is external pin
   bitSet(TCCR1B ,CS11);                        // Clock on rising edge
-    sei();                                                      // Restart interrupts
+  sei();                                                      // Restart interrupts
 }
 
 
@@ -63,6 +64,9 @@ void AutoExposure()
 {
   #if LIGHTMETER
   //////AUTOEXPOSURE DEBUG
+		//lets turn off all the LED!!!!
+	digitalWrite(led2, LOW);
+	digitalWrite(led1, LOW);
 
                   shutterCLOSE (); 
                 
@@ -94,9 +98,9 @@ void finish()
                   return;
                   } else if (switch1 == 0)
                   {
-                    delay (200);                             //AGAIN is this delay necessary?
+                    delay (100);                             //AGAIN is this delay necessary?
                     mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-                    delay (200);                  //WAS 60           //AGAIN is this delay necessary?
+                    delay (300);                  //WAS 60           //AGAIN is this delay necessary?
                     shutterOPEN();
                     shots = 0;  
                     return;   
@@ -104,25 +108,60 @@ void finish()
 
 }
 
-int frequencyCounter() 
+
+int PredictedExposure(int ISO)
 {
-  
-//  unsigned long previousMillis = millis();
-  startCounterCalibration();
-  delay (200);
-  unsigned long counter = TCNT1;
-  
-//    unsigned long laterMillis = millis();
-//    unsigned resultMillis = previousMillis - laterMillis;
-unsigned long frequency = (1+(counter/200));
-//Serial.print ("Frequency: ");
-//Serial.println (frequency);
-//Serial.print ("Magic Number AUTO600: ");
-//Serial.println (A600);
-unsigned int PredictedExposure = (A600/frequency);
-  return PredictedExposure;
-//return (AUTO600 /(counter/150));
-}   
+	static int PrevExp;
+	//ISO is the Magic Number 
+	unsigned long interval = 100;
+	//unsigned long counter; defined elsewhere 
+	float PredExp;
+
+	//            unsigned long currentMillis = millis();
+
+
+	unsigned long timeMillis;
+
+	if ((millis() - previousMillis) >= interval)
+	{
+		counter = TCNT1;
+//		TCNT1 = 0;
+		timeMillis = millis() - previousMillis;
+		previousMillis = millis();
+		startCounterCalibration();
+		
+		//PredExp = ISO * (timeMillis / (1 + counter));
+		int ISOpercent; //shutter closing compensation now 30%
+		ISOpercent = ((ISO * 45) / 100);
+		ISO = ISO + ISOpercent;
+		//
+//		PredExp = ISO / ((counter + 1) / timeMillis);
+		PredExp = ISO / (1 + (counter / timeMillis));
+		//		PredExp = (counter / timeMillis);
+		//		PredExp = ISO / ( ((counter) / timeMillis));
+
+
+		//		PredExp = PredExp * 0,99;
+
+ /*
+		Serial.print(ISO);
+		Serial.print(" / ");
+		Serial.print(timeMillis);
+		Serial.print(" / ");
+		Serial.print(counter);
+		Serial.print(" / ");
+		Serial.println(PredExp);
+//		Serial.print(" / ");
++ */
+		PrevExp = PredExp;
+		return PrevExp;
+	}
+	else 
+		return PrevExp;
+
+
+}
+
 
 
 int nearest(int x, int myArray[], int elements, bool sorted)
