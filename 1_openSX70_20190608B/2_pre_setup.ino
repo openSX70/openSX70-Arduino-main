@@ -191,6 +191,9 @@ int shots = 0;
 int debounce = 20;          // ms debounce period to prevent flickering when pressing or releasing the button
 int DCgap = 250;            // max ms between clicks for a double click event
 int holdTime = 350;        // ms hold period: how long to wait for press+hold event
+//int longHoldEventPast = 5000;
+//int longHoldTime = 5000; // ms long hold period: how long to wait for press+hold event
+
        
 
          // Lets define what is considered a longPress and a shortPress
@@ -239,8 +242,9 @@ int eeAddress;
         // PictureType = +200 ---> TIMER DELAY
     
     byte StructSpeed;           //shutter speed
-    int StructLightVlow ;      //photodiode read LOW
-    int StructLightVhigh ;     //photodiode read HIGH
+	int Counter;
+	//int StructLightVlow ;      //photodiode read LOW
+    //int StructLightVhigh ;     //photodiode read HIGH
     };
 
 

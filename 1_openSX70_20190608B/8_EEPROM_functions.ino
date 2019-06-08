@@ -15,7 +15,8 @@ void eepromUpdate ()
                   byte Shutter = (ShutterSpeed[selector]);
 //                  Picture MyPicture ={ ActualPicture, CurrentPicture, PictureType, Shutter, lux};
 
-                  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, Shutter, counter, sensorValueHIGH };
+//                  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, Shutter, counter, sensorValueHIGH };
+				  Picture MyPicture = { ActualPicture, CurrentPicturePack, PictureType, Shutter, counter };
 
 
                       Serial.println ("*****************************");
@@ -76,7 +77,7 @@ byte PictureType = 0;
 //Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed,  lux};
 //Picture MyPicture = {ActualPicture,CurrentPicturePack, PictureType, eepromSpeed };
 
-  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, eepromSpeed, Counter, sensorValueHIGH };
+  Picture MyPicture ={ ActualPicture, CurrentPicturePack, PictureType, eepromSpeed, Counter };
 
 EEPROM.get (eeAddress,MyPicture);
 
@@ -143,10 +144,10 @@ int thisRecordAddress = ReadAddress + (i * sizeof(MyPicture));
   Serial.print( " ShutterSpeed: " );
   Serial.println( MyPicture.StructSpeed );
 
-  Serial.print( " LOW: " );
-  Serial.println( MyPicture.StructLightVlow );
-  Serial.print( " HIGH: " );
-  Serial.println( MyPicture.StructLightVhigh );
+  Serial.print( " COUNTER: " );
+  Serial.println( MyPicture.Counter );
+//  Serial.print( " HIGH: " );
+//  Serial.println( MyPicture.StructLightVhigh );
 
   
 }
@@ -167,7 +168,9 @@ void eepromDumpCSV ()
 
 //  Picture MyPicture = {ActualPicture,CurrentPicture, PictureType, eepromSpeed, lux};
 
-  Picture MyPicture = {ActualPicture,CurrentPicturePack, PictureType, eepromSpeed, counter, sensorValueHIGH };
+//  Picture MyPicture = {ActualPicture,CurrentPicturePack, PictureType, eepromSpeed, counter, sensorValueHIGH };
+
+	Picture MyPicture = { ActualPicture,CurrentPicturePack, PictureType, eepromSpeed, counter };
 
       EEPROM.get(10,eeAddress);
 
