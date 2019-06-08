@@ -22,7 +22,7 @@ void ManualExposure()
     ;
   Ydelay();
 
-  startCounterCalibration();
+//  startCounterCalibration();
 
 #if SIMPLEDEBUG
   Serial.print ("--------------------------------------------------CLICK:  ");
@@ -30,7 +30,7 @@ void ManualExposure()
 #endif
 
     int ShutterSpeedDelay = ((ShutterSpeed[selector])+ShutterConstant) ;
-	if (selector >= 7)
+	if (selector >= 6)
 	{
 		ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
 	}
@@ -56,7 +56,7 @@ void ManualExposure()
 	while (millis() <= (initialMillis + ShutterSpeedDelay))
 		;
 	
-if (selector >= 7) // changed the flash selection
+if (selector >= 6) // changed the flash selection
      {
       FastFlash ();
 #if SIMPLEDEBUG
@@ -65,9 +65,9 @@ if (selector >= 7) // changed the flash selection
      }
 //    shutterCLOSE ();                                         //close the shutter
 //   delay (10);
-    cli();
-    counter = TCNT1;
-    sei();
+//    cli();
+//    counter = TCNT1;
+//    sei();
 	
 	finish();
 /*

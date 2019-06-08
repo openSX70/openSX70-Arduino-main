@@ -40,7 +40,7 @@ int output_compare ;        // How many pulses before triggering interrupt
 //int A600 = 205; 
 int A600 = 225; 
 int A100= 495;
-unsigned long counter;                                  
+int counter;                                  
  unsigned long previousMillis;
  int ISO;
 
@@ -167,7 +167,7 @@ int ShutterConstant = 9 ;
 
 /////int ShutterSpeed[] = { 15, 19, 22 , 24,  26, 33, 45, 66, 82, 135, 162, 300, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
-int ShutterSpeed[] = { 17, 20, 23 , 25,  27, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+int ShutterSpeed[] = { 17, 20, 23 , 25,  30, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
 //int ShutterSpeed[] =   { 15, 16,  17,  18,  19, 20, 21, 22, 23, 24, 25, 26, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
