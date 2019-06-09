@@ -35,18 +35,18 @@
 #define LIGHTMETER 1
 
 int output_compare ;        // How many pulses before triggering interrupt
-//NOW this value is for dongleless auto
+                                  //NOW this value is for dongleless auto
 //OPTION MAGIC NUMBERS FOR TSL235
-//int A600 = 205;
-int A600 = 225;
-int A100 = 495;
-int counter;
-unsigned long previousMillis;
-int ISO;
+//int A600 = 205; 
+int A600 = 225; 
+int A100= 495;
+int counter;                                  
+ unsigned long previousMillis;
+ int ISO;
 
 //****************************************************************************************************************************
 
-//OPTION POWER DOWN
+//OPTION POWER DOWN 
 //Alpha or Model 2 might different values
 
 const byte PowerDownDelay = 15; //time it takes to be fully closed
@@ -56,7 +56,7 @@ const byte PowerDown = 225; //max 255 = full power/POWERUP mode
 
 //****************************************************************************************************************************
 
-//OPTION LED: Alpha Boards have two leds visible in a sonar-type VF.
+//OPTION LED: Alpha Boards have two leds visible in a sonar-type VF. 
 //Might be connected to different arduino ports on reworked PCBs normally A3 or A5
 
 const int led1 = 13;
@@ -73,7 +73,7 @@ const int led2 = A3;
 //OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
 
 const int S2 = 2;  //this for Flash insertion detection
-//this CLOSED when there is a FLASHBAR inserted
+                      //this CLOSED when there is a FLASHBAR inserted
 
 //const int S2 = A4;  //this for Flash insertion detection for reworked board
 
@@ -102,14 +102,14 @@ const byte n = 224;  // for example, 71.111 kHz
 //SX70 to Arduino ports connections.
 
 const int S1 = 12;     //Red button SHUTTER RELEASE
-//S1: LOW = CLOSED
+                      //S1: LOW = CLOSED
 const int S3 = 8;     //S3: LOW = CLOSED
 const int S5 = 7;     //S5: LOW = CLOSED
 const int S8 = A1;     //S8: HIGH = CLOSED
 const int S9 = A0;     //S9: HIGH = CLOSED
 
 const int Solenoid1 = 3;           // 6V High Power
-const int Solenoid2 = 11;          // 6V High Power
+const int Solenoid2 = 11;          // 6V High Power    
 
 const int FFA = 4;
 
@@ -119,16 +119,16 @@ const int FFA = 4;
 //const int DS_pc_flash = 7;
 
 
-// MOTOR JUST TURNS ON OR OFF THE MOTOR
-// DEPENDS ON S3 AND S5 STATES PRIMARILY
+                // MOTOR JUST TURNS ON OR OFF THE MOTOR
+                // DEPENDS ON S3 AND S5 STATES PRIMARILY
 
 const int Motor = A2;
 
 /* THESE ARE THE INPUTS USED TO "READ" THE SHUTTER SPEED SELECTOR
-  const int switchPin1 = A0; // the number of the switch’s pin
-  const int switchPin2 = A1; // the number of the switch’s pin
-  const int switchPin3 = A2; // the number of the switch’s pin
-  const int switchPin4 = A3; // the number of the switch’s pin
+const int switchPin1 = A0; // the number of the switch’s pin
+const int switchPin2 = A1; // the number of the switch’s pin
+const int switchPin3 = A2; // the number of the switch’s pin
+const int switchPin4 = A3; // the number of the switch’s pin
 */
 
 unsigned long DoubleExposureTimer = 0;
@@ -139,14 +139,14 @@ bool takePicture = false;
 
 //OPTION REGARDING SELECTOR WHEEL
 
-enum positions_t {AUTO600 = -100, AUTO100, POST, POSB};
+enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; 
 /*
-  TO CLARIFY:
+ TO CLARIFY:
 
-     AUTO600 = - 100
-    AUTO100 = -99
-    POST = -98
-    POSB = -97
+ *   AUTO600 = - 100
+ *  AUTO100 = -99
+ *  POST = -98
+ *  POSB = -97
 */
 
 
@@ -194,11 +194,11 @@ int holdTime = 350;        // ms hold period: how long to wait for press+hold ev
 //int longHoldEventPast = 5000;
 //int longHoldTime = 5000; // ms long hold period: how long to wait for press+hold event
 
+       
 
-
-// Lets define what is considered a longPress and a shortPress
-// shortPress is when you want to take a "regular" picture
-// it needs to be timed for debounce purposes, that is, you need a "solid" press to take a picture
+         // Lets define what is considered a longPress and a shortPress
+         // shortPress is when you want to take a "regular" picture
+         // it needs to be timed for debounce purposes, that is, you need a "solid" press to take a picture
 
 //Some people press the red button until it ejects, this is NOT happening with openSX70 as it is right now.
 //I might try to "fix" this in the future, maybe by making the self timer activation by a double click. It is not a priority right now.
@@ -225,37 +225,37 @@ int eeAddress;
 // Picture sequence
 // Type (manual, a100,a600, flash etc...)
 // ShutterSpeed actual for auto reference/record
+ 
+  struct Picture  
+    {
+    int StructPicture;         //total count of pictures since init
+    byte StructPackPicture;          //pic count within this pack
+    byte StructType;           //picture type
 
-struct Picture
-{
-  int StructPicture;         //total count of pictures since init
-  byte StructPackPicture;          //pic count within this pack
-  byte StructType;           //picture type
-
-  // PictureType = 0 ---> MANUAL
-  // PictureType = 1 ---> A100
-  // PictureType = 2 ---> FLASH DONGLELESS
-  // PictureType = 4 ---> FLASH F8 DONGLE
-  // PictureType = 6 ---> A600
-  // PictureType = +10 ---> MIRROR DELAY
-  // PictureType = +100 ---> MULTIPLE EXPOSURE
-  // PictureType = +200 ---> TIMER DELAY
-
-  byte StructSpeed;           //shutter speed
-  int Counter;
-  //int StructLightVlow ;      //photodiode read LOW
-  //int StructLightVhigh ;     //photodiode read HIGH
-};
+        // PictureType = 0 ---> MANUAL
+        // PictureType = 1 ---> A100
+        // PictureType = 2 ---> FLASH DONGLELESS
+        // PictureType = 4 ---> FLASH F8 DONGLE 
+        // PictureType = 6 ---> A600
+        // PictureType = +10 ---> MIRROR DELAY
+        // PictureType = +100 ---> MULTIPLE EXPOSURE
+        // PictureType = +200 ---> TIMER DELAY
+    
+    byte StructSpeed;           //shutter speed
+	int Counter;
+	//int StructLightVlow ;      //photodiode read LOW
+    //int StructLightVhigh ;     //photodiode read HIGH
+    };
 
 
-byte Pack = 1;
-
-int ActualPicture;
-byte CurrentPicturePack;
-byte PictureType;
-byte eepromSpeed;
-int Counter;    //Photodiode stuff
-int sensorValueHIGH;   //Photodiode stuff
+      byte Pack = 1;
+  
+      int ActualPicture;
+      byte CurrentPicturePack;
+      byte PictureType;
+      byte eepromSpeed;
+      int Counter;    //Photodiode stuff
+      int sensorValueHIGH;   //Photodiode stuff
 
 //***************************************************************************************************************************************
 //FUNCTION PROTOTYPES
@@ -280,7 +280,7 @@ void ShutterB();
 void ShutterT();
 void Ydelay ();
 //bool beep (bool state,int Pin);
-void simpleBlink (int times);
+void simpleBlink (int times);  
 void eepromUpdate ();
 void DongleFlashF8();
 void DongleFlashNormal ();

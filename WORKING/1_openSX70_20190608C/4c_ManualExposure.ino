@@ -49,9 +49,7 @@ void ManualExposure()
 	Serial.println(ShutterSpeedDelay);
 
 #endif
-//	cli();
-//////
-  sei();
+	cli();
 	shutterOPEN();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
 	unsigned long initialMillis = millis();
 	//delay (ShutterSpeedDelay);   

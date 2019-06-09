@@ -29,94 +29,94 @@ void loop() {
 
   if (switch2 == 0)
   {
-  
-	  if (((ShutterSpeed[selector]) == AUTO600) || ((ShutterSpeed[selector]) == AUTO100) || (Read_DS2408_PIO(0) == 200))
-	  {
-		  if ((ShutterSpeed[selector]) == AUTO100)
-			  ISO = A100;
-		  else
-			  ISO = A600;
 
-		  exposure = PredictedExposure(ISO);
+    if (((ShutterSpeed[selector]) == AUTO600) || ((ShutterSpeed[selector]) == AUTO100) || (Read_DS2408_PIO(0) == 200))
+    {
+      if ((ShutterSpeed[selector]) == AUTO100)
+        ISO = A100;
+      else
+        ISO = A600;
+
+      exposure = PredictedExposure(ISO);
 
 #if SIMPLEDEBUG
-		  Serial.print(" Predicted Exposure: ");
-		  Serial.println(exposure);
+      Serial.print(" Predicted Exposure: ");
+      Serial.println(exposure);
 
-		  Serial.print("ShutterSpeed[selector]: ");
-		  Serial.println((ShutterSpeed[selector]));
+      Serial.print("ShutterSpeed[selector]: ");
+      Serial.println((ShutterSpeed[selector]));
 
 
-		  digitalWrite(led1, LOW);
-		  Serial.println("AUTO MODE ON");
+      digitalWrite(led1, LOW);
+      Serial.println("AUTO MODE ON");
 #endif
-		  if (exposure >= ShutterSpeed[7])
-		  {
-			  digitalWrite(led2, HIGH);
-			  //		Serial.print(ISO);
-			  //		Serial.println("  Low light!!!");
-		  }
-		  else
-		  {
-			  //		Serial.println("  else light!!!");
+      if (exposure >= ShutterSpeed[7])
+      {
+        digitalWrite(led2, HIGH);
+        //		Serial.print(ISO);
+        //		Serial.println("  Low light!!!");
+      }
+      else
+      {
+        //		Serial.println("  else light!!!");
 
-			  digitalWrite(led2, LOW);
-			  digitalWrite(led1, LOW);
-		  }
-		  //digitalWrite(led2, LOW);
-		  //digitalWrite(led1, LOW);
+        digitalWrite(led2, LOW);
+        digitalWrite(led1, LOW);
+      }
+      //digitalWrite(led2, LOW);
+      //digitalWrite(led1, LOW);
 
-	  }
-  } else  if (switch2 == 1) 
-	  
-  {  //LM "helper" function for A600, dunno how to choose the ISO in this case (Manual helper)
-	  //digitalWrite(led1, LOW);
-	  //digitalWrite(led2, LOW);
+    }
+  } else  if (switch2 == 1)
 
-	  if ((selector >= 0) && (selector < 12))
-	  {
-		  exposure = PredictedExposure(A600);	//  as mentioned asumed A600
-	  {
+  { //LM "helper" function for A600, dunno how to choose the ISO in this case (Manual helper)
+    //digitalWrite(led1, LOW);
+    //digitalWrite(led2, LOW);
 
-		  //int nearest(int x, int myArray[], int elements, bool sorted)
-		  int slot = nearest(exposure, ShutterSpeed, 11, 1);
-	  /*
-		Serial.print ("Slot/selector/Pred Exp: ");
-		Serial.print (slot);
-		Serial.print (" / ");
-		Serial.print (selector);
-		Serial.print(" / ");
-		Serial.println(exposure);
-	  	*/ 
+    if ((selector >= 0) && (selector < 12))
+    {
+      exposure = PredictedExposure(A600);	//  as mentioned asumed A600
+      {
+
+        //int nearest(int x, int myArray[], int elements, bool sorted)
+        int slot = nearest(exposure, ShutterSpeed, 11, 1);
+        /*
+          Serial.print ("Slot/selector/Pred Exp: ");
+          Serial.print (slot);
+          Serial.print (" / ");
+          Serial.print (selector);
+          Serial.print(" / ");
+          Serial.println(exposure);
+        */
 
 
-	  if (selector < slot)
-		  {
-			  digitalWrite(led2, HIGH);
-			  digitalWrite(led1, LOW);
-		  }
-		  else if (selector > slot)
-		  {
-			  digitalWrite(led1, HIGH);
-			  digitalWrite(led2, LOW);
-		  }
-		  else if (selector == slot)
-		  {
-			
-			  digitalWrite(led1, LOW);
-			  digitalWrite(led2, LOW);
-		  }
-		  else
-	  {
-		  digitalWrite(led1, LOW);
-		  digitalWrite(led2, LOW);
-	  }
+        if (selector < slot)
+        {
+          digitalWrite(led2, HIGH);
+          digitalWrite(led1, LOW);
+        }
+        else if (selector > slot)
+        {
+          digitalWrite(led1, HIGH);
+          digitalWrite(led2, LOW);
+        }
+        else if (selector == slot)
+        {
 
-		  }
-	  }
-  } 
-  
-  
+          digitalWrite(led1, LOW);
+          digitalWrite(led2, LOW);
+        }
+        else
+        {
+          digitalWrite(led1, LOW);
+          digitalWrite(led2, LOW);
+        }
+
+      }
+    }
+  }
+
+
 #endif
 #endif
 
@@ -212,7 +212,7 @@ void loop() {
 #if SIMPLEDEBUG
     Serial.println("STATE1: EJECT DARK SLIDE");
 #endif
-	return;
+    return;
   }
   //  CurrentPicture = EEPROM.read(4) ;
 
@@ -253,9 +253,9 @@ void loop() {
       //    delay (1000);
 
       //added return
-        
+
     }
-	return;
+    return;
 
     //======================================================================================================
     // S1 = ON dump CSV and ask how many
@@ -263,7 +263,7 @@ void loop() {
     if ((digitalRead(S1) == LOW) && (switch2 ==  1))
     {
       eepromDumpCSV();
-	  
+
     }
     //======================================================================================================
 
@@ -276,227 +276,227 @@ void loop() {
   //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
   if (digitalRead(S8) == LOW && digitalRead(S9) == LOW) //S8 and S9 are OPEN
   {
-	  CurrentPicturePack = EEPROM.read(4);
+    CurrentPicturePack = EEPROM.read(4);
 #if SIMPLEDEBUG
 
 #endif
 
 
-	  // ///////////////////////////////////PICTURE TAKING OPERATION//////////////////////////////////////////////////
-	  //    FOUR CASES:
-	  //   *   CASE 1 NORMAL OPERATION: FULL CYCLE
-	  //   *  SELECTOR = NORMAL (LOW)
-	  //   *  SHOTS = 0
-	  //   *  S1 = LOW (RED BUTTON PRESSED)
-	  //   *
-	  //   *  CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
-	  //   *  SELECTOR = DOUBLE (HIGH)
-	  //   *  SHOTS = 0
-	  //   *  S1 = LOW (RED BUTTON PRESSED)
-	  //   *
-	  //   *  CASE 3 DOUBLE EXPOSURE ULTERIOR SHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
-	  //   *  SELECTOR = DOUBLE (HIGH)
-	  //   *  SHOTS >= 1
-	  //   *  S1 = LOW (RED BUTTON PRESSED)
-	  //   *  CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
-	  //   *
-	  //   *  SELECTOR = NORMAL (LOW)
-	  //   *  SHOTS >= 1
+    // ///////////////////////////////////PICTURE TAKING OPERATION//////////////////////////////////////////////////
+    //    FOUR CASES:
+    //   *   CASE 1 NORMAL OPERATION: FULL CYCLE
+    //   *  SELECTOR = NORMAL (LOW)
+    //   *  SHOTS = 0
+    //   *  S1 = LOW (RED BUTTON PRESSED)
+    //   *
+    //   *  CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
+    //   *  SELECTOR = DOUBLE (HIGH)
+    //   *  SHOTS = 0
+    //   *  S1 = LOW (RED BUTTON PRESSED)
+    //   *
+    //   *  CASE 3 DOUBLE EXPOSURE ULTERIOR SHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
+    //   *  SELECTOR = DOUBLE (HIGH)
+    //   *  SHOTS >= 1
+    //   *  S1 = LOW (RED BUTTON PRESSED)
+    //   *  CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
+    //   *
+    //   *  SELECTOR = NORMAL (LOW)
+    //   *  SHOTS >= 1
 
-	  //              takePicture= false;
-	  //              byte ActualSlot = (Read_DS2408_PIO(0));
+    //              takePicture= false;
+    //              byte ActualSlot = (Read_DS2408_PIO(0));
 
 
-	  //              Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
+    //              Serial.println (ShutterSpeed[Read_DS2408_PIO(0)]);
 
-	  //=================================================================================================================================================================
+    //=================================================================================================================================================================
 
-	  if ((digitalRead(S1) == LOW) && ((ShutterSpeed[selector] == (POSB)))) //////////////POSITION B
+    if ((digitalRead(S1) == LOW) && ((ShutterSpeed[selector] == (POSB)))) //////////////POSITION B
 
-	  {
+    {
 
-		  PictureType = 7;
-		  eepromUpdate();
-		  ShutterB();
+      PictureType = 7;
+      eepromUpdate();
+      ShutterB();
 
-	  }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
-	  //=================================================================================================================================================================
-	  if ((digitalRead(S1) == LOW) && ((ShutterSpeed[selector] == (POST)))) //////////////POSITION T
+    }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POSB))))
+    //=================================================================================================================================================================
+    if ((digitalRead(S1) == LOW) && ((ShutterSpeed[selector] == (POST)))) //////////////POSITION T
 
-	  {
+    {
 #if SIMPLEDEBUG
-		  Serial.println("POS T");
+      Serial.println("POS T");
 #endif
-		  PictureType = 8;
-		  eepromUpdate();
-		  ShutterT();
+      PictureType = 8;
+      eepromUpdate();
+      ShutterT();
 
-	  }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POST))))
-
-
-	  //==================================================================================================================================================================
+    }; // END of if ((digitalRead(S1) == LOW)  && ((ShutterSpeed[ActualSlot] == (POST))))
 
 
-	  takePicture = false;
-	  int RedButton = checkButton();
+    //==================================================================================================================================================================
 
-	  PictureType = 0;
 
-	  if ((RedButton == 1) or (RedButton == 3))  //this is either one press and release or one long sustained press with no release (to "emulate" the original camera)
-	  {
-		  takePicture = true;
+    takePicture = false;
+    int RedButton = checkButton();
+
+    PictureType = 0;
+
+    if ((RedButton == 1) or (RedButton == 3))  //this is either one press and release or one long sustained press with no release (to "emulate" the original camera)
+    {
+      takePicture = true;
 #if SIMPLEDEBUG
-		  Serial.println("takePicture = TRUE");
+      Serial.println("takePicture = TRUE");
 #endif
-	  } //else takePicture = false;
+    } //else takePicture = false;
 
 
-	  if (RedButton == 2)                         //this the 2 short press that enable the self-timer delay. Can be disabled of course
-	  {
-		  BlinkTimerDelay();  //Dongle LED blinks
-		  takePicture = true;
+    if (RedButton == 2)                         //this the 2 short press that enable the self-timer delay. Can be disabled of course
+    {
+      BlinkTimerDelay();  //Dongle LED blinks
+      takePicture = true;
 #if SIMPLEDEBUG
-		  Serial.println("takePicture = TRUE seft timer");
-#endif
-
-	  }
-
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-	  // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
-
-	  //            Serial.println (Read_DS2408_PIO(0));
-
-	  //=========================================================================================================================================================
-	  // CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
-	  //=========================================================================================================================================================
-
-	  if (takePicture == true && switch1 == 0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
-	  {
-#if SIMPLEDEBUG
-		  Serial.println("last pict");
+      Serial.println("takePicture = TRUE seft timer");
 #endif
 
-		  eepromUpdate();
-		  shots = 0;
-		  Write_DS2408_PIO(6, 0);
-		  mirrorDOWN();
-		  delay(50);                             //AGAIN is this delay necessary? 100-->50
-		  shutterOPEN();
-		  return;
+    }
 
-	  }// end of if (takePicture == true && Read_DS2408_PIO(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
-	  //=========================================================================================================================================================
-	  if (takePicture == true)
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
+    // END STATE 3: NORMAL OPERATION CASE BOTH S8 AND S9 ARE OPEN*******************************************************************************************************************
 
-	  {
+    //            Serial.println (Read_DS2408_PIO(0));
+
+    //=========================================================================================================================================================
+    // CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
+    //=========================================================================================================================================================
+
+    if (takePicture == true && switch1 == 0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
+    {
 #if SIMPLEDEBUG
-		  Serial.print("                                    Selector: ");
-		  Serial.println(selector);
+      Serial.println("last pict");
 #endif
 
-		  if (Read_DS2408_PIO(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
-		  {
+      eepromUpdate();
+      shots = 0;
+      Write_DS2408_PIO(6, 0);
+      mirrorDOWN();
+      delay(50);                             //AGAIN is this delay necessary? 100-->50
+      shutterOPEN();
+      return;
+
+    }// end of if (takePicture == true && Read_DS2408_PIO(1) ==  0 && shots >= 1)  //Was in DOUBLE EXPOSURE MODE but NOW is back to NORMAL
+    //=========================================================================================================================================================
+    if (takePicture == true)
+
+    {
 #if SIMPLEDEBUG
-			  Serial.println("FLASHBAR");
-			  Serial.print(Read_DS2408_PIO(0));
-			  Serial.println(":  FLASH");
+      Serial.print("                                    Selector: ");
+      Serial.println(selector);
 #endif
-			  FlashBAR();
-			  return;
-		  }
 
-		  //      if (selector == 200)  //DONGLELESS!!!! THIS CASE WILL BE AUTO PROBABLY AT 600ASA
-
-
-
-		  if (Read_DS2408_PIO(0) == 200) //dongleless
-		  {
-			  output_compare = A600;
-			  byte PictureType = 6;
-			  eepromUpdate();
+      if (Read_DS2408_PIO(0) == 100)  //THIS CASE ITS A FLASH PICTURE (FLASH INSERTED IN SX70, NO DONGLE)
+      {
 #if SIMPLEDEBUG
-			  Serial.println("DONGLELESS AUTO600");
+        Serial.println("FLASHBAR");
+        Serial.print(Read_DS2408_PIO(0));
+        Serial.println(":  FLASH");
 #endif
-			  shots = 0;
+        FlashBAR();
+        return;
+      }
+
+      //      if (selector == 200)  //DONGLELESS!!!! THIS CASE WILL BE AUTO PROBABLY AT 600ASA
+
+
+
+      if (Read_DS2408_PIO(0) == 200) //dongleless
+      {
+        output_compare = A600;
+        byte PictureType = 6;
+        eepromUpdate();
+#if SIMPLEDEBUG
+        Serial.println("DONGLELESS AUTO600");
+#endif
+        shots = 0;
 #if LIGHTMETER
-			  AutoExposure();
+        AutoExposure();
 #endif
-			  return;
+        return;
 
 
-			  //			  return;
+        //			  return;
 
 #if SIMPLEDEBUG
-			  Serial.println("200");
-			  Serial.println("DONGLELESS AUTO");
+        Serial.println("200");
+        Serial.println("DONGLELESS AUTO");
 #endif
 
-		  }
+      }
 
 
-		  if (selector < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED ON THE SELECTOR (WE HAVE A DONGLE)
-		  {
+      if (selector < 100)  //THIS CASE WE HAVE A PROPER SHUTTER SPEED ON THE SELECTOR (WE HAVE A DONGLE)
+      {
 
-			  if ((selector >= 0) && (selector < 12))
-			  {
-				  ManualExposure();
-				  eepromUpdate();
-				  return;
-			  }
+        if ((selector >= 0) && (selector < 12))
+        {
+          ManualExposure();
+          eepromUpdate();
+          return;
+        }
 
-		  }
-		  //Serial.println ("MANUAL SELECTOR SPEED");
+      }
+      //Serial.println ("MANUAL SELECTOR SPEED");
 
-		  if ((ShutterSpeed[selector]) == AUTO600)
-		  {
-			  output_compare = A600;
-			  byte PictureType = 6;
-			  eepromUpdate();
+      if ((ShutterSpeed[selector]) == AUTO600)
+      {
+        output_compare = A600;
+        byte PictureType = 6;
+        eepromUpdate();
 #if SIMPLEDEBUG
-			  Serial.println("SELECTOR AUTO600");
-#endif
-#if LIGHTMETER
-			  AutoExposure();
-#endif
-			  return;
-		  }
-		  else if ((ShutterSpeed[selector]) == AUTO100)
-		  {
-			  output_compare = A100;
-			  byte PictureType = 1;
-			  eepromUpdate();
-#if SIMPLEDEBUG
-			  Serial.println("SELECTOR AUTO100");
+        Serial.println("SELECTOR AUTO600");
 #endif
 #if LIGHTMETER
-			  AutoExposure();
+        AutoExposure();
 #endif
-			  //		  return;
-//		  }
+        return;
+      }
+      else if ((ShutterSpeed[selector]) == AUTO100)
+      {
+        output_compare = A100;
+        byte PictureType = 1;
+        eepromUpdate();
+#if SIMPLEDEBUG
+        Serial.println("SELECTOR AUTO100");
+#endif
+#if LIGHTMETER
+        AutoExposure();
+#endif
+        //		  return;
+        //		  }
 
-//	  }
+        //	  }
 
-	  //                            Serial.print ("                           Read_DS2408_PIO NOW selector = ");
-	  //                            Serial.println (selector);
+        //                            Serial.print ("                           Read_DS2408_PIO NOW selector = ");
+        //                            Serial.println (selector);
 
-		  }
+      }
 
 
 #if SIMPLEDEBUG
-		  Serial.println("MANUAL SELECTOR SPEED");
+      Serial.println("MANUAL SELECTOR SPEED");
 #endif
 
-	  }
+    }
 
-	  }
-  
+  }
+
 
 } //END OF loop
 

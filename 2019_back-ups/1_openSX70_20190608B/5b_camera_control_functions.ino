@@ -81,18 +81,11 @@ int checkButton() {
 	return event;
 }
 
-int cancelButton() {
-if ((digitalRead(S1)) == LOW){
-volatile bool TakePicture = false;
-return;
-}
-}
 
-/*
 int cancelButton() {
 	if ((checkButton()) > 0)
 	{
 		volatile bool TakePicture = false;
 		return;
 	}
-}*/
+}
