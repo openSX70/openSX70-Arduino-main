@@ -17,9 +17,9 @@
 //*************
 
 //****************************************************************************************************************************
-#define LEDCOUNTER 1
+#define LEDCOUNTER 0
 // #define LEDCOUNTER 0    // easy way to disable the initial remaining pictures counter
-
+//LEDCOUNTER 0 for auto, indicates dongleless auto mode 1= 100 2=600
 
 //****************************************************************************************************************************
 
@@ -43,6 +43,9 @@ int A100 = 495;
 int counter;
 unsigned long previousMillis;
 int ISO;
+  //ISO for dongleless is going to be stored in EEPROM position 20.
+
+  byte cISO;
 
 //****************************************************************************************************************************
 
@@ -255,7 +258,7 @@ byte CurrentPicturePack;
 byte PictureType;
 byte eepromSpeed;
 int Counter;    //Photodiode stuff
-int sensorValueHIGH;   //Photodiode stuff
+//int sensorValueHIGH;   //Photodiode stuff
 
 //***************************************************************************************************************************************
 //FUNCTION PROTOTYPES

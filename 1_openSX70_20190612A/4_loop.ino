@@ -5,11 +5,19 @@ void loop() {
   if (device_count != 0 && old_device_count == 0) {
     //OPTION this is only to blink the LED on the dongle if inserted late. Only the first time.
     initializeDS2408(); //Pitsie fix for non-blinking LED on dongle
-    Write_DS2408_PIO (6, 1);
+/*    Write_DS2408_PIO (6, 1);
     delay (200);
     Write_DS2408_PIO (6, 0);
+	*/
+	simpleBlink(1);
+#if LIGHTMETER
+	byte cISO = EEPROM.read(20);
+	if (cISO == 60)
+		simpleBlink(1);
+	else
+		;
   }
-
+#endif
   if (device_count != 0) {
     // READ DS2408
 
@@ -17,6 +25,7 @@ void loop() {
     switch1 = Read_DS2408_PIO(1);
     switch2 = Read_DS2408_PIO(2);
 
+//	Serial.println(ShutterSpeed[selector]);
 
   }
 
@@ -26,18 +35,110 @@ void loop() {
 #if LIGHTMETER
 
 #if VFled
+ byte cISO = EEPROM.read(20);
+
+ //THIS IS **JUST** FOR dongleless auto setting
+
+  if  ((switch2 == 1) && (switch1 == 1) && ((ShutterSpeed[selector]) == AUTO600))
+//	  cISO = EEPROM.read(20);
+  {
+	  ISO = A600;
+
+	  if (cISO != 60)
+	  {
+		  EEPROM.update(20, 60);
+		  //				  Serial.print("cISO changed to 100");
+
+		  simpleBlink(2);
+	  }
+  }
+  if ((switch2 == 1) && (switch1 == 1) && ((ShutterSpeed[selector]) == AUTO100))
+//	  cISO = EEPROM.read(20);
+  {
+	  ISO = A100;
+
+	  if (cISO != 10)
+	  {
+		  EEPROM.update(20, 10);
+		  //				  Serial.print("cISO changed to 100");
+
+		  simpleBlink(1);
+	  }
+  }
+
+
 
   if (switch2 == 0)
   {
 
-    if (((ShutterSpeed[selector]) == AUTO600) || ((ShutterSpeed[selector]) == AUTO100) || (Read_DS2408_PIO(0) == 200))
-    {
-      if ((ShutterSpeed[selector]) == AUTO100)
-        ISO = A100;
-      else
-        ISO = A600;
+/*	  if (((ShutterSpeed[selector]) == AUTO600) || ((ShutterSpeed[selector]) == AUTO100) || (Read_DS2408_PIO(0) == 200))
 
+	  {
+		  
+		  if ((ShutterSpeed[selector]) == AUTO100)
+		  {
+
+			  ISO = A100;
+//			  cISO = EEPROM.read(20);
+//			  Serial.print("cISO for 100: ");
+//			  Serial.println(cISO);
+
+		  }
+		  //EEPROM.write(20, 100);
+	  
+	  else if ((ShutterSpeed[selector]) == AUTO600)
+	  {
+		  ISO = A600;
+	  }
+	  else if (Read_DS2408_PIO(20) == 200)
+	  {
+		  int  cISO = EEPROM.read(20);
+		  //EEPROM.read(0);
+		  if (cISO == 10)
+		  { 
+			  ISO = A100; 
+//			  Serial.println("dongleless ISO set to A100");
+		  }
+		  else
+		  {
+			  ISO = A600;
+//			  Serial.println("ISO set to A600");
+		  }
+		  }
+	  }*/
+	 /* if (Read_DS2408_PIO(20) == 200)
+	  {
+		  int  cISO = EEPROM.read(20);
+		  //EEPROM.read(0);
+		  if (cISO == 10)
+		  {
+			  ISO = A100;
+			  //			  Serial.println("dongleless ISO set to A100");
+		  }
+		  else
+		  {
+			  ISO = A600;
+			  //			  Serial.println("ISO set to A600");
+		  }
+	  }*/
+
+//=================================================================================
+
+
+	  int  cISO = EEPROM.read(20);
+	  if (cISO == 10)
+	  {
+		  ISO = A100;
+		  //			  Serial.println("dongleless ISO set to A100");
+	  }
+	  else
+	  {
+		  ISO = A600;
+		  //			  Serial.println("ISO set to A600");
+	  }
       exposure = PredictedExposure(ISO);
+//=================================================================================
+
 
 #if SIMPLEDEBUG
       Serial.print(" Predicted Exposure: ");
@@ -66,8 +167,10 @@ void loop() {
       //digitalWrite(led2, LOW);
       //digitalWrite(led1, LOW);
 
-    }
-  } else  if (switch2 == 1)
+  
+  } 
+
+else  if (switch2 == 1)
 
   { //LM "helper" function for A600, dunno how to choose the ISO in this case (Manual helper)
     //digitalWrite(led1, LOW);
@@ -418,7 +521,11 @@ void loop() {
 
       if (Read_DS2408_PIO(0) == 200) //dongleless
       {
-        output_compare = A600;
+		cISO = EEPROM.read(20);
+		  if (cISO = 60)
+			  output_compare = A600;
+		  else if (cISO = 10)
+			  output_compare = A100;
         byte PictureType = 6;
         eepromUpdate();
 #if SIMPLEDEBUG
@@ -457,6 +564,12 @@ void loop() {
       if ((ShutterSpeed[selector]) == AUTO600)
       {
         output_compare = A600;
+//		cISO = EEPROM.read(20);
+//		if (cISO != 600) 
+//		{
+//			EEPROM.write(20, 600);
+//			simpleBlink(2);
+//		}
         byte PictureType = 6;
         eepromUpdate();
 #if SIMPLEDEBUG
@@ -470,7 +583,15 @@ void loop() {
       else if ((ShutterSpeed[selector]) == AUTO100)
       {
         output_compare = A100;
-        byte PictureType = 1;
+/*		Serial.print("cISO for 600: ");
+		Serial.println(cISO);
+		cISO = EEPROM.read(20);
+		if (cISO != 100)
+		{
+			EEPROM.write(20, 100);
+			simpleBlink(1);
+		}*/
+		byte PictureType = 1;
         eepromUpdate();
 #if SIMPLEDEBUG
         Serial.println("SELECTOR AUTO100");
