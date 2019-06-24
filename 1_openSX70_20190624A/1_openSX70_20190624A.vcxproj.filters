@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="1_openSX70_20190622A.ino" />
+    <None Include="1_openSX70_20190624A.ino" />
     <None Include="2_pre_setup.ino" />
     <None Include="3_setup.ino" />
     <None Include="4b_Flash.ino" />
@@ -30,7 +30,7 @@
     <None Include="9_LightMeter.ino" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="__vm\.1_openSX70_20190622A.vsarduino.h">
+    <ClInclude Include="__vm\.1_openSX70_20190624A.vsarduino.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

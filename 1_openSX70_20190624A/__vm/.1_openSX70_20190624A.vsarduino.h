@@ -15,6 +15,7 @@
 #define _VSARDUINO_H_
 #define __AVR_atmega328p__
 #define __AVR_ATmega328P__
+#define _VMDEBUG 1
 #define F_CPU 8000000L
 #define ARDUINO 10809
 #define ARDUINO_AVR_PRO
@@ -76,7 +77,7 @@ typedef void *__builtin_va_list;
 #define pgm_read_float(address_short) float()
 #define pgm_read_ptr(address_short)   short()
 
-#include "1_openSX70_20190622A.ino"
+#include "1_openSX70_20190624A.ino"
 #include "2_pre_setup.ino"
 #include "3_setup.ino"
 #include "4_loop.ino"

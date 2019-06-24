@@ -178,20 +178,15 @@ int ShutterConstant = 9 ;
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 25, 32, 45, 53, 90, 150, 300, POSFLASH, POSFLASHF8, POST, POSB };
 //int ShutterSpeed[] = { 9, 11, 13, 14, 18, 23, 30, 42, 50, 88, 148, 298, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 //int ShutterSpeed[] =   { 1, 4,  6,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-
 //int ShutterSpeed[] = { 1, 4,  6,  7,  11, 17, 22, 34, 42, 80, 140, 290, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-
 //int ShutterSpeed[] = { 6, 10, 12 , 14,  16, 24, 34, 44, 66, 82, 152, 292, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-
 //////int ShutterSpeed[] = { 4, 8, 11 , 13,  15, 22, 34, 4, 26, 42, 112, 252, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-
 //int ShutterSpeed[] = { 4, 8, 11 , 13,  15, 22, 34, 5, 27, 44, 112, 252, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-
 /////int ShutterSpeed[] = { 15, 19, 22 , 24,  26, 33, 45, 66, 82, 135, 162, 300, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+//int ShutterSpeed[] =   { 15, 16,  17,  18,  19, 20, 21, 22, 23, 24, 25, 26, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
 int ShutterSpeed[] = { 17, 20, 23 , 25,  30, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
-//int ShutterSpeed[] =   { 15, 16,  17,  18,  19, 20, 21, 22, 23, 24, 25, 26, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
 
 
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)

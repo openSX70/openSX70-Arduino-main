@@ -1,11 +1,10 @@
-
 //MEROË SETTINGS!!! 
 //TSL2375 LIGHT TO FREQUENCY SENSOR
 //MODIFY FOR OLDER PCBS!!!!
-//1_openSX70_20190622a
-//LED "helper" lights for ISO600. 
+//1_openSX70_20190624a
+//LED "helper" lights 
 //AUTO low light indicator
-//Dongleless 600 auto
+//Dongleless 100 and 600 auto
 
 // WORK IN PROGRESS FREQUENCY COUNTER 
 // NEEDS NEW DS2408 LIBRARY OTHERWISE DOES *NOT* WORK

@@ -10,7 +10,7 @@ void loop() {
     Write_DS2408_PIO (6, 0);
 	*/
 	simpleBlink(1);
-#if LIGHTMETER
+#if LIGHTMETER //blink again if lightmeter and 600ISO set
 	byte cISO = EEPROM.read(20);
 	if (cISO == 60)
 		simpleBlink(1);
@@ -67,131 +67,28 @@ void loop() {
 	  }
   }
 
-
-
-  if (switch2 == 0)
-  {
-
-/*	  if (((ShutterSpeed[selector]) == AUTO600) || ((ShutterSpeed[selector]) == AUTO100) || (Read_DS2408_PIO(0) == 200))
-
-	  {
-		  
-		  if ((ShutterSpeed[selector]) == AUTO100)
-		  {
-
-			  ISO = A100;
-//			  cISO = EEPROM.read(20);
-//			  Serial.print("cISO for 100: ");
-//			  Serial.println(cISO);
-
-		  }
-		  //EEPROM.write(20, 100);
-	  
-	  else if ((ShutterSpeed[selector]) == AUTO600)
-	  {
-		  ISO = A600;
-	  }
-	  else if (Read_DS2408_PIO(20) == 200)
-	  {
-		  int  cISO = EEPROM.read(20);
-		  //EEPROM.read(0);
-		  if (cISO == 10)
-		  { 
-			  ISO = A100; 
-//			  Serial.println("dongleless ISO set to A100");
-		  }
-		  else
-		  {
-			  ISO = A600;
-//			  Serial.println("ISO set to A600");
-		  }
-		  }
-	  }*/
-	 /* if (Read_DS2408_PIO(20) == 200)
-	  {
-		  int  cISO = EEPROM.read(20);
-		  //EEPROM.read(0);
-		  if (cISO == 10)
-		  {
-			  ISO = A100;
-			  //			  Serial.println("dongleless ISO set to A100");
-		  }
-		  else
-		  {
-			  ISO = A600;
-			  //			  Serial.println("ISO set to A600");
-		  }
-	  }*/
-
-//=================================================================================
-
-/*
-	//  int  cISO = EEPROM.read(20);
-	  if (cISO == 10)
-	  {
-		  ISO = A100;
-		  //			  Serial.println("dongleless ISO set to A100");
-	  }
-	  else
-	  {
-		  ISO = A600;
-		  //			  Serial.println("ISO set to A600");
-	  }
-      exposure = PredictedExposure();
-//=================================================================================
-*/
-
-#if SIMPLEDEBUG
-      Serial.print(" Predicted Exposure: ");
-      Serial.println(exposure);
-
-      Serial.print("ShutterSpeed[selector]: ");
-      Serial.println((ShutterSpeed[selector]));
-
-
-      digitalWrite(led1, LOW);
-      Serial.println("AUTO MODE ON");
-#endif
-      if (exposure >= ShutterSpeed[7])
-      {
-        digitalWrite(led2, HIGH);
-        //		Serial.print(ISO);
-        //		Serial.println("  Low light!!!");
-      }
-      else
-      {
-        //		Serial.println("  else light!!!");
-
-        digitalWrite(led2, LOW);
-        digitalWrite(led1, LOW);
-      }
-      //digitalWrite(led2, LOW);
-      //digitalWrite(led1, LOW);
-
-  
-  } 
-
-else  if (switch2 == 1)
+ 
+if (switch2 == 1)
 
   { //LM "helper" function for A600, dunno how to choose the ISO in this case (Manual helper)
     //digitalWrite(led1, LOW);
     //digitalWrite(led2, LOW);
-
+	exposure = PredictedExposure();	//  can be 100 or 600 depending how's been set up
     if ((selector >= 0) && (selector < 12))  //ONLY FOR MANUAL SHUTTER SPEEDS
     {
-      exposure = PredictedExposure();	//  as mentioned asumed A600
+//      exposure = PredictedExposure();	//  can be 100 or 600 depending how's been set up
       {
 
         //int nearest(int x, int myArray[], int elements, bool sorted)
         int slot = nearest(exposure, ShutterSpeed, 11, 1);
-        /*
+      /*
           Serial.print ("Slot/selector/Pred Exp: ");
           Serial.print (slot);
           Serial.print (" / ");
           Serial.print (selector);
           Serial.print(" / ");
           Serial.println(exposure);
-        */
+      */  
 
 
         if (selector < slot)
@@ -222,9 +119,31 @@ else  if (switch2 == 1)
 
       }
     }
+  
+
+  if ((selector == 12) || (selector == 13))  //ONLY FOR AUTO: LOW LIGHT INDICATOR
+  {
+	/*
+	  Serial.print("Exposure/ShutterSpeed: ");
+	  Serial.print(exposure);
+	  Serial.print(" / ");
+	  Serial.println(ShutterSpeed[7]);
+	 */
+	  if (exposure >= ShutterSpeed[7])
+	  {
+		  digitalWrite(led2, HIGH);
+		  		Serial.print(ISO);
+		  		Serial.println("  Low light!!!");
+	  }
+	  else
+	  {
+		  		Serial.println("  else light!!!");
+
+		  digitalWrite(led2, LOW);
+		  digitalWrite(led1, LOW);
+	  }
+
   }
-
-
 #endif
 #endif
 
@@ -247,54 +166,9 @@ else  if (switch2 == 1)
     Serial.println (switch2);
   */
 #endif
-
-
-
-  /*
-    if (Read_DS2408_PIO(0) == 100)
-    {
-      Serial.println ("FLASH");
-      return;
-    }
-    if (Read_DS2408_PIO(0) == 200)
-    {
-      Serial.println ("NOTHING");
-      return;
-    }
-
-    if (Read_DS2408_PIO(0) < 100)
-    {
-      byte ActualSlot = Read_DS2408_PIO(0);
-      Serial.print ("Selector: ");
-      Serial.println (ActualSlot);
-
-      byte S1 = Read_DS2408_PIO(1);
-      Serial.print ("S1: ");
-      Serial.println (S1);
-
-      byte S2 = Read_DS2408_PIO(2);
-      Serial.print ("S2: ");
-      Serial.println (S2);
-      return;
-    } */
-  /*
-    if (selector == 15) {
-    Serial.println ("workaround");
-    uint8_t readDevice = ds.get_state(devices[0]);
-    //workaround
-    selector = Read_DS2408_PIO(0);
-    switch1 = Read_DS2408_PIO(1);
-    switch2 = Read_DS2408_PIO(2);
-    }*/
-  // READ DS2408
-  //=======================================================================================
-
-
-
+}
 
   //=======================================================================================
-
-
   //WHAT TO DO WHEN POWER-UP:
   //  S8     S9
   //closed  open  --> EJECT DARKSLIDE (DEFAULT)

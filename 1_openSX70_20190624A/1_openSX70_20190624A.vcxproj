@@ -14,7 +14,7 @@
     <ProjectGuid>{C5F80730-F44F-4478-BDAE-6634EFC2CA88}</ProjectGuid>
     <RootNamespace>
     </RootNamespace>
-    <ProjectName>1_openSX70_20190622A</ProjectName>
+    <ProjectName>1_openSX70_20190624A</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -73,8 +73,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\1_openSX70_20190622A;$(ProjectDir)..\..\..\Arduino\libraries;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\libraries;$(ProjectDir)..\libraries;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\variants\eightanaloginputs;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\avr\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\avr\include\avr;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>$(ProjectDir)__vm\.1_openSX70_20190622A.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\1_openSX70_20190624A;$(ProjectDir)..\..\..\Arduino\libraries;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\libraries;$(ProjectDir)..\libraries;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\variants\eightanaloginputs;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\avr\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\avr\include\avr;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)__vm\.1_openSX70_20190624A.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <PreprocessorDefinitions>__AVR_atmega328p__;__AVR_ATmega328P__;F_CPU=8000000L;ARDUINO=10809;ARDUINO_AVR_PRO;ARDUINO_ARCH_AVR;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
@@ -89,10 +89,10 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <ForcedIncludeFiles>%(ForcedIncludeFiles)</ForcedIncludeFiles>
-      <IgnoreStandardIncludePath>true</IgnoreStandardIncludePath>
-      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\1_openSX70_20190624A;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\libraries\EEPROM\src;$(ProjectDir)..\..\..\Arduino\libraries\DS2408;$(ProjectDir)..\..\..\Arduino\libraries\OneWire;$(ProjectDir)..\..\..\Arduino\libraries;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\libraries;$(ProjectDir)..\libraries;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\cores\arduino;$(ProjectDir)..\..\..\Arduino\hardware\arduino\avr\variants\eightanaloginputs;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\avr\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\avr\include\avr;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.8.1\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.2\include;$(ProjectDir)..\..\..\Arduino\hardware\tools\avr\lib\gcc\avr\4.9.3\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <ForcedIncludeFiles>$(ProjectDir)__vm\.1_openSX70_20190624A.vsarduino.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <IgnoreStandardIncludePath>false</IgnoreStandardIncludePath>
+      <PreprocessorDefinitions>__AVR_atmega328p__;__AVR_ATmega328P__;_VMDEBUG=1;F_CPU=8000000L;ARDUINO=10809;ARDUINO_AVR_PRO;ARDUINO_ARCH_AVR;__cplusplus=201103L;_VMICRO_INTELLISENSE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,7 +102,7 @@
     <ProjectCapability Include="VisualMicro" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="1_openSX70_20190622A.ino">
+    <None Include="1_openSX70_20190624A.ino">
       <FileType>CppCode</FileType>
     </None>
     <None Include="2_pre_setup.ino">
@@ -143,7 +143,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="__vm\.1_openSX70_20190622A.vsarduino.h" />
+    <ClInclude Include="__vm\.1_openSX70_20190624A.vsarduino.h" />
   </ItemGroup>
   <PropertyGroup>
     <DebuggerFlavor>VisualMicroDebugger</DebuggerFlavor>
@@ -151,4 +151,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties arduino.upload.port="COM14" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
