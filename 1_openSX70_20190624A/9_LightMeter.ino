@@ -175,7 +175,8 @@ int PredictedExposure()
 //		if (counter <= 300)
 //			counter = 300;
 
-
+// timeMillis compensation
+		timeMillis = timeMillis + 6;
 		PredExp = ((ISO * timeMillis) / counter );
 //		PredExp = ((ISO * 100) / counter);
 		
