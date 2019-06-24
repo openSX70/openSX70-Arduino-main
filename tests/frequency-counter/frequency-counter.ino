@@ -6,7 +6,7 @@
 //const int S1_Pin = 4;                   //
 //const int S2_Pin = A0;
 //const int S3_Pin = A1;
-//const int OE_Pin = 10;
+const int OE_Pin = 9;
 // Input: Pin D5
 
 
@@ -56,11 +56,11 @@ void startCounting (unsigned int ms)
   // start Timer 1
   // External clock source on T1 pin (D5). Clock on rising edge.
   TCCR1B =  bit (CS10) | bit (CS11) | bit (CS12);
-
+/*
   while(1)
 {
   unsigned int timer1CounterValue = TCNT1;
-  Serial.println(timer1CounterValue);
+//  Serial.println(timer1CounterValue);
 }
   }  // end of startCounting
 
@@ -73,7 +73,7 @@ ISR (TIMER1_OVF_vect)
 //******************************************************************
 //  Timer2 Interrupt Service is invoked by hardware Timer 2 every 1 ms = 1000 Hz
 //  16Mhz / 128 / 125 = 1000 Hz
-
+*/
 ISR (TIMER2_COMPA_vect) 
   {
   // grab counter value before it changes any more
@@ -124,11 +124,13 @@ pinMode(OE_Pin, OUTPUT);              //
   digitalWrite(S2_Pin, HIGH);
   digitalWrite(S3_Pin, LOW);
 
-//ENABLING CHIP
-  digitalWrite (OE_Pin, LOW);
 
  
 */
+pinMode(OE_Pin, OUTPUT);
+//ENABLING CHIP
+  digitalWrite (OE_Pin, LOW);
+
   Serial.begin(9600);       
   Serial.println("Frequency Counter");
   } // end of setup

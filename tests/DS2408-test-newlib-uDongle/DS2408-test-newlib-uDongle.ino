@@ -16,7 +16,7 @@
 
 //OPTION: the pin I connect S2 might be different on reworked or future boards. I want to connect to an ANALOG input so I can have A8-dongle support.
 
-const int S2 = A7;
+const int S2 = A4;
 //const int S2 = 2;  //this for Flash insertion detection
 //this CLOSED when there is a FLASHBAR inserted
 

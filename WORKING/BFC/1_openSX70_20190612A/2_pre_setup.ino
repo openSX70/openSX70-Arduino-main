@@ -39,7 +39,8 @@ int output_compare ;        // How many pulses before triggering interrupt
 //OPTION MAGIC NUMBERS FOR TSL235
 //int A600 = 205;
 int A600 = 225;
-int A100 = 495;
+//int A100 = 495;
+int A100 = 515;
 int counter;
 unsigned long previousMillis;
 int ISO;

@@ -11,7 +11,7 @@
 // Pin 13 has the LED on Teensy 3.0
 // give it a name:
 int led1 = 13;
-int led2 = 5;
+//int led2 = 5;
 unsigned int cycle = 1;
 
 // the setup routine runs once when you press reset:

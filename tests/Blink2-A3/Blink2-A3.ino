@@ -49,4 +49,10 @@ Serial.println ("LED1 is OFF     LED2 is ON");
   digitalWrite(led2, HIGH);   // turn the LED on (HIGH is the voltage level)
   Serial.println ("now I wait 1000ms again");
   delay(1000);               // wait for a second
+
+    digitalWrite(led1, HIGH);    // turn the LED off by making the voltage LOW
+Serial.println ("LED1 is OFF     LED2 is ON");
+  digitalWrite(led2, HIGH);   // turn the LED on (HIGH is the voltage level)
+  Serial.println ("now I wait 1000ms again");
+  delay(1000);               // wait for a second
 }
