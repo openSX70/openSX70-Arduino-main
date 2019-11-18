@@ -311,4 +311,7 @@ void ManualExposure();
 void initializeDS2408();
 int frequencyCounter(int ISO);
 int nearest(int x, int myArray[], int elements, bool sorted);
+void simpleBlink2();
+byte SelectorAfter8();
+
 //****************************************************************************************************************************

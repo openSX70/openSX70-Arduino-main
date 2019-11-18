@@ -1,6 +1,9 @@
-//  
+
+// Timer and Counter example
 // Author: Nick Gammon
 // Date: 17th January 2012
+
+// Input: Pin D5
 
 
 //TCS3200 openSX70 sonar PCB
@@ -10,8 +13,6 @@ const int S1_Pin = 2;                   //
 //const int S2_Pin = A0;
 const int S3_Pin = 6;
 const int OE_Pin = 9;
-// Input: Pin D5
-
 
 
 // these are checked for in the main program
@@ -37,7 +38,7 @@ void startCounting (unsigned int ms)
   TCCR2B = 0;
 
   // Timer 1 - counts events on pin D5
-  //TIMSK1 = bit (TOIE1);   // interrupt on Timer 1 overflow
+  TIMSK1 = bit (TOIE1);   // interrupt on Timer 1 overflow
 
   // Timer 2 - gives us our 1 ms counting interval
   // 16 MHz clock (62.5 ns per tick) - prescaled by 128
@@ -46,8 +47,8 @@ void startCounting (unsigned int ms)
   TCCR2A = bit (WGM21) ;   // CTC mode
   OCR2A  = 124;            // count up to 125  (zero relative!!!!)
 
-  // Timer 2 - interrupt on match (ie. every 1 ms)
-  //TIMSK2 = bit (OCIE2A);   // enable Timer2 Interrupt
+  // Timer 2 - interrupt on match (ie. e    very 1 ms)
+  TIMSK2 = bit (OCIE2A);   // enable Timer2 Interrupt
 
   TCNT1 = 0;      // Both counters to zero
   TCNT2 = 0;     
@@ -59,12 +60,6 @@ void startCounting (unsigned int ms)
   // start Timer 1
   // External clock source on T1 pin (D5). Clock on rising edge.
   TCCR1B =  bit (CS10) | bit (CS11) | bit (CS12);
-/*
-  while(1)
-{
-  unsigned int timer1CounterValue = TCNT1;
-//  Serial.println(timer1CounterValue);
-}
   }  // end of startCounting
 
 ISR (TIMER1_OVF_vect)
@@ -76,7 +71,7 @@ ISR (TIMER1_OVF_vect)
 //******************************************************************
 //  Timer2 Interrupt Service is invoked by hardware Timer 2 every 1 ms = 1000 Hz
 //  16Mhz / 128 / 125 = 1000 Hz
-*/
+
 ISR (TIMER2_COMPA_vect) 
   {
   // grab counter value before it changes any more
@@ -108,34 +103,20 @@ ISR (TIMER2_COMPA_vect)
   counterReady = true;              // set global flag for end count period
   }  // end of TIMER2_COMPA_vect
 
-
-void setup ()
+void setup () 
   {
-/*
-pinMode(S0_Pin, OUTPUT);              //pinMode(S1_Pin, OUTPUT);              //
-pinMode(S2_Pin, OUTPUT);              //
-pinMode(S3_Pin, OUTPUT);              //
-pinMode(OE_Pin, OUTPUT);              //
-
-//SETTING OPTIONS
-
-// 2% SCALING
-  digitalWrite(S1_Pin, HIGH);
-  digitalWrite(S0_Pin, LOW);
-
-//CLEAR PHOTODIODES
-  digitalWrite(S2_Pin, HIGH);
-  digitalWrite(S3_Pin, LOW);
-
-
- 
-*/
-pinMode(OE_Pin, OUTPUT);
-//ENABLING CHIP
-  digitalWrite (OE_Pin, LOW);
-
   Serial.begin(9600);       
   Serial.println("Frequency Counter");
+  pinMode(S1_Pin, OUTPUT);    
+  pinMode(S3_Pin, OUTPUT);    
+  pinMode(OE_Pin, OUTPUT);    
+
+  //S2 & S0 should be high can be modified via jumper in PCB 
+  digitalWrite(S1_Pin, HIGH); //scaling LOW = 20% HIGH = 100%
+  digitalWrite(S3_Pin, LOW); //filter LOW = clear HIGH = green
+  digitalWrite(OE_Pin, LOW); //LOW = enabled
+
+
   } // end of setup
 
 void loop () 
