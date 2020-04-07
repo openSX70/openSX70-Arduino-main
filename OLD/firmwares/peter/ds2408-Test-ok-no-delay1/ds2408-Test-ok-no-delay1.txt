@@ -1,0 +1,363 @@
+HELLO openSX70!!!!!!!!!!!!!!!!!!!!!!
+Count!!
+Count!!
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+Count!!
+Count!!
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+FLASH INSERTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+NOTHING CONNECTED
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
+openSX70 Dongle connected!
+selector: 15
+switch 1: 1
+switch 2: 1
+Count!!
