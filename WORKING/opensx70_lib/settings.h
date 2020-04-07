@@ -50,6 +50,8 @@
 //LIGHMETER_HELPER 1 for VF helper
 //LIGHMETER_HELPER 2  FUTURE dongle helper
 
+extern int selector;
+
 #define SIMPLEDEBUG 0
 //
 #define TSL237T
@@ -71,7 +73,7 @@ extern const uint8_t YDelay;
 extern const byte PowerDownDelay; //time it takes to be fully closed
 extern const byte PowerDown; //max 255 = full power/POWERUP mode
 
-extern int selector;
+//extern int selector;
 
 #define DEBOUNCECOUNT 5
 

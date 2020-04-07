@@ -50,7 +50,7 @@
 //LIGHMETER_HELPER 1 for VF helper
 //LIGHMETER_HELPER 2  FUTURE dongle helper
 
-#define SIMPLEDEBUG 0
+#define SIMPLEDEBUG 1
 //
 #define TSL237T
 //#define TSL235R
