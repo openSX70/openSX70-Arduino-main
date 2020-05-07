@@ -6,14 +6,15 @@
 #if defined(__AVR__)
 #include <util/crc16.h>
 #endif
-
+/*
 #if ARDUINO >= 100
 #include "Arduino.h"       // for delayMicroseconds, digitalPinToBitMask, etc
 #else
 #include "WProgram.h"      // for delayMicroseconds
 #include "pins_arduino.h"  // for digitalPinToBitMask, etc
 #endif
-
+*/
+#include <Arduino.h>
 // You can exclude certain features from OneWire.  In theory, this
 // might save some space.  In practice, the compiler automatically
 // removes unused code (technically, the linker, using -fdata-sections
@@ -372,5 +373,4 @@ class OneWire
 #endif
 #endif
 };
-
 #endif

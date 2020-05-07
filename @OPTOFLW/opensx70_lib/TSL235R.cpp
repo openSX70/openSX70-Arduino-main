@@ -269,13 +269,9 @@ int meter_compute(unsigned int _interval) //////////////////////////////////////
       }*/
      // PredExp = PredExp + ShutterConstant;
       return PredExp;
-
     }
   }
-
   return -1;
-
- 
 }
 
 #endif

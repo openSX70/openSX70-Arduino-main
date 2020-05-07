@@ -1,12 +1,14 @@
 #ifndef ClickButton_H
 #define ClickButton_H
-
+/*
 #if (ARDUINO <  100)
 #include <WProgram.h>
 #else
 #include <Arduino.h>
 #endif
+*/
 
+#include <Arduino.h>
 
 #define CLICKBTN_PULLUP HIGH
 

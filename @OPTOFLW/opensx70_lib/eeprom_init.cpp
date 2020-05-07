@@ -1,6 +1,6 @@
-#include "Arduino.h"
+#include <Arduino.h>
 #include "settings.h"
-#include "EEPROM.h"
+#include <EEPROM.h>
 
 void WritePicture(int _currentPicture){
   EEPROM.update(EE_ADD_PIC, _currentPicture);
@@ -31,19 +31,24 @@ void init_EEPROM() {
   initJP[1] = EEPROM.read(1);
   //int currentPicture = 1;
   //const uint8_t EE_ADD_PIC = 13;
-  if (initJP[0] != 'S' || initJP[1] != 'X')
+  if (initJP[0] != 255 || initJP[1] != 255)
   {
     #if SIMPLEDEBUG
         Serial.println("Initializing EEPROM....");
+
     #endif
-      EEPROM.write(0, 'S');
-      EEPROM.write(1, 'X');
+      EEPROM.update(0, 255);
+      EEPROM.update(1,255);
       //    int eeAddress = 101;
       //    DEFAULT_ISO = 640;
-      WritePicture(0);
+      //WritePicture(0); //Write picture 0 moved to Darkslide Fucntion 
       WriteISO(DEFAULT_ISO);
       //    EEPROM.put(EE_ADD_PIC, currentPicture);
       //    EEPROM.put(EE_ADD_ISO, DEFAULT_ISO);
+      #if SIMPLEDEBUG
+        Serial.print("ISO in EEPROM: ");
+        Serial.println(ReadISO());
+      #endif
       return;
   } 
 }

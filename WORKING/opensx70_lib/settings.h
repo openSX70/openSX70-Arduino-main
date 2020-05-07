@@ -66,7 +66,7 @@ extern int selector;
 
 //S1Logic LOW = Alphas, Meroë, Edwin PCBs
 //S1Logic HIGH = Sonar PCBs ONLY
-#define S1Logic LOW
+#define S1Logic HIGH
 
 extern const uint8_t YDelay;
 
