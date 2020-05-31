@@ -1,46 +1,6 @@
-/*
-	**the openSX70 project**
-	
-   It is many things at once, but simply put, openSX70 is an open source 
-  (hardware and software) project that aims to take the SX70 beyond what
-  is possible now in a cheap and non destructive way.
-	https://opensx70.com/
-	
-	https://github.com/openSX70
-	
-  As a legal reminder please note that the code and files is under Creative Commons 
-  "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)" is free and open 
-  for hobbyist NON-COMMERCIAL USE.
-	https://creativecommons.org/licenses/by-nc/4.0/
-	
-	You are free to:
-	Share — copy and redistribute the material in any medium or format
-	Adapt — remix, transform, and build upon the material
-	The licensor cannot revoke these freedoms as long as you follow the license terms.
-	Under the following terms:
-	Attribution — You must give appropriate credit, provide a link to the license, 
-	and indicate if changes were made. You may do so in any reasonable manner, but 
-	not in any way that suggests the licensor endorses you or your use.
-
-	NonCommercial — You may not use the material for commercial purposes.
-
-	No additional restrictions — You may not apply legal terms or technological 
-	measures that legally restrict others from doing anything the license permits.
-	
-	Notices:
-	You do not have to comply with the license for elements of the material in the 
-	public domain or where your use is permitted by an applicable exception or limitation.
-
-	No warranties are given. The license may not give you all of the permissions necessary 
-	for your intended use. For example, other rights such as publicity, privacy, or moral r
-	ights may limit how you use the material.
-
-  
-  
-*/
 #ifndef settings_h
   #define settings_h
-  #include <Arduino.h>
+  #include "Arduino.h"
   #define GREEN 6
   #define RED 7
   #define LIGHMETER_HELPER 1
@@ -53,9 +13,9 @@
   #define LMDEBUG 0 //Lightmeter Debug
   #define LMHELPERDEBUG 0 //Lightmeter Debug
   #define ROTARYDEBUG 0 //Rotaryswitch on Dongle Debug
-  #define TSL237T
+  //#define TSL237T
   //#define TSL235R
-  //#define TCS3200
+  #define TCS3200
   //#define METER_CHIP TSL237T
   //#define METER_CHIP TSL235R
   //#define METER_CHIP TCS3200
@@ -63,8 +23,8 @@
   //#define S1Logic HIGH //= Sonar 
   #define S1Logic HIGH
   #define SONAR 1
-  #define ORIGAMI 0 //Inverted Rotary Switch Logic
-  #define UDONGLE 1
+  #define ORIGAMI 1 //Inverted Rotary Switch Logic
+  #define UDONGLE 0
   extern const uint8_t YDelay;
   extern const byte PowerDownDelay; //time it takes to be fully closed
   extern const byte PowerDown; //max 255 = full power/POWERUP mode
@@ -85,9 +45,8 @@
   //-> camera current ISO (dongleless)
   //OPTION REGARDING SELECTOR WHEEL
   //AnalogueDongle
-  //
-  enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
-  //enum positions_t {POST = -100, POSB, AUTO600, AUTO600BW, AUTO100 };//ANALOGUEWORKS AUTO 600BW
+  //enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
+  enum positions_t {POST = -100, POSB, AUTO600, AUTO600BW, AUTO100 };//ANALOGUEWORKS AUTO 600BW
   //uDONGLE
   //enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; //uDONGLE original
   //enum positions_t {POST = -100, AUTO600, AUTO600BW, AUTO100}; //uDONGLE Optoflow

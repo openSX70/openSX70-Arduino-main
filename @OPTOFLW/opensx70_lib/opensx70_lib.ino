@@ -1,52 +1,6 @@
-/*
-**the openSX70 project**
-
-  It is many things at once, but simply put, openSX70 is an open source
-  (hardware and software) project that aims to take the SX70 beyond what
-  is possible now in a cheap and non destructive way.
-  https://opensx70.com/
-
-  https://github.com/openSX70
-
-  As a legal reminder please note that the code and files is under Creative Commons
-  "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)" is free and open
-  for hobbyist NON-COMMERCIAL USE.
-  https://creativecommons.org/licenses/by-nc/4.0/
-
-  You are free to:
-  Share — copy and redistribute the material in any medium or format
-  Adapt — remix, transform, and build upon the material
-  The licensor cannot revoke these freedoms as long as you follow the license terms.
-  Under the following terms:
-  Attribution — You must give appropriate credit, provide a link to the license,
-  and indicate if changes were made. You may do so in any reasonable manner, but
-  not in any way that suggests the licensor endorses you or your use.
-
-  NonCommercial — You may not use the material for commercial purposes.
-
-  No additional restrictions — You may not apply legal terms or technological
-  measures that legally restrict others from doing anything the license permits.
-
-  Notices:
-  You do not have to comply with the license for elements of the material in the
-  public domain or where your use is permitted by an applicable exception or limitation.
-
-  No warranties are given. The license may not give you all of the permissions necessary
-  for your intended use. For example, other rights such as publicity, privacy, or moral r
-  ights may limit how you use the material.
-
-  I know this software is "not ok" but I am doing my best to improve it and learn at the same time.
-  Parts have been use from Pierre-Loup Martin "structure" branch, but, by no means this compares to his works.
-  https://github.com/troisiemetype/openSX70-Arduino-main/tree/structure
-
-  Nevertheless I am trying to learn, step by step from him.
-
-  Lot of fixes by Hannes (@optoflw), I am trying to understand the code and add the text headers. Much work done on sonar.
-
-*/
 #include "Arduino.h"
 #include "open_SX70.h"
-//Version 03_05_2020_V1_Sonar_TSL327 and UDONGLE
+//Version 15_05_2020_V3_Sonar_TCS3200 and ORIGAMI
 //No 1 Sec, but BW600, DONGLE Enumeration is now POST = -100, POSB=-99, AUTO600=-98, AUTO600BW=-97, AUTO100=-96
 //Reworked the ISO Saving and using behavior to didn't write to often to EEPROM
 // checkISOChange(); makes the Dongle blink on Dialing on Auto600 600BW and SX70 Mode to show what ISO is selected
@@ -55,7 +9,9 @@
 //Stop the Timer on T and B Mode and after each Exposure made
 //Has the Sonar S1 logic and restrictions so the camera is waiting for a new picture to make till the S1F is depressed again to prevent multiple Pictures on longpress
 //Implemented Rotary Switch debounce
-//Fixed Sonar Wireing Bug
+//Fixed Sonar Wireing Bug#
+//Fixed NodongleMode
+//Moved Switch1 and Switch2 Function to Camera_Function, added a extra Y_Delay for seltimer
 //ClickButton sw_S1(PIN_S1, S1Logic, CLICKBTN_PULLUP);
 ClickButton sw_S1(PIN_S1, S1Logic);
 //ClickButton sw_S1(PIN_S1, HIGH);
@@ -63,7 +19,6 @@ ClickButton sw_S1(PIN_S1, S1Logic);
 int selector;
 bool switch1;
 bool switch2;
-
 uDongle myDongle (PIN_S2);
 Camera openSX70(&myDongle);
 byte prev_selector = 0;
@@ -88,9 +43,8 @@ static int metercount;
 //byte firstRun = 0;
 
 void setup() {//setup - Inizialize
- 
   #if DEBUG
-  Serial.begin (9600);
+    Serial.begin (9600);
   #endif
   myDongle.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
@@ -123,18 +77,18 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
     #if SONAR
       if(digitalRead(PIN_S1F) != S1Logic){//Dont run DongleInserted Function on S1F pressed
     #endif SONAR
-        selector = myDongle.selector();
-        switch1 = myDongle.switch1();
-        switch2 = myDongle.switch2();
-        prevDongle = nowDongle;
-        nowDongle = myDongle.checkDongle();
-        currentPicture = ReadPicture();
-        checkISOChange(); //Blink on ISOChange in non Saving Mode (no Switch1 and no Switch2 is active)
-        saveISOChange();
-        //BlinkISO();
-        darkslideEject();
-        ispackEmpty();
-        DongleInserted();
+      selector = myDongle.selector();
+      switch1 = myDongle.switch1();
+      switch2 = myDongle.switch2();
+      prevDongle = nowDongle;
+      nowDongle = myDongle.checkDongle();
+      currentPicture = ReadPicture();
+      checkISOChange(); //Blink on ISOChange in non Saving Mode (no Switch1 and no Switch2 is active)
+      saveISOChange();
+      //BlinkISO();
+      darkslideEject();
+      ispackEmpty();
+      DongleInserted();
   #if SONAR
     }
   #endif SONAR
@@ -147,7 +101,7 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
   manualExposure();
   Auto600Exposure();
   Auto100Exposure();
-  /*Auto600BWExposure();
+  Auto600BWExposure();
   #if SONAR
     getGTD();
     //getFT();
@@ -155,7 +109,6 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
     //printReadings();
   #endif
   //LightMeterHelper(1);
-  */
 }
 
 void turnLedsOff(){ //todo:move to camerafunction
@@ -167,12 +120,10 @@ void turnLedsOff(){ //todo:move to camerafunction
 #if SONAR
 void getGTD(){
   GTD = digitalRead(PIN_GTD);
-
 }
 
 void getS1F(){
   S1F = digitalRead(PIN_S1F);
-
 }
 
 void getFT(){
@@ -265,11 +216,10 @@ void BlinkAutomode(){
           myDongle.simpleBlink(3, GREEN);
           checkFilmCount();
         }
-/*        if(ShutterSpeed[selector]== AUTO600BW){
+        if(ShutterSpeed[selector]== AUTO600BW){
           myDongle.simpleBlink(2, GREEN);
           checkFilmCount();
         }
-*/
         if(ShutterSpeed[selector]== AUTO100){
           myDongle.simpleBlink(1, GREEN);
           checkFilmCount();
@@ -345,7 +295,6 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
     }
 }
 
-
 void saveISOChange(){
   int _selectedISO;
     if(nowDongle != 0){ //Donngle is present
@@ -360,11 +309,11 @@ void saveISOChange(){
             if(_selectedISO != ISO_SX70){
               _selectedISO = ISO_SX70;
             }
-  /*        }
+          }
           else if (((ShutterSpeed[selector]) == AUTO600BW)){
             if(_selectedISO != ISO_600BW){
               _selectedISO = ISO_600BW;
-            }*/
+            }
           }else{
            //no ISO Selected
            _selectedISO = DEFAULT_ISO;
@@ -408,12 +357,11 @@ void checkISOChange(){
             if(_selectedISO != ISO_SX70){
               _selectedISO = ISO_SX70;
             }
- /*         }
+          }
           else if (((ShutterSpeed[selector]) == AUTO600BW)){
             if(_selectedISO != ISO_600BW){
               _selectedISO = ISO_600BW;
             }
-*/
           }
           else{//All other modes
           _selectedISO = ReadISO();  //read from EEPROM -- why?
@@ -470,6 +418,7 @@ void setISO(int newISO) { //saves the selected ISO to the EEPROM | maybe obsolet
   }
 }
 */
+/*
 void switch1Function(){
  //Switch One Function
   
@@ -502,6 +451,7 @@ void switch2Function(int mode){
     }
   }
 }
+*/
 
 void checkFilmCount(){
   if ((currentPicture == 8) || currentPicture == 9){
@@ -617,20 +567,22 @@ void noDongleMode(){
   //Serial.println("no Dongle Exposure");
   if ((selector == 200) && (myDongle.checkDongle() == 0)) 
   {
-    savedISO = ReadISO();
-    //LightMeterHelper(0);
+    //savedISO = ReadISO();
+    LightMeterHelper(0);
     if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
     {
-      switch1 = 0; //necessary?
-      openSX70.AutoExposure(savedISO);
+      switch1 = 0;
+      savedISO = ReadISO();
+      openSX70.AutoExposure(savedISO, switch1, switch2);
       sw_S1.Reset();
       return;
     }
     if (sw_S1.clicks == 2) //Doubleclick the Red Button with no Dongle inserted
     {
-      switch1 = 0; //necessary?
+      switch1 = 0;
+      savedISO = ReadISO();
       delay (10000);
-      openSX70.AutoExposure(savedISO);
+      openSX70.AutoExposure(savedISO, switch1, switch2);
       sw_S1.Reset();
       return;
     }
@@ -643,15 +595,15 @@ void flashOperationMode(){
     //Serial.println ("FLASH INSERTED");
     if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
     {
-      openSX70.FlashBAR();
+      openSX70.FlashBAR(switch1, switch2);
       sw_S1.Reset();
       checkFilmCount();
       return;
     }
     if (sw_S1.clicks == 2)
     {
-      switch2Function(3); //Switch Two Function in Flash Mode
-      openSX70.FlashBAR();
+      //switch2Function(3); //Switch Two Function in Flash Mode
+      openSX70.FlashBAR(switch1, switch2);
       sw_S1.Reset();
       checkFilmCount();
       return;  
@@ -721,7 +673,7 @@ void positionB(){
       timer_stop();
       turnLedsOff(); //why?
       sw_S1.Reset();
-      openSX70.ShutterB();
+      openSX70.ShutterB(switch1, switch2);
       checkFilmCount();
     }
 }
@@ -746,7 +698,7 @@ void positionT(){
     timer_stop();
     turnLedsOff(); //why?
     sw_S1.Reset();
-    openSX70.ShutterT();
+    openSX70.ShutterT(switch1, switch2);
     checkFilmCount();
   }
 }
@@ -759,9 +711,9 @@ void manualExposure(){
     LightMeterHelper(1);
     if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0))
     {
-      switch2Function(0); //switch2Function Manual Mode
+      //switch2Function(0); //switch2Function Manual Mode
       sw_S1.Reset();
-      openSX70.ManualExposure(selector);
+      openSX70.ManualExposure(selector, switch1, switch2);
       checkFilmCount();
       return;
     }
@@ -776,10 +728,10 @@ void Auto600Exposure(){
     //if (((sw_S1.clicks == -1) || (sw_S1.clicks > 0))) // Checks if the Sonar is Gone that Distance -- is focused
     if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)) 
     {
-      switch2Function(1); //Switch 2 Function on AUTO600BW
+      //switch2Function(1); //Switch 2 Function on AUTO600BW
       sw_S1.Reset();
       //openSX70.AutoExposure(activeISO);
-      openSX70.AutoExposure(ISO_600);
+      openSX70.AutoExposure(ISO_600, switch1, switch2);
       checkFilmCount();
       return;
     }
@@ -795,16 +747,16 @@ void Auto100Exposure(){
     if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)) 
     //if (((sw_S1.clicks == -1) || (sw_S1.clicks > 0))) // Checks if the Sonar is Gone that Distance -- is focused
     {
-      switch2Function(1); //Switch 2 Function on AUTO100
+      //switch2Function(1); //Switch 2 Function on AUTO100
       sw_S1.Reset();
       //openSX70.AutoExposure(activeISO);
-      openSX70.AutoExposure(ISO_SX70);
+      openSX70.AutoExposure(ISO_SX70, switch1, switch2);
       checkFilmCount();
       return;
     }
   }
 }
-/*
+
 void Auto600BWExposure(){
   //Auto600BW
   if (((ShutterSpeed[selector]) == AUTO600BW)) //AUTO600BW WHEEL
@@ -813,18 +765,22 @@ void Auto600BWExposure(){
     //if (((sw_S1.clicks == -1) || (sw_S1.clicks > 0))) // Checks if the Sonar is Gone that Distance -- is focused
     if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)) 
     {
-      switch2Function(1); //Switch 2 Function on AUTO600BW
+      //switch2Function(1); //Switch 2 Function on AUTO600BW
       sw_S1.Reset();
       //openSX70.AutoExposure(activeISO);
-      openSX70.AutoExposure(ISO_600BW);
+      openSX70.AutoExposure(ISO_600BW, switch1, switch2);
       checkFilmCount();
       return;
     }
   }
 }
-*/
+
 void LightMeterHelper(byte ExposureType){
     int helperstatus = openSX70.getLIGHTMETER_HELPER();
+    /*#if SONAR
+      if(digitalRead(PIN_S1F) == S1Logic){
+    #endif SONAR
+    */
     if(helperstatus==true){
       //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
         meter_led(selector, ExposureType);
@@ -841,5 +797,14 @@ void LightMeterHelper(byte ExposureType){
       //else{
       //  metercount++;
       //}
-    }
+    }/*
+    #if SONAR
+      }
+      else{
+        digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, LOW);
+      }
+      
+    #endif SONAR
+*/
 }

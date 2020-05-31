@@ -1,6 +1,7 @@
 {
     "board": "arduino:avr:pro",
     "configuration": "cpu=8MHzatmega328",
-    "port": "COM8",
-    "sketch": "opensx70_lib.ino"
+    "port": "COM6",
+    "sketch": "opensx70_lib.ino",
+    "programmer": "ArduinoISP"
 }

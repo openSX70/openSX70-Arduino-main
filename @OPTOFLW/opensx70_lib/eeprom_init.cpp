@@ -1,6 +1,6 @@
-#include <Arduino.h>
+#include "Arduino.h"
 #include "settings.h"
-#include <EEPROM.h>
+#include "EEPROM.h"
 
 void WritePicture(int _currentPicture){
   EEPROM.update(EE_ADD_PIC, _currentPicture);

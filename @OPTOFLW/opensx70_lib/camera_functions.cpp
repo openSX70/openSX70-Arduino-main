@@ -1,4 +1,4 @@
-#include <Arduino.h>
+#include "Arduino.h"
 #include "camera_functions.h"
 #include "meter.h"
 #include "open_sx70.h"
@@ -276,8 +276,11 @@ void Camera::multipleExposureLastClick(){
     }
 }
 
-void Camera::ManualExposure(int _selector) //ManualExposure
+void Camera::ManualExposure(int _selector, byte _sw1, byte _sw2) //ManualExposure
 {
+  if(_sw2==1){
+    switch2Function(0);
+  }
   if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ //Switch 1 set ON --> Multiple Exposure Mode
     multipleExposure(0); //MX Manual
   }
@@ -307,7 +310,7 @@ void Camera::ManualExposure(int _selector) //ManualExposure
   int ShutterSpeedDelay = ((ShutterSpeed[_selector]) + ShutterConstant) ;
   if (_selector >= 6)
   {
-    ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
+    ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay); //Compenate the 1ms for the Flashfireing
   }
   #if ADVANCEDDEBUG
     extern int selector;
@@ -321,14 +324,15 @@ void Camera::ManualExposure(int _selector) //ManualExposure
     Serial.print("ShutterSpeedDelay:");
     Serial.println(ShutterSpeedDelay);
   #endif
-
-  sei(); //Interupts restart -- Take the Picture
+  //sei(); //Interupts restart -- Take the Picture
+  if(_sw2==1){ //Longer Delay on Selftimer
+    delay(YDelay); 
+  }
   Camera::shutterOPEN();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
   unsigned long initialMillis = millis();
   //delay (ShutterSpeedDelay);
-  while (millis() <= (initialMillis + ShutterSpeedDelay))
-    ;
-
+  while (millis() <= (initialMillis + ShutterSpeedDelay)) //Count to the future time with the ShutterSpeed added
+  ;
   if (_selector >= 3) // changed the flash selection
   {
     #if SIMPLEDEBUG
@@ -340,8 +344,11 @@ void Camera::ManualExposure(int _selector) //ManualExposure
   return;
 }
 
-void Camera::AutoExposure(int _myISO)
+void Camera::AutoExposure(int _myISO, byte _sw1, byte _sw2)
 {
+    if(_sw2==1){
+      switch2Function(1);
+    }
     if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ //Switch 1 set ON --> Multiple Exposure Mode
       multipleExposure(1); //MX Auto 
     }
@@ -352,18 +359,16 @@ void Camera::AutoExposure(int _myISO)
     else{//Normal Expsoure
       currentPicture++; 
       WritePicture(currentPicture);
-          #if SIMPLEDEBUG
-             Serial.print("take a picture on Auto Mode with ISO: ");
-             Serial.print(_myISO);
-             Serial.print(", current Picture: ");
-             Serial.println(currentPicture);
-          #endif
+      #if SIMPLEDEBUG
+         Serial.print("take a picture on Auto Mode with ISO: ");
+         Serial.print(_myISO);
+         Serial.print(", current Picture: ");
+         Serial.println(currentPicture);
+      #endif
     }
     meter_set_iso(_myISO); //Set the correct compare Table for the active ISO
     Camera::shutterCLOSE ();
-    //delay(1000); //???
     Camera::mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-    
     while (digitalRead(PIN_S3) != HIGH){
       //waiting for S3 to OPEN}
       #if ADVANCEDEBUG
@@ -371,6 +376,9 @@ void Camera::AutoExposure(int _myISO)
      #endif
     }
     delay(YDelay);                               //S3 is now open start Y-delay (40ms)
+    if(_sw2==1){ //Longer Delay on Selftimer
+      delay(YDelay); 
+    }
     //startCounter();
     meter_init();
     meter_integrate();
@@ -381,8 +389,11 @@ void Camera::AutoExposure(int _myISO)
     return;
 }
 
-void Camera::FlashBAR() //FlashBAR
+void Camera::FlashBAR(byte _sw1, byte _sw2) //FlashBAR
 {
+  if(_sw2==1){
+    switch2Function(3);
+  }
   currentPicture++; 
   WritePicture(currentPicture);
   #if SIMPLEDEBUG
@@ -462,7 +473,7 @@ void Camera::FlashBAR() //FlashBAR Testprocedure
   return;
 }*/
 
-void Camera::ShutterB()
+void Camera::ShutterB(byte _sw1, byte _sw2)
 {
 /*  MultipleExposure Mode
  *   if((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ //Switch 1 set ON --> Multiple Exposure Mode
@@ -527,7 +538,7 @@ void Camera::ShutterB()
   return;
 }
 
-void Camera::ShutterT()
+void Camera::ShutterT(byte _sw1, byte _sw2)
 {
   currentPicture++; 
   WritePicture(currentPicture);
@@ -704,4 +715,27 @@ bool Camera::getLIGHTMETER_HELPER(){
     //Serial.println(lightmeterHelper));
   #endif
   return lightmeterHelper;
+}
+
+void Camera::switch2Function(int mode){
+    if(mode==0){
+       digitalWrite(PIN_LED2, LOW);
+       digitalWrite(PIN_LED1, LOW);
+       BlinkTimerDelay (GREEN, RED, 10);
+    }
+    else if(mode==1){
+      digitalWrite(PIN_LED2, LOW);
+      digitalWrite(PIN_LED1, LOW);
+      BlinkTimerDelay (GREEN, RED, 10);
+    }else if(mode==2){
+      digitalWrite(PIN_LED2, LOW);
+      digitalWrite(PIN_LED1, LOW);
+      BlinkTimerDelay (GREEN, RED, 10);
+    }else if(mode==3){
+        //openSX70.BlinkTimerDelay (GREEN, RED,10);
+        delay (10000); //???
+      }
+    else{
+        return false;  
+    }
 }
