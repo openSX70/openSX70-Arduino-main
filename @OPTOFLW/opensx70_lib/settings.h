@@ -23,8 +23,8 @@
   //#define S1Logic HIGH //= Sonar 
   #define S1Logic HIGH
   #define SONAR 1
-  #define ORIGAMI 1 //Inverted Rotary Switch Logic
-  #define UDONGLE 0
+  #define ORIGAMI 0 //Inverted Rotary Switch Logic
+  #define UDONGLE 1
   extern const uint8_t YDelay;
   extern const byte PowerDownDelay; //time it takes to be fully closed
   extern const byte PowerDown; //max 255 = full power/POWERUP mode
@@ -33,7 +33,7 @@
   extern int prevDongle;
   #define ISO_SX70 125
   #define ISO_600 640
-  #define ISO_600BW 400
+  //#define ISO_600BW 400
   #define DEFAULT_ISO ISO_600
   #define EE_ADD_CUR   4
    //-> CurrentPicture --> 1-8 "Pack" picture counter
@@ -45,8 +45,9 @@
   //-> camera current ISO (dongleless)
   //OPTION REGARDING SELECTOR WHEEL
   //AnalogueDongle
-  //enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
-  enum positions_t {POST = -100, POSB, AUTO600, AUTO600BW, AUTO100 };//ANALOGUEWORKS AUTO 600BW
+  //
+  enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
+  /////enum positions_t {POST = -100, POSB, AUTO600, AUTO600BW, AUTO100 };//ANALOGUEWORKS AUTO 600BW
   //uDONGLE
   //enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; //uDONGLE original
   //enum positions_t {POST = -100, AUTO600, AUTO600BW, AUTO100}; //uDONGLE Optoflow

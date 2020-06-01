@@ -57,9 +57,9 @@
         outputCompare = A600;
       } else if (iso == ISO_SX70) {
         outputCompare = A100;
-      } else if (iso == ISO_600BW){
+      }/* else if (iso == ISO_600BW){
         outputCompare = A400;
-      }
+      }*/
   }
   
   int meter_compute(unsigned int _interval) //Light Meter Helper Compute
@@ -266,11 +266,11 @@
     if((ShutterSpeed[_selector]) == AUTO600)
     {
       activeISO = ISO_600;
-    }
+    }/*
     else if((ShutterSpeed[_selector]) == AUTO600BW)
     {
       activeISO = ISO_600BW;
-    }else if((ShutterSpeed[_selector] == AUTO100))
+    }*/else if((ShutterSpeed[_selector] == AUTO100))
     {
       activeISO = ISO_SX70;
     }

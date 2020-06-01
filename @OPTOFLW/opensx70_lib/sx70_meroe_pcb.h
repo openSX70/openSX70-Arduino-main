@@ -54,17 +54,16 @@
   // Output pin definition
   const uint8_t PIN_SOL1 = 3; //orig 3 PD3(INT1)
   const uint8_t PIN_SOL2 = 11;
-  const uint8_t PIN_FT = 4; //Sonar Flash Triggerd (Not working in current Sonar PCB! 
-  #if SONAR == 0
-  const uint8_t PIN_FFA = 4;
-  #endif
+ ///// const uint8_t PIN_FT = 4; //Sonar Flash Triggerd (Not working in current Sonar PCB! 
+ 
   const uint8_t PIN_MOTOR = A2;
   const uint8_t PIN_LED1 = 13; //LED RED
   const uint8_t PIN_LED2 = A3; //LED BLUE
   #if SONAR
   const uint8_t PIN_GTD = A5; // Sonar gone that distance
   const uint8_t PIN_S1F = 10; //Sonar S1 Focus //Analog imput only
-  //const uint8_t PIN_FT = A7; //Sonar Flash Triggerd (SonarV1 workaround for wrong wireing)
+  const uint8_t PIN_FT = A7; //Sonar Flash Triggered Input
+  const uint8_t PIN_S1F_FBW = 2; //engage SONAR prefocus
   const uint8_t PIN_FFA = 4;
   #endif
   //#define EE_ADD_PIC 13

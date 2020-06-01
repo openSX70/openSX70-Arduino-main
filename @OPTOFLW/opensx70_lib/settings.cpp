@@ -13,9 +13,9 @@ byte lightmeterHelper = true;
 //uDONGLE WHEEL
 //int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing Original U-Dongle3.3
 //int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO600BW, AUTO100, POST }; //reduced speeds from 25 (slot5) to compensate flash firing
-int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, AUTO600, AUTO600BW, AUTO100, POST, POSB }; //with 600BW | reduced speeds from 25 (slot5) to compensate flash firing
+///////int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, AUTO600, AUTO600BW, AUTO100, POST, POSB }; //with 600BW | reduced speeds from 25 (slot5) to compensate flash firing
 //NEW WHEEL ANALOGUEDONGLE
-//int ShutterSpeed[] = { 16, 20, 23, 25, 30, 35, 45, 55, 166, 302, 600, 1100, POST, POSB, AUTO600, AUTO100 };  //SANTI DONGLE WHEEL
+int ShutterSpeed[] = { 16, 20, 23, 25, 30, 35, 45, 55, 166, 302, 600, 1100, POST, POSB, AUTO600, AUTO100 };  //SANTI DONGLE WHEEL
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
 // this are the "SLOTS":
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };

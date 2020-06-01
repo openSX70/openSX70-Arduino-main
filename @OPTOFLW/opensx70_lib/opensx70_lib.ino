@@ -45,6 +45,7 @@ static int metercount;
 void setup() {//setup - Inizialize
   #if DEBUG
     Serial.begin (9600);
+    Serial.println ("welcome to openSX70 debug activated");
   #endif
   myDongle.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
@@ -73,6 +74,39 @@ void setup() {//setup - Inizialize
 }
 
 void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop
+  
+
+    if(digitalRead(PIN_S1F) == S1Logic)
+  {//Dont run DongleInserted Function on S1F pressed
+  unsigned long startMillis = millis();
+    Serial.print ("start: ");
+    Serial.println (startMillis);
+ 
+  digitalWrite (PIN_S1F_FBW,HIGH);
+  getGTD();
+    //Serial.println ("GTD: ");
+    //Serial.println (GTD);
+  bool GTD = getGTD;
+   while(GTD != 1)
+  ; 
+  {
+    unsigned long finalMillis = millis();
+    Serial.print ("end: ");
+    Serial.println (finalMillis);
+ 
+    unsigned long focustime;
+    focustime = finalMillis - startMillis;
+    Serial.print ("Focus: ");
+    Serial.println (focustime);
+  }
+  }
+  else
+  {
+    digitalWrite (PIN_S1F_FBW,LOW);
+    //Serial.println ("NO focus");
+  }
+  
+  /*
   if(digitalRead(PIN_S1)!= S1Logic){
     #if SONAR
       if(digitalRead(PIN_S1F) != S1Logic){//Dont run DongleInserted Function on S1F pressed
@@ -101,7 +135,7 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
   manualExposure();
   Auto600Exposure();
   Auto100Exposure();
-  Auto600BWExposure();
+  //Auto600BWExposure();
   #if SONAR
     getGTD();
     //getFT();
@@ -109,7 +143,8 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
     //printReadings();
   #endif
   //LightMeterHelper(1);
-}
+  */
+} //end of loop
 
 void turnLedsOff(){ //todo:move to camerafunction
    digitalWrite(PIN_LED1, LOW);
@@ -127,7 +162,7 @@ void getS1F(){
 }
 
 void getFT(){
-   //FT = digitalRead(PIN_FT);
+   FT = digitalRead(PIN_FT);
 }
 
 void printReadings(){
@@ -135,8 +170,8 @@ void printReadings(){
   Serial.print(GTD);
   Serial.print(" | S1F: ");
   Serial.print(S1F);
-  //Serial.print(" | FT: ");
-  //Serial.print(FT);
+  Serial.print(" | FT: ");
+  Serial.print(FT);
   Serial.print(" | FF: ");
   Serial.println(digitalRead(PIN_FFA));
   }
@@ -152,16 +187,16 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
       savedISO = ReadISO();
       turnLedsOff();
       if (savedISO == ISO_600){
-        myDongle.simpleBlink(3, GREEN);
+        myDongle.simpleBlink(2, GREEN);
       }
       else if (savedISO == ISO_SX70){
         myDongle.simpleBlink(1, GREEN);
         //delay(400);
-      }
+      }/*
       else if (savedISO == ISO_600BW){
         myDongle.simpleBlink(2, GREEN);
         //delay(400);
-      }
+      }*/
       else{
       #if SIMPLEDEBUG
         Serial.println("No ISO Selected");
@@ -187,13 +222,13 @@ void BlinkISO2() { //read the default ISO and blink once for SX70 and twice for 
       if (activeISO == ISO_SX70){
         myDongle.simpleBlink(1, GREEN);
         delay(400);
-      }
+      }/*
       else if (activeISO == ISO_600BW){
         myDongle.simpleBlink(2, GREEN);
         delay(400);
-      }
+      }*/
       else if (activeISO == ISO_600){
-        myDongle.simpleBlink(3, GREEN);
+        myDongle.simpleBlink(2, GREEN);
       }
       #if SIMPLEDEBUG
           Serial.print ("EEPROM READ ISO: ");
@@ -213,9 +248,9 @@ void BlinkAutomode(){
         #endif
         turnLedsOff();
         if(ShutterSpeed[selector]== AUTO600){
-          myDongle.simpleBlink(3, GREEN);
+          myDongle.simpleBlink(2, GREEN);
           checkFilmCount();
-        }
+        }/*
         if(ShutterSpeed[selector]== AUTO600BW){
           myDongle.simpleBlink(2, GREEN);
           checkFilmCount();
@@ -233,7 +268,7 @@ void BlinkAutomode(){
           myDongle.simpleBlink(1, RED);
           myDongle.simpleBlink(1, GREEN);
           checkFilmCount();
-        }
+        }*/
     }
 }
 
@@ -248,13 +283,13 @@ void BlinkISOGreen() { //read the active ISO and blink once for SX70 and twice f
         if (activeISO == ISO_SX70){
           myDongle.simpleBlink(1, GREEN);
           //delay(400);
-        }
+        }/*
         else if (activeISO == ISO_600BW){
           myDongle.simpleBlink(2, GREEN);
           //delay(400);
-        }
+        }*/
         else if (activeISO == ISO_600){
-          myDongle.simpleBlink(3, GREEN);
+          myDongle.simpleBlink(2, GREEN);
         }
         #if SIMPLEDEBUG
             Serial.print ("active ISO: ");
@@ -277,13 +312,13 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
       if (activeISO == ISO_SX70){
         myDongle.simpleBlink(1, RED);
         //delay(400);
-      }
+      }/*
       else if (activeISO == ISO_600BW){
         myDongle.simpleBlink(2, RED);
         //delay(400);
-      }
+      }*/
       else if (activeISO == ISO_600){
-        myDongle.simpleBlink(3, RED);
+        myDongle.simpleBlink(2, RED);
       }
       #if SIMPLEDEBUG
           Serial.print ("active ISO: ");
@@ -309,11 +344,11 @@ void saveISOChange(){
             if(_selectedISO != ISO_SX70){
               _selectedISO = ISO_SX70;
             }
-          }
+          }/*
           else if (((ShutterSpeed[selector]) == AUTO600BW)){
             if(_selectedISO != ISO_600BW){
               _selectedISO = ISO_600BW;
-            }
+            }*/
           }else{
            //no ISO Selected
            _selectedISO = DEFAULT_ISO;
@@ -332,9 +367,10 @@ void saveISOChange(){
             WriteISO(_selectedISO); //Write ISO to EEPROM
             BlinkISORed(); //Blink ISO and load saved ISO from EEPROM
             return;
-        }
-      }
-    }else if (nowDongle == 0){
+          }
+        
+      
+    } else if (nowDongle == 0){
       #if SIMPLEDEBUG
         //Serial.println("savedISOChange() - no Dongle detected");
       #endif
@@ -357,11 +393,11 @@ void checkISOChange(){
             if(_selectedISO != ISO_SX70){
               _selectedISO = ISO_SX70;
             }
-          }
+          }/*
           else if (((ShutterSpeed[selector]) == AUTO600BW)){
             if(_selectedISO != ISO_600BW){
               _selectedISO = ISO_600BW;
-            }
+            }*/
           }
           else{//All other modes
           _selectedISO = ReadISO();  //read from EEPROM -- why?
@@ -379,7 +415,7 @@ void checkISOChange(){
             //BlinkISOGreen(); //Blink Green on ISO select - only check no save
         }
     }
-  }else{ //no Dongle pressend
+   else { //no Dongle pressend
        savedISO = ReadISO(); //read the savedISO from the EEPROM
        if(activeISO != savedISO){
         #if SIMPLEDEBUG
@@ -756,7 +792,7 @@ void Auto100Exposure(){
     }
   }
 }
-
+/*
 void Auto600BWExposure(){
   //Auto600BW
   if (((ShutterSpeed[selector]) == AUTO600BW)) //AUTO600BW WHEEL
@@ -773,7 +809,7 @@ void Auto600BWExposure(){
       return;
     }
   }
-}
+}*/
 
 void LightMeterHelper(byte ExposureType){
     int helperstatus = openSX70.getLIGHTMETER_HELPER();
@@ -797,7 +833,7 @@ void LightMeterHelper(byte ExposureType){
       //else{
       //  metercount++;
       //}
-    }/*
+    } /*
     #if SONAR
       }
       else{

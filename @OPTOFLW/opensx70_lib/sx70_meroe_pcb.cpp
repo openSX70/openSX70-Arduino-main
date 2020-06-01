@@ -36,9 +36,13 @@ void io_init() {
  
   #if SONAR
   pinMode(PIN_S1, INPUT); //S1T on Sonar
-  //pinMode(PIN_FT, INPUT_PULLUP); //doesnt work in SonarV1!!
+  /////pinMode(PIN_FT, INPUT_PULLUP); //doesnt work in SonarV1!!
+  pinMode(PIN_FT, INPUT); //doesnt work in SonarV1!!
   pinMode(PIN_S1F, INPUT);
-  pinMode(PIN_GTD, INPUT_PULLUP);
+  pinMode(PIN_S1F_FBW, OUTPUT);
+  ///////pinMode(PIN_GTD, INPUT_PULLUP);
+  pinMode(PIN_GTD, INPUT);
+  digitalWrite(PIN_S1F_FBW, LOW);
   #endif
   
 }
