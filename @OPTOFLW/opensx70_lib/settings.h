@@ -5,10 +5,10 @@
   #define RED 7
   #define LIGHMETER_HELPER 1
   //LIGHMETER_HELPER 0  NO helper, 1 for VE helper, 2 future dongle helper
-  #define DEBUG 1
+#define DEBUG 1
   #define SIMPLEDEBUG 0 //Simple Debug On 1 - Off 0
   #define ADVANCEDEBUG 0 //Simple Debug On 1 - Off 0
-  #define BASICDEBUG 0 // Debug of Basic Camera Functions
+  #define BASICDEBUG 0 // Debug of Basic 
   #define MXDEBUG 0 // Multiple Exposure Debug
   #define LMDEBUG 0 //Lightmeter Debug
   #define LMHELPERDEBUG 0 //Lightmeter Debug

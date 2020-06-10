@@ -1,3 +1,50 @@
+/*
+**the openSX70 project**
+
+  It is many things at once, but simply put, openSX70 is an open source
+  (hardware and software) project that aims to take the SX70 beyond what
+  is possible now in a cheap and non destructive way.
+  https://opensx70.com/
+
+  https://github.com/openSX70
+
+  As a legal reminder please note that the code and files is under Creative Commons
+  "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)" is free and open
+  for hobbyist NON-COMMERCIAL USE.
+  https://creativecommons.org/licenses/by-nc/4.0/
+
+  You are free to:
+  Share — copy and redistribute the material in any medium or format
+  Adapt — remix, transform, and build upon the material
+  The licensor cannot revoke these freedoms as long as you follow the license terms.
+  Under the following terms:
+  Attribution — You must give appropriate credit, provide a link to the license,
+  and indicate if changes were made. You may do so in any reasonable manner, but
+  not in any way that suggests the licensor endorses you or your use.
+
+  NonCommercial — You may not use the material for commercial purposes.
+
+  No additional restrictions — You may not apply legal terms or technological
+  measures that legally restrict others from doing anything the license permits.
+
+  Notices:
+  You do not have to comply with the license for elements of the material in the
+  public domain or where your use is permitted by an applicable exception or limitation.
+
+  No warranties are given. The license may not give you all of the permissions necessary
+  for your intended use. For example, other rights such as publicity, privacy, or moral r
+  ights may limit how you use the material.
+
+  I know this software is "not ok" but I am doing my best to improve it and learn at the same time.
+  Parts have been use from Pierre-Loup Martin "structure" branch, but, by no means this compares to his works.
+  https://github.com/troisiemetype/openSX70-Arduino-main/tree/structure
+
+  Nevertheless I am trying to learn, step by step from him.
+
+*/
+
+//20200605 Peter added focus stuff
+
 #include "Arduino.h"
 #include "open_SX70.h"
 //Version 15_05_2020_V3_Sonar_TCS3200 and ORIGAMI
@@ -38,6 +85,8 @@ static int metercount;
   bool GTD = 0;
   bool FT = 0;
   bool S1F = 0;
+  bool isFocused = 0;
+  int currentPicOnFocus;
 #endif
 //long oldMillis = 0;
 //byte firstRun = 0;
@@ -74,39 +123,75 @@ void setup() {//setup - Inizialize
 }
 
 void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop
+  //if(digitalRead(PIN_S1F) == S1Logic)
+  {
+/*
+  if(digitalRead(PIN_S1F) == S1Logic)
+  {//Dont run DongleInserted Function on S1F pressed
   
+    Serial.println ("Prefocus");
+
+  if(digitalRead(PIN_S1) == S1Logic)
+  {//Dont run DongleInserted Function on S1F pressed
+  
+    Serial.println ("Take");
+    
+    
+  }
+
+  getS1F();
+  getGTD();
+  getFT();
+  if (S1F == S1Logic)
+  {
+    DoFocus();
+  }
+  else
+  {
+    Unfocus();
+  }
+  
+printReadings();
+  }
+   
+  
+
 
     if(digitalRead(PIN_S1F) == S1Logic)
   {//Dont run DongleInserted Function on S1F pressed
   unsigned long startMillis = millis();
-    Serial.print ("start: ");
-    Serial.println (startMillis);
+  //  Serial.print ("start: ");
+  //  Serial.println (startMillis);
  
   digitalWrite (PIN_S1F_FBW,HIGH);
   getGTD();
-    //Serial.println ("GTD: ");
-    //Serial.println (GTD);
+    Serial.print ("GTD: ");
+    Serial.println (GTD);
+  //
   bool GTD = getGTD;
    while(GTD != 1)
   ; 
   {
     unsigned long finalMillis = millis();
-    Serial.print ("end: ");
-    Serial.println (finalMillis);
+    //Serial.print ("end: ");
+    //Serial.println (finalMillis);
  
     unsigned long focustime;
     focustime = finalMillis - startMillis;
     Serial.print ("Focus: ");
     Serial.println (focustime);
+    return;
   }
   }
   else
   {
     digitalWrite (PIN_S1F_FBW,LOW);
     //Serial.println ("NO focus");
+    return;
   }
   
-  /*
+  */
+
   if(digitalRead(PIN_S1)!= S1Logic){
     #if SONAR
       if(digitalRead(PIN_S1F) != S1Logic){//Dont run DongleInserted Function on S1F pressed
@@ -127,6 +212,26 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
     }
   #endif SONAR
   }
+  
+  #if SONAR
+  getS1F();
+  
+  if (!S1F)
+  {
+    if (isFocused)
+    {
+      Unfocus();
+    }
+    return;
+  }
+    
+  if (!isFocused)
+  {
+    DoFocus();
+  }
+
+  #endif SONAR
+  
   normalOperation();
   noDongleMode();
   flashOperationMode();
@@ -137,14 +242,13 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
   Auto100Exposure();
   //Auto600BWExposure();
   #if SONAR
-    getGTD();
-    //getFT();
-    getS1F();
-    //printReadings();
+    if (currentPicture != currentPicOnFocus)
+      Unfocus();
   #endif
   //LightMeterHelper(1);
-  */
+   
 } //end of loop
+ 
 
 void turnLedsOff(){ //todo:move to camerafunction
    digitalWrite(PIN_LED1, LOW);
@@ -165,6 +269,31 @@ void getFT(){
    FT = digitalRead(PIN_FT);
 }
 
+void DoFocus()
+{
+  startFocus();
+  getGTD();
+  while(!GTD)
+    getGTD();
+  isFocused = 1;
+  currentPicOnFocus = currentPicture;
+}
+
+void Unfocus()
+{
+  endFocus();
+  isFocused = 0;
+}
+
+void startFocus() {
+  digitalWrite (PIN_S1F_FBW, HIGH);
+}
+
+void endFocus() {
+  digitalWrite (PIN_S1F_FBW, LOW);
+}
+
+
 void printReadings(){
   Serial.print("GTD: ");
   Serial.print(GTD);
@@ -177,7 +306,8 @@ void printReadings(){
   }
 #endif
 
-void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 600BW and triple for 600 - on Dongle insertion
+void BlinkISO() { 
+  //read the default ISO and blink once for SX70 and twice for 600BW and triple for 600 - on Dongle insertion
     if ((nowDongle != 0) && (prevDongle == 0))
      if((switch2 != 1) || (switch1 != 1)){ //Not on Save ISO Mode
     {
@@ -599,7 +729,7 @@ void normalOperation(){
 }
 
 void noDongleMode(){
-  //Case No Dongle
+  //Cse No Dongle
   //Serial.println("no Dongle Exposure");
   if ((selector == 200) && (myDongle.checkDongle() == 0)) 
   {

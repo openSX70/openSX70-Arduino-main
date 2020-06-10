@@ -64,8 +64,9 @@
   const uint8_t PIN_S1F = 10; //Sonar S1 Focus //Analog imput only
   const uint8_t PIN_FT = A7; //Sonar Flash Triggered Input
   const uint8_t PIN_S1F_FBW = 2; //engage SONAR prefocus
-  const uint8_t PIN_FFA = 4;
   #endif
+  const uint8_t PIN_FFA = 4;
+  
   //#define EE_ADD_PIC 13
   //#define EE_ADD_ISO 20
   //#define CLICKBTN_PULLUP HIGH

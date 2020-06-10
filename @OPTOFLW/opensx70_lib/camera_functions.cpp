@@ -557,11 +557,7 @@ void Camera::ShutterT(byte _sw1, byte _sw2)
   }
   delay (40);                               //S3 is now open start Y-delay (40ms)
   //MutlipleExposure Finish()
-  #if SONAR
-  while (digitalRead(PIN_S1F) == HIGH){
   
-  }
-  #endif
   Camera::shutterOPEN ();
   while (digitalRead(PIN_S1) == !S1Logic){
     //nothing
