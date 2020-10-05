@@ -1,18 +1,18 @@
 #include "Arduino.h"
 #include "settings.h"
-//
 #include "EEPROM.h"
 
-void WritePicture(int _currentPicture){
+int WritePicture(int _currentPicture){
   EEPROM.update(EE_ADD_PIC, _currentPicture);
-  return;
+  return _currentPicture;
 }
 
 int ReadPicture(){
   int _currentPicture;
   EEPROM.get(EE_ADD_PIC, _currentPicture);
-  return _currentPicture;
+  return (_currentPicture+256);
 }
+
 void WriteISO(int _currentISO){
   EEPROM.put(EE_ADD_ISO, _currentISO);
   return;
@@ -31,39 +31,24 @@ void init_EEPROM() {
   initJP[1] = EEPROM.read(1);
   //int currentPicture = 1;
   //const uint8_t EE_ADD_PIC = 13;
-  if (initJP[0] != 'S' || initJP[1] != 'X')
+  if (initJP[0] != 255 || initJP[1] != 255)
   {
-#if SIMPLEDEBUG
-    Serial.println("Initializing EEPROM....");
-#endif
+    #if SIMPLEDEBUG
+        Serial.println("Initializing EEPROM....");
 
-    EEPROM.write(0, 'S');
-    EEPROM.write(1, 'X');
-    //    int eeAddress = 101;
-//    DEFAULT_ISO = 640;
-    WritePicture(0);
-    WriteISO(DEFAULT_ISO);
-//    EEPROM.put(EE_ADD_PIC, currentPicture);
-//    EEPROM.put(EE_ADD_ISO, DEFAULT_ISO);
+    #endif
+      EEPROM.update(0, 255);
+      EEPROM.update(1,255);
+      //    int eeAddress = 101;
+      //    DEFAULT_ISO = 640;
+      //WritePicture(0); //Write picture 0 moved to Darkslide Fucntion 
+      WriteISO(DEFAULT_ISO);
+      //    EEPROM.put(EE_ADD_PIC, currentPicture);
+      //    EEPROM.put(EE_ADD_ISO, DEFAULT_ISO);
+      #if SIMPLEDEBUG
+        Serial.print("ISO in EEPROM: ");
+        Serial.println(ReadISO());
+      #endif
       return;
   } 
-
-/*   
-   int _myISO = ReadISO ();
-      if ((_myISO !=  ISO_600) || (_myISO !=  ISO_SX70))
-   {
-    Serial.print ("ERROR read ISO: ");
-    Serial.println (_myISO);
-    Serial.print ("ISO_600: ");
-    Serial.println (ISO_600);
-    Serial.print ("ISO_SX70: ");
-    Serial.println (ISO_SX70);    
-    Serial.print ("DEFAULT ISO DEFINED: ");
-    Serial.println (DEFAULT_ISO);
-    WriteISO (DEFAULT_ISO);
-    return;
-   }  
-    Serial.print ("ISO read correctly: ");
-//    Serial.println (_myISO);
- */   
 }

@@ -137,8 +137,8 @@ struct DS2408: OneWire {
 
     // Other
     uint8_t find(Devices* devices);
-	uint8_t findsingle(Device* devices);
-	
+  uint8_t findsingle(Device* devices);
+  
 private:
     void select_device(Device device);
 };

@@ -46,12 +46,13 @@ void meter_init(){
 }
 
 void meter_set_iso(const uint16_t& iso){
-	if(iso == ISO_600){
-		outputCompare = A600;
-	} else {
-		outputCompare = A100;
-	}
-
+    if (iso == ISO_600) {
+      outputCompare = A600;
+    } else if (iso == ISO_SX70) {
+      outputCompare = A100;
+    } else if (iso == ISO_600BW){
+      outputCompare = A400;
+    }
 }
 
 void meter_compute(){
@@ -133,14 +134,14 @@ int nearest(int x, int myArray[], int elements, bool sorted)
   }
   return idx;
 }
-void meter_led(byte _selector, bool _type)
+void meter_led(byte _selector, byte _type)
 {
   int PredictedExposure = meter_compute(200);
   if (PredictedExposure == -1)
   {
     return;
   }
-  if (_type)
+  if (_type == 1)
   {
     int slot = nearest(PredictedExposure, ShutterSpeed, 11, false);
 
@@ -185,7 +186,7 @@ void meter_led(byte _selector, bool _type)
       return;
     }
   }
-  if (!_type)
+  if (_type == 0)
   {
     if (PredictedExposure > 100)
     {
@@ -268,13 +269,9 @@ int meter_compute(unsigned int _interval) //////////////////////////////////////
       }*/
      // PredExp = PredExp + ShutterConstant;
       return PredExp;
-
     }
   }
-
   return -1;
-
- 
 }
 
 #endif
