@@ -38,11 +38,38 @@ static int metercount;
 //long oldMillis = 0;
 //byte firstRun = 0;
 
+//https://electronics.stackexchange.com/questions/95569/best-practice-to-keep-main-in-embedded-systems/96415#96415
+typedef enum{
+  STATE_DARKSLIDE,
+  STATE_NODONGLE,
+  STATE_DONGLE,
+  STATE_FLASHBAR,
+  STATE_EXPOSURE,
+  STATE_N
+} state_t;
+
+typedef state_t (*state_funct_t)(void);
+
+state_t do_state_darkslide (void);
+state_t do_state_noDongle (void);
+state_t do_state_dongle (void);
+state_t do_state_flashBar (void);
+state_t do_state_exposure (void);
+
+static const state_funct_t STATE_MACHINE [STATE_N] = {
+  &do_state_darkslide,
+  &do_state_noDongle,
+  &do_state_dongle,
+  &do_state_flashBar,
+  &do_state_exposure
+};
+
+state_t state = STATE_DARKSLIDE;
+
 void setup() {//setup - Inizialize
   #if DEBUG
     Serial.begin (9600);
   #endif
-  Serial.begin (9600); //remove later
   myDongle.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
   // (These are default if not set, but changeable for convenience)
@@ -67,35 +94,57 @@ void setup() {//setup - Inizialize
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
   #endif
+  
 }
 
 void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop
-  normalOperation();
-  Auto600Exposure();
-  Auto100Exposure();
-  flashOperation();
-  manualExposure();
-  darkslideEject();
-  selector = myDongle.selector();
-  switch1 = myDongle.switch1();
-  switch2 = myDongle.switch2();
-  prevDongle = nowDongle;
-  nowDongle = myDongle.checkDongle();
-  currentPicture = ReadPicture();
-  //checkISOChange(); //Blink on ISOChange in non Saving Mode (no Switch1 and no Switch2 is active)
-  //saveISOChange(); //Save the selected ISO Value when ISO Saving mode is active (Switch1 and Switch2 are high) and blink Red to validate the saving
-  ispackEmpty();
-  DongleInserted();
-  noDongle();
-  positionB();
-  positionT();
-  DongleInsertion(); //State when Dongle insertion is happening
-  #if SONAR
-    getGTD();
-    getFT();
-    getS1F();
-    //printReadings();
-  #endif
+  state = STATE_MACHINE[state]();
+}
+
+state_t do_state_darkslide (void) {
+  state_t result = STATE_NODONGLE;
+  if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
+    currentPicture = 0; 
+    WritePicture(currentPicture);
+    checkFilmCount(); //For Filmpack Status
+    //OPTION TURN ON AND OFF LED WHILE DARKSLIDE EJECT
+    if (nowDongle != 0) {
+      myDongle.dongleLed (GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
+    }
+    openSX70.darkslideEJECT(); //Disabled Darkslide eject to change Filmpack in Darkroom
+    if (nowDongle != 0) { 
+      myDongle.dongleLed (GREEN, LOW); //switching off green uDongle LED
+    } 
+    #if SIMPLEDEBUG
+        Serial.println("STATE1: EJECT DARK SLIDE");
+        Serial.print("currentPicture on Darkslide eject: ");
+        Serial.println(currentPicture);
+    #endif
+  }
+  if ((myDongle.selector() <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
+    result = STATE_DONGLE;
+  }
+  else if ((myDongle.selector() == 100) && (myDongle.checkDongle() == 0)){
+    result = STATE_FLASHBAR;
+  }
+  
+  return result;
+}
+
+state_t do_state_dongle (void){
+
+}
+
+state_t do_state_noDongle (void){
+
+}
+
+state_t do_state_exposure (void){
+
+}
+
+state_t do_state_flashBar (void){
+
 }
 
 void turnLedsOff(){ //todo:move to camerafunction
@@ -527,7 +576,7 @@ void DongleInserted(){ //Dongle is pressend LOOP
   if(digitalRead(PIN_S1) != S1Logic){
     #if SONAR
     if(digitalRead(PIN_S1F) != S1Logic){//Dont run DongleInserted Function on S1F pressed
-    #endif SONAR
+    #endif
     {//Serial.println("S1F HIGH");
       selector = myDongle.selector();
       switch1 = myDongle.switch1();
@@ -571,7 +620,7 @@ void DongleInserted(){ //Dongle is pressend LOOP
     }
     #if SONAR
       }
-    #endif SONAR
+    #endif
   }
 }
 
