@@ -137,6 +137,7 @@ state_t do_state_darkslide (void) {
 }
 
 state_t do_state_noDongle (void){
+  state_t result = STATE_NODONGLE;
   //if ((selector == 200) && (myDongle.checkDongle() == 0)){} 
   #if SIMPLEDEBUG
     Serial.println("BEGIN NO DONGLE STATE");
@@ -149,14 +150,12 @@ state_t do_state_noDongle (void){
     switch1 = 0; //necessary?
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
-    return;
   }
   if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
     switch1 = 0; //necessary?
     delay (10000);
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
-    return;
   }
   if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
     result = STATE_DONGLE;
@@ -164,9 +163,11 @@ state_t do_state_noDongle (void){
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
   }
+  return result;
 }
 
 state_t do_state_dongle (void){
+  state_t result = STATE_DONGLE;
   #if SIMPLEDEBUG
     Serial.println("BEGIN DONGLE STATE");
   #endif
@@ -175,6 +176,7 @@ state_t do_state_dongle (void){
   if ((selector == 200) && (myDongle.checkDongle() == 0)){
     result = STATE_NODONGLE;
   } 
+  return result;
 }
 
 state_t do_state_exposure (void){
@@ -182,6 +184,7 @@ state_t do_state_exposure (void){
 }
 
 state_t do_state_flashBar (void){
+  state_t result = STATE_FLASHBAR;
   #if SIMPLEDEBUG
     Serial.println("BEGIN FLASH BAR STATE");
   #endif
@@ -191,19 +194,19 @@ state_t do_state_flashBar (void){
     openSX70.FlashBAR();
     sw_S1.Reset();
     checkFilmCount();
-    return;
   }
   if (sw_S1.clicks == 2)
   {
     switch2Function(3); //Switch Two Function in Flash Mode
     openSX70.FlashBAR();
     sw_S1.Reset();
-    checkFilmCount();
-    return;  
+    checkFilmCount(); 
   } 
   if ((selector == 200) && (myDongle.checkDongle() == 0)){
     result = STATE_NODONGLE;
   } 
+
+  return result;
 }
 
 void turnLedsOff(){ //todo:move to camerafunction
