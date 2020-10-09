@@ -99,6 +99,7 @@ void setup() {//setup - Inizialize
 
 void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop
   selector = myDongle.selector();
+  normalOperation();
   state = STATE_MACHINE[state]();
 }
 
