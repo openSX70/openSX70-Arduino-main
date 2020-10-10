@@ -10,8 +10,9 @@
     const uint8_t TCS3200_S1_Pin = 9; //Pin 32 on Meroe2  (PD2-INT0)
     const uint8_t TCS3200_S3_Pin = 6; //Pin 10 on Meroe2 (PD6-AIN0)
   #else
-    const uint8_t TCS3200_S1_Pin = 32; //Pin 32 on Meroe2  (PD2-INT0)
-    const uint8_t TCS3200_S3_Pin = 10; //Pin 10 on Meroe2 (PD6-AIN0)
+    const uint8_t TCS3200_S1_Pin = 2; //Pin 32 on Meroe2  (PD2-INT0)
+    const uint8_t TCS3200_S3_Pin = 6; //Pin 10 on Meroe2 (PD6-AIN0)
+    const uint8_t PIN_OE = 9;         //Pin 13 on Meroe2  (PB1-OC1A)
   #endif
   //const uint8_t PIN_OE = 9;         //Pin 13 on Meroe2  (PB1-OC1A)
   
@@ -21,10 +22,10 @@
   
   // initialise Timer 1 for light sensor integration.
   void tcs3200_init(){
-    //pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
+    pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
     pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
     pinMode(TCS3200_S3_Pin, OUTPUT); //Photodiode type selection input
-    //digitalWrite(PIN_OE, LOW);
+    digitalWrite(PIN_OE, LOW);
       //S2 (Photodiode type selection pin) & S0 (Output frequency scaling selection pin) should be high,
       // both can be modified via jumper in PCB 
     digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%

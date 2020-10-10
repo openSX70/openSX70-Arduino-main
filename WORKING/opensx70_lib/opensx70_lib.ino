@@ -64,7 +64,7 @@ static const state_funct_t STATE_MACHINE [STATE_N] = {
   &do_state_exposure
 };
 
-state_t state;
+state_t state = STATE_DARKSLIDE;
 
 void setup() {//setup - Inizialize
   #if DEBUG
@@ -80,7 +80,7 @@ void setup() {//setup - Inizialize
   metercount = 0; //For the Lightmeter Helper Skipping Function
   checkFilmCount();
   inizialized++;
-  //  Serial.println ("reset happened");
+  Serial.println ("reset happened");
   if (digitalRead(PIN_S5) != LOW)
   {
     openSX70.mirrorDOWN();
@@ -94,20 +94,17 @@ void setup() {//setup - Inizialize
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
   #endif
-  state = STATE_DARKSLIDE;
+  
 }
 
 void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop
+  state = STATE_MACHINE[state]();
   selector = myDongle.selector();
   normalOperation();
-  state = STATE_MACHINE[state]();
 }
 
 state_t do_state_darkslide (void) {
-  #if SIMPLEDEBUG
-    Serial.println("BEGIN DARKSLIDE STATE");
-  #endif
-  state_t result = STATE_NODONGLE;
+  state_t result;
   if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
     currentPicture = 0; 
     WritePicture(currentPicture);
@@ -132,6 +129,9 @@ state_t do_state_darkslide (void) {
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
   }
+  else{
+    result = STATE_NODONGLE;
+  }
   
   return result;
 }
@@ -139,11 +139,9 @@ state_t do_state_darkslide (void) {
 state_t do_state_noDongle (void){
   state_t result = STATE_NODONGLE;
   //if ((selector == 200) && (myDongle.checkDongle() == 0)){} 
-  #if SIMPLEDEBUG
-    Serial.println("BEGIN NO DONGLE STATE");
-  #endif
 
   savedISO = ReadISO();
+
   //LightMeterHelper(0);
   LightMeterHelper(0); //Added 05.06.2020
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
