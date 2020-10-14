@@ -123,15 +123,18 @@ state_t do_state_darkslide (void) {
         Serial.println(currentPicture);
     #endif
   }
-  if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
-    result = STATE_DONGLE;
-  }
-  else if ((selector == 100) && (myDongle.checkDongle() == 0)){
-    result = STATE_FLASHBAR;
-  }
   else{
-    result = STATE_NODONGLE;
+    if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
+      result = STATE_DONGLE;
+    }
+    else if ((selector == 100) && (myDongle.checkDongle() == 0)){
+      result = STATE_FLASHBAR;
+    }
+    else{
+      result = STATE_NODONGLE;
+    }
   }
+  
   
   return result;
 }
@@ -155,7 +158,7 @@ state_t do_state_noDongle (void){
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
   }
-  if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
+  if (myDongle.checkDongle() > 0){ //((selector <= 15) && (myDongle.checkDongle() > 0))
     result = STATE_DONGLE;
   }
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
@@ -166,12 +169,25 @@ state_t do_state_noDongle (void){
 
 state_t do_state_dongle (void){
   state_t result = STATE_DONGLE;
-  #if SIMPLEDEBUG
-    Serial.println("BEGIN DONGLE STATE");
-  #endif
 
+  if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
+    LightMeterHelper(1);
 
-  if ((selector == 200) && (myDongle.checkDongle() == 0)){
+    //If/else implementation
+    if(selector>=0) && (selector<12)){
+      switch2Function(0); //switch2Function Manual Mode
+      sw_S1.Reset();
+      openSX70.ManualExposure(selector);
+      checkFilmCount();
+      return;
+    }
+    else if(){
+
+    }
+
+  } 
+
+  if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
   } 
   return result;
