@@ -22,10 +22,14 @@
   
   // initialise Timer 1 for light sensor integration.
   void tcs3200_init(){
-    pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
+    #if !SONAR
+      pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
+    #endif
     pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
     pinMode(TCS3200_S3_Pin, OUTPUT); //Photodiode type selection input
-    digitalWrite(PIN_OE, LOW);
+    #if !SONAR
+      digitalWrite(PIN_OE, LOW);
+    #endif
       //S2 (Photodiode type selection pin) & S0 (Output frequency scaling selection pin) should be high,
       // both can be modified via jumper in PCB 
     digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
