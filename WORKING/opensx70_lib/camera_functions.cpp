@@ -278,25 +278,7 @@ void Camera::multipleExposureLastClick(){
 
 void Camera::ManualExposure(int _selector) //ManualExposure
 {
-  /*
-  if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ //Switch 1 set ON --> Multiple Exposure Mode
-    multipleExposure(0); //MX Manual
-  }
-  else if (((_dongle->checkDongle() > 0) &&  (mxshots >= 1) && (_dongle->switch1() == 0))){ //Multiexposure last Redbutton Click
-    multipleExposureLastClick();
-    
-  }
-  else{//Normal Expsoure
-    currentPicture++; 
-    WritePicture(currentPicture);
-    #if SIMPLEDEBUG
-      Serial.print("take single Picture on  Manual Mode");
-      Serial.print(", current Picture: ");
-      Serial.println(currentPicture);
-   #endif
-  }
-  */
-
+  
   if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 0) && (mxshots == 0)){//Normal exposure but the check is first
     currentPicture++; 
     WritePicture(currentPicture);
