@@ -46,17 +46,17 @@ typedef enum{
   STATE_FLASHBAR,
   STATE_EXPOSURE,
   STATE_N
-} state_t;
+} camera_state;
 
-typedef state_t (*state_funct_t)(void);
+typedef camera_state (*camera_state_funct)(void);
 
-state_t do_state_darkslide (void);
-state_t do_state_noDongle (void);
-state_t do_state_dongle (void);
-state_t do_state_flashBar (void);
-state_t do_state_exposure (void);
+camera_state do_state_darkslide (void);
+camera_state do_state_noDongle (void);
+camera_state do_state_dongle (void);
+camera_state do_state_flashBar (void);
+camera_state do_state_exposure (void);
 
-static const state_funct_t STATE_MACHINE [STATE_N] = {
+static const camera_state_funct STATE_MACHINE [STATE_N] = {
   &do_state_darkslide,
   &do_state_noDongle,
   &do_state_dongle,
@@ -64,7 +64,9 @@ static const state_funct_t STATE_MACHINE [STATE_N] = {
   &do_state_exposure
 };
 
-state_t state = STATE_DARKSLIDE;
+camera_state state = STATE_DARKSLIDE;
+
+
 
 void setup() {//setup - Inizialize
   #if DEBUG
@@ -103,8 +105,8 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
   normalOperation();
 }
 
-state_t do_state_darkslide (void) {
-  state_t result;
+camera_state do_state_darkslide (void) {
+  camera_state result;
   if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
     currentPicture = 0; 
     WritePicture(currentPicture);
@@ -139,8 +141,8 @@ state_t do_state_darkslide (void) {
   return result;
 }
 
-state_t do_state_noDongle (void){
-  state_t result = STATE_NODONGLE;
+camera_state do_state_noDongle (void){
+  camera_state result = STATE_NODONGLE;
   //if ((selector == 200) && (myDongle.checkDongle() == 0)){} 
 
   savedISO = ReadISO();
@@ -167,24 +169,26 @@ state_t do_state_noDongle (void){
   return result;
 }
 
-state_t do_state_dongle (void){
-  state_t result = STATE_DONGLE;
+camera_state do_state_dongle (void){
+  camera_state result = STATE_DONGLE;
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(1);
 
-    //If/else implementation
-    if(selector>=0) && (selector<12)){
-      switch2Function(0); //switch2Function Manual Mode
-      sw_S1.Reset();
-      openSX70.ManualExposure(selector);
-      checkFilmCount();
-      return;
-    }
-    else if(){
+    #if UDONGLE
+      if(selector>=0) && (selector<12)){
+        switch2Function(0); //switch2Function Manual Mode
+        sw_S1.Reset();
+        //TODO! CHANGE MANUALEXPOSURE TO TAKE SHUTTER SPEED MS AS INPUT RATHER THAN SELECTOR
+        openSX70.ManualExposure(selector);
+        checkFilmCount();
+      }
+      else if(){
 
-    }
-
+      }
+    #elif ORIGAMIV1
+      // TODO!
+    #endif
   } 
 
   if (myDongle.checkDongle() == 0){
@@ -193,12 +197,12 @@ state_t do_state_dongle (void){
   return result;
 }
 
-state_t do_state_exposure (void){
+camera_state do_state_exposure (void){
 
 }
 
-state_t do_state_flashBar (void){
-  state_t result = STATE_FLASHBAR;
+camera_state do_state_flashBar (void){
+  camera_state result = STATE_FLASHBAR;
   #if SIMPLEDEBUG
     Serial.println("BEGIN FLASH BAR STATE");
   #endif
