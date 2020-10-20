@@ -109,49 +109,6 @@ void Camera::DongleFlashNormal()
   pinMode(PIN_SOL2, INPUT_PULLUP);  //S2 back to dongle mode
 }
 
-void DongleFlashF8 ()
-{ /*
-    #if SIMPLEDEBUG
-    Serial.println ("DONGLE FLASH F8");
-    #endif
-    //                 byte PictureType = 4;
-    //                 CurrentPicture = EEPROM.read(4) ;
-    //
-    //                 eepromUpdate ();
-    //  if (takePicture == true)
-    {
-     byte PictureType = 6;
-    //    eepromUpdate ();
-     //         HighSpeedPWM ();
-     //         analogWrite(Solenoid2, 255);
-     Camera::shutterCLOSE ();
-     mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-     ///////while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
-     while (DebouncedRead(S3) != HIGH)            //waiting for S3 to OPEN
-       ;
-     //         analogWrite (Solenoid2, 130);
-    delay     (YDelay);                               //S3 is now open start Y-delay (40ms)
-     shutterOPEN ();
-     //                  delay (66);
-     delay (80);
-     Write_DS2408_PIO (7, 1); // this is for dongle (jack flash)
-     //                  digitalWrite(FFA, HIGH); //this is for in-camera flash
-     delay (1);
-     //                  analogWrite (Solenoid2,0);
-     //                  digitalWrite(FFA, LOW);
-     Write_DS2408_PIO (7, 0);
-     delay (10u);
-     shutterCLOSE();
-     delay (500);
-     delay (200);                             //AGAIN is this delay necessary?
-     mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-     delay (200);                             //AGAIN is this delay necessary?
-     shutterOPEN();
-     mxshots = 0;
-     
-    }*/
-}
-
 void Camera::Ydelay ()
 {
   //Only one 120ms delay.
@@ -259,7 +216,6 @@ void Camera::Blink (unsigned int interval, int timer, int Pin, byte type)
 
 void Camera::multipleExposureLastClick(){
   {
-      //sw_S1.Reset();
       #if MXDEBUG
             Serial.print("Multiexposure last Red Button Click, mxshots: ");
             Serial.print(mxshots);
@@ -267,34 +223,22 @@ void Camera::multipleExposureLastClick(){
             Serial.println(currentPicture);
             
       #endif
-      mxshots = 0;
       Camera::mirrorDOWN(); 
       delay(50);                             //AGAIN is this delay necessary? 100-->50
       Camera::shutterOPEN();
-      multipleExposureMode = 0;
       
     }
 }
 
-void Camera::ManualExposure(int _selector) //ManualExposure
+void Camera::ManualExposure(int sSpeed, bool mEXP) //ManualExposure
 {
-  
-  if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 0) && (mxshots == 0)){//Normal exposure but the check is first
-    currentPicture++; 
-    WritePicture(currentPicture);
-    #if SIMPLEDEBUG
-      Serial.print("take single Picture on  Manual Mode");
-      Serial.print(", current Picture: ");
-      Serial.println(currentPicture);
-    #endif
-  }
-  else if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ //Switch 1 set ON --> Multiple Exposure Mode
-    multipleExposure(0); //MX Manual
-  }
-  else if (((_dongle->checkDongle() > 0) &&  (mxshots >= 1) && (_dongle->switch1() == 0))){ //Multiexposure last Redbutton Click
-    multipleExposureLastClick();
-    
-  }
+  currentPicture++; 
+  WritePicture(currentPicture);
+  #if SIMPLEDEBUG
+    Serial.print("take single Picture on  Manual Mode");
+    Serial.print(", current Picture: ");
+    Serial.println(currentPicture);
+  #endif
 
   Camera::shutterCLOSE ();
   delay (100); //added to fix bad photos WITH LESS delay IS THIS NEEDED??? auto does not have it. -ZANE
@@ -306,7 +250,7 @@ void Camera::ManualExposure(int _selector) //ManualExposure
   delay (YDelay);
   // startCounterCalibration();
   //int ShutterSpeed[] = {17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, AUTO600BW, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
-  int ShutterSpeedDelay = ((ShutterSpeed[_selector]) + ShutterConstant) ;
+  int ShutterSpeedDelay = (sSpeed + ShutterConstant) ;
   if (_selector >= 6)
   {
     ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
@@ -314,10 +258,10 @@ void Camera::ManualExposure(int _selector) //ManualExposure
   #if ADVANCEDDEBUG
     extern int selector;
     Serial.print("Manual Exposure Debug: ");
-    Serial.print("ShutterSpeed[");
-    Serial.print(_selector);
-    Serial.print("] :");
-    Serial.println(ShutterSpeed[_selector]);
+    //Serial.print("ShutterSpeed[");
+    //Serial.print(_selector);
+    //Serial.print("] :");
+    //Serial.println(ShutterSpeed[_selector]);
     Serial.print("ShutterConstant:");
     Serial.println(ShutterConstant);
     Serial.print("ShutterSpeedDelay:");
@@ -326,11 +270,9 @@ void Camera::ManualExposure(int _selector) //ManualExposure
 
   //sei(); //Interupts restart -- Take the Picture
   Camera::shutterOPEN();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
-  unsigned long initialMillis = millis();
   //delay (ShutterSpeedDelay);
   while (millis() <= (initialMillis + ShutterSpeedDelay))
     ;
-  unsigned long finalmillis = millis();
   if (_selector >= 3) // changed the flash selection
   {
     #if SIMPLEDEBUG
@@ -338,71 +280,36 @@ void Camera::ManualExposure(int _selector) //ManualExposure
     #endif
     Camera::FastFlash ();
   }
-  Camera::ExposureFinish();
-  Serial.print("ms taken MANUAL:    ");
-  Serial.println(finalmillis - initialMillis);
+
+  //multiple exposure test
+  if(!mEXP){
+    Camera::ExposureFinish();
+  }
+  
 }
 
-void Camera::AutoExposure(int _myISO)
+void Camera::AutoExposure(int _myISO, bool mEXP)
 {
-  /*
-    if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ //Switch 1 set ON --> Multiple Exposure Mode
-      multipleExposure(1); //MX Auto 
-    }
-    else if (((_dongle->checkDongle() > 0) &&  (mxshots >= 1) && (_dongle->switch1() == 0))){ //Multiexposure last Redbutton Click
-      multipleExposureLastClick();
-      
-    }
-    else{//Normal Expsoure
-      currentPicture++; 
-      WritePicture(currentPicture);
-          #if SIMPLEDEBUG
-             Serial.print("take a picture on Auto Mode with ISO: ");
-             Serial.print(_myISO);
-             Serial.print(", current Picture: ");
-             Serial.println(currentPicture);
-          #endif
-    }
-    */
-/*
-    if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 0) && (mxshots == 0)){//Normal exposure but the check is first
-      currentPicture++; 
-      WritePicture(currentPicture);
-          #if SIMPLEDEBUG
-             Serial.print("take a picture on Auto Mode with ISO: ");
-             Serial.print(_myISO);
-             Serial.print(", current Picture: ");
-             Serial.println(currentPicture);
-          #endif
-    }
-    else if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ //Switch 1 set ON --> Multiple Exposure Mode
-      multipleExposure(0); //MX Manual
-    }
-    else if (((_dongle->checkDongle() > 0) &&  (mxshots >= 1) && (_dongle->switch1() == 0))){ //Multiexposure last Redbutton Click
-      multipleExposureLastClick();
-      
-    }
-*/
-    meter_set_iso(_myISO); //Set the correct compare Table for the set ISO
-    Camera::shutterCLOSE();
-    Camera::mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-    while (digitalRead(PIN_S3) != HIGH){
-      //waiting for S3 to OPEN}
-      #if ADVANCEDEBUG
-        //Serial.println("Wait for S3 to open");
-     #endif
-    }
-    delay(YDelay);                            //S3 is now open start Y-delay (40ms)
-    //startCounter();
-    meter_init();
-    meter_integrate();
-    int mInit = millis();
-    Camera::shutterOPEN();
-    while (meter_update() == false){
-    }
-    int mFinal = millis();
-    Serial.println(mFinal - mInit);
+  meter_set_iso(_myISO); //Set the correct compare Table for the set ISO
+  Camera::shutterCLOSE();
+  Camera::mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
+  while (digitalRead(PIN_S3) != HIGH){
+    //waiting for S3 to OPEN}
+  }
+  delay(YDelay);                            //S3 is now open start Y-delay (40ms)
+  //startCounter();
+  meter_init();
+  meter_integrate();
+  int mInit = millis();
+  Camera::shutterOPEN();
+  while (meter_update() == false){
+  }
+  int mFinal = millis();
+  Serial.println(mFinal - mInit);
+  //multiple exposure test
+  if(!mEXP){
     Camera::ExposureFinish();
+  }
 }
 
 void Camera::FlashBAR() //FlashBAR
@@ -437,74 +344,8 @@ void Camera::FlashBAR() //FlashBAR
   
 }
 
-/*
-void Camera::FlashBAR() //FlashBAR Testprocedure
+void Camera::ShutterB(bool mEXP)
 {
-  //currentPicture++; 
-  //WritePicture(currentPicture);
-  #if SIMPLEDEBUG
-     Serial.print("take Camera Flashbar picture");
-     Serial.print(", current Picture: ");
-     Serial.println(currentPicture);
-  #endif
-  //Camera::HighSpeedPWM();
-  //analogWrite(PIN_SOL2, 255);
-  //Camera::shutterCLOSE ();
-  //Camera::mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-  //while (digitalRead(PIN_S3) != HIGH)            //waiting for S3 to OPEN
-  //  ;
-  //analogWrite (PIN_SOL2, 130);
-  //delay (YDelay);                               //S3 is now open start Y-delay (40ms)
-  //Camera::shutterOPEN ();
-  //delay (66);
-  //     delay (2);
-  
-  //     delay (2);
-  digitalWrite(PIN_FFA, HIGH);    //FLASH TRIGGERING
-  //digitalWrite(A7, HIGH);
-  delay (1);                      //FLASH TRIGGERING
-  digitalWrite(PIN_FFA, LOW);     //FLASH TRIGGERING
-  //digitalWrite(A7, LOW);
-  Serial.println("FFA HIGH");
-  //analogWrite(4, 255);
-
- // delay (2);
-
-  //analogWrite (PIN_SOL2, 0);
-  Serial.println("FFA LOw");
-  
-  //analogWrite(4, 0);
-
-  //digitalWrite(PIN_FT LOW);
-  //delay (20);
-  //Camera::shutterCLOSE();
-  //delay (200);                             //AGAIN is this delay necessary?
-  //Camera::mirrorDOWN();                          //Motor starts, let bring the mirror DOWN
-  //delay (200); 
-  Serial.println("Finished FF");//AGAIN is this delay necessary?
-  Camera::shutterOPEN();
-  
-}*/
-
-void Camera::ShutterB()
-{
-/*  MultipleExposure Mode
- *   if((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ //Switch 1 set ON --> Multiple Exposure Mode
-    multipleExposure(3); //MX B 
-  }
-  else if (((_dongle->checkDongle() > 0) &&  (mxshots >= 1) && (_dongle->switch1() == 0))){ //Multiexposure last Redbutton Click
-      multipleExposureLastClick();
-      
-  }
-  else{//Normal Expsoure
-    currentPicture++; 
-    WritePicture(currentPicture);
-    #if SIMPLEDEBUG
-       Serial.print("take B Mode Picture");
-       Serial.print(", current Picture: ");
-       Serial.println(currentPicture);
-    #endif
-  }*/
   currentPicture++; 
   WritePicture(currentPicture);
   #if SIMPLEDEBUG
@@ -542,15 +383,18 @@ void Camera::ShutterB()
   {
     analogWrite(PIN_SOL2, 0);
   }
-  delay (200);                             //AGAIN is this delay necessary?
+
+  //multiple exposure test
+  if(!mEXP){
+    delay (200);
+    Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
+    delay (200);                             //AGAIN is this delay necessary?
+    Camera::shutterOPEN();
+  }
   
-  //Camera::ExposureFinish();//new
-  Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-  delay (200);                             //AGAIN is this delay necessary?
-  Camera::shutterOPEN();
 }
 
-void Camera::ShutterT()
+void Camera::ShutterT(bool mEXP)
 {
   currentPicture++; 
   WritePicture(currentPicture);
@@ -584,57 +428,13 @@ void Camera::ShutterT()
     Camera::FastFlash();
     Camera::shutterCLOSE ();
   }
-  delay (200);                             //AGAIN is this delay necessary?
-  Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-  delay (200);                             //AGAIN is this delay necessary?
-  Camera::shutterOPEN();
-  
-}
 
-void Camera::multipleExposure(int exposureMode){
-  static int multipleExposureCounter = 0;
-  //multipleExposureMode = false;
-  /*#if ADVANCEDEBUG 1
-    Serial.print("multiplExposuremode: ");
-    Serial.println(multipleExposureMode);
-  #endif
-  */
-  
-  //0 Manual, 1 Auto, 2 Flashbar, 3 B, 4 T
-  if(exposureMode==0){
-    //Manual Mode
-      #if MXDEBUG
-        Serial.println("MultiExp on Manual Mode");
-      #endif
-      if(multipleExposureMode == false){//First Run MultiExp
-        currentPicture++;
-        multipleExposureCounter++;
-        WritePicture(currentPicture);
-        multipleExposureMode = true;
-        #if MXDEBUG
-          Serial.print("current Picture (MX): ");
-          Serial.println(currentPicture);
-        #endif
-      }else{
-        multipleExposureCounter++; //Dont increase currentPicture counter on additional clicks of Multipleexposure
-      }
-  }else if(exposureMode==1){
-    //Auto Mode
-    #if MXDEBUG
-      Serial.println("MultiExp on Auto Mode");
-    #endif
-    if(multipleExposureMode == false){//First Run MultiExp
-      currentPicture++;
-      multipleExposureCounter++;
-      WritePicture(currentPicture);
-      multipleExposureMode = true;
-      #if MXDEBUG
-        Serial.print("First run MX Mode, current Picture (MX): ");
-        Serial.println(currentPicture);
-      #endif
-    }else{
-      multipleExposureCounter++; //Dont increase currentPicture counter on additional clicks of Multipleexposure
-    }
+  //multiple exposure test
+  if(!mEXP){
+    delay (200);                             //AGAIN is this delay necessary?
+    Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
+    delay (200);                             //AGAIN is this delay necessary?
+    Camera::shutterOPEN();
   }
 }
 
@@ -643,56 +443,34 @@ void Camera::ExposureFinish()
   Camera::shutterCLOSE();
   lmTimer_stop(); //Timer stop
   delay (200); //Was 20
-  if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 1)){ // MX
-    Camera::multipleExposureFinish();
-    
-  }
-  else if ((_dongle->checkDongle() > 0) && (_dongle->switch1() == 0)){ //Dongle present
+
+  if (_dongle->checkDongle() > 0){ //Dongle present
     delay (100);                             //AGAIN is this delay necessary?
     Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
     delay (100);                  //WAS 60           //AGAIN is this delay necessary?
+    while(digitalRead(PIN_S1) == S1Logic){
+      //waiting for s1 to stop being depressed... get well soon
+    }
     Camera::shutterOPEN();
     //mxshots = 0;
     #if SIMPLEDEBUG
       Serial.print("Exposure Finish - Dongle Mode, ");
-      Serial.print("mxshots count: ");
-      Serial.println(mxshots);
     #endif
-    #if SONAR
-      while(digitalRead(PIN_S1) == HIGH){
-      Serial.println("Wait for S1 to go high again"); //prevent multiple picture Taking if S1 stays pressed
-      }
-    #endif
-    
   }
   else if (_dongle->checkDongle() == 0){ //No Dongle
     delay (100);                             //AGAIN is this delay necessary?
     Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-    delay (300);                  //WAS 60           //AGAIN is this delay necessary?
+    delay (300);                 //WAS 60           //AGAIN is this delay necessary?
+    while(digitalRead(PIN_S1) == S1Logic){
+      //waiting for s1 to stop being depressed... get well soon
+    }
     Camera::shutterOPEN();
     mxshots = 0;
     #if SIMPLEDEBUG
       Serial.print("Exposure Finish - No Dongle Mode, ");
-      Serial.print("MX shots count: ");
-      Serial.println(mxshots);
     #endif
-    #if SONAR
-      while(digitalRead(PIN_S1) == HIGH){
-      //Serial.println("Wait for S1 to go high again"); //prevent multiple picture Taking if S1 stays pressed
-      }
-    #endif
-      
+     
   }
-}
-
-void Camera::multipleExposureFinish(){
- //Switch1 Function Multiexposure Mode
-    #if MXDEBUG
-      Serial.print("Multiexposure shots count: ");
-      Serial.println(mxshots);
-    #endif
-    mxshots++;
-    //
 }
 
 void Camera::FastFlash()

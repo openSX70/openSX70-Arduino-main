@@ -27,6 +27,7 @@ int activeISO;
 static int checkedcount;
 static int inizialized = 0;
 static int metercount;
+static int multipleExposureCounter = 0;
 #if SONAR == 0 
   bool GTD = 1; //For non Sonar Models
 #endif
@@ -45,6 +46,7 @@ typedef enum{
   STATE_DONGLE,
   STATE_FLASHBAR,
   STATE_EXPOSURE,
+  STATE_MULTI_EXP,
   STATE_N
 } camera_state;
 
@@ -55,15 +57,18 @@ camera_state do_state_noDongle (void);
 camera_state do_state_dongle (void);
 camera_state do_state_flashBar (void);
 camera_state do_state_exposure (void);
+camera_state do_state_multi_exp (void);
 
 static const camera_state_funct STATE_MACHINE [STATE_N] = {
   &do_state_darkslide,
   &do_state_noDongle,
   &do_state_dongle,
   &do_state_flashBar,
-  &do_state_exposure
+  &do_state_exposure,
+  &do_state_multi_exp
 };
 
+//Default state
 camera_state state = STATE_DARKSLIDE;
 
 
@@ -91,7 +96,8 @@ void setup() {//setup - Inizialize
     #endif
   }
   #if SIMPLEDEBUG
-    Serial.println("Version: 11.06.2020 - Meroe2 - TCS3200 100%sensetivity - green Filter");
+    Serial.println("Version: 20.10.2020 - Meroe2 - TCS3200 100%sensetivity - green Filter");
+    Serial.println("State machine version by Zane Pollard")
     Serial.println("Magic Number: A100 400 / A600 150");
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
@@ -143,7 +149,6 @@ camera_state do_state_darkslide (void) {
 
 camera_state do_state_noDongle (void){
   camera_state result = STATE_NODONGLE;
-  //if ((selector == 200) && (myDongle.checkDongle() == 0)){} 
 
   savedISO = ReadISO();
 
@@ -160,6 +165,8 @@ camera_state do_state_noDongle (void){
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
   }
+
+  //Checks for dongle or flashbar insertion
   if (myDongle.checkDongle() > 0){ //((selector <= 15) && (myDongle.checkDongle() > 0))
     result = STATE_DONGLE;
   }
@@ -175,25 +182,36 @@ camera_state do_state_dongle (void){
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(1);
 
+    //TODO ADD ANALOGWORKS DONGLE OPTION. SAVES COMPARE TIME.
     #if UDONGLE
-      if(selector>=0) && (selector<12)){
+      if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
         switch2Function(0); //switch2Function Manual Mode
         sw_S1.Reset();
-        //TODO! CHANGE MANUALEXPOSURE TO TAKE SHUTTER SPEED MS AS INPUT RATHER THAN SELECTOR
-        openSX70.ManualExposure(selector);
-        checkFilmCount();
+        openSX70.ManualExposure(ShutterSpeed[selector], false);
       }
-      else if(){
-
+      else if(selector == 12){ //POST
+        positionT(false);
       }
-    #elif ORIGAMIV1
-      // TODO!
+      else if(selector == 13){ //POSB
+        positionB(false);
+      }
+      else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
+        openSX70.AutoExposure(ShutterSpeed[selector]); 
+      }
     #endif
+    sw_S1.Reset();
   } 
 
+  // Dongle Removed
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
   } 
+
+  // Multiple Exposure switch flipped
+  if (myDongle->switch1() == 1 and myDongle->switch2() == 0){
+    result = STATE_MULTI_EXP;
+  }
+
   return result;
 }
 
@@ -203,9 +221,6 @@ camera_state do_state_exposure (void){
 
 camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
-  #if SIMPLEDEBUG
-    Serial.println("BEGIN FLASH BAR STATE");
-  #endif
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
   {
@@ -220,11 +235,51 @@ camera_state do_state_flashBar (void){
     sw_S1.Reset();
     checkFilmCount(); 
   } 
+
+
   if ((selector == 200) && (myDongle.checkDongle() == 0)){
     result = STATE_NODONGLE;
   } 
 
   return result;
+}
+
+camera_state do_state_multi_exp (void){
+  camera_state result = STATE_MULTI_EXP;
+
+  if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
+    if(myDongle.switch1() == 1){
+      #if UDONGLE
+        if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
+          switch2Function(0); //switch2Function Manual Mode
+          sw_S1.Reset();
+          openSX70.ManualExposure(ShutterSpeed[selector], true);
+          multipleExposureCounter++;
+        }
+        else if(selector == 12){ //POST
+          positionT(true);
+          multipleExposureCounter++;
+        }
+        else if(selector == 13){ //POSB
+          positionB(true);
+          multipleExposureCounter++;
+        }
+        //TODO maybe get rid of auto on multiple exposure? unless maybe we do a half time auto. make it just two images
+        else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
+          openSX70.AutoExposure(ShutterSpeed[selector]); 
+          multipleExposureCounter++;
+        }
+      #endif
+    }
+    else if(myDongle.switch1() == 0 and multipleExposureCounter > 0){
+      openSX70.multipleExposureLastClick();
+    }
+    sw_S1.Reset();
+  }
+
+  if(myDongle.switch1() == 0 && multipleExposureCounter == 0){
+    result = STATE_DONGLE;
+  }
 }
 
 void turnLedsOff(){ //todo:move to camerafunction
