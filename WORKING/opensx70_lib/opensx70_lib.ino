@@ -190,10 +190,24 @@ camera_state do_state_dongle (void){
         openSX70.ManualExposure(ShutterSpeed[selector], false);
       }
       else if(selector == 12){ //POST
-        positionT(false);
+        #if SIMPLEDEBUG
+          Serial.println("POS T");
+        #endif
+        lmTimer_stop();
+        turnLedsOff();
+        sw_S1.Reset();
+        openSX70.ShutterT(false);
+        checkFilmCount();
       }
       else if(selector == 13){ //POSB
-        positionB(false);
+        #if SIMPLEDEBUG
+          Serial.println("POS B");
+        #endif
+        lmTimer_stop();
+        turnLedsOff(); //why?
+        sw_S1.Reset();
+        openSX70.ShutterB(false);
+        checkFilmCount();
       }
       else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
         openSX70.AutoExposure(ShutterSpeed[selector]); 
@@ -249,6 +263,7 @@ camera_state do_state_multi_exp (void){
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     if(myDongle.switch1() == 1){
+      //TODO again add analog dongle
       #if UDONGLE
         if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
           switch2Function(0); //switch2Function Manual Mode
@@ -257,11 +272,28 @@ camera_state do_state_multi_exp (void){
           multipleExposureCounter++;
         }
         else if(selector == 12){ //POST
-          positionT(true);
+          #if SIMPLEDEBUG
+            Serial.println("POS T");
+          #endif
+
+          lmTimer_stop();
+          turnLedsOff();
+          sw_S1.Reset();
+          openSX70.ShutterT(mEXP);
+          checkFilmCount();
           multipleExposureCounter++;
         }
         else if(selector == 13){ //POSB
-          positionB(true);
+          #if SIMPLEDEBUG
+            Serial.println("POS B");
+          #endif
+
+          lmTimer_stop();
+          turnLedsOff(); //why?
+          sw_S1.Reset();
+          openSX70.ShutterB(true);
+          checkFilmCount();
+
           multipleExposureCounter++;
         }
         //TODO maybe get rid of auto on multiple exposure? unless maybe we do a half time auto. make it just two images
@@ -411,110 +443,6 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
     //}
 }
 
-
-void saveISOChange(){
-  int _selectedISO;
-    if(nowDongle != 0){ //Donngle is present
-      if(selector>=14 && selector <=15){ // Only Save on Automode selector slots! Need to be changed if the Selector order changes!!
-      if((switch2 == 1) && (switch1 == 1)){ //Save ISO Mode
-        savedISO = ReadISO(); //read the savedISO from the EEPROM
-          if (((ShutterSpeed[selector]) == AUTO600)){
-              if(_selectedISO != ISO_600){
-                _selectedISO = ISO_600; 
-              }
-          }
-          else if (((ShutterSpeed[selector]) == AUTO100)){
-            if(_selectedISO != ISO_SX70){
-              _selectedISO = ISO_SX70;
-            }
-          }
-          else{
-           //no ISO Selected
-           _selectedISO = DEFAULT_ISO;
-          }
-          if(savedISO != _selectedISO){ //Check if new ISO is diffrent to the ISO saved in EEPROM
-            #if SIMPLEDEBUG
-              Serial.print("SaveISOChange() Function: ");
-              Serial.print("ISO has changed, previos saved ISO (from EEPROM): ");
-              Serial.println(savedISO);
-              Serial.print("Saving new selected ISO ");
-              Serial.print(_selectedISO);
-              Serial.println(" to the EEPROM");
-            #endif
-            activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
-            WriteISO(_selectedISO); //Write ISO to EEPROM
-            BlinkISORed(); //Blink ISO Red
-            return;
-        }
-      }
-      }
-    }else if (nowDongle == 0){
-      #if SIMPLEDEBUG
-        Serial.println("savedISOChange() Function - no Dongle detected");
-      #endif
-      return;
-    }
-}
-
-void checkISOChange(){
-  int _selectedISO;
-  //savedISO = ReadISO(); //read the savedISO from the EEPROM
-  if(nowDongle != 0){ //Donngle is present
-    if((switch2 != 1) && (switch1 != 1)){ //Save ISO Mode not active
-          //savedISO = ReadISO(); //read the savedISO from the EEPROM
-          if (((ShutterSpeed[selector]) == AUTO600)){
-              if(_selectedISO != ISO_600){
-                _selectedISO = ISO_600; 
-              }
-          }
-          else if (((ShutterSpeed[selector]) == AUTO100)){
-            if(_selectedISO != ISO_SX70){
-              _selectedISO = ISO_SX70;
-            }
-          }
-          else{//All other modes
-          _selectedISO = ReadISO();  //read from EEPROM
-          //_selectedISO = DEFAULT_ISO;
-          //Serial.println("ISO ERROR: selecting Default ISO as selected ISO");
-          }
-          if(activeISO != _selectedISO){
-            activeISO = _selectedISO;
-              #if SIMPLEDEBUG
-                Serial.print("checkISOChange() Function: ISO has changed, make activeISO = selectedISO, savedISO:");
-                Serial.println(savedISO);
-                Serial.print("selectedISO: ");
-                Serial.print(_selectedISO);
-                Serial.print(" activeISO: ");
-                Serial.println(activeISO);
-            #endif
-            //blinkAutomode();
-        }
-    }
-  }else{ //no Dongle pressend
-     savedISO = ReadISO(); //read the savedISO from the EEPROM
-     if(activeISO != savedISO){
-      #if SIMPLEDEBUG
-        Serial.print("checkISOChange Function - noDongle detected: ISO has changed, savedISO:");
-        Serial.print(savedISO);
-        Serial.print(" activeISO: ");
-        Serial.println(activeISO);
-      #endif
-      activeISO = savedISO;
-      #if SIMPLEDEBUG
-        Serial.print(" make activeISO = selectedISO, savedISO:");
-        Serial.print(savedISO);
-        Serial.print(" activeISO: ");
-        Serial.println(activeISO);
-      #endif
-      }
-  }
-}
-
-void switch1Function(){
- //Switch One Function
-  
-}
-
 bool switch2Function(int mode){
   //0 Manual, 1 Auto600, 2 AutoSX70, FlashBar
   if ((switch2 == 1) || (sw_S1.clicks == 2))
@@ -620,178 +548,6 @@ void normalOperation(){
       //   *  SELECTOR = NORMAL (LOW)
       //   *  MXSHOTS >= 1
       sw_S1.Update();
-  }
-}
-
-void DongleInsertion(){
- if ((nowDongle != 0) && (prevDongle == 0)){ //Dongle insertion happend
-    #if SIMPLEDEBUG
-      Serial.println("Dongle insertion happend");
-    #endif
-    selector = myDongle.selector();
-    switch1 = myDongle.switch1();
-    switch2 = myDongle.switch2();
-    BlinkISO();
-  }
-}
-
-void DongleInserted(){ //Dongle is pressend LOOP
-  if ((selector <= 15) && (myDongle.checkDongle() > 0))  //CASE DONGLE INSERTED
-  if(digitalRead(PIN_S1) != S1Logic){
-    #if SONAR
-    if(digitalRead(PIN_S1F) != S1Logic){//Dont run DongleInserted Function on S1F pressed
-    #endif
-    {//Serial.println("S1F HIGH");
-      selector = myDongle.selector();
-      switch1 = myDongle.switch1();
-      switch2 = myDongle.switch2();
-      saveISOChange();//Moved here form loop 11.06.
-      //BlinkISO(); //check if dongle inserted, read the default ISO and blink once for SX70 and twice for 600.
-        if ((selector != prev_selector)) //Update Dongle changes
-        {
-          #if ADVANCEDEBUG
-            Serial.print ("DONGLE Mode:  ");
-            Serial.print ("Selector: ");
-            Serial.print (selector);
-            Serial.print (" Switch1: ");
-            Serial.print (switch1);
-            Serial.print (" Switch2: ");
-            Serial.print (switch2);
-            Serial.print (" speed: ");
-            Serial.println (ShutterSpeed[selector]);
-          #endif
-          blinkAutomode();
-          blinkSpecialmode();
-          prev_selector = selector;
-          return;
-      }
-      if( (switch1 != prev_switch1) || (switch2 != prev_switch2)){
-          #if ADVANCEDEBUG
-            Serial.print ("DONGLE Mode:  ");
-            Serial.print ("Selector: ");
-            Serial.print (selector);
-            Serial.print ("     Switch1: ");
-            Serial.print (switch1);
-            Serial.print ("     Switch2: ");
-            Serial.print (switch2);
-            Serial.print ("        speed: ");
-            Serial.println (ShutterSpeed[selector]);
-          #endif
-          prev_switch1 = switch1;
-          prev_switch2 = switch2;
-          return;
-      }
-    }
-    #if SONAR
-      }
-    #endif
-  }
-}
-
-void positionB(){
-    //Position B
-    if((ShutterSpeed[selector] == (POSB)) &&  (myDongle.checkDongle() > 0)){ //LightmeterHelper Deactivation
-      if((switch2 == 1) && (switch1 == 1)){ 
-        if(openSX70.getLIGHTMETER_HELPER()==true){
-          openSX70.setLIGHTMETER_HELPER(false);
-          turnLedsOff();
-          digitalWrite(PIN_LED1, HIGH); //Blink RED -- LMH Off
-          delay(100);
-          digitalWrite(PIN_LED1, LOW);
-          #if SIMPLEDEBUG
-            Serial.println("Lightmeter is off");
-          #endif
-        }
-      }
-    }
-    if (((digitalRead(PIN_S1) == S1Logic) && ((ShutterSpeed[selector] == (POSB))) && GTD == 1)) //////////////POSITION B
-    {
-      #if SIMPLEDEBUG
-         Serial.println("POS B");
-      #endif
-      lmTimer_stop();
-      turnLedsOff(); //why?
-      sw_S1.Reset();
-      openSX70.ShutterB();
-      checkFilmCount();
-    }
-}
-
-void positionT(){
-  //Position T
-  if((ShutterSpeed[selector] == (POST)) &&  (myDongle.checkDongle() > 0)){ //LightmeterHelper Activation
-    if((switch2 == 1) && (switch1 == 1)){
-      if(openSX70.getLIGHTMETER_HELPER()==false){
-        openSX70.setLIGHTMETER_HELPER(true);
-         turnLedsOff();
-         digitalWrite(PIN_LED2, HIGH); //Blink Blue -- LMH On
-         delay(100);
-         digitalWrite(PIN_LED2, LOW);
-         #if SIMPLEDEBUG
-            Serial.println("Lightmeter is on");
-          #endif
-      }
-    }
-  }
-  if((digitalRead(PIN_S1) == S1Logic) && (((ShutterSpeed[selector] == (POST)) && GTD == 1))) //////////////POSITION T
-  {
-    #if SIMPLEDEBUG
-            Serial.println("POS T");
-    #endif
-    lmTimer_stop();
-    turnLedsOff();
-    sw_S1.Reset();
-    openSX70.ShutterT();
-    checkFilmCount();
-  }
-}
-
-void manualExposure(){
-  //Manual Exposure
-  if ((selector >= 0) && (selector < 12)) //Manual Exposure original
-  {
-    LightMeterHelper(1);
-    if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0))
-    {
-      switch2Function(0); //switch2Function Manual Mode
-      sw_S1.Reset();
-      openSX70.ManualExposure(selector);
-      checkFilmCount();
-      return;
-    }
-  }
-}
-
-void Auto600Exposure(){
-  //Auto600
-  if (((ShutterSpeed[selector]) == AUTO600)) //AUTO600
-  {
-    LightMeterHelper(0);
-    if (((sw_S1.clicks == -1) || (sw_S1.clicks > 0)) && GTD==1) // Checks if the Sonar is Gone that Distance -- is focused
-    //if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)) 
-    {
-      switch2Function(1); //Switch 2 Function on AUTO600
-      sw_S1.Reset();
-      openSX70.AutoExposure(ISO_600);
-      checkFilmCount();
-      return;
-    }
-  }
-}
-
-void Auto100Exposure(){
-  //Auto100
-  if (((ShutterSpeed[selector]) == AUTO100)) //AUTO100 WHEEL
-  {
-    LightMeterHelper(0);
-    if (((sw_S1.clicks == -1) || (sw_S1.clicks > 0)) && GTD==1) // Checks if the Sonar is Gone that Distance -- is focused
-    {
-      switch2Function(1); //Switch 2 Function on AUTO100
-      sw_S1.Reset();
-      openSX70.AutoExposure(ISO_SX70);
-      checkFilmCount();
-      return;
-    }
   }
 }
 
