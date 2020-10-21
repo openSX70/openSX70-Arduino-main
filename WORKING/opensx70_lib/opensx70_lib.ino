@@ -270,8 +270,11 @@ camera_state do_state_flashBar (void){
 
 camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
+
+  DongleInserted();
+
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
-    if(myDongle.switch1() == 1){
+    if(switch1 == 1){
       //TODO again add analog dongle
       #if UDONGLE
         if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
@@ -310,7 +313,7 @@ camera_state do_state_multi_exp (void){
       
     }
 
-    else if(myDongle.switch1() == 0 && multipleExposureCounter > 0){
+    else if(switch1 == 0 && multipleExposureCounter > 0){
       openSX70.multipleExposureLastClick();
       multipleExposureCounter = 0;
       Serial.println("TO DONGLE sw1=0 mex>0");
@@ -320,7 +323,7 @@ camera_state do_state_multi_exp (void){
     Serial.println(multipleExposureCounter);
   }
 
-  if(myDongle.switch1() == 0 && multipleExposureCounter == 0){
+  if(switch1 == 0 && multipleExposureCounter == 0){
     Serial.println("to dongle 0 0");
     result = STATE_DONGLE;
   }
