@@ -204,7 +204,6 @@ camera_state do_state_dongle (void){
     #if UDONGLE
       if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
         switch2Function(0); //switch2Function Manual Mode
-        sw_S1.Reset();
         openSX70.ManualExposure(selector, false);
       }
       else if(selector == 12){ //POST
@@ -213,7 +212,6 @@ camera_state do_state_dongle (void){
         #endif
         lmTimer_stop();
         turnLedsOff();
-        sw_S1.Reset();
         openSX70.ShutterT(false);
         checkFilmCount();
       }
@@ -223,7 +221,6 @@ camera_state do_state_dongle (void){
         #endif
         lmTimer_stop();
         turnLedsOff(); //why?
-        sw_S1.Reset();
         openSX70.ShutterB(false);
         checkFilmCount();
       }
@@ -279,7 +276,6 @@ camera_state do_state_multi_exp (void){
       #if UDONGLE
         if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
           switch2Function(0); //switch2Function Manual Mode
-          sw_S1.Reset();
           openSX70.ManualExposure(selector, true);
           multipleExposureCounter++;
         }
@@ -290,7 +286,6 @@ camera_state do_state_multi_exp (void){
 
           lmTimer_stop();
           turnLedsOff();
-          sw_S1.Reset();
           openSX70.ShutterT(true);
           checkFilmCount();
           multipleExposureCounter++;
@@ -302,10 +297,8 @@ camera_state do_state_multi_exp (void){
 
           lmTimer_stop();
           turnLedsOff(); //why?
-          sw_S1.Reset();
           openSX70.ShutterB(true);
           checkFilmCount();
-
           multipleExposureCounter++;
         }
         //TODO maybe get rid of auto on multiple exposure? unless maybe we do a half time auto. make it just two images
