@@ -28,13 +28,16 @@ static int checkedcount;
 static int inizialized = 0;
 static int metercount;
 static int multipleExposureCounter = 0;
+/*
 #if SONAR == 0 
   bool GTD = 1; //For non Sonar Models
 #endif
+*/
 #if SONAR
-  bool GTD = 0;
   bool FT = 0;
   bool S1F = 0;
+  bool isFocused = 0; //neccessary? should be done by GTD???
+  int currentPicOnFocus; //dont know what this is for
 #endif
 //long oldMillis = 0;
 //byte firstRun = 0;
@@ -45,7 +48,6 @@ typedef enum{
   STATE_NODONGLE,
   STATE_DONGLE,
   STATE_FLASHBAR,
-  STATE_EXPOSURE,
   STATE_MULTI_EXP,
   STATE_N
 } camera_state;
@@ -56,7 +58,6 @@ camera_state do_state_darkslide (void);
 camera_state do_state_noDongle (void);
 camera_state do_state_dongle (void);
 camera_state do_state_flashBar (void);
-camera_state do_state_exposure (void);
 camera_state do_state_multi_exp (void);
 
 static const camera_state_funct STATE_MACHINE [STATE_N] = {
@@ -64,7 +65,6 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
   &do_state_noDongle,
   &do_state_dongle,
   &do_state_flashBar,
-  &do_state_exposure,
   &do_state_multi_exp
 };
 
@@ -74,21 +74,32 @@ camera_state state = STATE_DARKSLIDE;
 
 
 void setup() {//setup - Inizialize
-  #if DEBUG
-    Serial.begin (9600);
-  #endif
+  /* 
+     I have absolutely no clue why I need this here but I do. My software flips out if 
+     I do not have this. It is maddening. There is nothing going over Serial but hey if it works...
+     Will remove the Serial.begin once I figure out why the hell it makes things work.
+  */
   Serial.begin (9600);
+
+  #if DEBUG
+    Serial.println("Version: 20.10.2020 - Meroe2 - TCS3200 100%sensetivity - green Filter");
+    Serial.println("State machine core by Zane Pollard, Sonar code by Hannes");
+    Serial.println("Magic Number: A100 400 / A600 150");
+  #endif
+  
   myDongle.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
   // (These are default if not set, but changeable for convenience)
+
   sw_S1.debounceTime   = 15;   // Debounce timer in ms 15
-  sw_S1.multiclickTime = 0;  // Time limit for multi clicks
+  sw_S1.multiclickTime = 250;  // Time limit for multi clicks
   sw_S1.longClickTime  = 10; // time until "held-down clicks" register
+
   io_init();
   metercount = 0; //For the Lightmeter Helper Skipping Function
   checkFilmCount();
   inizialized++;
-  Serial.println ("reset happened");
+
   if (digitalRead(PIN_S5) != LOW)
   {
     openSX70.mirrorDOWN();
@@ -96,10 +107,8 @@ void setup() {//setup - Inizialize
       Serial.println ("Initialize: mirrorDOWN");
     #endif
   }
+
   #if SIMPLEDEBUG
-    Serial.println("Version: 20.10.2020 - Meroe2 - TCS3200 100%sensetivity - green Filter");
-    Serial.println("State machine version by Zane Pollard");
-    Serial.println("Magic Number: A100 400 / A600 150");
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
   #endif
@@ -107,8 +116,11 @@ void setup() {//setup - Inizialize
 }
 
 void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop
+  #if SONAR
+    prefocus();
+    unfocusing();
+  #endif
   normalOperation();
-  selector = myDongle.selector();
   state = STATE_MACHINE[state]();
 }
 
@@ -135,6 +147,7 @@ camera_state do_state_darkslide (void) {
   else{
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
+      BlinkISO();
     }
     else if ((selector == 100) && (myDongle.checkDongle() == 0)){
       result = STATE_FLASHBAR;
@@ -169,6 +182,7 @@ camera_state do_state_noDongle (void){
   //Checks for dongle or flashbar insertion
   if (myDongle.checkDongle() > 0){ //((selector <= 15) && (myDongle.checkDongle() > 0))
     result = STATE_DONGLE;
+    BlinkISO();
   }
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
@@ -179,9 +193,13 @@ camera_state do_state_noDongle (void){
 camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
 
+  DongleInserted();
+
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(1);
+    if(switch2 == 1){
 
+    }
     //TODO ADD ANALOGWORKS DONGLE OPTION. SAVES COMPARE TIME.
     #if UDONGLE
       if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
@@ -220,18 +238,12 @@ camera_state do_state_dongle (void){
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
   } 
-
   // Multiple Exposure switch flipped
-  if (myDongle.switch1() == 1 and myDongle.switch2() == 0){
-    Serial.println("TO MEXP");
+  else if (switch1 == 1){
     result = STATE_MULTI_EXP;
   }
 
   return result;
-}
-
-camera_state do_state_exposure (void){
-
 }
 
 camera_state do_state_flashBar (void){
@@ -322,6 +334,45 @@ camera_state do_state_multi_exp (void){
   return result;
 }
 
+#if SONAR
+void printReadings() {
+  //Serial.print("GTD: ");
+  //Serial.print(openSX70.getGTD());
+  Serial.print("Is Focused: ");
+  Serial.print(isFocused);
+  Serial.print(" | GTD: ");
+  Serial.print(analogRead(PIN_GTD));
+  Serial.print(" | S1F: ");
+  Serial.print(digitalRead(PIN_S1F));
+  Serial.print(" | FT: ");
+  Serial.print(analogRead(PIN_FT));
+  Serial.print(" | FF: ");
+  Serial.println(digitalRead(PIN_FF));
+  return;
+}
+
+void preFocus() {
+  if ((digitalRead(PIN_S1F) == HIGH) && (isFocused == 0)) { // S1F pressed
+    openSX70.S1F_Focus();
+    currentPicOnFocus = currentPicture;
+    isFocused = 1;
+    return;
+  }
+}
+
+void unfocusing(){
+  //delay(100);
+  if ((digitalRead(PIN_S1F) == LOW) && (isFocused == 1)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
+    //delay(100);
+    openSX70.S1F_Unfocus();
+    //currentPicOnFocus = currentPicture;
+    isFocused = 0;
+    turnLedsOff();
+    return;
+  }
+}
+#endif
+
 void turnLedsOff(){ //todo:move to camerafunction
    digitalWrite(PIN_LED1, LOW);
    digitalWrite(PIN_LED2, LOW);
@@ -352,6 +403,59 @@ void printReadings(){
   Serial.println(digitalRead(PIN_FFA));
   }
 #endif
+
+void DongleInserted() { //Dongle is pressend LOOP
+  if (digitalRead(PIN_S1) != S1Logic) {
+  #if SONAR
+    if (digitalRead(PIN_S1F) != S1Logic) { //Dont run DongleInserted Function on S1F pressed
+  #endif
+      { //Serial.println("S1F HIGH");
+        selector = myDongle.selector();
+        switch1 = myDongle.switch1();
+        switch2 = myDongle.switch2();
+        saveISOChange();//Moved here form loop 11.06.
+        //BlinkISO(); //check if dongle inserted, read the default ISO and blink once for SX70 and twice for 600.
+        if ((selector != prev_selector)) //Update Dongle changes
+        {
+          #if ADVANCEDEBUG
+            Serial.print ("DONGLE Mode:  ");
+            Serial.print ("Selector: ");
+            Serial.print (selector);
+            Serial.print (" Switch1: ");
+            Serial.print (switch1);
+            Serial.print (" Switch2: ");
+            Serial.print (switch2);
+            Serial.print (" speed: ");
+            Serial.println (ShutterSpeed[selector]);
+          #endif
+          blinkAutomode();
+          blinkSpecialmode(); //B and T Mode Selector LED Blink
+          prev_selector = selector;
+          return;
+        }
+        if ( (switch1 != prev_switch1) || (switch2 != prev_switch2)) {
+          #if ADVANCEDEBUG
+            Serial.print ("DONGLE Mode:  ");
+            Serial.print ("Selector: ");
+            Serial.print (selector);
+            Serial.print ("     Switch1: ");
+            Serial.print (switch1);
+            Serial.print ("     Switch2: ");
+            Serial.print (switch2);
+            Serial.print ("        speed: ");
+            Serial.println (ShutterSpeed[selector]);
+          #endif
+          prev_switch1 = switch1;
+          prev_switch2 = switch2;
+          return;
+        }
+      }
+  #if SONAR
+    }
+  #endif
+  }
+}
+
 
 void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 600
   if((switch2 != 1) || (switch1 != 1)){ //Not Save ISO //Changed to OR 01.06.2020
@@ -451,31 +555,44 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
     //}
 }
 
-bool switch2Function(int mode){
+void switch2Function(int mode) {
   //0 Manual, 1 Auto600, 2 AutoSX70, FlashBar
   if ((switch2 == 1) || (sw_S1.clicks == 2))
   {
-    if(mode==0){
-       digitalWrite(PIN_LED2, LOW);
-       digitalWrite(PIN_LED1, LOW);
-       openSX70.BlinkTimerDelay (GREEN, RED, 10);
+    if (mode == 0) {
+      openSX70.SelfTimerMUP();
+      digitalWrite(PIN_LED2, LOW);
+      digitalWrite(PIN_LED1, LOW);
+      openSX70.BlinkTimerDelay (GREEN, RED, 10);
+      //preFocus();
     }
-    else if(mode==1){
+    else if (mode == 1) {
+      openSX70.SelfTimerMUP();
       digitalWrite(PIN_LED2, LOW);
       digitalWrite(PIN_LED1, LOW);
       openSX70.BlinkTimerDelay (GREEN, RED, 10);
-    }else if(mode==2){
+      //preFocus();
+    } else if (mode == 2) {
+      openSX70.SelfTimerMUP();
       digitalWrite(PIN_LED2, LOW);
       digitalWrite(PIN_LED1, LOW);
       openSX70.BlinkTimerDelay (GREEN, RED, 10);
-    }else if(mode==3){
-        //openSX70.BlinkTimerDelay (GREEN, RED,10);
-        delay (10000); //NoDongleMode
-      }
-    else{
-        return false;  
+      //preFocus();
+    } else if (mode == 3) {
+      openSX70.S1F_Unfocus();
+      openSX70.SelfTimerMUP();
+      Serial.println("Selftimer");
+      delay (10000); //NoDongleMode
+      //preFocus();
+      openSX70.S1F_Focus();
+      delay(1000);
+    }
+    else {
+      //return false;
+      return;
     }
   }
+  return;
 }
 
 void checkFilmCount(){
@@ -579,3 +696,99 @@ void LightMeterHelper(byte ExposureType){
       //}
     }
 }
+
+void saveISOChange() {
+  int _selectedISO;
+  selector = myDongle.selector();
+  //TODO ADD ANALOGDONGLE MODE!!!!!!!!!!!
+  #if UDONGLE
+    if (selector >= 14 && selector <= 15) { // Only Save on Automode selector slots! Need to be changed if the Selector order changes!!
+      savedISO = ReadISO(); //read the savedISO from the EEPROM
+      if (((ShutterSpeed[selector]) == AUTO600)) {
+        if (_selectedISO != ISO_600) {
+          _selectedISO = ISO_600;
+        }
+      }
+      else if (((ShutterSpeed[selector]) == AUTO100)) {
+        if (_selectedISO != ISO_SX70) {
+          _selectedISO = ISO_SX70;
+        }
+      }
+      else {
+        //no ISO Selected
+        _selectedISO = DEFAULT_ISO;
+      }
+      if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
+      #if SIMPLEDEBUG
+        Serial.print("SaveISOChange() Function: ");
+        Serial.print("ISO has changed, previos saved ISO (from EEPROM): ");
+        Serial.println(savedISO);
+        Serial.print("Saving new selected ISO ");
+        Serial.print(_selectedISO);
+        Serial.println(" to the EEPROM");
+      #endif
+        activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
+        WriteISO(_selectedISO); //Write ISO to EEPROM
+        BlinkISORed(); //Blink ISO Red
+      }
+    }
+  #endif
+}
+
+void checkISOChange() {
+  int _selectedISO;
+  //savedISO = ReadISO(); //read the savedISO from the EEPROM
+  if (nowDongle != 0) { //Donngle is present
+    if ((switch2 != 1) && (switch1 != 1)) { //Save ISO Mode not active
+      //savedISO = ReadISO(); //read the savedISO from the EEPROM
+      if (((ShutterSpeed[selector]) == AUTO600)) {
+        if (_selectedISO != ISO_600) {
+          _selectedISO = ISO_600;
+        }
+      }
+      else if (((ShutterSpeed[selector]) == AUTO100)) {
+        if (_selectedISO != ISO_SX70) {
+          _selectedISO = ISO_SX70;
+        }
+      }
+      else { //All other modes
+        _selectedISO = ReadISO();  //read from EEPROM
+        //_selectedISO = DEFAULT_ISO;
+        //Serial.println("ISO ERROR: selecting Default ISO as selected ISO");
+      }
+      
+      if (activeISO != _selectedISO) {
+        activeISO = _selectedISO;
+        #if SIMPLEDEBUG
+        Serial.print("checkISOChange() Function: ISO has changed, make activeISO = selectedISO, savedISO:");
+        Serial.println(savedISO);
+        Serial.print("selectedISO: ");
+        Serial.print(_selectedISO);
+        Serial.print(" activeISO: ");
+        Serial.println(activeISO);
+        #endif
+        return;
+        //blinkAutomode();
+      }
+    }
+  }else { //no Dongle pressend
+    savedISO = ReadISO(); //read the savedISO from the EEPROM
+    if (activeISO != savedISO) {
+      #if SIMPLEDEBUG
+      Serial.print("checkISOChange Function - noDongle detected: ISO has changed, savedISO:");
+      Serial.print(savedISO);
+      Serial.print(" activeISO: ");
+      Serial.println(activeISO);
+      #endif
+      activeISO = savedISO;
+      #if SIMPLEDEBUG
+      Serial.print(" make activeISO = selectedISO, savedISO:");
+      Serial.print(savedISO);
+      Serial.print(" activeISO: ");
+      Serial.println(activeISO);
+      #endif
+      return;
+    }
+  }
+}
+
