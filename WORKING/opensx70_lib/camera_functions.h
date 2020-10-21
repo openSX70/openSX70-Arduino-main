@@ -22,22 +22,23 @@
       void Blink (unsigned int interval, int timer, int Pin, byte type = 1);
       void HighSpeedPWM ();
       void AutoExposure(int _myISO, bool mEXP);
-      void ExposureFinish();
+      void ExposureFinish(bool mEXP);
       void ManualExposure(int _selector, bool mEXP);
       void FlashBAR();
-      void ShutterB();
-      void ShutterT();
+      void ShutterB(bool mEXP);
+      void ShutterT(bool mEXP);
       void multipleExposureFinish();
       void multipleExposure(int exposureMode);
       bool setLIGHTMETER_HELPER(bool active);
       bool getLIGHTMETER_HELPER();
+      void multipleExposureLastClick();
     private:
       void FastFlash();
       //  void ShutterB();
       //  void ShutterT();
       void DongleFlashF8();
       void DongleFlashNormal();
-      void multipleExposureLastClick();
+      
       //  Basics* _Basics;
       bool DebouncedRead(uint8_t pin);
       uDongle * _dongle;
