@@ -19,8 +19,6 @@
   const uint8_t PIN_LED1 = 13; //LED RED
   const uint8_t PIN_LED2 = A3; //LED BLUE
   
-
-  
   const uint8_t PIN_FF = 4;
   #if SONAR
   const uint8_t PIN_GTD = A5; // Sonar gone that distance
