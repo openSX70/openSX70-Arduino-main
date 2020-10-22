@@ -148,7 +148,7 @@ camera_state do_state_darkslide (void) {
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
       BlinkISO();
-      if((myDongle.switch1() == 1 && myDongle.switch2() == 1) && (selector == 14 || selector = 15)){
+      if((myDongle.switch1() == 1 && myDongle.switch2() == 1) && ((selector == 14) || (selector = 15))){
         saveISOChange();
       }
     }
@@ -556,40 +556,45 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
 
 void switch2Function(int mode) {
   //0 Manual, 1 Auto600, 2 AutoSX70, FlashBar
-  if ((switch2 == 1) || (sw_S1.clicks == 2))
-  {
-    if (mode == 0) {
-      openSX70.SelfTimerMUP();
-      digitalWrite(PIN_LED2, LOW);
-      digitalWrite(PIN_LED1, LOW);
-      openSX70.BlinkTimerDelay (GREEN, RED, 10);
-      //preFocus();
-    }
-    else if (mode == 1) {
-      openSX70.SelfTimerMUP();
-      digitalWrite(PIN_LED2, LOW);
-      digitalWrite(PIN_LED1, LOW);
-      openSX70.BlinkTimerDelay (GREEN, RED, 10);
-      //preFocus();
-    } else if (mode == 2) {
-      openSX70.SelfTimerMUP();
-      digitalWrite(PIN_LED2, LOW);
-      digitalWrite(PIN_LED1, LOW);
-      openSX70.BlinkTimerDelay (GREEN, RED, 10);
-      //preFocus();
-    } else if (mode == 3) {
+
+  if (mode == 0) {
+    openSX70.SelfTimerMUP();
+    digitalWrite(PIN_LED2, LOW);
+    digitalWrite(PIN_LED1, LOW);
+    openSX70.BlinkTimerDelay (GREEN, RED, 10);
+    //preFocus();
+  }
+  else if (mode == 1) {
+    openSX70.SelfTimerMUP();
+    digitalWrite(PIN_LED2, LOW);
+    digitalWrite(PIN_LED1, LOW);
+    openSX70.BlinkTimerDelay (GREEN, RED, 10);
+    //preFocus();
+  } else if (mode == 2) {
+    openSX70.SelfTimerMUP();
+    digitalWrite(PIN_LED2, LOW);
+    digitalWrite(PIN_LED1, LOW);
+    openSX70.BlinkTimerDelay (GREEN, RED, 10);
+    //preFocus();
+  } else if (mode == 3) {
+    #if SONAR
       openSX70.S1F_Unfocus();
       openSX70.SelfTimerMUP();
-      Serial.println("Selftimer");
-      delay (10000); //NoDongleMode
-      //preFocus();
+    #endif
+
+    Serial.println("Selftimer");
+    delay (10000); //NoDongleMode
+    //preFocus();
+
+    #if SONAR
       openSX70.S1F_Focus();
-      delay(1000);
-    }
-    else {
-      //return false;
-      return;
-    }
+    #endif
+    
+    delay(1000);
+  }
+  else {
+    //return false;
+    return;
   }
   return;
 }
