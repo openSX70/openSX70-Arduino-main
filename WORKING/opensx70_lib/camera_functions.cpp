@@ -106,6 +106,12 @@ void Camera::S1F_Unfocus()
 }
 #endif
 
+void Camera::SelfTimerMUP(){
+    Serial.println("Selftimer preMirror Up");
+    Camera::mirrorUP();
+}
+
+
 
 void Camera::shutterCLOSE()
 {
@@ -710,7 +716,7 @@ void Camera::FastFlash()
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
 }
 
-bool Camera::setLIGHTMETER_HELPER(bool active){
+bool Camera::setLIGHTMETER_HELPER(bool state){
   #if LMDEBUG
     Serial.print("Set Lightmeterhelper status: ");
     Serial.println(active);
