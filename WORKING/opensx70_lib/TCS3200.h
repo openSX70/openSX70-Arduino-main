@@ -13,8 +13,6 @@
   
   #define A100 400
   #define A600 150
-  //#define A100 850
-  //#define A600 400
   #define A400 200 //need to estimate the right Value for BW 600
   
   /* These functions are called by the main loop.
