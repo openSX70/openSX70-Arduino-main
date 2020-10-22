@@ -218,6 +218,7 @@ camera_state do_state_noDongle (void){
         Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE");
     #endif
   }
+
   return result;
 }
 
@@ -328,15 +329,13 @@ camera_state do_state_multi_exp (void){
         openSX70.AutoExposure(ShutterSpeed[selector], true); 
         multipleExposureCounter++;
       }
-
-      
     }
-
     else if(switch1 == 0 && multipleExposureCounter > 0){
       openSX70.multipleExposureLastClick();
       checkFilmCount();
       multipleExposureCounter = 0;
       result = STATE_DONGLE;
+
       #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
       #endif
@@ -346,6 +345,7 @@ camera_state do_state_multi_exp (void){
 
   if(switch1 == 0 && multipleExposureCounter == 0){
     result = STATE_DONGLE;
+
     #if STATEDEBUG
       Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
     #endif
@@ -485,21 +485,19 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
 }
 
 void blinkAutomode(){
-      if((switch2 != 1) || (switch1 != 1)){ //Not Save ISO Mode
-          turnLedsOff();
-          if(ShutterSpeed[selector]== AUTO600){
-            myDongle.simpleBlink(2, GREEN);
-            #if SIMPLEDEBUG
-              Serial.println("Blink 2 times Green on Auto600 select");
-            #endif
-          }
-          if(ShutterSpeed[selector]== AUTO100){
-            myDongle.simpleBlink(1, GREEN);
-            #if SIMPLEDEBUG
-              Serial.println("Blink 1 times Green on Auto100 select");
-            #endif
-          }
-      }
+  turnLedsOff();
+  if(ShutterSpeed[selector]== AUTO600){
+    myDongle.simpleBlink(2, GREEN);
+    #if SIMPLEDEBUG
+      Serial.println("Blink 2 times Green on Auto600 select");
+    #endif
+  }
+  if(ShutterSpeed[selector]== AUTO100){
+    myDongle.simpleBlink(1, GREEN);
+    #if SIMPLEDEBUG
+      Serial.println("Blink 1 times Green on Auto100 select");
+    #endif
+  }
 }
 
 void blinkSpecialmode(){
@@ -529,24 +527,22 @@ void blinkSpecialmode(){
 }
 
 void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
-    //if ((selector>=14)&&(selector <=15)){ //Blink only on AUTOMODE
-      #if SIMPLEDEBUG
-          Serial.print("Blink RED on ISO change: ");
-      #endif
-      turnLedsOff();
-      if (activeISO == ISO_SX70){
-        myDongle.simpleBlink(1, RED);
-      }
-      else if (activeISO == ISO_600){
-        myDongle.simpleBlink(2, RED);
-      }
-      #if SIMPLEDEBUG
-          Serial.print ("active ISO: ");
-          Serial.println (activeISO);
-      #endif
-      checkFilmCount();
-      return;
-    //}
+  #if SIMPLEDEBUG
+      Serial.print("Blink RED on ISO change: ");
+  #endif
+  turnLedsOff();
+  if (activeISO == ISO_SX70){
+    myDongle.simpleBlink(1, RED);
+  }
+  else if (activeISO == ISO_600){
+    myDongle.simpleBlink(2, RED);
+  }
+  #if SIMPLEDEBUG
+      Serial.print ("active ISO: ");
+      Serial.println (activeISO);
+  #endif
+  checkFilmCount();
+  return;
 }
 
 void switch2Function(int mode) {
