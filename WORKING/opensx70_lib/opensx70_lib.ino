@@ -122,7 +122,7 @@ void setup() {//setup - Inizialize
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
   #if SONAR
-    prefocus();
+    preFocus();
     unfocusing();
   #endif
   normalOperation();
