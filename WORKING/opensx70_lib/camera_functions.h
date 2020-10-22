@@ -6,6 +6,10 @@
   {
     public:
       Camera(uDongle *dongle);
+      void S1F_Unfocus();
+      void S1F_Focus();
+      int S1F_Focus1();
+      void SelfTimerMUP();
       void shutterCLOSE();
       void shutterOPEN();
       void mirrorDOWN();
@@ -32,6 +36,7 @@
       bool setLIGHTMETER_HELPER(bool active);
       bool getLIGHTMETER_HELPER();
       void multipleExposureLastClick();
+      int getGTD();
     private:
       void FastFlash();
       //  void ShutterB();
