@@ -1,14 +1,18 @@
  #include "Arduino.h"
 #include "open_SX70.h"
-//Version 25_08_2020_Meroe2_TCS327T and UDONGLE
-// checkISOChange(); makes the Dongle blink on Dialing on Auto600 and SX70 Mode to show what ISO is selected
-//Exposure Helper now blinks on faster or slower predicted Exposure Values than possible Shutterspeeds with margin ~1 Aperture
-//Stop the Timer on T and B Mode and after each Exposure made
-//Has the Sonar S1 logic and restrictions so the camera is waiting for a new picture to make till the S1F is depressed again to prevent multiple Pictures on longpress
-//Implemented Rotary Switch debounce -- not active in this version
-//Cleaned the ISO select functions
-//Changed the Sensor Sensetivity for the TCS3200 to 20% and Changed the Magic numbers
-//ClickButton sw_S1(PIN_S1, S1Logic, CLICKBTN_PULLUP);
+
+/* 
+  Version 22_10_2020 for Edwin, Meroe, Land, and Sonar PCBs. Works with TSL237T and TCS3200 sensors.
+  Changed code to be balanced between readablility and efficiency. 
+  Main change from previous versions of the code is the implementation of a state machine. This makes each loop more efficient by far.
+  For example, rather than checking every possible dongle-based variable when you do not have a dongle in, the no-dongle state will only check
+  for shutter button presses and if it needs to transition to the Dongle state or the Flashbar state. This makes every state of the camera faster
+  and ensures that there is no lag between shutter press and the exposure modes beginning.
+  The move to a state machine also cuts down on if statement checks.
+
+  The sonar code was entirely done by Hannes (Thank you!).
+*/
+
 ClickButton sw_S1(PIN_S1, S1Logic);
 
 int selector ;
@@ -39,10 +43,9 @@ static int multipleExposureCounter = 0;
   bool isFocused = 0; //neccessary? should be done by GTD???
   int currentPicOnFocus; //dont know what this is for
 #endif
-//long oldMillis = 0;
-//byte firstRun = 0;
 
-//https://electronics.stackexchange.com/questions/95569/best-practice-to-keep-main-in-embedded-systems/96415#96415
+
+/*------------BEGIN STATE MACHINE SET_UP------------*/
 typedef enum{
   STATE_DARKSLIDE,
   STATE_NODONGLE,
@@ -82,15 +85,16 @@ void setup() {//setup - Inizialize
   Serial.begin (9600);
 
   #if DEBUG
-    Serial.println("Version: 20.10.2020 - Meroe2 - TCS3200 100%sensetivity - green Filter");
+    Serial.println("Version: 22.10.2020 - Meroe2 - TCS3200 100%sensetivity - green Filter");
     Serial.println("State machine core by Zane Pollard, Sonar code by Hannes");
+    Serial.println("PCB design and original code by Joaquin");
     Serial.println("Magic Number: A100 400 / A600 150");
   #endif
   
   myDongle.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
-  // (These are default if not set, but changeable for convenience)
 
+  // (These are default if not set, but changeable for convenience)
   sw_S1.debounceTime   = 15;   // Debounce timer in ms 15
   sw_S1.multiclickTime = 250;  // Time limit for multi clicks
   sw_S1.longClickTime  = 10; // time until "held-down clicks" register
@@ -115,7 +119,8 @@ void setup() {//setup - Inizialize
   
 }
 
-void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop loop
+/*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
+void loop() {
   #if SONAR
     prefocus();
     unfocusing();
@@ -125,11 +130,18 @@ void loop() {//loop loop loop loop loop loop loop loop loop loop loop loop loop 
 }
 
 camera_state do_state_darkslide (void) {
-  camera_state result;
+  /*
+    I have all the darkslide code in the state simply because it should only run once a "cycle"
+    Under normal operation the camera will be reset by the door being opened and closed when a new 
+    pack in inserted. I saw no reason to have a separate function for it since this code will not be
+    called anywhere else.
+  */
+  camera_state result = STATE_DARKSLIDE;
+
   if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
     currentPicture = 0; 
     WritePicture(currentPicture);
-    checkFilmCount(); //For Filmpack Status
+    checkFilmCount();
     //OPTION TURN ON AND OFF LED WHILE DARKSLIDE EJECT
     if (nowDongle != 0) {
       myDongle.dongleLed (GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
@@ -160,7 +172,6 @@ camera_state do_state_darkslide (void) {
     }
   }
   
-  
   return result;
 }
 
@@ -168,15 +179,15 @@ camera_state do_state_noDongle (void){
   camera_state result = STATE_NODONGLE;
 
   savedISO = ReadISO();
-  //LightMeterHelper(0);
-  LightMeterHelper(0); //Added 05.06.2020
+
+  LightMeterHelper(1); 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
-    switch1 = 0; //necessary?
+    LightMeterHelper(0); 
     openSX70.AutoExposure(savedISO, false);
     sw_S1.Reset();
   }
   if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
-    switch1 = 0; //necessary?
+    LightMeterHelper(0); 
     delay (10000);
     openSX70.AutoExposure(savedISO, false);
     sw_S1.Reset();
@@ -200,37 +211,27 @@ camera_state do_state_dongle (void){
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(1);
-    if(switch2 == 1){
 
+    if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
+      switch2Function(0); //switch2Function Manual Mode
+      openSX70.ManualExposure(selector, false);
     }
-    //TODO ADD ANALOGWORKS DONGLE OPTION. SAVES COMPARE TIME.
-    #if UDONGLE
-      if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
-        switch2Function(0); //switch2Function Manual Mode
-        openSX70.ManualExposure(selector, false);
-      }
-      else if(selector == 12){ //POST
-        #if SIMPLEDEBUG
-          Serial.println("POS T");
-        #endif
-        lmTimer_stop();
-        turnLedsOff();
-        openSX70.ShutterT(false);
-        checkFilmCount();
-      }
-      else if(selector == 13){ //POSB
-        #if SIMPLEDEBUG
-          Serial.println("POS B");
-        #endif
-        lmTimer_stop();
-        turnLedsOff(); //why?
-        openSX70.ShutterB(false);
-        checkFilmCount();
-      }
-      else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
-        openSX70.AutoExposure(ShutterSpeed[selector], false); 
-      }
-    #endif
+    else if(selector == 12){ //POST
+      lmTimer_stop();
+      turnLedsOff();
+      openSX70.ShutterT(false);
+      checkFilmCount();
+    }
+    else if(selector == 13){ //POSB
+      lmTimer_stop();
+      turnLedsOff(); //why?
+      openSX70.ShutterB(false);
+      checkFilmCount();
+    }
+    else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
+      openSX70.AutoExposure(ShutterSpeed[selector], false); 
+      checkFilmCount();
+    }
     sw_S1.Reset();
   } 
 
@@ -278,56 +279,43 @@ camera_state do_state_multi_exp (void){
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     if(switch1 == 1){
-      //TODO again add analog dongle
-      #if UDONGLE
-        if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
-          switch2Function(0); //switch2Function Manual Mode
-          openSX70.ManualExposure(selector, true);
-          multipleExposureCounter++;
-        }
-        else if(selector == 12){ //POST
-          #if SIMPLEDEBUG
-            Serial.println("POS T");
-          #endif
+      if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
+        switch2Function(0); //switch2Function Manual Mode
+        openSX70.ManualExposure(selector, true);
+        multipleExposureCounter++;
+      }
+      else if(selector == 12){ //POST
+        lmTimer_stop();
+        turnLedsOff();
+        openSX70.ShutterT(true);
+        checkFilmCount();
+        multipleExposureCounter++;
+      }
+      else if(selector == 13){ //POSB
+        lmTimer_stop();
+        turnLedsOff(); //why?
+        openSX70.ShutterB(true);
+        checkFilmCount();
+        multipleExposureCounter++;
+      }
+      else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
+        openSX70.AutoExposure(ShutterSpeed[selector], true); 
+        multipleExposureCounter++;
+      }
 
-          lmTimer_stop();
-          turnLedsOff();
-          openSX70.ShutterT(true);
-          checkFilmCount();
-          multipleExposureCounter++;
-        }
-        else if(selector == 13){ //POSB
-          #if SIMPLEDEBUG
-            Serial.println("POS B");
-          #endif
-
-          lmTimer_stop();
-          turnLedsOff(); //why?
-          openSX70.ShutterB(true);
-          checkFilmCount();
-          multipleExposureCounter++;
-        }
-        //TODO maybe get rid of auto on multiple exposure? unless maybe we do a half time auto. make it just two images
-        else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
-          openSX70.AutoExposure(ShutterSpeed[selector], true); 
-          multipleExposureCounter++;
-        }
-      #endif
       
     }
 
     else if(switch1 == 0 && multipleExposureCounter > 0){
       openSX70.multipleExposureLastClick();
+      checkFilmCount();
       multipleExposureCounter = 0;
-      Serial.println("TO DONGLE sw1=0 mex>0");
       result = STATE_DONGLE;
     }
     sw_S1.Reset();
-    Serial.println(multipleExposureCounter);
   }
 
   if(switch1 == 0 && multipleExposureCounter == 0){
-    Serial.println("to dongle 0 0");
     result = STATE_DONGLE;
   }
   return result;
