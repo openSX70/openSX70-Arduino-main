@@ -398,31 +398,6 @@ void turnLedsOff(){ //todo:move to camerafunction
    //delay(400); 
 }
 
-#if SONAR
-void getGTD(){
-  GTD = digitalRead(PIN_GTD);
-}
-
-void getS1F(){
-  S1F = digitalRead(PIN_S1F);
-}
-
-void getFT(){
-   FT = digitalRead(PIN_FT);
-}
-
-void printReadings(){
-  Serial.print("GTD: ");
-  Serial.print(GTD);
-  Serial.print(" | S1F: ");
-  Serial.print(S1F);
-  Serial.print(" | FT: ");
-  Serial.print(FT);
-  Serial.print(" | FF: ");
-  Serial.println(digitalRead(PIN_FFA));
-  }
-#endif
-
 void DongleInserted() { //Dongle is pressend LOOP
   if (digitalRead(PIN_S1) != S1Logic) {
   #if SONAR
