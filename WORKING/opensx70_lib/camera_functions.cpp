@@ -2,7 +2,7 @@
 #include "camera_functions.h"
 #include "meter.h"
 #include "open_sx70.h"
-#include "sx70_meroe_pcb.h"
+#include "sx70_pcb.h"
 //#include "Clickbutton.h"
 #include "settings.h"
 #include "uDongle2.h"
@@ -199,9 +199,9 @@ void Camera::DongleFlashNormal()
 {
   pinMode(PIN_S2, OUTPUT);
   digitalWrite(PIN_SOL2, LOW); //So FFA recognizes the flash as such
-  digitalWrite(PIN_FFA, HIGH);   //FLASH TRIGGERING
+  digitalWrite(PIN_FF, HIGH);   //FLASH TRIGGERING
   delay (1);                 //FLASH TRIGGERING
-  digitalWrite(PIN_FFA, LOW);    //FLASH TRIGGERING
+  digitalWrite(PIN_FF, LOW);    //FLASH TRIGGERING
   pinMode(PIN_SOL2, INPUT_PULLUP);  //S2 back to dongle mode
 }
 
@@ -504,10 +504,10 @@ void Camera::FlashBAR() //FlashBAR
   delay (YDelay);                               //S3 is now open start Y-delay (40ms)
   Camera::shutterOPEN ();
   delay (66);
-  digitalWrite(PIN_FFA, HIGH);
+  digitalWrite(PIN_FF, HIGH);
   delay (2);
   analogWrite (PIN_SOL2, 0);
-  digitalWrite(PIN_FFA, LOW);
+  digitalWrite(PIN_FF, LOW);
   delay (20);
   Camera::shutterCLOSE();
   #if SONAR
@@ -710,9 +710,9 @@ void Camera::FastFlash()
   //     delay (2);
   digitalWrite (PIN_S2, LOW);     //So FFA recognizes the flash as such
   //     delay (2);
-  digitalWrite(PIN_FFA, HIGH);    //FLASH TRIGGERING
+  digitalWrite(PIN_FF, HIGH);    //FLASH TRIGGERING
   delay (1);                      //FLASH TRIGGERING
-  digitalWrite(PIN_FFA, LOW);     //FLASH TRIGGERING
+  digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
 }
 

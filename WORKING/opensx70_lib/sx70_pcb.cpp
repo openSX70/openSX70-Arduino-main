@@ -10,7 +10,7 @@ void io_init() {
   // Output definition
   pinMode(PIN_SOL1, OUTPUT);
   pinMode(PIN_SOL2, OUTPUT);
-  pinMode(PIN_FFA, OUTPUT);
+  pinMode(PIN_FF, OUTPUT);
   pinMode(PIN_MOTOR, OUTPUT);
   pinMode(PIN_LED1, OUTPUT);
   pinMode(PIN_LED2, OUTPUT);
@@ -18,7 +18,7 @@ void io_init() {
   // output default state set.
   digitalWrite(PIN_SOL1, LOW);
   digitalWrite(PIN_SOL2, LOW);
-  digitalWrite(PIN_FFA, LOW);
+  digitalWrite(PIN_FF, LOW);
   digitalWrite(PIN_MOTOR, LOW);
   digitalWrite(PIN_LED1, LOW);
   digitalWrite(PIN_LED2, LOW);

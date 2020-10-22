@@ -15,9 +15,9 @@
   #define STATEDEBUG 0 //Debug state transitions 
   //----------------------END DEBUG OPTIONS------------------------------
   //----------------------CAMERA PCB OPTIONS SELECTION---------------------------
-  #define TSL237T
+  //#define TSL237T
   //#define TSL235R
-  //#define TCS3200
+  #define TCS3200
   //S1Logic LOW = Alphas, Meroë, Edwin
   //#define S1Logic HIGH //= Sonar 
   #define S1Logic LOW

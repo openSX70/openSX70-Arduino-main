@@ -7,7 +7,7 @@
   #include <Arduino.h>
   //#include <EEPROM.h>
   // includes for external libraries
-  #include "sx70_meroe_pcb.h"
+  #include "sx70_pcb.h"
   #include "settings.h"
   #include "camera_functions.h"
   //#include "ClickButton.h"
