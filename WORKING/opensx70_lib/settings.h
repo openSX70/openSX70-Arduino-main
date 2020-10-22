@@ -20,8 +20,8 @@
   #define TCS3200
   //S1Logic LOW = Alphas, Meroë, Edwin
   //#define S1Logic HIGH //= Sonar 
-  #define S1Logic LOW
-  #define SONAR 0
+  #define S1Logic HIGH
+  #define SONAR 1
   #define ORIGAMI 0
   #define ORIGAMIV1 0 //V1 Version of Origami with inverted Rotaryswitch
   #define UDONGLE 1
