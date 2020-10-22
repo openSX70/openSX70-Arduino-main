@@ -148,6 +148,9 @@ camera_state do_state_darkslide (void) {
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
       BlinkISO();
+      if((myDongle.switch1() == 1 && myDongle.switch2() == 1) && (selector == 14 || selector = 15)){
+        saveISOChange();
+      }
     }
     else if ((selector == 100) && (myDongle.checkDongle() == 0)){
       result = STATE_FLASHBAR;
@@ -698,35 +701,33 @@ void saveISOChange() {
   selector = myDongle.selector();
   //TODO ADD ANALOGDONGLE MODE!!!!!!!!!!!
   #if UDONGLE
-    if (selector >= 14 && selector <= 15) { // Only Save on Automode selector slots! Need to be changed if the Selector order changes!!
-      savedISO = ReadISO(); //read the savedISO from the EEPROM
-      if (((ShutterSpeed[selector]) == AUTO600)) {
-        if (_selectedISO != ISO_600) {
-          _selectedISO = ISO_600;
-        }
+    savedISO = ReadISO(); //read the savedISO from the EEPROM
+    if (((ShutterSpeed[selector]) == AUTO600)) {
+      if (_selectedISO != ISO_600) {
+        _selectedISO = ISO_600;
       }
-      else if (((ShutterSpeed[selector]) == AUTO100)) {
-        if (_selectedISO != ISO_SX70) {
-          _selectedISO = ISO_SX70;
-        }
+    }
+    else if (((ShutterSpeed[selector]) == AUTO100)) {
+      if (_selectedISO != ISO_SX70) {
+        _selectedISO = ISO_SX70;
       }
-      else {
-        //no ISO Selected
-        _selectedISO = DEFAULT_ISO;
-      }
-      if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
-      #if SIMPLEDEBUG
-        Serial.print("SaveISOChange() Function: ");
-        Serial.print("ISO has changed, previos saved ISO (from EEPROM): ");
-        Serial.println(savedISO);
-        Serial.print("Saving new selected ISO ");
-        Serial.print(_selectedISO);
-        Serial.println(" to the EEPROM");
-      #endif
-        activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
-        WriteISO(_selectedISO); //Write ISO to EEPROM
-        BlinkISORed(); //Blink ISO Red
-      }
+    }
+    else {
+      //no ISO Selected
+      _selectedISO = DEFAULT_ISO;
+    }
+    if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
+    #if SIMPLEDEBUG
+      Serial.print("SaveISOChange() Function: ");
+      Serial.print("ISO has changed, previos saved ISO (from EEPROM): ");
+      Serial.println(savedISO);
+      Serial.print("Saving new selected ISO ");
+      Serial.print(_selectedISO);
+      Serial.println(" to the EEPROM");
+    #endif
+      activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
+      WriteISO(_selectedISO); //Write ISO to EEPROM
+      BlinkISORed(); //Blink ISO Red
     }
   #endif
 }
