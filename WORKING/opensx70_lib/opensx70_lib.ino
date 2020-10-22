@@ -160,15 +160,23 @@ camera_state do_state_darkslide (void) {
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
       BlinkISO();
-      if((myDongle.switch1() == 1 && myDongle.switch2() == 1) && ((selector == 14) || (selector = 15))){
-        saveISOChange();
-      }
+      #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE");
+      #endif
     }
     else if ((selector == 100) && (myDongle.checkDongle() == 0)){
       result = STATE_FLASHBAR;
+
+      #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE");
+      #endif
     }
     else{
       result = STATE_NODONGLE;
+
+      #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE");
+      #endif
     }
   }
   
@@ -196,10 +204,19 @@ camera_state do_state_noDongle (void){
   //Checks for dongle or flashbar insertion
   if (myDongle.checkDongle() > 0){ //((selector <= 15) && (myDongle.checkDongle() > 0))
     result = STATE_DONGLE;
+    if((myDongle.switch1() == 1 && myDongle.switch2() == 1) && ((selector == 14) || (selector = 15))){
+      saveISOChange();
+    }
     BlinkISO();
+    #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE");
+    #endif
   }
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
+    #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE");
+    #endif
   }
   return result;
 }
@@ -238,10 +255,16 @@ camera_state do_state_dongle (void){
   // Dongle Removed
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
+    #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE");
+    #endif
   } 
   // Multiple Exposure switch flipped
   else if (switch1 == 1){
     result = STATE_MULTI_EXP;
+    #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE");
+    #endif
   }
 
   return result;
@@ -267,6 +290,9 @@ camera_state do_state_flashBar (void){
 
   if ((selector == 200) && (myDongle.checkDongle() == 0)){
     result = STATE_NODONGLE;
+    #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR");
+    #endif
   } 
 
   return result;
@@ -311,12 +337,18 @@ camera_state do_state_multi_exp (void){
       checkFilmCount();
       multipleExposureCounter = 0;
       result = STATE_DONGLE;
+      #if STATEDEBUG
+        Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
+      #endif
     }
     sw_S1.Reset();
   }
 
   if(switch1 == 0 && multipleExposureCounter == 0){
     result = STATE_DONGLE;
+    #if STATEDEBUG
+      Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
+    #endif
   }
   return result;
 }
