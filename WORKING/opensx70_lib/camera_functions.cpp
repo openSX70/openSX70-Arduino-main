@@ -111,18 +111,16 @@ void Camera::SelfTimerMUP(){
     Camera::mirrorUP();
 }
 
-
-
 void Camera::shutterCLOSE()
 {
   #if BASICDEBUG
     Serial.println ("shutterCLOSE");
   #endif
+
     Camera::HighSpeedPWM();
     analogWrite(PIN_SOL1, 255);
     delay (PowerDownDelay);
     analogWrite (PIN_SOL1, PowerDown);
-    
 }
 
 void Camera::shutterOPEN()
@@ -131,7 +129,6 @@ void Camera::shutterOPEN()
     Serial.println ("shutterOPEN");
   #endif
     analogWrite (PIN_SOL1, 0);
-    
 }
 
 void Camera::motorON()
@@ -171,14 +168,12 @@ void Camera::mirrorUP()
     Serial.println ("mirrorUP");
   #endif
   motorON ();
-  //while (digitalRead(PIN_S5) != HIGH)            //waiting for S5 to OPEN do NOTHING
+
   while (DebouncedRead(PIN_S5) != HIGH)
   {
     //wait for S5 to go low
   }
-  //S5 OPENS
-  //S1 MAY BE OPEN NOW (DON'T KNOW HOW TO DO THIS YET)
-  // Motor Brake
+
   motorOFF ();
   
 }
@@ -250,9 +245,7 @@ void DongleFlashF8 ()
 
 void Camera::Ydelay ()
 {
-  //Only one 120ms delay.
   delay (120);
-  
 }
 
 bool Camera::DebouncedRead(uint8_t pin)
@@ -380,22 +373,23 @@ void Camera::ManualExposure(int _selector, bool mEXP) //ManualExposure
   WritePicture(currentPicture);
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
+    if(mEXP){
+      Serial.print(", Multiple Exposure on")
+    }
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
   if(multipleExposureMode == false){
     Camera::shutterCLOSE ();
-    delay (100); //added to fix bad photos WITH LESS delay IS THIS NEEDED??? auto does not have it. -ZANE
-    Camera::mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
+    delay (100);
+    Camera::mirrorUP();
   }
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){
     //waiting for S3 to OPEN
-    //Serial.println("wait for s3");
   }
   delay (YDelay);
-  // startCounterCalibration();
-  //int ShutterSpeed[] = {17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, AUTO600BW, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing
+
   int ShutterSpeedDelay = (ShutterSpeed[_selector] + ShutterConstant) ;
   if (_selector >= 6)
   {
@@ -414,9 +408,8 @@ void Camera::ManualExposure(int _selector, bool mEXP) //ManualExposure
     Serial.println(ShutterSpeedDelay);
   #endif
 
-  //sei(); //Interupts restart -- Take the Picture
-  Camera::shutterOPEN();  //SOLENOID OFF MAKES THE SHUTTER TO OPEN!
-  //delay (ShutterSpeedDelay);
+  Camera::shutterOPEN();
+
   unsigned long initialMillis = millis();
   while (millis() <= (initialMillis + ShutterSpeedDelay))
     ;
@@ -452,17 +445,19 @@ void Camera::AutoExposure(int _myISO, bool mEXP)
         Serial.println(currentPicture);
     #endif
   }
-  meter_set_iso(_myISO); //Set the correct compare Table for the set ISO
+
+  meter_set_iso(_myISO); 
+
   if(!multipleExposureMode){
     Camera::shutterCLOSE();
-    Camera::mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
+    Camera::mirrorUP();   
   }
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){
     //waiting for S3 to OPEN}
   }
-  delay(YDelay);                            //S3 is now open start Y-delay (40ms)
-  //startCounter();
+  delay(YDelay);
+
   meter_init();
   meter_integrate();
   Camera::shutterOPEN();
@@ -475,7 +470,6 @@ void Camera::AutoExposure(int _myISO, bool mEXP)
     unsigned long shutterCloseTime = millis(); //Shutter Debug
   #endif
 
-  //multiple exposure test
   Camera::ExposureFinish(mEXP);
 
   #if LMDEBUG
@@ -496,12 +490,12 @@ void Camera::FlashBAR() //FlashBAR
   Camera::HighSpeedPWM();
   analogWrite(PIN_SOL2, 255);
   Camera::shutterCLOSE ();
-  Camera::mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
+  Camera::mirrorUP();
   pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH)            //waiting for S3 to OPEN
+  while (digitalRead(PIN_S3) != HIGH)
     ;
   analogWrite (PIN_SOL2, 130);
-  delay (YDelay);                               //S3 is now open start Y-delay (40ms)
+  delay (YDelay);
   Camera::shutterOPEN ();
   delay (66);
   digitalWrite(PIN_FF, HIGH);
@@ -517,9 +511,9 @@ void Camera::FlashBAR() //FlashBAR
     Serial.println("Unfocus");
     #endif
   #endif
-  delay (200);                             //AGAIN is this delay necessary?
-  Camera::mirrorDOWN();                          //Motor starts, let bring the mirror DOWN
-  delay (200);                             //AGAIN is this delay necessary?
+  delay (200);
+  Camera::mirrorDOWN();
+  delay (200);
   Camera::shutterOPEN();
   currentPicture++; 
   WritePicture(currentPicture);
@@ -533,36 +527,32 @@ void Camera::ShutterB(bool mEXP)
      Serial.print(", current Picture: ");
      Serial.println(currentPicture);
   #endif
-  //Why turn of the LIGHT?
-  //digitalWrite(PIN_LED2, LOW);
-  //digitalWrite(PIN_LED1, LOW);
+
   if(!multipleExposureMode){
     Camera::shutterCLOSE ();
-    Camera::mirrorUP();   //Motor Starts: MIRROR COMES UP!!
+    Camera::mirrorUP();
   }
   pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
-    //Serial.println("Wait for s3 to open (HIGH)");
-    //  while (openSX70.DebouncedRead(PIN_S3) != HIGH)            //waiting for S3 to OPEN˚
+  while (digitalRead(PIN_S3) != HIGH){
+     //waiting for S3 to OPEN˚
   }
-  delay (40);                               //S3 is now open start Y-delay (40ms)
-  if (_dongle->switch2() ==  1) //CASE Activate Solenoid 2 for Camfollower Function
+  delay (40);
+  if (_dongle->switch2() ==  1)
   {
-    analogWrite(PIN_SOL2, 255); //Solenoid 2 activating
+    analogWrite(PIN_SOL2, 255);
   }
-  //MutlipleExposure Finish()
+
   Camera::shutterOPEN ();
-  if (_dongle->switch2() ==  1) //CASE Activate Solenoid 2 for Camfollower Function
+  if (_dongle->switch2() ==  1)
   {
     analogWrite(PIN_SOL2, 130);
   }
   while (digitalRead(PIN_S1) == S1Logic){
-    //  while (sw_S1.depressed)
-    //Serial.println("Red Button Pressed)");
+    
   }
   Camera::FastFlash();
   Camera::shutterCLOSE ();
-  if (_dongle->switch2() ==  1) //CASE Deactivate Solenoid 2 for Camfollower Function
+  if (_dongle->switch2() ==  1)
   {
     analogWrite(PIN_SOL2, 0);
   }
@@ -574,11 +564,10 @@ void Camera::ShutterB(bool mEXP)
       #endif
   #endif
 
-  //multiple exposure test
   if(!mEXP){
     delay (200);
-    Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-    delay (200);                             //AGAIN is this delay necessary?
+    Camera::mirrorDOWN ();
+    delay (200);
     Camera::shutterOPEN();
     currentPicture++; 
     WritePicture(currentPicture);
@@ -605,8 +594,8 @@ void Camera::ShutterT(bool mEXP)
     //waiting for S3 to OPEN˚
   }
 
-  delay (40);                               //S3 is now open start Y-delay (40ms)
-  //MutlipleExposure Finish()
+  delay (40);
+
   #if SONAR
   while (digitalRead(PIN_S1F) == HIGH){
   }
@@ -632,9 +621,9 @@ void Camera::ShutterT(bool mEXP)
 
   //multiple exposure test
   if(mEXP == false){
-    delay (200);                             //AGAIN is this delay necessary?
-    Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-    delay (200);                             //AGAIN is this delay necessary?
+    delay (200);
+    Camera::mirrorDOWN ();
+    delay (200);
     Camera::shutterOPEN();
     currentPicture++; 
     WritePicture(currentPicture);
@@ -644,7 +633,7 @@ void Camera::ShutterT(bool mEXP)
 void Camera::ExposureStart(){
   #if SONAR
     while(S1F_Focus1()!=1){
-      Serial.println("Wait for GTD");
+      //Serial.println("Wait for GTD");
     }
     
     //while(getGTD()!=1){ //Not sure if this is nececcary!!!
@@ -675,9 +664,9 @@ void Camera::ExposureFinish(bool mEXP)
     multipleExposureMode = true;
   }
   else if (_dongle->checkDongle() > 0){ //Dongle present
-    delay (100);                             //AGAIN is this delay necessary?
-    Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-    delay (100);                  //WAS 60           //AGAIN is this delay necessary?
+    delay (100);
+    Camera::mirrorDOWN ();
+    delay (100); //WAS 60
     while(digitalRead(PIN_S1) == S1Logic){
       //waiting for s1 to stop being depressed... get well soon
     }
@@ -687,9 +676,9 @@ void Camera::ExposureFinish(bool mEXP)
     #endif
   }
   else if (_dongle->checkDongle() == 0){ //No Dongle
-    delay (100);                             //AGAIN is this delay necessary?
-    Camera::mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-    delay (300);                 //WAS 60           //AGAIN is this delay necessary?
+    delay (100);
+    Camera::mirrorDOWN ();
+    delay (300); //WAS 60
     while(digitalRead(PIN_S1) == S1Logic){
       //waiting for s1 to stop being depressed... get well soon
     }
