@@ -10,8 +10,9 @@
     const uint8_t TCS3200_S1_Pin = 9; //Pin 32 on Meroe2  (PD2-INT0)
     const uint8_t TCS3200_S3_Pin = 6; //Pin 10 on Meroe2 (PD6-AIN0)
   #else
-    const uint8_t TCS3200_S1_Pin = 32; //Pin 32 on Meroe2  (PD2-INT0)
-    const uint8_t TCS3200_S3_Pin = 10; //Pin 10 on Meroe2 (PD6-AIN0)
+    const uint8_t TCS3200_S1_Pin = 2; //Pin 32 on Meroe2  (PD2-INT0)
+    const uint8_t TCS3200_S3_Pin = 6; //Pin 10 on Meroe2 (PD6-AIN0)
+    const uint8_t PIN_OE = 9;         //Pin 13 on Meroe2  (PB1-OC1A)
   #endif
   //const uint8_t PIN_OE = 9;         //Pin 13 on Meroe2  (PB1-OC1A)
   
@@ -21,19 +22,29 @@
   
   // initialise Timer 1 for light sensor integration.
   void tcs3200_init(){
-    //pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
-    pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
-    pinMode(TCS3200_S3_Pin, OUTPUT); //Photodiode type selection input
-    //digitalWrite(PIN_OE, LOW);
+    #if SONAR
+      //pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
+      //digitalWrite(PIN_OE, LOW);
+      pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
+      pinMode(TCS3200_S3_Pin, OUTPUT); //Photodiode type selection input
       //S2 (Photodiode type selection pin) & S0 (Output frequency scaling selection pin) should be high,
       // both can be modified via jumper in PCB 
-    digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
-    digitalWrite(TCS3200_S3_Pin, HIGH); //filter LOW = clear | HIGH = green
-    
+      digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
+      digitalWrite(TCS3200_S3_Pin, LOW); //filter LOW = clear | HIGH = green
       //S2 & S0 should be high can be modified via jumper in PCB 
-  //  digitalWrite(S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
-  //  digitalWrite(S3_Pin, LOW); //filter LOW = clear | HIGH = green
-  
+      //digitalWrite(S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
+      //digitalWrite(S3_Pin, LOW); //filter LOW = clear | HIGH = green
+    #else
+      pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
+      pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
+      pinMode(TCS3200_S3_Pin, OUTPUT); //Photodiode type selection input
+      digitalWrite(PIN_OE, LOW);
+        //S2 (Photodiode type selection pin) & S0 (Output frequency scaling selection pin) should be high,
+        // both can be modified via jumper in PCB 
+      digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
+      digitalWrite(TCS3200_S3_Pin, LOW); //filter LOW = clear | HIGH = green
+    #endif
+
     cli(); //Stop all Interupts
   
     TIFR1 = (1 << ICF1) | (1 << OCF1B) | (1 << OCF1A) | (1 << TOV1);   // Clear all interrupts flags
@@ -63,9 +74,7 @@
         outputCompare = A600;
       } else if (iso == ISO_SX70) {
         outputCompare = A100;
-      } else if (iso == ISO_600BW){
-        outputCompare = A400;
-      }
+      } 
   }
   
   int meter_compute(unsigned int _interval) //Light Meter Helper Compute
@@ -136,7 +145,7 @@
         {
           unsigned long counter = TCNT1; //Timer count Value
           measuring = false;
-          PredExp = (((float)myMillis) / ((float) counter)) * (float)outputCompare;
+          PredExp = round((((float)myMillis) / ((float) counter)) * (float)outputCompare);
           #if LMDEBUG
             Serial.print("pr mil: ");
             Serial.print(previousMillis);
@@ -198,6 +207,15 @@
       Serial.println(TCNT1);
     #endif
   	// function / flag.
+  }
+
+    volatile   unsigned int timer1CounterValue;
+
+ISR (TIMER1_CAPT_vect)
+  {
+  timer1CounterValue = ICR1;  
+  Serial.println(ICR1);
+  // possibly other stuff
   }
   
   ISR(TIMER1_OVF_vect){//Timer overflow
@@ -266,7 +284,16 @@
 
   void meter_led(byte _selector, byte _type)
   {
-    unsigned long PredictedExposure;
+    if (_type == 0) //OFF
+    {
+      #if LMDEBUG
+      Serial.println("LM Helper OFF ");
+      #endif
+      digitalWrite(PIN_LED1, LOW);
+      digitalWrite(PIN_LED2, LOW);
+      return;
+    }
+    int PredictedExposure;
     int activeISO = ReadISO(); //read ISO from EEPROM
     //original int PredictedExposure = meter_compute(200);
     if((ShutterSpeed[_selector]) == AUTO600)
@@ -288,7 +315,7 @@
     {
       return;
     }
-    if (_type == 1) //Manual Mode
+    if (_type == 2) //Manual Mode
     {
       //PredictedExposure = meter_compute(200,activeISO);
       //int slot = nearest(PredictedExposure, ShutterSpeed, 11, false); //Calculate the slot (
@@ -307,7 +334,7 @@
         //digitalWrite(PIN_LED1, HIGH); //maybe blink
         digitalWrite(PIN_LED1, LOW); 
       }
-      else if(slot == 11){ //PredExpValue faster then fastest Shutterspeed
+      else if(slot == 12){ //PredExpValue faster then fastest Shutterspeed
         digitalWrite(PIN_LED2, LOW);
         digitalWrite(PIN_LED1, digitalRead(PIN_LED1) ^ 1); //Blink BLUE LED
         //digitalWrite(PIN_LED2, HIGH);
@@ -337,7 +364,7 @@
         }
       }
     }
-    else if (_type == 0) //Automode
+    else if (_type == 1) //Automode
     {
       #if LMDEBUG
       Serial.print ("LM Helper PredictedExposure on Auto Mode , PredictedExposure: ");

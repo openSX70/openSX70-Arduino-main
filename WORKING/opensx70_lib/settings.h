@@ -4,14 +4,15 @@
   //------------DEBUG OPTIONS---------------------------------------------
   #define LIGHMETER_HELPER 1
   //LIGHMETER_HELPER 0  NO helper, 1 for VE helper, 2 future dongle helper
-  #define DEBUG 0
-  #define SIMPLEDEBUG 0 //Simple Debug On 1 - Off 0
+  #define DEBUG 1
+  #define SIMPLEDEBUG 0//Simple Debug On 1 - Off 0
   #define ADVANCEDEBUG 0 //Simple Debug On 1 - Off 0
-  #define BASICDEBUG 0 // Debug of Basic Camera Functions
+  #define BASICDEBUG 1 // Debug of Basic Camera Functions
   #define MXDEBUG 0 // Multiple Exposure Debug
   #define LMDEBUG 0 //Lightmeter Debug
   #define LMHELPERDEBUG 0 //Lightmeter Debug
   #define ROTARYDEBUG 0 //Rotaryswitch on Dongle Debug
+  #define STATEDEBUG 0 //Debug state transitions 
   //----------------------END DEBUG OPTIONS------------------------------
   //----------------------CAMERA PCB OPTIONS SELECTION---------------------------
   //#define TSL237T
@@ -36,7 +37,7 @@
   #define ISO_SX70 125
   #define ISO_600 640
   #define ISO_600BW 400
-  #define DEFAULT_ISO ISO_600
+  #define DEFAULT_ISO ISO_SX70
   //---------------END ISO VALUES--------------------------------------------
   #define EE_ADD_CUR   4    //-> CurrentPicture --> 1-8 "Pack" picture counter
   #define EE_ADD_ADD   30    //-> eeAddress Where to write next

@@ -26,7 +26,7 @@ ClickButton::ClickButton(uint8_t buttonPin, boolean activeType)
   clicks         = 0;
   depressed      = 0;
   _lastBounceTime= 0;
-  debounceTime   = 20;            // Debounce timer in ms
+  debounceTime   = 50;            // Debounce timer in ms
   multiclickTime = 250;           // Time limit for multi clicks
   longClickTime  = 1000;          // time until long clicks register
   changed        = false;
@@ -90,6 +90,7 @@ void ClickButton::Update()
   }
   _lastState = _btnState;
 
+  #if (SONAR == 0)
   // If the button released state is stable, report nr of clicks and start new cycle
   if (!depressed && (now - _lastBounceTime) > multiclickTime)
   {
@@ -103,7 +104,8 @@ void ClickButton::Update()
     Serial.println("Single Click");
     }
   }
-
+  #endif
+  
   // Check for "long click"
   if (depressed && (now - _lastBounceTime > longClickTime))
   {

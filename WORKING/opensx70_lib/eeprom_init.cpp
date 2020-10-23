@@ -2,9 +2,8 @@
 #include "settings.h"
 #include "EEPROM.h"
 
-int WritePicture(int _currentPicture){
+void WritePicture(int _currentPicture){
   EEPROM.update(EE_ADD_PIC, _currentPicture);
-  return _currentPicture;
 }
 
 int ReadPicture(){
@@ -26,7 +25,7 @@ int ReadISO()
 }
 
 void init_EEPROM() {
-  char initJP[2];
+  int initJP[2];
   initJP[0] = EEPROM.read(0);
   initJP[1] = EEPROM.read(1);
   //int currentPicture = 1;
