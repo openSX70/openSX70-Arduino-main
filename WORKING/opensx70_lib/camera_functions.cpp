@@ -7,7 +7,7 @@
 #include "settings.h"
 #include "uDongle2.h"
 
-static byte multipleExposureMode = false;
+static bool multipleExposureMode = false;
 int GTD = 0;
 
 Camera::Camera(uDongle *dongle)
@@ -35,10 +35,12 @@ int Camera::getGTD() {
       }
     }
   }
+  #if SIMPLEDEBUG
   Serial.print("dvdGTD: ");
   Serial.println(dvdGTD);
   Serial.print("aGTD[0]: ");
   Serial.println(aGTD[0]);
+  #endif
   if(dvdGTD>=(val-1)){
     if(aGTD[0] >= 310){
       GTD = 1;
@@ -175,7 +177,7 @@ void Camera::mirrorUP()
   }
 
   motorOFF ();
-  
+  Serial.println("end motor");
 }
 
 void Camera::darkslideEJECT()
@@ -366,15 +368,15 @@ void Camera::multipleExposureLastClick(){
   multipleExposureMode = false;
 }
 
-void Camera::ManualExposure(int _selector, bool mEXP) //ManualExposure
+void Camera::ManualExposure(int selector, bool _mEXP) //ManualExposure
 {
   Camera::ExposureStart();
   currentPicture++; 
   WritePicture(currentPicture);
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
-    if(mEXP){
-      Serial.print(", Multiple Exposure on")
+    if(_mEXP){
+      Serial.print(", Multiple Exposure on");
     }
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
@@ -390,8 +392,8 @@ void Camera::ManualExposure(int _selector, bool mEXP) //ManualExposure
   }
   delay (YDelay);
 
-  int ShutterSpeedDelay = (ShutterSpeed[_selector] + ShutterConstant) ;
-  if (_selector >= 6)
+  int ShutterSpeedDelay = (selector + ShutterConstant);
+  if (selector >= 6)
   {
     ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
   }
@@ -399,21 +401,22 @@ void Camera::ManualExposure(int _selector, bool mEXP) //ManualExposure
     extern int selector;
     Serial.print("Manual Exposure Debug: ");
     //Serial.print("ShutterSpeed[");
-    //Serial.print(_selector);
+    //Serial.print(selector);
     //Serial.print("] :");
-    //Serial.println(ShutterSpeed[_selector]);
+    //Serial.println(ShutterSpeed[selector]);
     Serial.print("ShutterConstant:");
     Serial.println(ShutterConstant);
     Serial.print("ShutterSpeedDelay:");
     Serial.println(ShutterSpeedDelay);
   #endif
-
+  Serial.println(ShutterSpeedDelay);
   Camera::shutterOPEN();
 
   unsigned long initialMillis = millis();
-  while (millis() <= (initialMillis + ShutterSpeedDelay))
-    ;
-  if (_selector >= 3) // changed the flash selection
+  while (millis() <= (initialMillis + ShutterSpeedDelay)){
+
+  }
+  if (selector >= 3) // changed the flash selection
   {
     #if SIMPLEDEBUG
         Serial.println("FF");
@@ -423,7 +426,7 @@ void Camera::ManualExposure(int _selector, bool mEXP) //ManualExposure
   #if LMDEBUG
     unsigned long shutterCloseTime = millis(); //Shutter Debug
   #endif
-  Camera::ExposureFinish(mEXP);
+  Camera::ExposureFinish(_mEXP);
   #if LMDEBUG
       unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
       Serial.print("ExposureTime on Manualmode: ");
@@ -432,10 +435,10 @@ void Camera::ManualExposure(int _selector, bool mEXP) //ManualExposure
   
 }
 
-void Camera::AutoExposure(int _myISO, bool mEXP)
+void Camera::AutoExposure(int _myISO, bool _mEXP)
 {
   Camera::ExposureStart();
-  if(mEXP == false){
+  if(_mEXP == false){
     currentPicture++; 
     WritePicture(currentPicture);
     #if SIMPLEDEBUG
@@ -447,8 +450,7 @@ void Camera::AutoExposure(int _myISO, bool mEXP)
   }
 
   meter_set_iso(_myISO); 
-
-  if(!multipleExposureMode){
+  if(multipleExposureMode == false){
     Camera::shutterCLOSE();
     Camera::mirrorUP();   
   }
@@ -470,7 +472,7 @@ void Camera::AutoExposure(int _myISO, bool mEXP)
     unsigned long shutterCloseTime = millis(); //Shutter Debug
   #endif
 
-  Camera::ExposureFinish(mEXP);
+  Camera::ExposureFinish(_mEXP);
 
   #if LMDEBUG
     unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug

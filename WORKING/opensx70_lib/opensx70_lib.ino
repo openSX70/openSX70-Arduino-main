@@ -15,9 +15,9 @@
 
 ClickButton sw_S1(PIN_S1, S1Logic);
 
-int selector ;
-bool switch1 ;
-bool switch2 ;
+static int selector ;
+static bool switch1 ;
+static bool switch2 ;
 
 uDongle myDongle (PIN_S2);
 Camera openSX70(&myDongle);
@@ -97,7 +97,10 @@ void setup() {//setup - Inizialize
   // (These are default if not set, but changeable for convenience)
   sw_S1.debounceTime   = 15;   // Debounce timer in ms 15
   sw_S1.multiclickTime = 250;  // Time limit for multi clicks
-  sw_S1.longClickTime  = 10; // time until "held-down clicks" register
+  sw_S1.longClickTime  = 300; // time until "held-down clicks" register
+
+  //selector = myDongle.selector();
+  //prev_selector = selector;
 
   io_init();
   metercount = 0; //For the Lightmeter Helper Skipping Function
@@ -159,7 +162,6 @@ camera_state do_state_darkslide (void) {
   else{
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
-      BlinkISO();
       #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE");
       #endif
@@ -228,11 +230,17 @@ camera_state do_state_dongle (void){
   DongleInserted();
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
+    Serial.print("Selector: ");
+    Serial.println(selector);
+    Serial.println(ShutterSpeed[selector]);
     LightMeterHelper(1);
-
-    if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
+    if(switch2 == 1){
       switch2Function(0); //switch2Function Manual Mode
-      openSX70.ManualExposure(selector, false);
+    }
+    if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
+      
+      openSX70.ManualExposure(int(selector), false);
+      checkFilmCount();
     }
     else if(selector == 12){ //POST
       lmTimer_stop();
@@ -247,7 +255,14 @@ camera_state do_state_dongle (void){
       checkFilmCount();
     }
     else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
-      openSX70.AutoExposure(ShutterSpeed[selector], false); 
+      switch(ShutterSpeed[selector]){
+        case AUTO100:
+          openSX70.AutoExposure(ISO_SX70, false);
+          break;
+        case AUTO600:
+          openSX70.AutoExposure(ISO_600, false);
+          break;
+      }
       checkFilmCount();
     }
     sw_S1.Reset();
@@ -306,8 +321,10 @@ camera_state do_state_multi_exp (void){
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     if(switch1 == 1){
+      if(switch2 == 1){
+        switch2Function(0);
+      }
       if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
-        switch2Function(0); //switch2Function Manual Mode
         openSX70.ManualExposure(selector, true);
         multipleExposureCounter++;
       }
@@ -326,7 +343,14 @@ camera_state do_state_multi_exp (void){
         multipleExposureCounter++;
       }
       else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
-        openSX70.AutoExposure(ShutterSpeed[selector], true); 
+        switch(ShutterSpeed[selector]){
+        case AUTO100:
+          openSX70.AutoExposure(ISO_SX70, false);
+          break;
+        case AUTO600:
+          openSX70.AutoExposure(ISO_600, false);
+          break;
+      }
         multipleExposureCounter++;
       }
     }
