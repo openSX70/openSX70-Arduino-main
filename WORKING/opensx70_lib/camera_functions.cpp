@@ -8,6 +8,7 @@
 #include "uDongle2.h"
 
 static bool multipleExposureMode = false;
+extern int selector;
 int GTD = 0;
 
 Camera::Camera(uDongle *dongle)
@@ -177,7 +178,6 @@ void Camera::mirrorUP()
   }
 
   motorOFF ();
-  Serial.println("end motor");
 }
 
 void Camera::darkslideEJECT()
@@ -368,7 +368,7 @@ void Camera::multipleExposureLastClick(){
   multipleExposureMode = false;
 }
 
-void Camera::ManualExposure(int selector, bool _mEXP) //ManualExposure
+void Camera::ManualExposure(int notusingprobably, bool _mEXP) //ManualExposure
 {
   Camera::ExposureStart();
   currentPicture++; 
@@ -409,7 +409,6 @@ void Camera::ManualExposure(int selector, bool _mEXP) //ManualExposure
     Serial.print("ShutterSpeedDelay:");
     Serial.println(ShutterSpeedDelay);
   #endif
-  Serial.println(ShutterSpeedDelay);
   Camera::shutterOPEN();
 
   unsigned long initialMillis = millis();
