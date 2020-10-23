@@ -77,14 +77,8 @@ camera_state state = STATE_DARKSLIDE;
 
 
 void setup() {//setup - Inizialize
-  /* 
-     I have absolutely no clue why I need this here but I do. My software flips out if 
-     I do not have this. It is maddening. There is nothing going over Serial but hey if it works...
-     Will remove the Serial.begin once I figure out why the hell it makes things work.
-  */
-  Serial.begin (9600);
-
   #if DEBUG
+    Serial.begin(9600);
     Serial.println("Version: 22.10.2020 - Meroe2 - TCS3200 100%sensetivity - green Filter");
     Serial.println("State machine core by Zane Pollard, Sonar code by Hannes");
     Serial.println("PCB design and original code by Joaquin");
@@ -126,11 +120,12 @@ void setup() {//setup - Inizialize
 void loop() {
   #if SONAR
     preFocus();
-    unfocusing();
   #endif
-  //selector = myDongle.selector();
   normalOperation();
   state = STATE_MACHINE[state]();
+  #if SONAR
+    unfocusing();
+  #endif
 }
 
 camera_state do_state_darkslide (void) {
@@ -231,9 +226,6 @@ camera_state do_state_dongle (void){
   DongleInserted();
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
-    Serial.print("Selector: ");
-    Serial.println(selector);
-    Serial.println(ShutterSpeed[selector]);
     LightMeterHelper(1);
     if(switch2 == 1){
       switch2Function(0); //switch2Function Manual Mode
@@ -574,6 +566,7 @@ void switch2Function(int mode) {
   //0 Manual, 1 Auto600, 2 AutoSX70, FlashBar
 
   if (mode == 0) {
+    openSX70.shutterCLOSE();
     openSX70.SelfTimerMUP();
     digitalWrite(PIN_LED2, LOW);
     digitalWrite(PIN_LED1, LOW);

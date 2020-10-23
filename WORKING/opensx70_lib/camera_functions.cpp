@@ -87,6 +87,7 @@ int Camera::S1F_Focus1()
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
+    /*
     int i = 0;
     while(getGTD()!=1){
       i++;
@@ -95,6 +96,7 @@ int Camera::S1F_Focus1()
         break;
       }
     }
+    */
     return 1;
 }
 
@@ -392,7 +394,7 @@ void Camera::ManualExposure(int notusingprobably, bool _mEXP) //ManualExposure
   }
   delay (YDelay);
 
-  int ShutterSpeedDelay = (selector + ShutterConstant);
+  int ShutterSpeedDelay = ((ShutterSpeed[selector]) + ShutterConstant);
   if (selector >= 6)
   {
     ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
