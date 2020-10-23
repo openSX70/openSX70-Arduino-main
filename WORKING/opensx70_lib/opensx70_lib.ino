@@ -15,9 +15,9 @@
 
 ClickButton sw_S1(PIN_S1, S1Logic);
 
-static int selector ;
-static bool switch1 ;
-static bool switch2 ;
+int selector ;
+bool switch1 ;
+bool switch2 ;
 
 uDongle myDongle (PIN_S2);
 Camera openSX70(&myDongle);
@@ -128,6 +128,7 @@ void loop() {
     preFocus();
     unfocusing();
   #endif
+  //selector = myDongle.selector();
   normalOperation();
   state = STATE_MACHINE[state]();
 }
