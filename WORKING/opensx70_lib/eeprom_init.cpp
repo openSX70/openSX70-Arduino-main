@@ -14,7 +14,6 @@ int ReadPicture(){
 
 void WriteISO(int _currentISO){
   EEPROM.put(EE_ADD_ISO, _currentISO);
-  return;
 }
 
 int ReadISO()

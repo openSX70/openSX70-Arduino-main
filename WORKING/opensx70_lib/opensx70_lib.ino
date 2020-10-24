@@ -91,10 +91,14 @@ void setup() {//setup - Inizialize
   // (These are default if not set, but changeable for convenience)
   sw_S1.debounceTime   = 15;   // Debounce timer in ms 15
   sw_S1.multiclickTime = 250;  // Time limit for multi clicks
+  #if SONAR
+  sw_S1.longClickTime = 0;
+  #else
   sw_S1.longClickTime  = 300; // time until "held-down clicks" register
+  #endif
 
-  //selector = myDongle.selector();
-  //prev_selector = selector;
+  selector = myDongle.selector();
+  prev_selector = selector;
 
   io_init();
   metercount = 0; //For the Lightmeter Helper Skipping Function
@@ -142,13 +146,15 @@ camera_state do_state_darkslide (void) {
     WritePicture(currentPicture);
     checkFilmCount();
     //OPTION TURN ON AND OFF LED WHILE DARKSLIDE EJECT
-    if (nowDongle != 0) {
-      myDongle.dongleLed (GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
+    if(myDongle.checkDongle() == 0){
+      openSX70.darkslideEJECT(); //Disabled Darkslide eject to change Filmpack in Darkroom
     }
-    openSX70.darkslideEJECT(); //Disabled Darkslide eject to change Filmpack in Darkroom
-    if (nowDongle != 0) { 
+    else{
+      myDongle.dongleLed (GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
+      openSX70.darkslideEJECT(); //Disabled Darkslide eject to change Filmpack in Darkroom
       myDongle.dongleLed (GREEN, LOW); //switching off green uDongle LED
-    } 
+    }
+
     #if SIMPLEDEBUG
         Serial.println("STATE1: EJECT DARK SLIDE");
         Serial.print("currentPicture on Darkslide eject: ");
@@ -158,6 +164,8 @@ camera_state do_state_darkslide (void) {
   else{
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
+      delay(100);
+      BlinkISO();
       #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE");
       #endif
@@ -201,14 +209,16 @@ camera_state do_state_noDongle (void){
 
   //Checks for dongle or flashbar insertion
   if (myDongle.checkDongle() > 0){ //((selector <= 15) && (myDongle.checkDongle() > 0))
+    #if STATEDEBUG
+      Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE");
+    #endif
     result = STATE_DONGLE;
-    if((myDongle.switch1() == 1 && myDongle.switch2() == 1) && ((selector == 14) || (selector = 15))){
+    if(((myDongle.switch1() == 1) && (myDongle.switch2() == 1))){
       saveISOChange();
     }
-    BlinkISO();
-    #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE");
-    #endif
+    else{
+      BlinkISO();
+    }
   }
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
@@ -264,12 +274,13 @@ camera_state do_state_dongle (void){
   // Dongle Removed
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
+    prev_selector == 200;
     #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE");
     #endif
   } 
   // Multiple Exposure switch flipped
-  else if (switch1 == 1){
+  else if ((switch1 == 1) && (switch2 == 0)){
     result = STATE_MULTI_EXP;
     #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE");
@@ -424,7 +435,6 @@ void DongleInserted() { //Dongle is pressend LOOP
         selector = myDongle.selector();
         switch1 = myDongle.switch1();
         switch2 = myDongle.switch2();
-        saveISOChange();//Moved here form loop 11.06.
         //BlinkISO(); //check if dongle inserted, read the default ISO and blink once for SX70 and twice for 600.
         if ((selector != prev_selector)) //Update Dongle changes
         {
@@ -440,7 +450,7 @@ void DongleInserted() { //Dongle is pressend LOOP
             Serial.println (ShutterSpeed[selector]);
           #endif
           blinkAutomode();
-          blinkSpecialmode(); //B and T Mode Selector LED Blink
+          //blinkSpecialmode(); //B and T Mode Selector LED Blink
           prev_selector = selector;
           return;
         }
@@ -657,8 +667,7 @@ void ispackEmpty(){
 
 void normalOperation(){
   //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
-  if (digitalRead(PIN_S8) == LOW && digitalRead(PIN_S9) == LOW) //S8 and S9 are OPEN
-  {
+  if (digitalRead(PIN_S8) == LOW && digitalRead(PIN_S9) == LOW){
       //WHAT TO DO WHEN POWER-UP:
       //  S8     S9
       // closed  open  --> EJECT DARKSLIDE (DEFAULT)
@@ -713,24 +722,26 @@ void LightMeterHelper(byte ExposureType){
 void saveISOChange() {
   int _selectedISO;
   selector = myDongle.selector();
+  Serial.print("selector ");
+  Serial.println(selector);
+
   //TODO ADD ANALOGDONGLE MODE!!!!!!!!!!!
-  #if UDONGLE
-    savedISO = ReadISO(); //read the savedISO from the EEPROM
-    if (((ShutterSpeed[selector]) == AUTO600)) {
-      if (_selectedISO != ISO_600) {
-        _selectedISO = ISO_600;
-      }
-    }
-    else if (((ShutterSpeed[selector]) == AUTO100)) {
-      if (_selectedISO != ISO_SX70) {
-        _selectedISO = ISO_SX70;
-      }
-    }
-    else {
-      //no ISO Selected
-      _selectedISO = DEFAULT_ISO;
-    }
-    if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
+  savedISO = ReadISO(); //read the savedISO from the EEPROM
+  if (((ShutterSpeed[selector]) == AUTO600)) {
+    Serial.println("600 DONGLE SWITCH");
+    _selectedISO = ISO_600;
+  }
+  else if (((ShutterSpeed[selector]) == AUTO100)) {
+    Serial.println("100 DONGLE SWITCH");
+    _selectedISO = ISO_SX70;
+  }
+  else {
+    //no ISO Selected
+    _selectedISO = DEFAULT_ISO;
+  }
+  Serial.print("Saved ISO");
+  Serial.println(savedISO);
+  if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
     #if SIMPLEDEBUG
       Serial.print("SaveISOChange() Function: ");
       Serial.print("ISO has changed, previos saved ISO (from EEPROM): ");
@@ -739,11 +750,16 @@ void saveISOChange() {
       Serial.print(_selectedISO);
       Serial.println(" to the EEPROM");
     #endif
-      activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
-      WriteISO(_selectedISO); //Write ISO to EEPROM
-      BlinkISORed(); //Blink ISO Red
-    }
-  #endif
+    activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
+    WriteISO(_selectedISO); //Write ISO to EEPROM
+    savedISO = ReadISO();
+    BlinkISORed();
+  }
+  else{
+    activeISO = _selectedISO;
+    BlinkISORed(); //Blink ISO Red
+  }
+  prev_selector = selector; //prevents green blink after ISO change
 }
 
 void checkISOChange() {
