@@ -362,7 +362,6 @@ void Camera::multipleExposureLastClick(){
     Serial.print(mxshots);
     Serial.print(", CurrentPicture: ");
     Serial.println(currentPicture);
-
   #endif
   Camera::mirrorDOWN(); 
   delay(50);                             //AGAIN is this delay necessary? 100-->50

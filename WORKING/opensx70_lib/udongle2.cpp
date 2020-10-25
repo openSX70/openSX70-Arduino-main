@@ -159,14 +159,12 @@ void uDongle::Write_DS2408_PIO(byte port, bool ON)
     uint8_t readDevice = _ds->get_state(_dongleDevice);
     bitSet(OutPIO, port);
     _ds->set_state(_dongleDevice, ~OutPIO);
-    return;
   } 
   else
   {
     uint8_t readDevice = _ds->get_state(_dongleDevice);
     bitClear(OutPIO, port);
     _ds->set_state(_dongleDevice, ~OutPIO);
-    return;
   }
 } //END OF Write_DS2408_PIO
 
@@ -277,12 +275,12 @@ byte uDongle::switch2()
 /*void uDongle::led1(bool on)
 {
   Write_DS2408_PIO(6,on);
-  return;
+  
 }
 void uDongle::led2(bool on)
 {
   Write_DS2408_PIO(7,on);
-  return;
+  
 }*/
 
 void uDongle::dongleLed (byte _led,bool on)
@@ -295,7 +293,7 @@ void uDongle::simpleBlink (int _times, int _led)
   if (_times <= 0)
   {
     uDongle::Write_DS2408_PIO (_led, 1);
-    return;
+    
   }
   else
   {
@@ -315,7 +313,7 @@ void uDongle::bothBlink (int _times)
   {
     uDongle::Write_DS2408_PIO (RED, 1);
     uDongle::Write_DS2408_PIO (GREEN, 1);
-    return;
+    
   }
   else
   {
@@ -337,7 +335,7 @@ void uDongle::doubleBlink (int _times)
   {
     uDongle::Write_DS2408_PIO (6, 1);
     uDongle::Write_DS2408_PIO (7, 1);
-    return;
+    
   }
   else
   {
