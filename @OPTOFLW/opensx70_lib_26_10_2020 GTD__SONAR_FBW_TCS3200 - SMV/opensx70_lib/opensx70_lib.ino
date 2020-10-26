@@ -119,9 +119,12 @@ void setup() {//setup - Inizialize
     #endif
   }
 
+  currentPicture = ReadPicture();
   #if SIMPLEDEBUG
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
+    Serial.print("currentPicture: ");
+    Serial.println(currentPicture);
   #endif
   
 }
@@ -426,8 +429,6 @@ void printReadings() {
 void preFocus() {
   if ((digitalRead(PIN_S1F) == HIGH) && (isFocused == 0)) { // S1F pressed
     openSX70.S1F_Focus();
-    Serial.print("currentPicture");
-    Serial.println(currentPicture);
     currentPicOnFocus = currentPicture;
     isFocused = 1;
     return;
