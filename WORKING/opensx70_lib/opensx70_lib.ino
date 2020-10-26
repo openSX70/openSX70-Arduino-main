@@ -271,7 +271,7 @@ camera_state do_state_dongle (void){
   // Dongle Removed
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
-    prev_selector == 200;
+    prev_selector == 200; //makes dongle LED flash when dongle is reinserted 
     #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE");
     #endif
@@ -448,23 +448,6 @@ void DongleInserted() { //Dongle is pressend LOOP
           blinkAutomode();
           //blinkSpecialmode(); //B and T Mode Selector LED Blink
           prev_selector = selector;
-          return;
-        }
-        if ( (switch1 != prev_switch1) || (switch2 != prev_switch2)) {
-          #if ADVANCEDEBUG
-            Serial.print ("DONGLE Mode:  ");
-            Serial.print ("Selector: ");
-            Serial.print (selector);
-            Serial.print ("     Switch1: ");
-            Serial.print (switch1);
-            Serial.print ("     Switch2: ");
-            Serial.print (switch2);
-            Serial.print ("        speed: ");
-            Serial.println (ShutterSpeed[selector]);
-          #endif
-          prev_switch1 = switch1;
-          prev_switch2 = switch2;
-          return;
         }
       }
   #if SONAR
