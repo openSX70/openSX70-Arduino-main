@@ -401,10 +401,10 @@ void Camera::ManualExposure(int notusingprobably, bool _mEXP) //ManualExposure
   #if ADVANCEDDEBUG
     extern int selector;
     Serial.print("Manual Exposure Debug: ");
-    //Serial.print("ShutterSpeed[");
-    //Serial.print(selector);
-    //Serial.print("] :");
-    //Serial.println(ShutterSpeed[selector]);
+    Serial.print("ShutterSpeed[");
+    Serial.print(selector);
+    Serial.print("] :");
+    Serial.println(ShutterSpeed[selector]);
     Serial.print("ShutterConstant:");
     Serial.println(ShutterConstant);
     Serial.print("ShutterSpeedDelay:");
