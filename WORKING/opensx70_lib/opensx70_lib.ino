@@ -113,9 +113,12 @@ void setup() {//setup - Inizialize
     #endif
   }
 
+  currentPicture = ReadPicture();
   #if SIMPLEDEBUG
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
+    Serial.print("currentPicture: ");
+    Serial.println(currentPicture);
   #endif
   
 }
