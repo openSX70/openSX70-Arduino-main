@@ -2,7 +2,7 @@
 #include "open_SX70.h"
 
 /* 
-  Version 26_10_2020 for Edwin, Meroe, Land, and Sonar-FBW PCBs. Works with TSL237T and TCS3200 sensors.
+  Version 27_10_2020 for Edwin, Meroe, Land, and Sonar-FBW PCBs. Works with TSL237T and TCS3200 sensors.
   Changed code to be balanced between readablility and efficiency. 
   Main change from previous versions of the code is the implementation of a state machine. This makes each loop more efficient by far.
   For example, rather than checking every possible dongle-based variable when you do not have a dongle in, the no-dongle state will only check
@@ -79,7 +79,7 @@ void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println("Welcome to openSX70 Version: 26_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
+    Serial.println("Welcome to openSX70 Version: 27_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
     Serial.print("Magic Number: A100=");
     Serial.print(A100);
     Serial.print("| A600 =");
