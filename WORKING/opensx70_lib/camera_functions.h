@@ -24,7 +24,7 @@
       //  uDongle(pin_S2).myDongle;
       //  int Blink (int interval, int timer, int Pin, byte type);
       void Blink (unsigned int interval, int timer, int Pin, byte type = 1);
-      void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB, byte type);
+      void Blink (unsigned int interval, int timer, int PinDongle, int PinPCB, byte type);
       void HighSpeedPWM ();
       void AutoExposure(int _myISO, bool mEXP);
       void ExposureStart();
