@@ -86,7 +86,7 @@ void setup() {//setup - Inizialize
     Serial.print("| A600 =");
     Serial.print(A600);
     Serial.println(" scaling = 100% | filter = clear");
-    Serial.println("State machine core by Zane Pollard, Sonar code by Hannes");
+    Serial.println("State machine core by Zane, Sonar code by Hannes");
     Serial.println("PCB design and original code by Joaquin");
   #endif
   
