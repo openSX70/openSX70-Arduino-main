@@ -617,26 +617,44 @@ void switch2Function(int mode) {
   //0 Manual, 1 Auto600, 2 AutoSX70, FlashBar
   if (mode == 0) {
     openSX70.shutterCLOSE();
+    #if SONAR
+      openSX70.S1F_Unfocus();
+    #endif
     openSX70.SelfTimerMUP();
     digitalWrite(PIN_LED2, LOW);
     digitalWrite(PIN_LED1, LOW);
+    #if SONAR
+      openSX70.S1F_Focus();
+    #endif
     openSX70.BlinkTimerDelay (GREEN, RED, 10);
   }
   else if (mode == 1) {
     openSX70.SelfTimerMUP();
+    #if SONAR
+      openSX70.S1F_Unfocus();
+    #endif
     digitalWrite(PIN_LED2, LOW);
     digitalWrite(PIN_LED1, LOW);
+    #if SONAR
+      openSX70.S1F_Focus();
+    #endif
     openSX70.BlinkTimerDelay (GREEN, RED, 10);
   } else if (mode == 2) {
     openSX70.SelfTimerMUP();
+    #if SONAR
+      openSX70.S1F_Unfocus();
+    #endif
     digitalWrite(PIN_LED2, LOW);
     digitalWrite(PIN_LED1, LOW);
+    #if SONAR
+      openSX70.S1F_Focus();
+    #endif
     openSX70.BlinkTimerDelay (GREEN, RED, 10);
   } else if (mode == 3) {
     #if SONAR
       openSX70.S1F_Unfocus();
-      openSX70.SelfTimerMUP();
     #endif
+    openSX70.SelfTimerMUP();
     delay (10000); //NoDongleMode
     //preFocus();
     #if SONAR
