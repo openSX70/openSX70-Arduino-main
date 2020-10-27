@@ -1,4 +1,4 @@
- #include "Arduino.h"
+#include "Arduino.h"
 #include "open_SX70.h"
 
 /* 
@@ -79,7 +79,7 @@ void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println("Welcome to openSX70 Version: 27_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
+    Serial.println("Welcome to openSX70 Version: 27_10_2020_EDWIN_TCS3200 and UDONGLE - SM Version");
     Serial.print("Magic Number: A100=");
     Serial.print(A100);
     Serial.print("| A600 =");
@@ -225,6 +225,8 @@ camera_state do_state_noDongle (void){
       saveISOChange(); //saveISOChange on Dongle insertion if both switches are ON
     }
     else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
+    //else{
+      //Serial.println("Transition from no dongle to dongle");
       BlinkISO();
     }
   }
@@ -261,7 +263,7 @@ camera_state do_state_dongle (void){
       switch2Function(0); //switch2Function Manual Mode
     }
     if((selector>=0) && (selector<12)){ //MANUAL SPEEDS  
-      openSX70.ManualExposure(false);
+      openSX70.ManualExposure(int(selector), false);
     }
     else if(selector == 12){ //POST
       lmTimer_stop();
@@ -355,7 +357,7 @@ camera_state do_state_multi_exp (void){
         switch2Function(0);
       }
       if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
-        openSX70.ManualExposure(true);
+        openSX70.ManualExposure(selector, true);
         multipleExposureCounter++;
       }
       else if(selector == 12){ //POST
@@ -771,37 +773,44 @@ void normalOperation(){
 void saveISOChange() {
   int _selectedISO;
   selector = myDongle.selector();
-  savedISO = ReadISO(); //read the savedISO from the EEPROM
-  if (((ShutterSpeed[selector]) == AUTO600)) {
-    _selectedISO = ISO_600;
-  }
-  else if (((ShutterSpeed[selector]) == AUTO100)) {
-    _selectedISO = ISO_SX70;
-  }
-  else {
-    _selectedISO = DEFAULT_ISO;
-  }
-  if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
-    #if SIMPLEDEBUG
-      Serial.print("SaveISOChange() Function: ");
-      Serial.print("ISO has changed, previos saved ISO (from EEPROM): ");
-      Serial.println(savedISO);
-      Serial.print("Saving new selected ISO ");
-      Serial.print(_selectedISO);
-      Serial.println(" to the EEPROM");
-    #endif
-    activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
-    WriteISO(_selectedISO); //Write ISO to EEPROM
-    savedISO = ReadISO();
-    BlinkISORed();
-  }
-  else{
-    #if SIMPLEDEBUG
-      Serial.print("SaveISOChange() Function: ");
-      Serial.println("savedISO is equal to selected ISO, dont save!");
-    #endif
-    activeISO = _selectedISO;
-    BlinkISORed(); //Blink ISO Red
-  }
-  prev_selector = selector; //prevents green blink after ISO change
+
+  //TODO ADD ANALOGDONGLE MODE!!!!!!!!!!!
+  //if ((switch2 == 1) && (switch1 == 1)) { //Save ISO Mode
+    savedISO = ReadISO(); //read the savedISO from the EEPROM
+    if (((ShutterSpeed[selector]) == AUTO600)) {
+      _selectedISO = ISO_600;
+    }
+    else if (((ShutterSpeed[selector]) == AUTO100)) {
+      _selectedISO = ISO_SX70;
+    }
+    else {
+      //no ISO Selected
+      _selectedISO = DEFAULT_ISO;
+    }
+    if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
+      #if SIMPLEDEBUG
+        Serial.print("SaveISOChange() Function: ");
+        Serial.print("ISO has changed, previos saved ISO (from EEPROM): ");
+        Serial.println(savedISO);
+        Serial.print("Saving new selected ISO ");
+        Serial.print(_selectedISO);
+        Serial.println(" to the EEPROM");
+      #endif
+      activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
+      WriteISO(_selectedISO); //Write ISO to EEPROM
+      savedISO = ReadISO();
+      BlinkISORed();
+      //return;
+    }
+    else{ //took this out on 26.10.
+      #if SIMPLEDEBUG
+        Serial.print("SaveISOChange() Function: ");
+        Serial.println("savedISO is equal to selected ISO, dont save!");
+      #endif
+      activeISO = _selectedISO;
+      BlinkISORed(); //Blink ISO Red
+      //return;
+    }
+    prev_selector = selector; //prevents green blink after ISO change
+  //}
 }

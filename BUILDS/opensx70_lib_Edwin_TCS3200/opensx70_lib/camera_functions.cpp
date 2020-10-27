@@ -386,7 +386,40 @@ void Camera::Blink(unsigned int interval, int timer, int Pin, byte type)
   }
 }
 
-void Camera::ManualExposure(bool _mEXP)
+void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB, byte type)
+{
+  int ledState = LOW;             // ledState used to set the LED
+  pinMode(PinDongle, OUTPUT);
+  pinMode(PinPCB, OUTPUT);
+  unsigned long previousMillis = 0;        // will store last time LED was updated
+  unsigned long currentMillisTimer = millis();
+  while (millis() < (currentMillisTimer + timer))
+  {
+    unsigned long currentMillis = millis();
+    if (currentMillis - previousMillis >= interval) {
+      // save the last time you blinked the LED
+      previousMillis = currentMillis;
+      // if the LED is off turn it on and vice-versa:
+      if (ledState == 0) {
+        ledState = 1;
+      } else {
+        ledState = 0;
+      }
+      // set the LED with the ledState of the variable:
+      if (type == 1) {
+        //Serial.println ("TYPE 1 - PCB Only");
+        digitalWrite (PinPCB, ledState);
+      }  else if (type == 2) {
+        //Serial.println ("TYPE 2 - PCB and DONGLE");
+        digitalWrite (PinPCB, ledState);
+        _dongle->Write_DS2408_PIO (PinDongle, ledState);
+      }
+    }
+  }
+}
+
+
+void Camera::ManualExposure(int notusingprobably, bool _mEXP) //ManualExposure
 {
   Camera::ExposureStart();
   if(_mEXP == false){
