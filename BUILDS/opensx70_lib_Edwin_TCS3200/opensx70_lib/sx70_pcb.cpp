@@ -32,8 +32,10 @@ void io_init() {
   pinMode(PIN_S5, INPUT_PULLUP); // GND
   //pinMode(PIN_S8, INPUT_PULLUP); // GND
   //pinMode(PIN_S9, INPUT_PULLUP); // GND
-  pinMode(PIN_S8, INPUT); // 6V
-  pinMode(PIN_S9, INPUT); // 6V
+  #if ALPHA
+  pinMode(PIN_S8, INPUT_PULLUP); // GND
+  pinMode(PIN_S9, INPUT_PULLUP); // GND
+  #endif
 
  
   #if SONAR
@@ -45,6 +47,8 @@ void io_init() {
     pinMode(PIN_S1F, INPUT); //6V
     pinMode(PIN_GTD, INPUT); //6V
     pinMode(PIN_FT, INPUT); // FT on Sonar 6V? -- CAVE Analogue Input only!!! -- Experimental
+    pinMode(PIN_S8, INPUT); // 6V
+    pinMode(PIN_S9, INPUT); // 6V
   #endif
   
 }
