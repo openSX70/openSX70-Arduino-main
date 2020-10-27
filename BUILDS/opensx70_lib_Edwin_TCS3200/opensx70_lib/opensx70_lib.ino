@@ -12,7 +12,6 @@
 
   The sonar code was entirely done by Hannes (Thank you!).
   Merged last Soanr Version with Zanes Version (Greetings Hannes)
-  
 */
 
 ClickButton sw_S1(PIN_S1, S1Logic);
@@ -80,7 +79,7 @@ void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println("Welcome to openSX70 Version: 27_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
+    Serial.println("Welcome to openSX70 Version: 27_10_2020_EDWIN_TCS3200 and UDONGLE - SM Version");
     Serial.print("Magic Number: A100=");
     Serial.print(A100);
     Serial.print("| A600 =");
