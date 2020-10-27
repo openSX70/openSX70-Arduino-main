@@ -7,8 +7,10 @@
 #include "settings.h"
 #include "uDongle2.h"
 
-static bool multipleExposureMode = false;
+extern static bool mEXPFirstRun;
+extern static bool multipleExposureMode;
 extern int selector;
+
 int GTD = 0;
 
 Camera::Camera(uDongle *dongle)
@@ -118,6 +120,29 @@ void Camera::S1F_Unfocus()
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite (PIN_S1F_FBW, LOW);
     return;
+}
+
+void Camera::ExposureStart(){
+  int i = 0;
+  while(S1F_Focus1()!=1){
+    i++;
+    Serial.println("Wait for GTD");
+    if(i>=20){
+      break;
+    }
+  }
+  
+  //while(getGTD()!=1){ //Not sure if this is nececcary!!!
+  //if(GTD==1)
+  //  break;
+  //S1F_Focus();
+
+  //Serial.println("getGTD");
+  //delay(1000);
+  //}
+  
+  return;
+  //delay(200);
 }
 #endif
 
@@ -386,13 +411,13 @@ void Camera::Blink(unsigned int interval, int timer, int Pin, byte type)
   }
 }
 
-void Camera::ManualExposure(bool _mEXP)
+void Camera::ManualExposure()
 {
+  //changed sonar compile check
+  #if SONAR
   Camera::ExposureStart();
-  if(_mEXP == false){
-    currentPicture++;
-    WritePicture(currentPicture);
-  }
+  #endif
+
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
     if(_mEXP){
@@ -401,11 +426,7 @@ void Camera::ManualExposure(bool _mEXP)
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
-  if(multipleExposureMode == false){
-    Camera::shutterCLOSE ();
-    delay (100);
-    Camera::mirrorUP();
-  }
+
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
      #if BASICDEBUG
@@ -447,7 +468,7 @@ void Camera::ManualExposure(bool _mEXP)
   #if LMDEBUG
     unsigned long shutterCloseTime = millis(); //Shutter Debug
   #endif
-  Camera::ExposureFinish(_mEXP);
+  Camera::ExposureFinish();
   #if LMDEBUG
       unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
       Serial.print("ExposureTime on Manualmode: ");
@@ -456,25 +477,21 @@ void Camera::ManualExposure(bool _mEXP)
   return; //Added 26.10.
 }
 
-void Camera::AutoExposure(int _myISO, bool _mEXP)
+void Camera::AutoExposure(int _myISO)
 {
+  #if SONAR
   Camera::ExposureStart();
-  if(_mEXP == false){
-    currentPicture++; 
-    WritePicture(currentPicture);
-    #if SIMPLEDEBUG
-        Serial.print("take a picture on Auto Mode with ISO: ");
-        Serial.print(_myISO);
-        Serial.print(", current Picture: ");
-        Serial.println(currentPicture);
-    #endif
-  }
+  #endif
+
+  #if SIMPLEDEBUG
+    Serial.print("take a picture on Auto Mode with ISO: ");
+    Serial.print(_myISO);
+    Serial.print(", current Picture: ");
+    Serial.println(currentPicture);
+  #endif
 
   meter_set_iso(_myISO); 
-  if(multipleExposureMode == false){
-    Camera::shutterCLOSE();
-    Camera::mirrorUP();   
-  }
+
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
      #if BASICDEBUG
@@ -495,7 +512,7 @@ void Camera::AutoExposure(int _myISO, bool _mEXP)
     unsigned long shutterCloseTime = millis(); //Shutter Debug
   #endif
 
-  Camera::ExposureFinish(_mEXP);
+  Camera::ExposureFinish();
 
   #if LMDEBUG
     unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
@@ -507,7 +524,10 @@ void Camera::AutoExposure(int _myISO, bool _mEXP)
 
 void Camera::FlashBAR() //FlashBAR
 {
+  #if SONAR
   Camera::ExposureStart();
+  #endif
+
   #if SIMPLEDEBUG
      Serial.print("take Camera Flashbar picture");
      Serial.print(", current Picture: ");
@@ -549,19 +569,18 @@ void Camera::FlashBAR() //FlashBAR
   return;
 }
 
-void Camera::ShutterB(bool mEXP)
+void Camera::ShutterB()
 {
+  #if SONAR
   Camera::ExposureStart();
+  #endif
+
   #if SIMPLEDEBUG
      Serial.print("take B Mode Picture");
      Serial.print(", current Picture: ");
      Serial.println(currentPicture);
   #endif
 
-  if(!multipleExposureMode){
-    Camera::shutterCLOSE ();
-    Camera::mirrorUP();
-  }
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){
      #if BASICDEBUG
@@ -596,31 +615,21 @@ void Camera::ShutterB(bool mEXP)
       #endif
   #endif
 
-  if(!mEXP){
-    delay (200);
-    Camera::mirrorDOWN ();
-    delay (200);
-    Camera::shutterOPEN();
-    currentPicture++; 
-    WritePicture(currentPicture);
-  }
+  ExposureFinish();
   return; //Added 26.10.
 }
 
-void Camera::ShutterT(bool mEXP)
+void Camera::ShutterT()
 {
+  #if SONAR
   Camera::ExposureStart();
-  
+  #endif
+
   #if SIMPLEDEBUG
      Serial.print("take T Mode picture: ");
      Serial.print(", current Picture: ");
      Serial.println(currentPicture);
   #endif
-
-  if(!multipleExposureMode){
-    Camera::shutterCLOSE ();
-    Camera::mirrorUP();  
-  }
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (DebouncedRead(PIN_S3) != HIGH){
@@ -655,43 +664,11 @@ void Camera::ShutterT(bool mEXP)
   #endif
 
   //multiple exposure test (Should not work in T Mode?!)
-  if(mEXP == false){
-    delay (200);
-    Camera::mirrorDOWN ();
-    delay (200);
-    Camera::shutterOPEN();
-    currentPicture++; 
-    WritePicture(currentPicture);
-  }
+  ExposureFinish();
   return; //Addes 26.10.
 }
 
-void Camera::ExposureStart(){
-  #if SONAR
-    int i = 0;
-    while(S1F_Focus1()!=1){
-      i++;
-      Serial.println("Wait for GTD");
-      if(i>=20){
-        break;
-      }
-    }
-    
-    //while(getGTD()!=1){ //Not sure if this is nececcary!!!
-    //if(GTD==1)
-    //  break;
-    //S1F_Focus();
-
-    //Serial.println("getGTD");
-    //delay(1000);
-    //}
-    
-    return;
-    //delay(200);
-  #endif
-}
-
-void Camera::ExposureFinish(bool mEXP)
+void Camera::ExposureFinish()
 {
   Camera::shutterCLOSE();
   lmTimer_stop(); //Lightmeter Timer stop
@@ -704,7 +681,7 @@ void Camera::ExposureFinish(bool mEXP)
   #endif
   delay (200); //Was 20
 
-  if(mEXP == true){
+  if(multipleExposureMode == true){
     while(digitalRead(PIN_S1) == S1Logic){
       //wait for s1 to stop being pressed...
       #if BASICDEBUG
@@ -714,7 +691,6 @@ void Camera::ExposureFinish(bool mEXP)
     #if MXDEBUG
       Serial.println("mEXP");
     #endif
-    multipleExposureMode = true;
   }
   else if (_dongle->checkDongle() > 0){ //Dongle present
     delay (100);

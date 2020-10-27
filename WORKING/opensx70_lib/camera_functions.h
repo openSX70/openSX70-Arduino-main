@@ -26,13 +26,13 @@
       void Blink (unsigned int interval, int timer, int Pin, byte type = 1);
       void Blink (unsigned int interval, int timer, int PinDongle, int PinPCB, byte type);
       void HighSpeedPWM ();
-      void AutoExposure(int _myISO, bool mEXP);
+      void AutoExposure(int _myISO);
       void ExposureStart();
-      void ExposureFinish(bool mEXP);
-      void ManualExposure(bool mEXP);
+      void ExposureFinish();
+      void ManualExposure();
       void FlashBAR();
-      void ShutterB(bool mEXP);
-      void ShutterT(bool mEXP);
+      void ShutterB();
+      void ShutterT();
       void multipleExposureFinish();
       void multipleExposure(int exposureMode);
       bool setLIGHTMETER_HELPER(bool active);

@@ -30,6 +30,9 @@ int activeISO;
 //static int checkedcount;
 static int inizialized = 0;
 static int metercount;
+
+static bool mEXPFirstRun = false;
+static bool multipleExposureMode = false;
 static int multipleExposureCounter = 0;
 /*
 #if SONAR == 0 
@@ -203,14 +206,14 @@ camera_state do_state_noDongle (void){
   LightMeterHelper(1); 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
-    openSX70.AutoExposure(savedISO, false);
+    openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
   }
   #if DOUBLECLICK
   if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
     LightMeterHelper(0); 
     delay (10000);
-    openSX70.AutoExposure(savedISO, false);
+    openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
   }
   #endif
@@ -257,29 +260,30 @@ camera_state do_state_dongle (void){
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
+    beginExposure(); //may just move this directly before each other call. may feel clunky
     if(switch2 == 1){
       switch2Function(0); //switch2Function Manual Mode
     }
     if((selector>=0) && (selector<12)){ //MANUAL SPEEDS  
-      openSX70.ManualExposure(false);
+      openSX70.ManualExposure();
     }
     else if(selector == 12){ //POST
       lmTimer_stop();
       turnLedsOff();
-      openSX70.ShutterT(false);
+      openSX70.ShutterT();
     }
     else if(selector == 13){ //POSB
       lmTimer_stop();
       turnLedsOff(); //why?
-      openSX70.ShutterB(false);
+      openSX70.ShutterB();
     }
     else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
       switch(ShutterSpeed[selector]){
         case AUTO100:
-          openSX70.AutoExposure(ISO_SX70, false);
+          openSX70.AutoExposure(ISO_SX70);
           break;
         case AUTO600:
-          openSX70.AutoExposure(ISO_600, false);
+          openSX70.AutoExposure(ISO_600);
           break;
       }
     }
@@ -298,6 +302,8 @@ camera_state do_state_dongle (void){
   // Multiple Exposure switch flipped
   else if ((switch1 == 1) && (switch2 == 0)){
     result = STATE_MULTI_EXP;
+    multipleExposureMode = true;
+    mEXPFirstRun = true;
     #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE");
     #endif
@@ -314,6 +320,7 @@ camera_state do_state_flashBar (void){
     sw_S1.Reset();
     checkFilmCount();
   }
+  #if DOUBLECLICK
   if (sw_S1.clicks == 2)
   {
     switch2Function(3); //Switch Two Function in Flash Mode
@@ -321,6 +328,8 @@ camera_state do_state_flashBar (void){
     sw_S1.Reset();
     checkFilmCount(); 
   } 
+  #endif
+  
   if ((selector == 200) && (myDongle.checkDongle() == 0)){
     result = STATE_NODONGLE;
     #if STATEDEBUG
@@ -351,32 +360,35 @@ camera_state do_state_multi_exp (void){
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
     if(switch1 == 1){ //Why Switch1 == true?!
+      if(mEXPFirstRun){
+        beginExposure();
+      }
       if(switch2 == 1){
         switch2Function(0);
       }
       if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
-        openSX70.ManualExposure(true);
+        openSX70.ManualExposure();
         multipleExposureCounter++;
       }
       else if(selector == 12){ //POST
         lmTimer_stop();
         turnLedsOff();
-        openSX70.ShutterT(true);
+        openSX70.ShutterT();
         multipleExposureCounter++;
       }
       else if(selector == 13){ //POSB
         lmTimer_stop();
         turnLedsOff(); //why?
-        openSX70.ShutterB(true);
+        openSX70.ShutterB();
         multipleExposureCounter++;
       }
       else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
         switch(ShutterSpeed[selector]){
         case AUTO100:
-          openSX70.AutoExposure(ISO_SX70, true);
+          openSX70.AutoExposure(ISO_SX70);
           break;
         case AUTO600:
-          openSX70.AutoExposure(ISO_600, true);
+          openSX70.AutoExposure(ISO_600);
           break;
       }
         multipleExposureCounter++;
@@ -386,6 +398,7 @@ camera_state do_state_multi_exp (void){
       openSX70.multipleExposureLastClick();
       checkFilmCount();
       multipleExposureCounter = 0;
+      multipleExposureMode = false;
       result = STATE_DONGLE;
 
       #if STATEDEBUG
@@ -393,12 +406,11 @@ camera_state do_state_multi_exp (void){
       #endif
     }
     sw_S1.Reset();
-    checkFilmCount();
   }
 
   if(switch1 == 0 && multipleExposureCounter == 0){
     result = STATE_DONGLE;
-
+    multipleExposureMode = false;
     #if STATEDEBUG
       Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
     #endif
@@ -444,6 +456,17 @@ void unfocusing(){
   }
 }
 #endif
+
+//Added to remove check for multiple exposure mode from standard manual exposure state. 
+//Offload the check to multiple exposure state
+void beginExposure(){
+  currentPicture++;
+  WritePicture(currentPicture);
+
+  openSX70.shutterCLOSE();
+  delay(100);
+  openSX70.mirrorUP();
+}
 
 void turnLedsOff(){ //todo:move to camerafunction
    digitalWrite(PIN_LED1, LOW);
