@@ -223,8 +223,6 @@ camera_state do_state_noDongle (void){
       saveISOChange(); //saveISOChange on Dongle insertion if both switches are ON
     }
     else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
-    //else{
-      //Serial.println("Transition from no dongle to dongle");
       BlinkISO();
     }
   }
@@ -261,7 +259,7 @@ camera_state do_state_dongle (void){
       switch2Function(0); //switch2Function Manual Mode
     }
     if((selector>=0) && (selector<12)){ //MANUAL SPEEDS  
-      openSX70.ManualExposure(int(selector), false);
+      openSX70.ManualExposure(false);
     }
     else if(selector == 12){ //POST
       lmTimer_stop();
@@ -355,7 +353,7 @@ camera_state do_state_multi_exp (void){
         switch2Function(0);
       }
       if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
-        openSX70.ManualExposure(selector, true);
+        openSX70.ManualExposure(true);
         multipleExposureCounter++;
       }
       else if(selector == 12){ //POST

@@ -28,7 +28,7 @@
       void AutoExposure(int _myISO, bool mEXP);
       void ExposureStart();
       void ExposureFinish(bool mEXP);
-      void ManualExposure(int _selector, bool mEXP);
+      void ManualExposure(bool mEXP);
       void FlashBAR();
       void ShutterB(bool mEXP);
       void ShutterT(bool mEXP);
