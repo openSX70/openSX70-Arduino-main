@@ -80,7 +80,6 @@ camera_state state = STATE_DARKSLIDE;
 void setup() {//setup - Inizialize
   #if DEBUG
     Serial.begin(9600);
-    Serial.begin (9600);
     Serial.println("Welcome to openSX70 Version: 26_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
     Serial.print("Magic Number: A100=");
     Serial.print(A100);
