@@ -89,21 +89,23 @@ void ClickButton::Update()
     changed = false;
   }
   _lastState = _btnState;
-
-  #if (SONAR == 0)
-  // If the button released state is stable, report nr of clicks and start new cycle
-  if (!depressed && (now - _lastBounceTime) > multiclickTime)
-  {
-    // positive count for released buttons
-    clicks = _clickCount;
-    //Serial.print("Clickcount = ");
-    //Serial.println(clicks); 
-    _clickCount = 0;
-    if(clicks != 0){
-      changed = true;
-    Serial.println("Single Click");
+  
+  #if (ALPHA == 1) //Not sure if this is working!! 26.10.
+    // If the button released state is stable, report nr of clicks and start new cycle
+    if (!depressed && (now - _lastBounceTime) > multiclickTime)
+    {
+      // positive count for released buttons
+      clicks = _clickCount;
+      //Serial.print("Clickcount = ");
+      //Serial.println(clicks); 
+      _clickCount = 0;
+      if(clicks != 0){
+        changed = true;
+      //#if SIMPLEDEBUG
+        Serial.println("Single Click");
+      //#endif
+      }
     }
-  }
   #endif
   
   // Check for "long click"
@@ -116,7 +118,9 @@ void ClickButton::Update()
     _clickCount = 0;
     if(clicks != 0){
       changed = true;
-      Serial.println("Long Click");
+      //#if SIMPLEDEBUG
+        Serial.println("Long Click");
+      //#endif
     }
   }
 }

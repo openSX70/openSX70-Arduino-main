@@ -5,7 +5,7 @@ int mxshots = 0; //Multiple exposure counter
 const uint8_t YDelay = 120;
 const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 195; //max 255 = full power/POWERUP mode
-int ShutterConstant = 7;
+int ShutterConstant = 9;
 byte lightmeterHelper = true;
 //enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; //uDONGLE
 //enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
@@ -19,10 +19,8 @@ byte lightmeterHelper = true;
 //int ShutterSpeed[] = { 3, 5, 9, 11, 20, 30, 35, 55, 166, 302, 600, 1100, POST, POSB, AUTO600, AUTO100 };  //SANTI DONGLE WHEEL
 
 // Added to remove the need to check for selector values prior to picture taking.
-int ShutterSpeed[] = {   16,   20,   23,    25,  30,   35,     55,   55,    166,  302, 600, 1100, POST, POSB, AUTO600, AUTO100 };
-
-
-//OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture)
+int ShutterSpeed[] = { 16, 20, 23, 25, 30, 35, 55, 55, 166, 302, 600, 1100, POST, POSB, AUTO600, AUTO100 };
+//OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture -> inefficient shutter)
 // this are the "SLOTS":+
 //int ShutterSpeed[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, A, B, C, D, E, F };
 //int ShutterSpeed[] = { EV17, EV16, EV15, EV14, EV13, EV12, EV11.5, EV11, EV10.5, EV10, EV9, EV8, AUTO600, AUTO100, T, B };

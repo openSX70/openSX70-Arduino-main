@@ -23,7 +23,7 @@ int ReadISO()
   return _currentISO;
 }
 
-void init_EEPROM() {
+void init_EEPROM(){
   int initJP[2];
   initJP[0] = EEPROM.read(0);
   initJP[1] = EEPROM.read(1);
@@ -33,7 +33,10 @@ void init_EEPROM() {
   {
     #if SIMPLEDEBUG
         Serial.println("Initializing EEPROM....");
-
+        Serial.print("initJP[0] = ");
+        Serial.print(initJP[0]);
+        Serial.print("initJP[1] = ");
+        Serial.println(initJP[0]);
     #endif
       EEPROM.update(0, 255);
       EEPROM.update(1,255);

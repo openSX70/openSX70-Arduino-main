@@ -12,7 +12,8 @@
   #define LMDEBUG 0 //Lightmeter Debug
   #define LMHELPERDEBUG 0 //Lightmeter Debug
   #define ROTARYDEBUG 0 //Rotaryswitch on Dongle Debug
-  #define STATEDEBUG 0 //Debug state transitions 
+  #define STATEDEBUG 0 //Debug state transitions
+  #define FOCUSDEBUG 1 //Focus Debug on Sonar
   //----------------------END DEBUG OPTIONS------------------------------
   //----------------------CAMERA PCB OPTIONS SELECTION---------------------------
   //#define TSL237T
@@ -21,12 +22,14 @@
   //S1Logic LOW = Alphas, Meroë, Edwin
   //#define S1Logic HIGH //= Sonar 
   #define S1Logic HIGH
+  #define ALPHA 0
   #define SONAR 1
   #define ORIGAMI 0
   #define ORIGAMIV1 0 //V1 Version of Origami with inverted Rotaryswitch
   #define UDONGLE 1
   #define GREEN 6 //DONGLE GREEN LED ADRESS
   #define RED 7   //DONGLE RED LED ADRESS
+  #define DOUBLECLICK 0
   extern const uint8_t YDelay;
   extern const byte PowerDownDelay; //time it takes to be fully closed
   extern const byte PowerDown; //max 255 = full power/POWERUP mode

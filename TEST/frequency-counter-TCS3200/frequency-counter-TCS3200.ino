@@ -1,4 +1,4 @@
-
+ 
 // Timer and Counter example
 // Author: Nick Gammon
 // Date: 17th January 2012

@@ -18,15 +18,13 @@
   const uint8_t PIN_MOTOR = A2;
   const uint8_t PIN_LED1 = 13; //LED RED
   const uint8_t PIN_LED2 = A3; //LED BLUE
-  
   const uint8_t PIN_FF = 4;
+  
   #if SONAR
   const uint8_t PIN_GTD = A5; // Sonar gone that distance
   const uint8_t PIN_S1F = 10; //Sonar S1 Focus //Analog imput only
   const uint8_t PIN_FT = A7; //Sonar Flash Triggerd INPUT -- Cave Analoge Input only!
   const uint8_t PIN_S1F_FBW = 2; //engage SONAR prefocus
-  #else
-  const uint8_t PIN_FT = 4; //Sonar Flash Triggerd (Not working in current Sonar PCB! 
   #endif
 
   void io_init();
