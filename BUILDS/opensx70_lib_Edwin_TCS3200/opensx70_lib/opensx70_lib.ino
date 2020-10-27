@@ -1,4 +1,4 @@
- #include "Arduino.h"
+#include "Arduino.h"
 #include "open_SX70.h"
 
 /* 
