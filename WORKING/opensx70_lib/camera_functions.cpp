@@ -369,7 +369,7 @@ void Camera::Blink(unsigned int interval, int timer, int Pin, byte type)
   }
 }
 
-void Camera::ManualExposure(bool _mEXP) //ManualExposure
+void Camera::ManualExposure(bool _mEXP)
 {
   Camera::ExposureStart();
   if(_mEXP == false){
