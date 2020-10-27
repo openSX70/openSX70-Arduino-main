@@ -76,6 +76,7 @@ camera_state state = STATE_DARKSLIDE;
 
 
 void setup() {//setup - Inizialize
+  currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
     Serial.println("Welcome to openSX70 Version: 26_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
@@ -86,6 +87,8 @@ void setup() {//setup - Inizialize
     Serial.println(" scaling = 100% | filter = clear");
     Serial.println("State machine core by Zane, Sonar code by Hannes");
     Serial.println("PCB design and original code by Joaquin");
+    Serial.print("currentPicture stored in EEPROM: ");
+    Serial.println(currentPicture);
   #endif
   
   myDongle.initDS2408();
@@ -116,7 +119,6 @@ void setup() {//setup - Inizialize
     #endif
   }
 
-  currentPicture = ReadPicture();
   #if SIMPLEDEBUG
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
