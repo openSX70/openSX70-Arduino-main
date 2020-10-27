@@ -291,7 +291,7 @@ camera_state do_state_dongle (void){
   // Dongle Removed
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
-    prev_selector == 200;
+    prev_selector = 200;
     #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE");
     #endif
@@ -749,27 +749,6 @@ void normalOperation(){
     sw_S1.Update();
   }
   prev_selector = selector; //prevents green blink after ISO change
-}
-
-void LightMeterHelper(byte ExposureType){
-    int helperstatus = openSX70.getLIGHTMETER_HELPER();
-    if(helperstatus==true){
-      //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
-        meter_led(selector, ExposureType);
-        metercount=0;
-        /*#if ADVANCEDEBUG
-          Serial.print("Lightmeter Helper Status:");
-          Serial.print(helperstatus);
-          Serial.print(", ExposureType:  ");
-          Serial.print(ExposureType);
-          Serial.print(", Selector: ");
-          Serial.println(selector);
-        #endif*/
-      //}
-      //else{
-      //  metercount++;
-      //}
-    }
 }
 
 void saveISOChange() {
