@@ -34,28 +34,176 @@
  */
 
 #include "open_sx70.h"
-#if defined (TCS3200)
+#if defined (TSL235R)
 volatile bool integrationFinished = 0;
 
 uint16_t outputCompare = A100;
 
 const uint8_t PIN_OE = 9;
-const uint8_t TCS3200_S1_Pin = 2;                   //
-const uint8_t TCS3200_S3_Pin = 6;
-
 
 void meter_init(){
-	tcs3200_init();
+  tsl235_init();
 }
 
 void meter_set_iso(const uint16_t& iso){
-	if(iso == ISO_600){
-		outputCompare = A600;
-	} else {
-		outputCompare = A100;
-	}
+    if (iso == ISO_600) {
+      outputCompare = A600;
+    } else if (iso == ISO_SX70) {
+      outputCompare = A100;
+    } else if (iso == ISO_600BW){
+      outputCompare = A400;
+    }
+}
+
+void meter_compute(){
 
 }
+
+void meter_integrate(){
+	tsl235_start_integration();
+}
+
+bool meter_update(){
+	if(integrationFinished){
+		integrationFinished = 0;
+		return 1;
+	}
+	return 0;
+}
+
+
+
+// initialise Timer 1 for light sensor integration.
+void tsl235_init(){
+//	pinMode(PIN_OE, OUTPUT);
+//	digitalWrite(PIN_OE, LOW);
+
+	cli();
+	// Clear all interrupts flags
+	TIFR1 = (1 << ICF1) | (1 << OCF1B) | (1 << OCF1A) | (1 << TOV1);
+	// Set timer 1 for normal operation, clocked by rising edge on T1 (port D5 / pin 5)
+	TCCR1A = 0;
+	TCCR1B = (1 << CS10) | (1 << CS11) | (1 << CS12);
+	TCCR1C = 0;
+	// set current value to 0 (needs to be done, maybe, on each new conversion)
+	TCNT1 = 0;
+	sei();										// Restart interrupts
+}
+
+// Start a new measure for pose.
+void tsl235_start_integration(){
+	cli();
+	// Clear interrupts flags we are using
+//	TIFR1 = (1 << OCF1A) | (1 << TOV1);
+	TIFR1 = (1 << OCF1A);
+	// set compare value given sensivity
+	OCR1A = outputCompare;
+	// clear counter value.
+	TCNT1 = 0;
+	// Set interrupt vectors for compare match A.
+//	TIMSK1 = (1 << OCIE1A) | (1 << TOIE1);
+	TIMSK1 = (1 << OCIE1A);
+
+	sei();
+}
+
+// ISR for complete conversion. Should set a flag read by the main loop.
+ISR(TIMER1_COMPA_vect){
+	TIMSK1 = 0;
+	integrationFinished = 1;
+
+	// function / flag.
+}
+
+int nearest(int x, int myArray[], int elements, bool sorted)
+// int nearest(int x, int myArray[], int elements, bool sorted)
+
+{
+  int idx = 0; // by default near first element
+
+  int distance = abs(myArray[idx] - x);
+  for (int i = 1; i < elements; i++)
+  {
+    int d = abs(myArray[i] - x);
+    if (d < distance)
+    {
+      idx = i;
+      distance = d;
+    }
+    else if (sorted) return idx;
+  }
+  return idx;
+}
+void meter_led(byte _selector, byte _type)
+{
+  int PredictedExposure = meter_compute(200);
+  if (PredictedExposure == -1)
+  {
+    return;
+  }
+  if (_type == 1)
+  {
+    int slot = nearest(PredictedExposure, ShutterSpeed, 11, false);
+
+/*
+    Serial.print ("PredictedExposure: ");
+    Serial.println (PredictedExposure);
+
+    Serial.print ("Estimated SLOT: ");
+    Serial.println (slot);
+    Serial.print ("Actual SLOT: ");
+    Serial.println (_selector);
+*/
+    if (_selector < slot)
+    {
+      //     Serial.println ("_selector < slot");
+      digitalWrite(PIN_LED1, HIGH);
+      digitalWrite(PIN_LED2, LOW);
+      //digitalWrite(PIN_LED1, LOW);
+      //digitalWrite(PIN_LED2, HIGH);
+
+      return;
+    }
+    else if (_selector > slot)
+    {
+      //     Serial.println ("_selector > slot");
+      digitalWrite(PIN_LED2, HIGH);
+      digitalWrite(PIN_LED1, LOW);
+      //digitalWrite(PIN_LED2, LOW);
+      //digitalWrite(PIN_LED1, HIGH);
+
+      return;
+    }
+    else if (_selector == slot)
+    {
+
+      //   Serial.println ("_selector == slot");
+      digitalWrite(PIN_LED2, LOW);
+      digitalWrite(PIN_LED1, LOW);
+      //digitalWrite(PIN_LED2, HIGH);
+      //digitalWrite(PIN_LED1, HIGH);
+
+      return;
+    }
+  }
+  if (_type == 0)
+  {
+    if (PredictedExposure > 100)
+    {
+      digitalWrite(PIN_LED2, HIGH);
+      digitalWrite(PIN_LED1, HIGH);
+      Serial.println ("LOW LIGHT");
+      return;
+
+    } else
+    {
+      digitalWrite(PIN_LED2, LOW);
+      digitalWrite(PIN_LED1, LOW);
+
+    }
+  }
+}
+
 int meter_compute(unsigned int _interval) /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 {
   int _myISO = ReadISO();
@@ -121,167 +269,9 @@ int meter_compute(unsigned int _interval) //////////////////////////////////////
       }*/
      // PredExp = PredExp + ShutterConstant;
       return PredExp;
-
     }
   }
-
   return -1;
-
- 
-}
-
-
-void meter_integrate(){
-	tcs3200_start_integration();
-}
-
-bool meter_update(){
-	if(integrationFinished){
-		integrationFinished = 0;
-		return 1;
-	}
-	return 0;
-}
-
-
-
-// initialise Timer 1 for light sensor integration.
-void tcs3200_init(){
-	pinMode(PIN_OE, OUTPUT);
-  pinMode(TCS3200_S1_Pin, OUTPUT);
-  pinMode(TCS3200_S3_Pin, OUTPUT);
-	digitalWrite(PIN_OE, LOW);
-    //S2 & S0 should be high can be modified via jumper in PCB 
-  digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% HIGH = 100%
-  digitalWrite(TCS3200_S3_Pin, LOW); //filter LOW = clear HIGH = green
-  
-    //S2 & S0 should be high can be modified via jumper in PCB 
-//  digitalWrite(S1_Pin, HIGH); //scaling LOW = 20% HIGH = 100%
-//  digitalWrite(S3_Pin, LOW); //filter LOW = clear HIGH = green
-
-	cli();
-	// Clear all interrupts flags
-	TIFR1 = (1 << ICF1) | (1 << OCF1B) | (1 << OCF1A) | (1 << TOV1);
-	// Set timer 1 for normal operation, clocked by rising edge on T1 (port D5 / pin 5)
-	TCCR1A = 0;
-	TCCR1B = (1 << CS10) | (1 << CS11) | (1 << CS12);
-	TCCR1C = 0;
-	// set current value to 0 (needs to be done, maybe, on each new conversion)
-	TCNT1 = 0;
-	sei();										// Restart interrupts
-}
-
-// Start a new measure for pose.
-void tcs3200_start_integration(){
-	cli();
-	// Clear interrupts flags we are using
-//	TIFR1 = (1 << OCF1A) | (1 << TOV1);
-	TIFR1 = (1 << OCF1A);
-	// set compare value given sensivity
-	OCR1A = outputCompare;
-	// clear counter value.
-	TCNT1 = 0;
-	// Set interrupt vectors for compare match A.
-//	TIMSK1 = (1 << OCIE1A) | (1 << TOIE1);
-	TIMSK1 = (1 << OCIE1A);
-
-	sei();
-}
-
-// ISR for complete conversion. Should set a flag read by the main loop.
-ISR(TIMER1_COMPA_vect){
-	TIMSK1 = 0;
-	integrationFinished = 1;
-
-	// function / flag.
-}
-
-void meter_led(byte _selector, bool _type)
-{
-  int PredictedExposure = meter_compute(200);
-  if (PredictedExposure == -1)
-  {
-    return;
-  }
-  if (_type)
-  {
-    int slot = nearest(PredictedExposure, ShutterSpeed, 11, false);
-
-/*
-    Serial.print ("PredictedExposure: ");
-    Serial.println (PredictedExposure);
-
-    Serial.print ("Estimated SLOT: ");
-    Serial.println (slot);
-    Serial.print ("Actual SLOT: ");
-    Serial.println (_selector);
-*/
-    if (_selector < slot)
-    {
-      //     Serial.println ("_selector < slot");
-      digitalWrite(PIN_LED1, HIGH);
-      digitalWrite(PIN_LED2, LOW);
-      //digitalWrite(PIN_LED1, LOW);
-      //digitalWrite(PIN_LED2, HIGH);
-
-      return;
-    }
-    else if (_selector > slot)
-    {
-      //     Serial.println ("_selector > slot");
-      digitalWrite(PIN_LED2, HIGH);
-      digitalWrite(PIN_LED1, LOW);
-      //digitalWrite(PIN_LED2, LOW);
-      //digitalWrite(PIN_LED1, HIGH);
-
-      return;
-    }
-    else if (_selector == slot)
-    {
-
-      //   Serial.println ("_selector == slot");
-      digitalWrite(PIN_LED2, LOW);
-      digitalWrite(PIN_LED1, LOW);
-      //digitalWrite(PIN_LED2, HIGH);
-      //digitalWrite(PIN_LED1, HIGH);
-
-      return;
-    }
-  }
-  if (!_type)
-  {
-    if (PredictedExposure > 100)
-    {
-      digitalWrite(PIN_LED2, HIGH);
-      digitalWrite(PIN_LED1, HIGH);
-      Serial.println ("LOW LIGHT");
-      return;
-
-    } else
-    {
-      digitalWrite(PIN_LED2, LOW);
-      digitalWrite(PIN_LED1, LOW);
-
-    }
-  }
-}
-
-nearest(int x, int myArray[], int elements, bool sorted)
-{
-  int idx = 0; // by default near first element
-
-  int distance = abs(myArray[idx] - x);
-  for (int i = 1; i < elements; i++)
-  {
-    int d = abs(myArray[i] - x);
-    if (d < distance)
-    {
-      idx = i;
-      distance = d;
-    }
-    else if (sorted) return idx;
-  }
-  return idx;
 }
 
 #endif

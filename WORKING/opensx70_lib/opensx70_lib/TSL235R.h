@@ -48,6 +48,7 @@
 
 #define A100 485
 #define A600 225
+#define A400 300 //need to estimate right Value for BW 600
 
 
 /* These functions are called by the main loop.
@@ -65,7 +66,7 @@ void meter_integrate();
 bool meter_update();
 */
 
-void meter_led(byte _selector, bool _type);
+void meter_led(byte _selector, byte _type);
 
 // Init timer 1 for reading sensor, enable sensor
 void tsl235_init();
@@ -74,6 +75,6 @@ void tsl235_init();
 void tsl235_start_integration();
 
 //extern void meter_set_iso(uint16_t const& iso);
-//void meter_led(byte _selector, bool _type);
+//void meter_led(byte _selector, byte _type);
 
 #endif
