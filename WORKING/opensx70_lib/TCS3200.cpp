@@ -143,7 +143,7 @@
           unsigned long counter = TCNT1; //Timer count Value
           measuring = false;
           PredExp = round((((float)myMillis) / ((float) counter)) * (float)outputCompare);
-          #if LMDEBUG
+          #if LMHELPERDEBUG
             Serial.print("pr mil: ");
             Serial.print(previousMillis);
             Serial.print(" mil: ");
@@ -156,9 +156,6 @@
             Serial.print(outputCompare);
             Serial.print(" PredExp: ");
             Serial.println(PredExp);
-          #endif
-          #if ALMDEBUG
-            //Serial.println(counter);
           #endif
           PredExp = PredExp + ShutterConstant;
           if(PredExp>44250){ //bigger then a reliable Value | doesnt know if its needed
@@ -366,7 +363,7 @@ ISR (TIMER1_CAPT_vect)
     }
     else if (_type == 1) //Automode
     {
-      #if LMDEBUG
+      #if LMHELPERDEBUG
       Serial.print ("LM Helper PredictedExposure on Auto Mode , PredictedExposure: ");
       Serial.println (PredictedExposure);
       #endif

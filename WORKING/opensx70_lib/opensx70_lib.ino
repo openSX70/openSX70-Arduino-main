@@ -74,13 +74,11 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 //Default state
 camera_state state = STATE_DARKSLIDE;
 
-
-
 void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println("Welcome to openSX70 Version: 27_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
+    Serial.println("Welcome to openSX70 Version: 28_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version + AutoFF");
     Serial.print("Magic Number: A100=");
     Serial.print(A100);
     Serial.print("| A600 =");
@@ -131,6 +129,7 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
+  selector = myDongle.selector();
   #if SONAR
     preFocus();
   #endif
@@ -141,6 +140,7 @@ void loop() {
   #endif
   //checkFilmCount();
   //printReadings();
+
 }
 
 camera_state do_state_darkslide (void) {
@@ -313,14 +313,16 @@ camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
   {
-    openSX70.FlashBAR();
+    //openSX70.FlashBAR();
+    openSX70.AutoExposureFF(activeISO, false);
     sw_S1.Reset();
     checkFilmCount();
   }
   if (sw_S1.clicks == 2)
   {
     switch2Function(3); //Switch Two Function in Flash Mode
-    openSX70.FlashBAR();
+    //openSX70.FlashBAR();
+    openSX70.AutoExposureFF(activeISO, false);
     sw_S1.Reset();
     checkFilmCount(); 
   } 
@@ -349,7 +351,6 @@ camera_state do_state_multi_exp (void){
     #if SONAR
     }
   #endif
-
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
@@ -671,7 +672,6 @@ void switch2Function(int mode) {
 
 void checkFilmCount(){
   if ((currentPicture == 8) || (currentPicture == 9)){
-    Serial.println("Aaaaaaaa");
       #if SIMPLEDEBUG
         Serial.print("Two Frames left!");
         Serial.print(", currentPicture on Two Frames left: ");
@@ -793,4 +793,25 @@ void saveISOChange() {
     }
     prev_selector = selector; //prevents green blink after ISO change
   //}
+}
+
+void LightMeterHelper(byte ExposureType){
+    int helperstatus = openSX70.getLIGHTMETER_HELPER();
+    if(helperstatus==true){
+      //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
+        meter_led(selector, ExposureType);
+        metercount=0;
+        /*#if ADVANCEDEBUG
+          Serial.print("Lightmeter Helper Status:");
+          Serial.print(helperstatus);
+          Serial.print(", ExposureType:  ");
+          Serial.print(ExposureType);
+          Serial.print(", Selector: ");
+          Serial.println(selector);
+        #endif*/
+      //}
+      //else{
+      //  metercount++;
+      //}
+    }
 }

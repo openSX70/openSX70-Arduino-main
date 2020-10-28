@@ -482,7 +482,7 @@ void Camera::ManualExposure(int notusingprobably, bool _mEXP) //ManualExposure
   #endif
   Camera::ExposureFinish(_mEXP);
   #if LMDEBUG
-      unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
+      unsigned long exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
       Serial.print("ExposureTime on Manualmode: ");
       Serial.println(exposureTime);
   #endif
@@ -533,6 +533,99 @@ void Camera::AutoExposure(int _myISO, bool _mEXP)
   #if LMDEBUG
     unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
     Serial.print("ExposureTime on Automode: ");
+    Serial.println(exposureTime);
+  #endif
+  return; //Added 26.10.
+}
+
+void Camera::AutoExposureFF(int _myISO, bool _mEXP)
+{
+  Camera::ExposureStart();
+  if(_mEXP == false){
+    currentPicture++; 
+    WritePicture(currentPicture);
+    #if SIMPLEDEBUG
+        Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
+        Serial.print(_myISO);
+        Serial.print(", current Picture: ");
+        Serial.println(currentPicture);
+    #endif
+  }
+
+  meter_set_iso(_myISO); 
+  if(multipleExposureMode == false){
+    Camera::shutterCLOSE();
+    Camera::mirrorUP();   
+  }
+  pinMode(PIN_S3, INPUT_PULLUP); // GND
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
+     #if BASICDEBUG
+     Serial.println("waiting for S3 to OPEN");
+     #endif
+  }
+  pinMode(PIN_SOL2, OUTPUT);
+  pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+
+
+  delay(YDelay);              //AT Yd and POWERS OFF AT FF
+  meter_init();
+  meter_integrate();
+  Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
+  analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  analogWrite (PIN_SOL2, 130);//SOL2 Powersaving
+  #if FFDEBUG
+  Serial.println("SOL2 255");
+  Serial.println("SOL2 130");
+  #endif
+  #if LMDEBUG
+    unsigned long shutterOpenTime = millis(); //Shutter Debug
+  #endif
+  unsigned long integrationStartTime = millis();
+  int FF=0;
+  //analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
+  while (meter_update() == false){
+      //if((millis()-integrationStartTime)==0){
+        //ShutterOpen
+      //}
+      if(((millis()-integrationStartTime)>=25) && !FF){ //Shutter at Full open (f/8.16)
+          digitalWrite(PIN_FF, HIGH); //FF Flash 25 to 33mms
+          FF=1;
+          #if FFDEBUG
+          Serial.print((millis()-integrationStartTime));
+          Serial.println("ms Integrationtime do: FF HIGH");
+          #endif
+      }
+      if((millis()-integrationStartTime)>=50 && FF==1){
+          digitalWrite(PIN_FF, LOW);  //FF
+          analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
+          FF=2;
+          #if FFDEBUG
+          Serial.print((millis()-integrationStartTime));
+          Serial.println(" Integrationtime do: FF LOW + SOL2 0");
+          #endif
+      }
+  }
+  #if LMDEBUG
+    unsigned long shutterCloseTime = millis(); //Shutter Debug
+  #endif
+
+  if((millis()-integrationStartTime)<50){
+    analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
+    Serial.println("SOL2 0");
+    digitalWrite(PIN_FF, LOW);  //FF //if shuttertime was shorter then 50ms
+    Serial.println("FF LOW");
+  }
+  if((millis()-integrationStartTime)<25){
+    Serial.print("No Flash happend! FF: ");
+    Serial.println(FF);
+  }
+  Serial.print("FF: ");
+  Serial.println(FF);
+  Camera::ExposureFinish(_mEXP);
+
+  #if LMDEBUG
+    unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
+    Serial.print("ExposureTime on Automode + FF: ");
     Serial.println(exposureTime);
   #endif
   return; //Added 26.10.
