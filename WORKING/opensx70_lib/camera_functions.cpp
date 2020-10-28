@@ -347,6 +347,7 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   //*******************************************************
   unsigned long steps = (time * 1000) / 4;
   // DS2408 and DONGLE LED BLINK
+  /*
   #if SONAR
     S1F_Unfocus(); //Camera Unfocus and start Focus again an almost end of the SelfTimer
   #endif
@@ -360,7 +361,8 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   Camera::Blink (80, steps, led1, PIN_LED2, 2);
   Camera::Blink (80, steps, led2, PIN_LED1, 2);
   }
-  /*
+  */
+
   // DS2408 LED BLINK
   #if SONAR
     S1F_Unfocus(); //Camera Unfocus and start Focus again an almost end of the SelfTimer
@@ -375,7 +377,7 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   Camera::Blink (80, steps, led1, 2);
   Camera::Blink (80, steps, led2, 2);
 }
-*/
+
 
 // blink (blink interval=blinking speed, timer=duration blinking, Pin=pin of LED
 //type 1 = ONBOARD LED
