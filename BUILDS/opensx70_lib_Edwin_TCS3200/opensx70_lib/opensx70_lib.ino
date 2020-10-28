@@ -43,7 +43,6 @@ static int multipleExposureCounter = 0;
   int currentPicOnFocus; //dont know what this is for
 #endif
 
-
 /*------------BEGIN STATE MACHINE SET_UP------------*/
 typedef enum{
   STATE_DARKSLIDE,
@@ -73,13 +72,11 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 //Default state
 camera_state state = STATE_DARKSLIDE;
 
-
-
 void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println("Welcome to openSX70 Version: 27_10_2020_EDWIN_TCS3200 and UDONGLE - SM Version");
+    Serial.println("Welcome to openSX70 Version: 28_10_2020_EDWIN_TCS3200 and UDONGLE - SM Version");
     Serial.print("Magic Number: A100=");
     Serial.print(A100);
     Serial.print("| A600 =");
@@ -106,7 +103,7 @@ void setup() {//setup - Inizialize
   selector = myDongle.selector();
   prev_selector = selector;
 
-  io_init();
+  io_init(); //Initiate IO Pins
   metercount = 0; //For the Lightmeter Helper Skipping Function
   checkFilmCount();
   inizialized++;
@@ -118,14 +115,13 @@ void setup() {//setup - Inizialize
       Serial.println ("Initialize: mirrorDOWN");
     #endif
   }
-
+  
   #if SIMPLEDEBUG
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
     Serial.print("currentPicture: ");
     Serial.println(currentPicture);
   #endif
-  
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
@@ -163,7 +159,6 @@ camera_state do_state_darkslide (void) {
       openSX70.darkslideEJECT(); //Disabled Darkslide eject to change Filmpack in Darkroom
       myDongle.dongleLed (GREEN, LOW); //switching off green uDongle LED
     }
-
     #if SIMPLEDEBUG
         Serial.println("STATE1: EJECT DARK SLIDE");
         Serial.print("currentPicture on Darkslide eject: ");
@@ -181,14 +176,12 @@ camera_state do_state_darkslide (void) {
     }
     else if ((selector == 100) && (myDongle.checkDongle() == 0)){
       result = STATE_FLASHBAR;
-
       #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE");
       #endif
     }
     else{
       result = STATE_NODONGLE;
-
       #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE");
       #endif
@@ -236,14 +229,12 @@ camera_state do_state_noDongle (void){
         Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE");
     #endif
   }
-
   return result;
 }
 
 camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
   DongleInserted();
-  
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){
   #endif
@@ -256,7 +247,6 @@ camera_state do_state_dongle (void){
   #if SONAR
   }
   #endif
-  
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
     if(switch2 == 1){
@@ -304,7 +294,6 @@ camera_state do_state_dongle (void){
         Serial.println("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE");
     #endif
   }
-
   return result;
 }
 
@@ -335,7 +324,6 @@ camera_state do_state_flashBar (void){
 camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
-
   #if SONAR
     if ((digitalRead(PIN_S1F) == HIGH)){
     #endif
@@ -348,8 +336,6 @@ camera_state do_state_multi_exp (void){
     #if SONAR
     }
   #endif
-
-  
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
     if(switch1 == 1){ //Why Switch1 == true?!
@@ -389,7 +375,6 @@ camera_state do_state_multi_exp (void){
       checkFilmCount();
       multipleExposureCounter = 0;
       result = STATE_DONGLE;
-
       #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
       #endif
@@ -400,7 +385,6 @@ camera_state do_state_multi_exp (void){
 
   if(switch1 == 0 && multipleExposureCounter == 0){
     result = STATE_DONGLE;
-
     #if STATEDEBUG
       Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
     #endif
@@ -551,7 +535,6 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
           Serial.print ("EEPROM READ ISO: ");
           Serial.println (savedISO);
       #endif
-      
       prevDongle = nowDongle;
       checkFilmCount();
       //return;
