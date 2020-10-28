@@ -30,8 +30,6 @@ void io_init() {
   pinMode(PIN_S2, INPUT_PULLUP); //changed from INPUT_PULLUP 27_04
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   pinMode(PIN_S5, INPUT_PULLUP); // GND
-  //pinMode(PIN_S8, INPUT_PULLUP); // GND
-  //pinMode(PIN_S9, INPUT_PULLUP); // GND
   #if ALPHA
   pinMode(PIN_S8, INPUT_PULLUP); // GND
   pinMode(PIN_S9, INPUT_PULLUP); // GND
