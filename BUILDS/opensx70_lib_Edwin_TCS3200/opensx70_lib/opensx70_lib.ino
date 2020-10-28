@@ -12,7 +12,6 @@
 
   The sonar code was entirely done by Hannes (Thank you!).
   Merged last Soanr Version with Zanes Version (Greetings Hannes)
-  
 */
 
 ClickButton sw_S1(PIN_S1, S1Logic);
@@ -80,7 +79,7 @@ void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println("Welcome to openSX70 Version: 27_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
+    Serial.println("Welcome to openSX70 Version: 27_10_2020_EDWIN_TCS3200 and UDONGLE - SM Version");
     Serial.print("Magic Number: A100=");
     Serial.print(A100);
     Serial.print("| A600 =");
@@ -674,6 +673,27 @@ void checkFilmCount(){
     myDongle.dongleLed(RED, HIGH);
     //return;
   }
+}
+
+void LightMeterHelper(byte ExposureType){
+    int helperstatus = openSX70.getLIGHTMETER_HELPER();
+    if(helperstatus==true){
+      //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
+        meter_led(selector, ExposureType);
+        metercount=0;
+        /*#if ADVANCEDEBUG
+          Serial.print("Lightmeter Helper Status:");
+          Serial.print(helperstatus);
+          Serial.print(", ExposureType:  ");
+          Serial.print(ExposureType);
+          Serial.print(", Selector: ");
+          Serial.println(selector);
+        #endif*/
+      //}
+      //else{
+      //  metercount++;
+      //}
+    }
 }
 
 void ispackEmpty(){ //This is doing nothing right now
