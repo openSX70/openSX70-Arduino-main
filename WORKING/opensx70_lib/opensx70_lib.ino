@@ -77,6 +77,7 @@ camera_state state = STATE_DARKSLIDE;
 
 
 void setup() {//setup - Inizialize
+  currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
     Serial.println("Welcome to openSX70 Version: 26_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version");
@@ -87,6 +88,8 @@ void setup() {//setup - Inizialize
     Serial.println(" scaling = 100% | filter = clear");
     Serial.println("State machine core by Zane, Sonar code by Hannes");
     Serial.println("PCB design and original code by Joaquin");
+    Serial.print("currentPicture stored in EEPROM: ");
+    Serial.println(currentPicture);
   #endif
   
   myDongle.initDS2408();
@@ -117,7 +120,6 @@ void setup() {//setup - Inizialize
     #endif
   }
 
-  currentPicture = ReadPicture();
   #if SIMPLEDEBUG
     Serial.print("Inizialized: ");
     Serial.println(inizialized);
@@ -672,27 +674,6 @@ void checkFilmCount(){
     myDongle.dongleLed(RED, HIGH);
     //return;
   }
-}
-
-void LightMeterHelper(byte ExposureType){
-    int helperstatus = openSX70.getLIGHTMETER_HELPER();
-    if(helperstatus==true){
-      //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
-        meter_led(selector, ExposureType);
-        metercount=0;
-        /*#if ADVANCEDEBUG
-          Serial.print("Lightmeter Helper Status:");
-          Serial.print(helperstatus);
-          Serial.print(", ExposureType:  ");
-          Serial.print(ExposureType);
-          Serial.print(", Selector: ");
-          Serial.println(selector);
-        #endif*/
-      //}
-      //else{
-      //  metercount++;
-      //}
-    }
 }
 
 void ispackEmpty(){ //This is doing nothing right now
