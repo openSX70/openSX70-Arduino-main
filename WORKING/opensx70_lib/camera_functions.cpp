@@ -582,12 +582,12 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   while (meter_update() == false){
       if((millis()-integrationStartTime)>=15 && FF == 0){
         FF++;
-        analogWrite (PIN_SOL2, 130);//SOL2 Powersaving
+        analogWrite (PIN_SOL2, 160);//SOL2 Powersaving
         #if FFDEBUG
         Serial.println("SOL2 160");
         #endif
       }
-      if(((millis()-integrationStartTime)>=25) && FF == 1){ //Shutter at Full open (f/8.16)
+      if(((millis()-integrationStartTime)>=56) && FF == 1){ //Shutter at Full open (f/8.16)
           digitalWrite(PIN_FF, HIGH); //FF Flash 25 to 33mms
           FF++;
           #if FFDEBUG
@@ -595,7 +595,7 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
           Serial.println("ms Integrationtime do: FF HIGH");
           #endif
       }
-      if((millis()-integrationStartTime)>=50 && FF==2){
+      if((millis()-integrationStartTime)>=81 && FF==2){ 
           digitalWrite(PIN_FF, LOW);  //FF
           analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
           FF++;
@@ -604,20 +604,23 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
           Serial.println(" Integrationtime do: FF LOW + SOL2 0");
           #endif
       }
+      if((millis()-integrationStartTime)>=96 && FF==3){ //Flash exposure time can vary depending on scene reflectivity, ambient light & focus. But never longer than FT
+        break;
+      }
   }
   #if LMDEBUG
     unsigned long shutterCloseTime = millis(); //Shutter Debug
   #endif
 
-  if((millis()-integrationStartTime)<50){
-    analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF - if shuttertime was shorter then 50ms
-    digitalWrite(PIN_FF, LOW);  //FF LOW - if shuttertime was shorter then 50ms
+  if((millis()-integrationStartTime)<81){
+    analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF - if shuttertime was shorter then 81ms
+    digitalWrite(PIN_FF, LOW);  //FF LOW - if shuttertime was shorter then 81ms
     #if FFDEBUG
     Serial.println("SOL2 0");
     Serial.println("FF LOW");
     #endif
   }
-  if((millis()-integrationStartTime)<25){
+  if((millis()-integrationStartTime)<56){
     #if FFDEBUG
     Serial.print("No Flash happend! FF: ");
     Serial.println(FF);
