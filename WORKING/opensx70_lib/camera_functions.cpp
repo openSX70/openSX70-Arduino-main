@@ -7,8 +7,8 @@
 #include "settings.h"
 #include "uDongle2.h"
 
-extern static bool mEXPFirstRun;
-extern static bool multipleExposureMode;
+extern bool mEXPFirstRun;
+extern bool multipleExposureMode;
 extern int selector;
 
 int GTD = 0;

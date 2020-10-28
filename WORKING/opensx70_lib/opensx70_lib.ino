@@ -31,8 +31,8 @@ int activeISO;
 static int inizialized = 0;
 static int metercount;
 
-static bool mEXPFirstRun = false;
-static bool multipleExposureMode = false;
+extern bool mEXPFirstRun = false;
+extern bool multipleExposureMode = false;
 static int multipleExposureCounter = 0;
 /*
 #if SONAR == 0 
@@ -768,6 +768,27 @@ void normalOperation(){
     sw_S1.Update();
   }
   prev_selector = selector; //prevents green blink after ISO change
+}
+
+void LightMeterHelper(byte ExposureType){
+    int helperstatus = openSX70.getLIGHTMETER_HELPER();
+    if(helperstatus==true){
+      //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
+        meter_led(selector, ExposureType);
+        metercount=0;
+        /*#if ADVANCEDEBUG
+          Serial.print("Lightmeter Helper Status:");
+          Serial.print(helperstatus);
+          Serial.print(", ExposureType:  ");
+          Serial.print(ExposureType);
+          Serial.print(", Selector: ");
+          Serial.println(selector);
+        #endif*/
+      //}
+      //else{
+      //  metercount++;
+      //}
+    }
 }
 
 void saveISOChange() {
