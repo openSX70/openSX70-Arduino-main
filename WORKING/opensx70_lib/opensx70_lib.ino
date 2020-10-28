@@ -143,36 +143,26 @@ void loop() {
   #if SONAR
     unfocusing();
   #endif
-  //checkFilmCount();
-  //printReadings();
 }
 
 camera_state do_state_darkslide (void) {
-  /*
-    I have all the darkslide code in the state simply because it should only run once a "cycle"
-    Under normal operation the camera will be reset by the door being opened and closed when a new 
-    pack in inserted. I saw no reason to have a separate function for it since this code will not be
-    called anywhere else.
-  */
   camera_state result = STATE_DARKSLIDE;
   if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
     currentPicture = 0; 
     WritePicture(currentPicture);
     checkFilmCount();
-    //OPTION TURN ON AND OFF LED WHILE DARKSLIDE EJECT
     if(myDongle.checkDongle() == 0){
-      openSX70.darkslideEJECT(); //Disabled Darkslide eject to change Filmpack in Darkroom
+      openSX70.darkslideEJECT(); 
     }
     else{
-      myDongle.dongleLed (GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
-      openSX70.darkslideEJECT(); //Disabled Darkslide eject to change Filmpack in Darkroom
-      myDongle.dongleLed (GREEN, LOW); //switching off green uDongle LED
+      myDongle.dongleLed(GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
+      openSX70.darkslideEJECT();
+      myDongle.dongleLed(GREEN, LOW); //switching off green uDongle LED
     }
-
     #if SIMPLEDEBUG
-        Serial.println("STATE1: EJECT DARK SLIDE");
-        Serial.print("currentPicture on Darkslide eject: ");
-        Serial.println(currentPicture);
+      Serial.println("STATE1: EJECT DARK SLIDE");
+      Serial.print("currentPicture on Darkslide eject: ");
+      Serial.println(currentPicture);
     #endif
   }
   else{
@@ -221,13 +211,13 @@ camera_state do_state_noDongle (void){
   #endif
 
   //Checks for dongle or flashbar insertion
-  if (myDongle.checkDongle() > 0){ //((selector <= 15) && (myDongle.checkDongle() > 0))
+  if (myDongle.checkDongle() > 0){
     #if STATEDEBUG
       Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE");
     #endif
     result = STATE_DONGLE;
     if(((myDongle.switch1() == 1) && (myDongle.switch2() == 1))){
-      saveISOChange(); //saveISOChange on Dongle insertion if both switches are ON
+      saveISOChange();
     }
     else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
       BlinkISO();
@@ -296,7 +286,6 @@ camera_state do_state_dongle (void){
   // Dongle Removed
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
-    prev_selector = 200;
     #if STATEDEBUG
         Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE");
     #endif
@@ -361,7 +350,7 @@ camera_state do_state_multi_exp (void){
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
-    if(switch1 == 1){ //Why Switch1 == true?!
+    if(switch1 == 1){ //Why Switch1 == true?!    This is for checking if we are still taking mexp pics
       if(mEXPFirstRun){
         beginExposure();
       }
