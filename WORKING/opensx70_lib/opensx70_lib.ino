@@ -134,6 +134,7 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
+  selector = myDongle.selector();
   #if SONAR
     preFocus();
   #endif
@@ -481,7 +482,7 @@ void DongleInserted() { //Dongle is pressend LOOP
     if (digitalRead(PIN_S1F) != S1Logic) { //Dont run DongleInserted Function on S1F pressed
   #endif
       { //Serial.println("S1F HIGH");
-        selector = myDongle.selector();
+        //selector = myDongle.selector();
         switch1 = myDongle.switch1();
         switch2 = myDongle.switch2();
         //saveISOChange();//added 26.10.
