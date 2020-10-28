@@ -693,27 +693,6 @@ void checkFilmCount(){
   }
 }
 
-void LightMeterHelper(byte ExposureType){
-    int helperstatus = openSX70.getLIGHTMETER_HELPER();
-    if(helperstatus==true){
-      //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
-        meter_led(selector, ExposureType);
-        metercount=0;
-        /*#if ADVANCEDEBUG
-          Serial.print("Lightmeter Helper Status:");
-          Serial.print(helperstatus);
-          Serial.print(", ExposureType:  ");
-          Serial.print(ExposureType);
-          Serial.print(", Selector: ");
-          Serial.println(selector);
-        #endif*/
-      //}
-      //else{
-      //  metercount++;
-      //}
-    }
-}
-
 void ispackEmpty(){ //This is doing nothing right now
   static int firstRun = 0;
   //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH
