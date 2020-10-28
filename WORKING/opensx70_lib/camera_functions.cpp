@@ -565,16 +565,14 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   }
   pinMode(PIN_SOL2, OUTPUT);
   pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+  #if FFDEBUG
+  Serial.println("SOL2 255");
+  #endif
+  analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
   delay(YDelay);              //AT Yd and POWERS OFF AT FF
   meter_init();
   meter_integrate();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
-  analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
-  analogWrite (PIN_SOL2, 130);//SOL2 Powersaving
-  #if FFDEBUG
-  Serial.println("SOL2 255");
-  Serial.println("SOL2 160");
-  #endif
   #if LMDEBUG
     unsigned long shutterOpenTime = millis(); //Shutter Debug
   #endif
@@ -582,21 +580,25 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   int FF=0;
   //analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
   while (meter_update() == false){
-      //if((millis()-integrationStartTime)==0){
-        //ShutterOpen
-      //}
-      if(((millis()-integrationStartTime)>=25) && !FF){ //Shutter at Full open (f/8.16)
+      if((millis()-integrationStartTime)>=15 && FF == 0){
+        FF++;
+        analogWrite (PIN_SOL2, 130);//SOL2 Powersaving
+        #if FFDEBUG
+        Serial.println("SOL2 160");
+        #endif
+      }
+      if(((millis()-integrationStartTime)>=25) && FF == 1){ //Shutter at Full open (f/8.16)
           digitalWrite(PIN_FF, HIGH); //FF Flash 25 to 33mms
-          FF=1;
+          FF++;
           #if FFDEBUG
           Serial.print((millis()-integrationStartTime));
           Serial.println("ms Integrationtime do: FF HIGH");
           #endif
       }
-      if((millis()-integrationStartTime)>=50 && FF==1){
+      if((millis()-integrationStartTime)>=50 && FF==2){
           digitalWrite(PIN_FF, LOW);  //FF
           analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
-          FF=2;
+          FF++;
           #if FFDEBUG
           Serial.print((millis()-integrationStartTime));
           Serial.println(" Integrationtime do: FF LOW + SOL2 0");
