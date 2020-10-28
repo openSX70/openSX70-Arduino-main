@@ -565,8 +565,6 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   }
   pinMode(PIN_SOL2, OUTPUT);
   pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-
-
   delay(YDelay);              //AT Yd and POWERS OFF AT FF
   meter_init();
   meter_integrate();
@@ -575,7 +573,7 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   analogWrite (PIN_SOL2, 130);//SOL2 Powersaving
   #if FFDEBUG
   Serial.println("SOL2 255");
-  Serial.println("SOL2 130");
+  Serial.println("SOL2 160");
   #endif
   #if LMDEBUG
     unsigned long shutterOpenTime = millis(); //Shutter Debug
@@ -610,17 +608,23 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   #endif
 
   if((millis()-integrationStartTime)<50){
-    analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
+    analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF - if shuttertime was shorter then 50ms
+    digitalWrite(PIN_FF, LOW);  //FF LOW - if shuttertime was shorter then 50ms
+    #if FFDEBUG
     Serial.println("SOL2 0");
-    digitalWrite(PIN_FF, LOW);  //FF //if shuttertime was shorter then 50ms
     Serial.println("FF LOW");
+    #endif
   }
   if((millis()-integrationStartTime)<25){
+    #if FFDEBUG
     Serial.print("No Flash happend! FF: ");
     Serial.println(FF);
+    #endif
   }
+  #if FFDEBUG
   Serial.print("FF: ");
   Serial.println(FF);
+  #endif
   Camera::ExposureFinish(_mEXP);
 
   #if LMDEBUG
