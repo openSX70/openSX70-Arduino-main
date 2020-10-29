@@ -311,6 +311,7 @@ camera_state do_state_dongle (void){
 
 camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
+  activeISO = ReadISO();
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
   {
     //openSX70.FlashBAR();
