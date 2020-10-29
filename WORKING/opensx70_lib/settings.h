@@ -12,9 +12,9 @@
   #define LMDEBUG 1         //Lightmeter Debug
   #define LMHELPERDEBUG 0   //Lightmeter Debug
   #define ROTARYDEBUG 0     //Rotaryswitch on Dongle Debug
-  #define STATEDEBUG 0      //Debug state transitions
+  #define STATEDEBUG 1      //Debug state transitions
   #define FOCUSDEBUG 0      //Focus Debug on Sonar
-  #define FFDEBUG 1         //AutoexposureFillFlash Debug
+  #define FFDEBUG 0         //AutoexposureFillFlash Debug
   //----------------------END DEBUG OPTIONS------------------------------
   //----------------------CAMERA PCB OPTIONS SELECTION---------------------------
   //#define TSL237T

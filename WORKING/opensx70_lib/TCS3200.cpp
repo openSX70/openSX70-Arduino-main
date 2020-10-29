@@ -22,6 +22,7 @@
   
   // initialise Timer 1 for light sensor integration.
   void tcs3200_init(){
+    integrationFinished = 0; //not sure if needed
     //TCS3200_S0_Pin = HIGH(3.3V) Jumper on PCB
     //TCS3200_S1_Pin = On Pin 9 ATMEGA
     //TCS3200_S2_Pin = HIGH(3.3V) Jumper on PCB
@@ -41,7 +42,6 @@
     //digitalWrite(S3_Pin, LOW); //filter LOW = clear | HIGH = green
   
     cli(); //Stop all Interupts
-  
     TIFR1 = (1 << ICF1) | (1 << OCF1B) | (1 << OCF1A) | (1 << TOV1);   // Clear all interrupts flags
     // Set timer 1(16 Bit) for normal operation, clocked by rising edge on T1 (port D5 / pin 5)
     TCCR1A = 0; //(Counter1 Control Register A)
@@ -72,6 +72,11 @@
       }/* else if (iso == ISO_600BW){
         outputCompare = A400;
       }*/
+      else{
+        outputCompare = iso; //FF Delay Magicnumber      
+      }
+        //Serial.print("outputCompare: ");
+        //Serial.println(outputCompare);
   }
   
   int meter_compute(unsigned int _interval) //Light Meter Helper Compute

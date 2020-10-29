@@ -222,11 +222,12 @@ camera_state do_state_noDongle (void){
       Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE");
     #endif
     result = STATE_DONGLE;
+    //myDongle.initDS2408();
     if(((myDongle.switch1() == 1) && (myDongle.switch2() == 1))){
       saveISOChange(); //saveISOChange on Dongle insertion if both switches are ON
     }
-    else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
-    //else{
+    //else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
+    else{
       //Serial.println("Transition from no dongle to dongle");
       BlinkISO();
     }
@@ -554,7 +555,6 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
           Serial.print ("EEPROM READ ISO: ");
           Serial.println (savedISO);
       #endif
-      
       prevDongle = nowDongle;
       checkFilmCount();
       //return;
@@ -579,6 +579,7 @@ void blinkAutomode(){
       #endif
       //return;
     }
+    checkFilmCount(); //Needed to Check if Counter is on 8 and 9 or 10 to activate LED again
   }
 }
 
