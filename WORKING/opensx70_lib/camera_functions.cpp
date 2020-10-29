@@ -625,7 +625,7 @@ void Camera::AutoExposureFF(int _myISO)
           FF++;
       }
       //Serial.println(millis());
-      if((millis() - flashExposureStartTime) >= 8){ //Flash Exposure Time can vary depending on scene reflectivity, ambient light and focus (but never longer than FT)
+      if((millis() - flashExposureStartTime) >= 33){ //Flash Exposure Time can vary depending on scene reflectivity, ambient light and focus (but never longer than FT)
             break;
       }
   }
