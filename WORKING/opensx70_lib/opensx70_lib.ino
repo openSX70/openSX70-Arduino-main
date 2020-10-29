@@ -316,7 +316,7 @@ camera_state do_state_flashBar (void){
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
   {
     //openSX70.FlashBAR();
-    openSX70.AutoExposureFF(activeISO, false);
+    openSX70.AutoExposureFF(activeISO);
     sw_S1.Reset();
     checkFilmCount();
   }
@@ -324,7 +324,7 @@ camera_state do_state_flashBar (void){
   {
     switch2Function(3); //Switch Two Function in Flash Mode
     //openSX70.FlashBAR();
-    openSX70.AutoExposureFF(activeISO, false);
+    openSX70.AutoExposureFF(activeISO);
     sw_S1.Reset();
     checkFilmCount(); 
   } 
