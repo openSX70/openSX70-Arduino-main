@@ -48,7 +48,7 @@ byte uDongle::Read_DS2408_PIO(int slot)
   byte _Selector = B0000;
   //Serial.print ("readDevice = ");
   //Serial.println (readDevice, HEX);
-   pinMode(_Pin, INPUT_PULLUP); //changed from INPUT_PULLUP 27_04
+  pinMode(_Pin, INPUT_PULLUP); //changed from INPUT_PULLUP 27_04
   if (digitalRead(_Pin) == LOW)   //////////////////////////////////////////////////////////// CASE FLASH
   {
     return 100; // FLASH
