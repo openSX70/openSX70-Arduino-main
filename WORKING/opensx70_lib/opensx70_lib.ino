@@ -748,7 +748,7 @@ void normalOperation(){
       //   *  MXSHOTS >= 1
     sw_S1.Update();
   }
-  prev_selector = selector; //prevents green blink after ISO change
+  //prev_selector = selector; //prevents green blink after ISO change
 }
 
 void saveISOChange() {
