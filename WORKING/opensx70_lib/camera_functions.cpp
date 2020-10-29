@@ -569,24 +569,20 @@ void Camera::AutoExposureFF(int _myISO)
     Serial.println(_myISO);
   #endif
   int FD_MN = 0;  //FlashDelay Magicnumber
+  int FE_MN = 0;    //FlashExposure Magicnumber
   if(_myISO == ISO_SX70){
      FD_MN = FD100;  
+     FE_MN = FE100;  
   }
   else if(_myISO == ISO_600){
     FD_MN = FD600;
+    FE_MN = FE600;
   }
   meter_set_iso(FD_MN);
   #if FFDEBUG
     Serial.print("FlashDelay Magicnumber: ");
     Serial.println(FD_MN);
   #endif
-  int FE_MN = 0;    //FlashExposure Magicnumber
-  if(_myISO == ISO_SX70){
-     FE_MN = FE100;  
-  }
-  else if(_myISO == ISO_600){
-    FE_MN = FE600;
-  }
   #if FFDEBUG
     Serial.print("FlashExposureTime Magicnumber: ");
     Serial.println(FE_MN);
