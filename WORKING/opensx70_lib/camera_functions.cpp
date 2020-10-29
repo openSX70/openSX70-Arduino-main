@@ -538,23 +538,19 @@ void Camera::AutoExposure(int _myISO, bool _mEXP)
   return; //Added 26.10.
 }
 
-void Camera::AutoExposureFF(int _myISO, bool _mEXP)
+void Camera::AutoExposureFF(int _myISO)
 {
   Camera::ExposureStart();
-  if(_mEXP == false){
-    currentPicture++; 
-    WritePicture(currentPicture);
-    #if SIMPLEDEBUG
-        Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
-        Serial.print(_myISO);
-        Serial.print(", current Picture: ");
-        Serial.println(currentPicture);
-    #endif
-  }
-  if(multipleExposureMode == false){
-    Camera::shutterCLOSE();
-    Camera::mirrorUP();   
-  }
+  currentPicture++; 
+  WritePicture(currentPicture);
+  #if SIMPLEDEBUG
+      Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
+      Serial.print(_myISO);
+      Serial.print(", current Picture: ");
+      Serial.println(currentPicture);
+  #endif
+  Camera::shutterCLOSE();
+  Camera::mirrorUP();   
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
      #if BASICDEBUG
@@ -657,7 +653,7 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   Serial.print("FF Status: ");
   Serial.println(FF);
   #endif
-  Camera::ExposureFinish(_mEXP);
+  Camera::ExposureFinish(false);
 
   #if LMDEBUG
     unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug

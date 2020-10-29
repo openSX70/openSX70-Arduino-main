@@ -27,7 +27,7 @@
       void Blink (unsigned int interval, int timer, int PinDongle, int PinPCB, byte type);
       void HighSpeedPWM ();
       void AutoExposure(int _myISO, bool mEXP);
-      void AutoExposureFF(int _myISO, bool mEXP);
+      void AutoExposureFF(int _myISO);
       void ExposureStart();
       void ExposureFinish(bool mEXP);
       void ManualExposure(int _selector, bool mEXP);
