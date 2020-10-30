@@ -541,8 +541,6 @@ void Camera::AutoExposure(int _myISO, bool _mEXP)
 void Camera::AutoExposureFF(int _myISO)
 {
   Camera::ExposureStart();
-  currentPicture++; 
-  WritePicture(currentPicture);
   #if SIMPLEDEBUG
       Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
       Serial.print(_myISO);
@@ -562,8 +560,9 @@ void Camera::AutoExposureFF(int _myISO)
   #if FFDEBUG
     Serial.println("SOL2 255");
   #endif
+  Camera::HighSpeedPWM();
   analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
-  delay(YDelay);              //AT Yd and POWERS OFF AT FF
+  delay(YDelay);           //AT Yd and POWERS OFF AT FF
   #if FFDEBUG
     Serial.print("_myISO: ");
     Serial.println(_myISO);
@@ -583,20 +582,27 @@ void Camera::AutoExposureFF(int _myISO)
     Serial.print("FlashDelay Magicnumber: ");
     Serial.println(FD_MN);
   #endif
+  /*
   #if FFDEBUG
     Serial.print("FlashExposureTime Magicnumber: ");
     Serial.println(FE_MN);
   #endif
-  int FFState = 0;   //FF Status
+  */
+  //int FFState = 0;   //FF Status
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
   uint32_t integrationStartTime = millis();
-  Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
+  analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
+  #if FFDEBUG
+    Serial.println("SOL2: 130 - Powersave");
+  #endif   
   meter_init();
   meter_integrate();
+  Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   //Start FlashDelay  
   while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
+    /*
     if((millis() - integrationStartTime)>=15 && FF == 0){
         FFState++;                      //Increment the FillFlash State
         analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
@@ -604,6 +610,7 @@ void Camera::AutoExposureFF(int _myISO)
           Serial.println("SOL2: 130 - Powersave");
         #endif
     }
+    */
     //Serial.println(millis());
     if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
       break;
@@ -659,6 +666,8 @@ void Camera::AutoExposureFF(int _myISO)
     Serial.print("ExposureTime on Automode + FF: ");
     Serial.println(exposureTime);
   #endif
+  currentPicture++; 
+  WritePicture(currentPicture);
   return; //Added 26.10.
 }
 
