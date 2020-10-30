@@ -569,14 +569,14 @@ void Camera::AutoExposureFF(int _myISO)
     Serial.println(_myISO);
   #endif
   int FD_MN = 0;  //FlashDelay Magicnumber
-  int FE_MN = 0;    //FlashExposure Magicnumber
+  //int FE_MN = 0;    //FlashExposure Magicnumber
   if(_myISO == ISO_SX70){
      FD_MN = FD100;  
-     FE_MN = FE100;  
+     //FE_MN = FE100;  
   }
   else if(_myISO == ISO_600){
     FD_MN = FD600;
-    FE_MN = FE600;
+    //FE_MN = FE600;
   }
   meter_set_iso(FD_MN);
   #if FFDEBUG
@@ -614,28 +614,31 @@ void Camera::AutoExposureFF(int _myISO)
     Serial.println("ms Flash Delay Time, Flash fired!");
   #endif
   digitalWrite(PIN_FF, HIGH);  //FireFlash
-  unsigned long flashExposureStartTime = millis();
-  delay(25); //Do FlashExposure minimum 25ms
+  //unsigned long flashExposureStartTime = millis();
+  delay(2); //Do FlashExposure minimum 25ms
+  /*
   meter_set_iso(FE_MN); //1.3 Times 1/3 Automode Magicnumber(ST-2)
   meter_init();
   meter_integrate();
   while (meter_update() == false){ //Do FlashExposure Integrattion (25 to 33mms);
-       if(FF == 1){ //Shutter at Full open (f/8.16)
-          //digitalWrite(PIN_FF, HIGH); //FF Flash 25 to 33mms
-          FF++;
-      }
-      //Serial.println(millis());
-      if((millis() - flashExposureStartTime) >= 33){ //Flash Exposure Time can vary depending on scene reflectivity, ambient light and focus (but never longer than FT)
-            break;
-      }
+    if(FF == 1){ //Shutter at Full open (f/8.16)
+        //digitalWrite(PIN_FF, HIGH); //FF Flash 25 to 33mms
+        FF++;
+    }
+    if((millis() - flashExposureStartTime) >= 33){ //Flash Exposure Time can vary depending on scene reflectivity, ambient light and focus (but never longer than FT)
+          break;
+    }
   }
+  */
   #if FFDEBUG
-      Serial.print((millis() - flashExposureStartTime));
-      Serial.println("ms FlashExposure Integrationtime");
+    Serial.print((millis() - flashExposureStartTime));
+    Serial.println("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
   analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
-  FF++;
+  delay(20);
+
+  //FF++;
   #if FFDEBUG
     Serial.print((millis()-flashExposureStartTime));
     Serial.println("ms EndFlashExposure: FF and SOL off");
