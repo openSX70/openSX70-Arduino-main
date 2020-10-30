@@ -82,16 +82,16 @@
   int meter_compute(unsigned int _interval) //Light Meter Helper Compute
   {
     int _myISO = ReadISO();
-    static unsigned long previousMillis = 0;
+    static uint32_t previousMillis = 0;
     static bool measuring = false;
     //long interval = 200;
-    //unsigned long counter; defined elsewhere
+    //uint32_t counter; defined elsewhere
   
-    //unsigned long PredExp;
-    unsigned long PredExp;
+    //uint32_t PredExp;
+    uint32_t PredExp;
   
-    //  unsigned long currentMillis = millis();
-    //  unsigned long timeMillis;
+    //  uint32_t currentMillis = millis();
+    //  uint32_t timeMillis;
     meter_set_iso(_myISO); //set outputcompare Value for the selected ISO -- where the Timer is counting Pulses from Lightsensor to
   
     if (!measuring)
@@ -102,10 +102,10 @@
     }
     else
     {
-      unsigned long myMillis = millis() - previousMillis;
+      uint32_t myMillis = millis() - previousMillis;
       if (myMillis  >= _interval )
       {
-        unsigned long counter = TCNT1; //Timer count Value
+        uint32_t counter = TCNT1; //Timer count Value
         measuring = false;
         PredExp = round((((float)myMillis) / ((float) counter)) * (float)outputCompare);
         PredExp = PredExp + ShutterConstant;
@@ -129,9 +129,9 @@
         Serial.print("Lightmeter Helper compute: Uses this ISO for metering: ");
         Serial.println(_myISO);
       #endif*/
-      static unsigned long previousMillis = 0;
+      static uint32_t previousMillis = 0;
       static bool measuring = false;
-      unsigned long PredExp;
+      uint32_t PredExp;
       meter_set_iso(_myISO); //set outputcompare Value for the selected ISO -- the Timer is counting Pulses from Lightsensor to this outputcompare Value
     
       if (!measuring)
@@ -142,10 +142,10 @@
       }
       else
       {
-        unsigned long myMillis = millis() - previousMillis;
+        uint32_t myMillis = millis() - previousMillis;
         if (myMillis  >= _interval )
         {
-          unsigned long counter = TCNT1; //Timer count Value
+          uint32_t counter = TCNT1; //Timer count Value
           measuring = false;
           PredExp = round((((float)myMillis) / ((float) counter)) * (float)outputCompare);
           #if LMHELPERDEBUG

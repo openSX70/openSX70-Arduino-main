@@ -207,16 +207,16 @@ void meter_led(byte _selector, byte _type)
 int meter_compute(unsigned int _interval) /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 {
   int _myISO = ReadISO();
-  static unsigned long previousMillis = 0;
+  static uint32_t previousMillis = 0;
   static bool measuring = false;
   //long interval = 200;
-  //unsigned long counter; defined elsewhere
+  //uint32_t counter; defined elsewhere
 
-  //unsigned long PredExp;
+  //uint32_t PredExp;
   float PredExp;
 
-  //  unsigned long currentMillis = millis();
-  //  unsigned long timeMillis;
+  //  uint32_t currentMillis = millis();
+  //  uint32_t timeMillis;
   meter_set_iso(_myISO);
 
   if (!measuring)
@@ -228,11 +228,11 @@ int meter_compute(unsigned int _interval) //////////////////////////////////////
   }
   else
   {
-    unsigned long myMillis = millis() - previousMillis;
+    uint32_t myMillis = millis() - previousMillis;
 
     if (myMillis  >= _interval )
     {
-      unsigned long counter = TCNT1;
+      uint32_t counter = TCNT1;
       measuring = false;
       PredExp = (((float)myMillis) / ((float) counter)) * (float)outputCompare;
 

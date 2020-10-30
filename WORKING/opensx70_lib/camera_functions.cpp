@@ -318,9 +318,9 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   // this is a test function to do the progressing blinking of the LED using my blink function
   // it last exactly 10 seconds (2500x4) and I could not accomplish this with the delay()
   // everytime the led (in pin 5) blinks faster 1000, 700, 400, and 100.
-  //unsigned long startTimer = millis();
+  //uint32_t startTimer = millis();
   //*******************************************************
-  unsigned long steps = (time * 1000) / 4;
+  uint32_t steps = (time * 1000) / 4;
   // DS2408 and DONGLE LED BLINK
   #if SONAR
     S1F_Unfocus(); //Camera Unfocus and start Focus again an almost end of the SelfTimer
@@ -360,11 +360,11 @@ void Camera::Blink(unsigned int interval, int timer, int Pin, byte type)
 {
   int ledState = LOW;             // ledState used to set the LED
   pinMode(Pin, OUTPUT);
-  unsigned long previousMillis = 0;        // will store last time LED was updated
-  unsigned long currentMillisTimer = millis();
+  uint32_t previousMillis = 0;        // will store last time LED was updated
+  uint32_t currentMillisTimer = millis();
   while (millis() < (currentMillisTimer + timer))
   {
-    unsigned long currentMillis = millis();
+    uint32_t currentMillis = millis();
     if (currentMillis - previousMillis >= interval) {
       // save the last time you blinked the LED
       previousMillis = currentMillis;
@@ -391,11 +391,11 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
   int ledState = LOW;             // ledState used to set the LED
   pinMode(PinDongle, OUTPUT);
   pinMode(PinPCB, OUTPUT);
-  unsigned long previousMillis = 0;        // will store last time LED was updated
-  unsigned long currentMillisTimer = millis();
+  uint32_t previousMillis = 0;        // will store last time LED was updated
+  uint32_t currentMillisTimer = millis();
   while (millis() < (currentMillisTimer + timer))
   {
-    unsigned long currentMillis = millis();
+    uint32_t currentMillis = millis();
     if (currentMillis - previousMillis >= interval) {
       // save the last time you blinked the LED
       previousMillis = currentMillis;
@@ -466,7 +466,7 @@ void Camera::ManualExposure(int notusingprobably, bool _mEXP) //ManualExposure
   #endif
   
   Camera::shutterOPEN();
-  unsigned long initialMillis = millis();
+  uint32_t initialMillis = millis();
   while (millis() <= (initialMillis + ShutterSpeedDelay)){
     //Take the Picture
   }
@@ -478,11 +478,11 @@ void Camera::ManualExposure(int notusingprobably, bool _mEXP) //ManualExposure
     Camera::FastFlash ();
   }
   #if LMDEBUG
-    unsigned long shutterCloseTime = millis(); //Shutter Debug
+    uint32_t shutterCloseTime = millis(); //Shutter Debug
   #endif
   Camera::ExposureFinish(_mEXP);
   #if LMDEBUG
-      unsigned long exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
+      uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
       Serial.print("ExposureTime on Manualmode: ");
       Serial.println(exposureTime);
   #endif
@@ -520,18 +520,18 @@ void Camera::AutoExposure(int _myISO, bool _mEXP)
   meter_integrate();
   Camera::shutterOPEN();
   #if LMDEBUG
-    unsigned long shutterOpenTime = millis(); //Shutter Debug
+    uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
   while (meter_update() == false){
   }
   #if LMDEBUG
-    unsigned long shutterCloseTime = millis(); //Shutter Debug
+    uint32_t shutterCloseTime = millis(); //Shutter Debug
   #endif
 
   Camera::ExposureFinish(_mEXP);
 
   #if LMDEBUG
-    unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
+    uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
     Serial.print("ExposureTime on Automode: ");
     Serial.println(exposureTime);
   #endif
@@ -587,18 +587,18 @@ void Camera::AutoExposureFF(int _myISO)
     Serial.print("FlashExposureTime Magicnumber: ");
     Serial.println(FE_MN);
   #endif
+  int FFState = 0;   //FF Status
   #if LMDEBUG
-    unsigned long shutterOpenTime = millis(); //Shutter Debug
+    uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
-  int FF=0;   //FF Status
-  unsigned long integrationStartTime = millis();
+  uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   meter_init();
   meter_integrate();
   //Start FlashDelay  
   while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
     if((millis() - integrationStartTime)>=15 && FF == 0){
-        FF++;
+        FFState++;                      //Increment the FillFlash State
         analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
         #if FFDEBUG
           Serial.println("SOL2: 130 - Powersave");
@@ -614,10 +614,10 @@ void Camera::AutoExposureFF(int _myISO)
     Serial.println("ms Flash Delay Time, Flash fired!");
   #endif
   digitalWrite(PIN_FF, HIGH);  //FireFlash
-  //unsigned long flashExposureStartTime = millis();
-  delay(2); //Do FlashExposure minimum 25ms
+  //uint32_t flashExposureStartTime = millis();
+  delay(2);   //Capture Flash 
   /*
-  meter_set_iso(FE_MN); //1.3 Times 1/3 Automode Magicnumber(ST-2)
+  meter_set_iso(FE_MN); //1.3 Times 1/3 Automode Magicnumber(ST-2) //Do FlashExposure minimum 25ms
   meter_init();
   meter_integrate();
   while (meter_update() == false){ //Do FlashExposure Integrattion (25 to 33mms);
@@ -638,24 +638,24 @@ void Camera::AutoExposureFF(int _myISO)
   analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
   delay(20);
 
-  //FF++;
+  //FFState++;
   #if FFDEBUG
     Serial.print((millis()-flashExposureStartTime));
     Serial.println("ms EndFlashExposure: FF and SOL off");
   #endif
   
   #if LMDEBUG
-    unsigned long shutterCloseTime = millis(); //Shutter Debug
+    uint32_t shutterCloseTime = millis(); //Shutter Debug
   #endif
 
   #if FFDEBUG
   Serial.print("FF Status: ");
-  Serial.println(FF);
+  Serial.println(FFState);
   #endif
   Camera::ExposureFinish(false);
 
   #if LMDEBUG
-    unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
+    uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
     Serial.print("ExposureTime on Automode + FF: ");
     Serial.println(exposureTime);
   #endif
@@ -699,9 +699,9 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   meter_integrate();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   #if LMDEBUG
-    unsigned long shutterOpenTime = millis(); //Shutter Debug
+    uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
-  unsigned long integrationStartTime = millis();
+  uint32_t integrationStartTime = millis();
   int FF=0;
   //analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
   while (meter_update() == false){
@@ -734,7 +734,7 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
       }
   }
   #if LMDEBUG
-    unsigned long shutterCloseTime = millis(); //Shutter Debug
+    uint32_t shutterCloseTime = millis(); //Shutter Debug
   #endif
 
   if((millis()-integrationStartTime)<81){
@@ -758,7 +758,7 @@ void Camera::AutoExposureFF(int _myISO, bool _mEXP)
   Camera::ExposureFinish(_mEXP);
 
   #if LMDEBUG
-    unsigned long exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
+    uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
     Serial.print("ExposureTime on Automode + FF: ");
     Serial.println(exposureTime);
   #endif

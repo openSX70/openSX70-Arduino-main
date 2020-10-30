@@ -2,7 +2,7 @@
 #include "open_SX70.h"
 
 /* 
-  Version 27_10_2020 for Edwin, Meroe, Land, and Sonar-FBW PCBs. Works with TSL237T and TCS3200 sensors.
+  Version for Edwin, Meroe, Land, and Sonar-FBW PCBs. Works with TSL237T and TCS3200 sensors.
   Changed code to be balanced between readablility and efficiency. 
   Main change from previous versions of the code is the implementation of a state machine. This makes each loop more efficient by far.
   For example, rather than checking every possible dongle-based variable when you do not have a dongle in, the no-dongle state will only check
@@ -12,7 +12,6 @@
 
   The sonar code was entirely done by Hannes (Thank you!).
   Merged last Soanr Version with Zanes Version (Greetings Hannes)
-  
 */
 
 ClickButton sw_S1(PIN_S1, S1Logic);
@@ -124,7 +123,6 @@ void setup() {//setup - Inizialize
     Serial.print("currentPicture: ");
     Serial.println(currentPicture);
   #endif
-  
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
@@ -140,7 +138,6 @@ void loop() {
   #endif
   //checkFilmCount();
   //printReadings();
-
 }
 
 camera_state do_state_darkslide (void) {
