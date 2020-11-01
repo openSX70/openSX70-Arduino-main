@@ -644,7 +644,6 @@ void Camera::AutoExposureFF(int _myISO)
   digitalWrite(PIN_FF, LOW);  //Turn FF off
   analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
   delay(15);
-
   //FFState++;
   #if FFDEBUG
     Serial.print((millis()-flashExposureStartTime));

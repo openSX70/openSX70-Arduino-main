@@ -198,7 +198,10 @@ camera_state do_state_darkslide (void) {
 camera_state do_state_noDongle (void){
   camera_state result = STATE_NODONGLE;
   savedISO = ReadISO();
-  LightMeterHelper(1); 
+  #if SONAR
+  if ((digitalRead(PIN_S1F) == HIGH)){ //Do only if S1F is pressed
+  #endif
+  LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
     openSX70.AutoExposure(savedISO, false);
@@ -212,7 +215,9 @@ camera_state do_state_noDongle (void){
     sw_S1.Reset();
   }
   #endif
-
+  #if SONAR
+  }
+  #endif
   //Checks for dongle or flashbar insertion
   if (myDongle.checkDongle() > 0){ //((selector <= 15) && (myDongle.checkDongle() > 0))
     #if STATEDEBUG
@@ -235,7 +240,6 @@ camera_state do_state_noDongle (void){
         Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE");
     #endif
   }
-
   return result;
 }
 
