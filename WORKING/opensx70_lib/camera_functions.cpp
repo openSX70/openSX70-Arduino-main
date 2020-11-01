@@ -643,7 +643,7 @@ void Camera::AutoExposureFF(int _myISO)
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
   analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
-  delay(20);
+  delay(15);
 
   //FFState++;
   #if FFDEBUG

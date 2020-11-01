@@ -13,8 +13,8 @@
   
   #define A100 400
   #define A600 150
-  #define FD100 132
-  #define FD600 50
+  #define FD100 116
+  #define FD600 44
   #define FE100 172
   #define FE600 65
   
