@@ -56,11 +56,9 @@
       Serial.println("Stop Timer");
     #endif
     //cli();  // One way to disable the timer, and all interrupts
-  
     TCCR1B &= ~(1<< CS12);  // turn off the clock altogether
     TCCR1B &= ~(1<< CS11);
     TCCR1B &= ~(1<< CS10);
-  
     //TIMSK1 &= ~(1 << OCIE1A); // turn off the timer interrupt
   }
   
@@ -75,8 +73,6 @@
       else{
         outputCompare = iso; //FF Delay Magicnumber      
       }
-        //Serial.print("outputCompare: ");
-        //Serial.println(outputCompare);
   }
   
   int meter_compute(unsigned int _interval) //Light Meter Helper Compute
@@ -125,15 +121,14 @@
     {
       //int _myISO = ReadISO(); //Read ISO from EEPROM
       int _myISO = _activeISO;
-      /*#if LMDEBUG
+      #if LMDEBUG
         Serial.print("Lightmeter Helper compute: Uses this ISO for metering: ");
         Serial.println(_myISO);
-      #endif*/
+      #endif
       static uint32_t previousMillis = 0;
       static bool measuring = false;
       uint32_t PredExp;
       meter_set_iso(_myISO); //set outputcompare Value for the selected ISO -- the Timer is counting Pulses from Lightsensor to this outputcompare Value
-    
       if (!measuring)
       {
         meter_init();
@@ -190,11 +185,11 @@
   // Start a new measure for picture Taking.
   void tcs3200_start_integration(){
     cli(); //Stop all Interrupts
-  //  TIFR1 = (1 << OCF1A) | (1 << TOV1);
+    //  TIFR1 = (1 << OCF1A) | (1 << TOV1);
     TIFR1 = (1 << OCF1A);   // Clear interrupts flags we are using
     OCR1A = outputCompare;  // set compare value given sensivity (Magicnumber)
     TCNT1 = 0;  // clear counter value.
-  //  TIMSK1 = (1 << OCIE1A) | (1 << TOIE1);  // Set interrupt vectors for compare match A with Overflow
+    //  TIMSK1 = (1 << OCIE1A) | (1 << TOIE1);  // Set interrupt vectors for compare match A with Overflow
     TIMSK1 = (1 << OCIE1A);   // Set interrupt vectors for compare match A.
     TIMSK1 |= (1 << TOIE1); //Timer Overflow Interrupt activate
     sei(); //restart Interrupts
@@ -203,39 +198,34 @@
   ISR(TIMER1_COMPA_vect){ // ISR for complete conversion. Should set a flag read by the main loop.
     TIMSK1 = 0;
     integrationFinished = 1;
-    #if ALMDEBUG
+    //#if ALMDEBUG
       //Serial.print("Integration finished CTC ");
       //Serial.print("Counter1 Time: ");
       //Serial.println(TCNT1);
-    #endif
+    //#endif
     // function / flag.
   }
 
-  volatile   unsigned int timer1CounterValue;
+  volatile unsigned int timer1CounterValue;
 
-ISR (TIMER1_CAPT_vect)
+  ISR (TIMER1_CAPT_vect)
   {
-  timer1CounterValue = ICR1;  
-  Serial.println(ICR1);
-  // possibly other stuff
+    timer1CounterValue = ICR1;  
+    //Serial.println(ICR1);
+    // possibly other stuff
   }
 
-  
   ISR(TIMER1_OVF_vect){//Timer overflow
     #if LMDEBUG
       Serial.print("Timer overflow, Timver value before reset: ");
       Serial.print(TCNT1);
       TCNT1 = 0;             //set Counter to 0
-      //digitalWrite(ledPin, digitalRead(ledPin) ^ 1); // LED blink
-      Serial.print(" Timer overflow, Timver value: ");
-      Serial.println(TCNT1);
     #endif
   }
 
   int nearest(int x, int myArray[], int elements, bool sorted) //estimate the correct Slot for the Estimated Exposure Value
   {
     int idx = 0; // by default near first element
-  
     int distance = abs(myArray[idx] - x);
     for (int i = 1; i < elements; i++)
     {
@@ -245,7 +235,9 @@ ISR (TIMER1_CAPT_vect)
         idx = i;
         distance = d;
       }
-      else if (sorted) return idx;
+      else if (sorted){ 
+        return idx;
+      }
     }
     return idx;
   }
@@ -262,7 +254,9 @@ ISR (TIMER1_CAPT_vect)
         idx = i;
         distance = d;
       }
-      else if (sorted) return idx;
+      else if (sorted){
+        return idx;
+      }
     }
     if(predExpVal<(shutterSpeeds[0]-6)){ //Let the LM Led light Blue and blink Red or light red and blink blue as a warning for Exposure Values out of possible Shutter Speeds 17-3=14
       /*Serial.print("predictedValue is smaller than smallest Shutterspeed");
