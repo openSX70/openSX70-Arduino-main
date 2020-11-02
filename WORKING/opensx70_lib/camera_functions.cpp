@@ -559,7 +559,9 @@ void Camera::AutoExposure(int _myISO)
 
 void Camera::AutoExposureFF(int _myISO)
 {
+  #if SONAR
   Camera::ExposureStart();
+  #endif
   #if SIMPLEDEBUG
       Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
       Serial.print(_myISO);
@@ -653,6 +655,7 @@ void Camera::AutoExposureFF(int _myISO)
   return; //Added 26.10.
 }
 
+/*
 void Camera::FlashBAR() //FlashBAR
 {
   #if SONAR
@@ -699,6 +702,7 @@ void Camera::FlashBAR() //FlashBAR
   WritePicture(currentPicture);
   return;
 }
+*/
 
 void Camera::ShutterB()
 {
