@@ -489,6 +489,7 @@ void Camera::ManualExposure(int notusingprobably, bool _mEXP) //ManualExposure
   return; //Added 26.10.
 }
 
+pinMode(_Pin, INPUT_PULLUP); // GND
 void Camera::AutoExposure(int _myISO, bool _mEXP)
 {
   Camera::ExposureStart();

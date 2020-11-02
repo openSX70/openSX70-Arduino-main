@@ -11,8 +11,8 @@
 #ifndef OPENSX70_TCS3200_H
   #define OPENSX70_TCS3200_H
   
-  #define A100 347
-  #define A600 130
+  #define A100 400
+  #define A600 150
   
   /* These functions are called by the main loop.
    * They provide uniform handling for whatever light sensor is used on a specific board.
