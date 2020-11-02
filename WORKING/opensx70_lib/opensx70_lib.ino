@@ -395,7 +395,6 @@ camera_state do_state_multi_exp (void){
       openSX70.multipleExposureLastClick();
       checkFilmCount();
       multipleExposureCounter = 0;
-      multipleExposureMode = false;
       result = STATE_DONGLE;
 
       #if STATEDEBUG
