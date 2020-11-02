@@ -358,6 +358,7 @@ camera_state do_state_multi_exp (void){
     if(switch1 == 1){ //Why Switch1 == true?!    This is for checking if we are still taking mexp pics
       if(mEXPFirstRun){
         beginExposure();
+        mEXPFirstRun = false;
       }
       if(switch2 == 1){
         switch2Function(0);
