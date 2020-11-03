@@ -4,16 +4,17 @@
   //------------DEBUG OPTIONS---------------------------------------------
   #define LIGHMETER_HELPER 1
   //LIGHMETER_HELPER 0  NO helper, 1 for VE helper, 2 future dongle helper
-  #define DEBUG 1
-  #define SIMPLEDEBUG 0//Simple Debug On 1 - Off 0
-  #define ADVANCEDEBUG 0 //Simple Debug On 1 - Off 0
-  #define BASICDEBUG 0 // Debug of Basic Camera Functions
-  #define MXDEBUG 0 // Multiple Exposure Debug
-  #define LMDEBUG 0 //Lightmeter Debug
-  #define LMHELPERDEBUG 0 //Lightmeter Debug
-  #define ROTARYDEBUG 0 //Rotaryswitch on Dongle Debug
-  #define STATEDEBUG 0 //Debug state transitions
-  #define FOCUSDEBUG 0 //Focus Debug on Sonar
+  #define DEBUG 0
+  #define SIMPLEDEBUG 0     //Simple Debug On 1 - Off 0
+  #define ADVANCEDEBUG 0    //Simple Debug On 1 - Off 0
+  #define BASICDEBUG 0      // Debug of Basic Camera Functions
+  #define MXDEBUG 0         // Multiple Exposure Debug
+  #define LMDEBUG 0         //Lightmeter Debug
+  #define LMHELPERDEBUG 0   //Lightmeter Debug
+  #define ROTARYDEBUG 0     //Rotaryswitch on Dongle Debug
+  #define STATEDEBUG 0      //Debug state transitions
+  #define FOCUSDEBUG 0      //Focus Debug on Sonar
+  #define FFDEBUG 0         //AutoexposureFillFlash Debug
   //----------------------END DEBUG OPTIONS------------------------------
   //----------------------CAMERA PCB OPTIONS SELECTION---------------------------
   //#define TSL237T
@@ -21,9 +22,9 @@
   #define TCS3200
   //S1Logic LOW = Alphas, Meroë, Edwin
   //#define S1Logic HIGH //= Sonar 
-  #define S1Logic LOW
-  #define ALPHA 1
-  #define SONAR 0
+  #define S1Logic HIGH
+  #define ALPHA 0
+  #define SONAR 1
   #define ORIGAMI 0
   #define ORIGAMIV1 0 //V1 Version of Origami with inverted Rotaryswitch
   #define UDONGLE 1
