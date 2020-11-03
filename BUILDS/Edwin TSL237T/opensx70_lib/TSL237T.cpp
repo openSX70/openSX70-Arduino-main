@@ -6,8 +6,8 @@
   uint16_t outputCompare;
   const uint8_t PIN_OE = 9;
   long counter = 0;
-  unsigned long startIntTime = 0;
-  unsigned long stopIntTime = 0;
+  uint32_t startIntTime = 0;
+  uint32_t stopIntTime = 0;
   
   void meter_init() {
     lmTimer_init();
@@ -117,9 +117,9 @@
       //Serial.print("Meter Compute: Uses this ISO for metering: ");
       //Serial.println(_myISO);
     #endif
-    static unsigned long previousMillis = 0;
+    static uint32_t previousMillis = 0;
     static bool measuring = false;
-    unsigned long PredExp;
+    uint32_t PredExp;
     meter_set_iso(_activeISO); //Set the correct compare Table for the set ISO
   
     if (!measuring) //Initialize Measuring
@@ -130,7 +130,7 @@
     }
     else
     {
-      unsigned long myMillis = millis() - previousMillis;
+      uint32_t myMillis = millis() - previousMillis;
       if (myMillis  >= _interval)
       {
         if(counter==-1){

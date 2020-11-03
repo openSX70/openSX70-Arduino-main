@@ -22,13 +22,13 @@
   
   // initialise Timer 1 for light sensor integration.
   void tcs3200_init(){
+    integrationFinished = 0; //not sure if needed
     //TCS3200_S0_Pin = HIGH(3.3V) Jumper on PCB
     //TCS3200_S1_Pin = On Pin 9 ATMEGA
     //TCS3200_S2_Pin = HIGH(3.3V) Jumper on PCB
     //TCS3200_S3_Pin = On Pin 6 ATMEGA
     //TCS3200_OE_Pin = LOW(GND) on PCB
-
-    #if SONAR
+    
     //pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
     //digitalWrite(PIN_OE, LOW);
     pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
@@ -40,21 +40,8 @@
     //S2 & S0 should be high can be modified via jumper in PCB 
     //digitalWrite(S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
     //digitalWrite(S3_Pin, LOW); //filter LOW = clear | HIGH = green
-    #endif
-
-    #if ALPHA
-    pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
-    pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
-    pinMode(TCS3200_S3_Pin, OUTPUT); //Photodiode type selection input
-    digitalWrite(PIN_OE, LOW);
-      //S2 (Photodiode type selection pin) & S0 (Output frequency scaling selection pin) should be high,
-      // both can be modified via jumper in PCB 
-    digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
-    digitalWrite(TCS3200_S3_Pin, LOW); //filter LOW = clear | HIGH = green
-    #endif
   
     cli(); //Stop all Interupts
-  
     TIFR1 = (1 << ICF1) | (1 << OCF1B) | (1 << OCF1A) | (1 << TOV1);   // Clear all interrupts flags
     // Set timer 1(16 Bit) for normal operation, clocked by rising edge on T1 (port D5 / pin 5)
     TCCR1A = 0; //(Counter1 Control Register A)
@@ -69,11 +56,9 @@
       Serial.println("Stop Timer");
     #endif
     //cli();  // One way to disable the timer, and all interrupts
-  
     TCCR1B &= ~(1<< CS12);  // turn off the clock altogether
     TCCR1B &= ~(1<< CS11);
     TCCR1B &= ~(1<< CS10);
-  
     //TIMSK1 &= ~(1 << OCIE1A); // turn off the timer interrupt
   }
   
@@ -85,21 +70,24 @@
       }/* else if (iso == ISO_600BW){
         outputCompare = A400;
       }*/
+      else{
+        outputCompare = iso; //FF Delay Magicnumber      
+      }
   }
   
   int meter_compute(unsigned int _interval) //Light Meter Helper Compute
   {
     int _myISO = ReadISO();
-    static unsigned long previousMillis = 0;
+    static uint32_t previousMillis = 0;
     static bool measuring = false;
     //long interval = 200;
-    //unsigned long counter; defined elsewhere
+    //uint32_t counter; defined elsewhere
   
-    //unsigned long PredExp;
-    unsigned long PredExp;
+    //uint32_t PredExp;
+    uint32_t PredExp;
   
-    //  unsigned long currentMillis = millis();
-    //  unsigned long timeMillis;
+    //  uint32_t currentMillis = millis();
+    //  uint32_t timeMillis;
     meter_set_iso(_myISO); //set outputcompare Value for the selected ISO -- where the Timer is counting Pulses from Lightsensor to
   
     if (!measuring)
@@ -110,10 +98,10 @@
     }
     else
     {
-      unsigned long myMillis = millis() - previousMillis;
+      uint32_t myMillis = millis() - previousMillis;
       if (myMillis  >= _interval )
       {
-        unsigned long counter = TCNT1; //Timer count Value
+        uint32_t counter = TCNT1; //Timer count Value
         measuring = false;
         PredExp = round((((float)myMillis) / ((float) counter)) * (float)outputCompare);
         PredExp = PredExp + ShutterConstant;
@@ -133,15 +121,14 @@
     {
       //int _myISO = ReadISO(); //Read ISO from EEPROM
       int _myISO = _activeISO;
-      /*#if LMDEBUG
+      #if LMDEBUG
         Serial.print("Lightmeter Helper compute: Uses this ISO for metering: ");
         Serial.println(_myISO);
-      #endif*/
-      static unsigned long previousMillis = 0;
+      #endif
+      static uint32_t previousMillis = 0;
       static bool measuring = false;
-      unsigned long PredExp;
+      uint32_t PredExp;
       meter_set_iso(_myISO); //set outputcompare Value for the selected ISO -- the Timer is counting Pulses from Lightsensor to this outputcompare Value
-    
       if (!measuring)
       {
         meter_init();
@@ -150,13 +137,13 @@
       }
       else
       {
-        unsigned long myMillis = millis() - previousMillis;
+        uint32_t myMillis = millis() - previousMillis;
         if (myMillis  >= _interval )
         {
-          unsigned long counter = TCNT1; //Timer count Value
+          uint32_t counter = TCNT1; //Timer count Value
           measuring = false;
           PredExp = round((((float)myMillis) / ((float) counter)) * (float)outputCompare);
-          #if LMDEBUG
+          #if LMHELPERDEBUG
             Serial.print("pr mil: ");
             Serial.print(previousMillis);
             Serial.print(" mil: ");
@@ -169,9 +156,6 @@
             Serial.print(outputCompare);
             Serial.print(" PredExp: ");
             Serial.println(PredExp);
-          #endif
-          #if ALMDEBUG
-            //Serial.println(counter);
           #endif
           PredExp = PredExp + ShutterConstant;
           if(PredExp>44250){ //bigger then a reliable Value | doesnt know if its needed
@@ -201,11 +185,11 @@
   // Start a new measure for picture Taking.
   void tcs3200_start_integration(){
     cli(); //Stop all Interrupts
-  //  TIFR1 = (1 << OCF1A) | (1 << TOV1);
+    //  TIFR1 = (1 << OCF1A) | (1 << TOV1);
     TIFR1 = (1 << OCF1A);   // Clear interrupts flags we are using
     OCR1A = outputCompare;  // set compare value given sensivity (Magicnumber)
     TCNT1 = 0;  // clear counter value.
-  //  TIMSK1 = (1 << OCIE1A) | (1 << TOIE1);  // Set interrupt vectors for compare match A with Overflow
+    //  TIMSK1 = (1 << OCIE1A) | (1 << TOIE1);  // Set interrupt vectors for compare match A with Overflow
     TIMSK1 = (1 << OCIE1A);   // Set interrupt vectors for compare match A.
     TIMSK1 |= (1 << TOIE1); //Timer Overflow Interrupt activate
     sei(); //restart Interrupts
@@ -214,39 +198,34 @@
   ISR(TIMER1_COMPA_vect){ // ISR for complete conversion. Should set a flag read by the main loop.
     TIMSK1 = 0;
     integrationFinished = 1;
-    #if ALMDEBUG
+    //#if ALMDEBUG
       //Serial.print("Integration finished CTC ");
       //Serial.print("Counter1 Time: ");
       //Serial.println(TCNT1);
-    #endif
+    //#endif
     // function / flag.
   }
 
-  volatile   unsigned int timer1CounterValue;
+  volatile unsigned int timer1CounterValue;
 
-ISR (TIMER1_CAPT_vect)
+  ISR (TIMER1_CAPT_vect)
   {
-  timer1CounterValue = ICR1;  
-  Serial.println(ICR1);
-  // possibly other stuff
+    timer1CounterValue = ICR1;  
+    //Serial.println(ICR1);
+    // possibly other stuff
   }
 
-  
   ISR(TIMER1_OVF_vect){//Timer overflow
     #if LMDEBUG
       Serial.print("Timer overflow, Timver value before reset: ");
       Serial.print(TCNT1);
       TCNT1 = 0;             //set Counter to 0
-      //digitalWrite(ledPin, digitalRead(ledPin) ^ 1); // LED blink
-      Serial.print(" Timer overflow, Timver value: ");
-      Serial.println(TCNT1);
     #endif
   }
 
   int nearest(int x, int myArray[], int elements, bool sorted) //estimate the correct Slot for the Estimated Exposure Value
   {
     int idx = 0; // by default near first element
-  
     int distance = abs(myArray[idx] - x);
     for (int i = 1; i < elements; i++)
     {
@@ -256,7 +235,9 @@ ISR (TIMER1_CAPT_vect)
         idx = i;
         distance = d;
       }
-      else if (sorted) return idx;
+      else if (sorted){ 
+        return idx;
+      }
     }
     return idx;
   }
@@ -273,7 +254,9 @@ ISR (TIMER1_CAPT_vect)
         idx = i;
         distance = d;
       }
-      else if (sorted) return idx;
+      else if (sorted){
+        return idx;
+      }
     }
     if(predExpVal<(shutterSpeeds[0]-6)){ //Let the LM Led light Blue and blink Red or light red and blink blue as a warning for Exposure Values out of possible Shutter Speeds 17-3=14
       /*Serial.print("predictedValue is smaller than smallest Shutterspeed");
@@ -379,7 +362,7 @@ ISR (TIMER1_CAPT_vect)
     }
     else if (_type == 1) //Automode
     {
-      #if LMDEBUG
+      #if LMHELPERDEBUG
       Serial.print ("LM Helper PredictedExposure on Auto Mode , PredictedExposure: ");
       Serial.println (PredictedExposure);
       #endif
