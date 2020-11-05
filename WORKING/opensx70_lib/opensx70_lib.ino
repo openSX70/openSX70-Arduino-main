@@ -825,8 +825,7 @@ void saveISOChange() {
 }
 
 void LightMeterHelper(byte ExposureType){
-    int helperstatus = openSX70.getLIGHTMETER_HELPER();
-    if(helperstatus==true){
+    if(openSX70.getLIGHTMETER_HELPER()){
       //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
         meter_led(selector, ExposureType);
         metercount=0;
