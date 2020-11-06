@@ -679,10 +679,6 @@ void switch2Function(int mode) {
     #endif
     delay(1000);
   }
-  //else {
-    //return;
-  //}
-  //return;
 }
 
 void checkFilmCount(){
@@ -762,28 +758,6 @@ void normalOperation(){
       //   *  MXSHOTS >= 1
     sw_S1.Update();
   }
-  //prev_selector = selector; //prevents green blink after ISO change
-}
-
-void LightMeterHelper(byte ExposureType){
-    int helperstatus = openSX70.getLIGHTMETER_HELPER();
-    if(helperstatus==true){
-      //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
-        meter_led(selector, ExposureType);
-        metercount=0;
-        /*#if ADVANCEDEBUG
-          Serial.print("Lightmeter Helper Status:");
-          Serial.print(helperstatus);
-          Serial.print(", ExposureType:  ");
-          Serial.print(ExposureType);
-          Serial.print(", Selector: ");
-          Serial.println(selector);
-        #endif*/
-      //}
-      //else{
-      //  metercount++;
-      //}
-    }
 }
 
 void saveISOChange() {
@@ -825,21 +799,8 @@ void saveISOChange() {
 }
 
 void LightMeterHelper(byte ExposureType){
-    if(openSX70.getLIGHTMETER_HELPER()){
-      //if(metercount==2){ //Lightmeter only on every 3th Cycle of Loop
-        meter_led(selector, ExposureType);
-        metercount=0;
-        /*#if ADVANCEDEBUG
-          Serial.print("Lightmeter Helper Status:");
-          Serial.print(helperstatus);
-          Serial.print(", ExposureType:  ");
-          Serial.print(ExposureType);
-          Serial.print(", Selector: ");
-          Serial.println(selector);
-        #endif*/
-      //}
-      //else{
-      //  metercount++;
-      //}
-    }
+  if(openSX70.getLIGHTMETER_HELPER()){
+    meter_led(selector, ExposureType);
+    metercount=0;
+  }
 }
