@@ -87,13 +87,11 @@ void Camera::S1F_Focus(){
 }
 
 int Camera::S1F_Focus1(){
-    //int i=0;
     #if FOCUSDEBUG
       Serial.println ("Focus on");
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
-    //Uncommented that on 26.10.
     int i = 0;
     while(getGTD()!=1){
       i++;
@@ -105,7 +103,6 @@ int Camera::S1F_Focus1(){
         return 0;
       } 
     }
-    //26.10.
     return 1;
 }
 
@@ -377,17 +374,17 @@ void Camera::Blink(unsigned int interval, int timer, int Pin, byte type){
       // save the last time you blinked the LED
       previousMillis = currentMillis;
       // if the LED is off turn it on and vice-versa:
-      if (ledState == 0) {
+      if (ledState == 0){
         ledState = 1;
-      } else {
+      } 
+      else{
         ledState = 0;
       }
       // set the LED with the ledState of the variable:
-      if (type == 1) {
-        //        Serial.println ("TYPE 1 - Blink on PCB");
+      if (type == 1){
         digitalWrite (Pin, ledState);
-      }  else if (type == 2) {
-        //        Serial.println ("TYPE 2 - Blink on DONGLE");
+      } 
+      else if (type == 2){
         _dongle->Write_DS2408_PIO (Pin, ledState);
       }
     }
