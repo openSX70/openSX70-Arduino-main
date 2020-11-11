@@ -291,17 +291,18 @@
       return;
     }
     int PredictedExposure;
+    int activeISO;
     //original int PredictedExposure = meter_compute(200);
     if((ShutterSpeed[_selector]) == AUTO600)
     {
-      int activeISO = ISO_600;
+      activeISO = ISO_600;
     }
     else if((ShutterSpeed[_selector] == AUTO100))
     {
-      int activeISO = ISO_SX70;
+      activeISO = ISO_SX70;
     }
     else{
-      int activeISO = ReadISO(); //read ISO from EEPROM
+      activeISO = ReadISO(); //read ISO from EEPROM
     }
       
     PredictedExposure = meter_compute(200,activeISO); //Calculates the estimated Exposure Value
