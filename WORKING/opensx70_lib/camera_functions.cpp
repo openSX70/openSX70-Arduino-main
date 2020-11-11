@@ -424,7 +424,7 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
 }
 
 
-void Camera::ManualExposure(int notusingprobably, bool _mEXP){
+void Camera::ManualExposure(){
   //changed sonar compile check
   #if SONAR
   Camera::ExposureStart();
@@ -616,7 +616,7 @@ void Camera::AutoExposureFF(int _myISO){
   Serial.print("FF Status: ");
   Serial.println(FFState);
   #endif
-  Camera::ExposureFinish(false);
+  Camera::ExposureFinish();
 
   #if LMDEBUG
     uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
