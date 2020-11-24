@@ -338,3 +338,9 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+
+# Exclude .hex files if compiled inside the "working" subfolder
+WORKING/opensx70_lib/*.hex
+
+#exclude vscode settings
+.vscode
