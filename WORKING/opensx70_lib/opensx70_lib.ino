@@ -221,8 +221,7 @@ camera_state do_state_noDongle (void){
     if(((myDongle.switch1() == 1) && (myDongle.switch2() == 1))){
       saveISOChange();
     }
-    //else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
-    else{
+    else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
       //Serial.println("Transition from no dongle to dongle");
       BlinkISO();
     }
