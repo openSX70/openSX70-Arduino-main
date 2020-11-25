@@ -487,6 +487,70 @@ void Camera::ManualExposure(){
   return; //Added 26.10.
 }
 
+void Camera::VariableManualExposure(int _myISO){
+  //changed sonar compile check
+  #if SONAR
+  Camera::ExposureStart();
+  #endif
+
+  #if SIMPLEDEBUG
+    Serial.print("take single Picture on  Manual Mode");
+    if(_mEXP){
+      Serial.print(", Multiple Exposure on");
+    }
+    Serial.print(", current Picture: ");
+    Serial.println(currentPicture);
+  #endif
+
+  pinMode(PIN_S3, INPUT_PULLUP); // GND
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
+     #if BASICDEBUG
+     Serial.println("waiting for S3 to OPEN");
+     #endif
+  }
+  delay (YDelay);
+
+  int ShutterSpeedDelay = ShutterSpeed[selector]
+  int MinShutterSpeedDelay = (ShutterSpeedDelay - 15);
+  
+  #if ADVANCEDEBUG
+    extern int selector;
+    Serial.print("Manual Exposure Debug: ");
+    Serial.print("ShutterSpeed[");
+    Serial.print(selector);
+    Serial.print("] :");
+    Serial.println(ShutterSpeed[selector]);
+    Serial.print("ShutterConstant:");
+    Serial.println(ShutterConstant);
+    Serial.print("ShutterSpeedDelay:");
+    Serial.println(ShutterSpeedDelay);
+  #endif
+
+  meter_set_iso(_myISO);
+  meter_init();
+  meter_integrate();
+
+  uint32_t initialMillis = millis();
+  Camera::shutterOPEN();
+  delay(MinShutterSpeedDelay)
+  while(meter_update() == false){
+    if(millis() >= (initialMillis + ShutterSpeedDelay)){
+      break;
+    }
+  }
+
+  #if LMDEBUG
+    uint32_t shutterCloseTime = millis(); //Shutter Debug
+  #endif
+  Camera::ExposureFinish();
+  #if LMDEBUG
+      uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
+      Serial.print("ExposureTime on Manualmode: ");
+      Serial.println(exposureTime);
+  #endif
+  return; //Added 26.10.
+}
+
 void Camera::AutoExposure(int _myISO){
   #if SONAR
   Camera::ExposureStart();
