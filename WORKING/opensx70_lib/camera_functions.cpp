@@ -487,8 +487,12 @@ void Camera::ManualExposure(){
   return; //Added 26.10.
 }
 
+/*
+  Might add another argument to this function. May want to change how varied the shutter is 
+  based on the selector. Smaller vs larger ranges.
+*/
 void Camera::VariableManualExposure(int _myISO){
-  //changed sonar compile check
+
   #if SONAR
   Camera::ExposureStart();
   #endif
