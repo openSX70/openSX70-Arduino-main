@@ -130,6 +130,7 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
+  savedISO = ReadISO();
   selector = myDongle.selector();
   #if SONAR
     preFocus();
@@ -190,7 +191,7 @@ camera_state do_state_darkslide (void) {
 
 camera_state do_state_noDongle (void){
   camera_state result = STATE_NODONGLE;
-  savedISO = ReadISO();
+  //savedISO = ReadISO();
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){ //Do only if S1F is pressed
   #endif
@@ -258,7 +259,11 @@ camera_state do_state_dongle (void){
     if(switch2 == 1){
       switch2Function(0); //switch2Function Manual Mode
     }
-    if((selector>=0) && (selector<12)){ //MANUAL SPEEDS  
+
+    if((selector>=0) && (selector<=3)){ //fast manual speeds
+      openSX70.VariableManualExposure(savedISO);
+    }
+    else if((selector>3) && (selector<12)){ //MANUAL SPEEDS  
       openSX70.ManualExposure();
     }
     else if(selector == 12){ //POST
@@ -307,11 +312,9 @@ camera_state do_state_dongle (void){
 
 camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
-  activeISO = ReadISO();
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
   {
-    //openSX70.FlashBAR();
-    openSX70.AutoExposureFF(activeISO);
+    openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount();
   }
@@ -319,8 +322,7 @@ camera_state do_state_flashBar (void){
   if (sw_S1.clicks == 2)
   {
     switch2Function(3); //Switch Two Function in Flash Mode
-    //openSX70.FlashBAR();
-    openSX70.AutoExposureFF(activeISO);
+    openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount(); 
   } 
@@ -362,7 +364,12 @@ camera_state do_state_multi_exp (void){
       if(switch2 == 1){
         switch2Function(0);
       }
-      if((selector>=0) && (selector<12)){ //MANUAL SPEEDS
+
+      if((selector>=0) && (selector<=3)){ //fast manual speeds
+        openSX70.VariableManualExposure(savedISO);
+        multipleExposureCounter++;
+      }
+      else if((selector>3) && (selector<12)){ //MANUAL SPEEDS  
         openSX70.ManualExposure();
         multipleExposureCounter++;
       }
