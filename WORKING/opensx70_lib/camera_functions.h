@@ -31,6 +31,7 @@
       void ExposureStart();
       void ExposureFinish();
       void ManualExposure();
+      void VariableManualExposure(int _myISO);
       void FlashBAR();
       void ShutterB();
       void ShutterT();

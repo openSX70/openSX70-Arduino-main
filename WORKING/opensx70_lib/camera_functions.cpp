@@ -514,7 +514,7 @@ void Camera::VariableManualExposure(int _myISO){
   }
   delay (YDelay);
 
-  int ShutterSpeedDelay = ShutterSpeed[selector]
+  int ShutterSpeedDelay = ShutterSpeed[selector];
   int MinShutterSpeedDelay = (ShutterSpeedDelay - 15);
   
   #if ADVANCEDEBUG
@@ -536,7 +536,7 @@ void Camera::VariableManualExposure(int _myISO){
 
   uint32_t initialMillis = millis();
   Camera::shutterOPEN();
-  delay(MinShutterSpeedDelay)
+  delay(MinShutterSpeedDelay);
   while(meter_update() == false){
     if(millis() >= (initialMillis + ShutterSpeedDelay)){
       break;
