@@ -432,9 +432,6 @@ void Camera::ManualExposure(){
 
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
-    if(_mEXP){
-      Serial.print(", Multiple Exposure on");
-    }
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
@@ -499,9 +496,6 @@ void Camera::VariableManualExposure(int _myISO){
 
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
-    if(_mEXP){
-      Serial.print(", Multiple Exposure on");
-    }
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
