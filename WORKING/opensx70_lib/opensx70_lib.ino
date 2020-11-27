@@ -198,12 +198,14 @@ camera_state do_state_noDongle (void){
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
+    beginExposure();
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
   }
   #if DOUBLECLICK
   if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
     LightMeterHelper(0); 
+    beginExposure();
     delay (10000);
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
@@ -314,6 +316,7 @@ camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
   {
+    beginExposure();
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount();
@@ -321,7 +324,8 @@ camera_state do_state_flashBar (void){
   #if DOUBLECLICK
   if (sw_S1.clicks == 2)
   {
-    switch2Function(3); //Switch Two Function in Flash Mode
+    beginExposure();
+    delay(10000); //Switch Two Function in Flash Mode
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount(); 
