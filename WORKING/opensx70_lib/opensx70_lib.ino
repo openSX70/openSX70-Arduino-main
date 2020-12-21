@@ -341,6 +341,10 @@ camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
 
+  /*
+
+  Don't know how we would implement the meter while in mEXP mode. Would not make sense.
+
   #if SONAR
     if ((digitalRead(PIN_S1F) == HIGH)){
     #endif
@@ -353,6 +357,7 @@ camera_state do_state_multi_exp (void){
     #if SONAR
     }
   #endif
+  */
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
