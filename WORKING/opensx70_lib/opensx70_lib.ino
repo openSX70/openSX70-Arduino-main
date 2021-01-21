@@ -162,29 +162,28 @@ camera_state do_state_darkslide (void) {
       Serial.println(currentPicture);
     #endif
   }
+  
+  if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
+    result = STATE_DONGLE;
+    delay(100);
+    BlinkISO();
+    #if STATEDEBUG
+      Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE");
+    #endif
+  }
+  else if ((selector == 100) && (myDongle.checkDongle() == 0)){
+    result = STATE_FLASHBAR;
+
+    #if STATEDEBUG
+      Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE");
+    #endif
+  }
   else{
-    if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
-      result = STATE_DONGLE;
-      delay(100);
-      BlinkISO();
-      #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE");
-      #endif
-    }
-    else if ((selector == 100) && (myDongle.checkDongle() == 0)){
-      result = STATE_FLASHBAR;
+    result = STATE_NODONGLE;
 
-      #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE");
-      #endif
-    }
-    else{
-      result = STATE_NODONGLE;
-
-      #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE");
-      #endif
-    }
+    #if STATEDEBUG
+      Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE");
+    #endif
   }
   return result;
 }
