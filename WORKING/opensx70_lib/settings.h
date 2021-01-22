@@ -31,7 +31,7 @@
   #define GREEN 6 //DONGLE GREEN LED ADRESS
   #define RED 7   //DONGLE RED LED ADRESS
   #define DOUBLECLICK 0
-  #define SHUTTERDARKSLIDE 1 // makes you press shutter button to eject darkslide. This is to prevent externally powered cameras from firing the darkslide when opening.
+  #define SHUTTERDARKSLIDE 0 // makes you press shutter button to eject darkslide. This is to prevent externally powered cameras from firing the darkslide when opening.
   extern const uint8_t YDelay;
   extern const byte PowerDownDelay; //time it takes to be fully closed
   extern const byte PowerDown; //max 255 = full power/POWERUP mode
