@@ -116,6 +116,7 @@
     return -1;
   }
   
+  /*
   int meter_compute(unsigned int _interval,int _activeISO) //Light Meter Helper Compute uses assigned ISO parameter
     {
       //int _myISO = ReadISO(); //Read ISO from EEPROM
@@ -168,7 +169,17 @@
       }
       return -1; //return -1 for firstrun(nothing computed only initialized)
   }
+  */
   
+  int meter_compute(unsigned int _interval,int _activeISO){
+    int _myISO = _activeISO;
+
+    #if LMDEBUG
+      Serial.print("Lightmeter Helper compute: Uses this ISO for metering: ");
+      Serial.println(_myISO);
+    #endif
+  }
+
   void meter_integrate(){
     tcs3200_start_integration();
   }
