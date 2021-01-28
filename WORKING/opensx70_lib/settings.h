@@ -43,14 +43,18 @@
   #define ISO_600 640
   #define ISO_600BW 400
   #define DEFAULT_ISO ISO_SX70
+  //---------------END ISO VALUES--------------------------------------------
 
+  //---------------METER SETTINGS--------------------------------------------
   // Sets how long each meter measurement is taken in ms
   #define METER_INTERVAL 100 
   // METER_RANGE defines the percentage left and right that is acceptable for the meter to be "accurate"
   #define METER_RANGE 0.2
   // If predicted ms is over this value, warning LED will shine in auto mode
   #define METER_AUTO_WARNING 100
-  //---------------END ISO VALUES--------------------------------------------
+
+  //---------------END METER SETTINGS----------------------------------------
+
   #define EE_ADD_CUR   4    //-> CurrentPicture --> 1-8 "Pack" picture counter
   #define EE_ADD_ADD   30    //-> eeAddress Where to write next
   #define EE_ADD_PIC   13    //-> ActualPicture --> Counter from begining
