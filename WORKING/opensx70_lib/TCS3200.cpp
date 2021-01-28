@@ -1,6 +1,10 @@
 #include "open_sx70.h"
 #if defined (TCS3200)
   volatile bool integrationFinished = 0;
+
+  bool measuring = false;
+  uint32_t startMillis;
+  uint32_t endMillis;
   
   uint16_t outputCompare = A100;
   
@@ -74,6 +78,7 @@
       }
   }
   
+  /*
   int meter_compute(unsigned int _interval) //Light Meter Helper Compute
   {
     int _myISO = ReadISO();
@@ -115,7 +120,7 @@
     }
     return -1;
   }
-  
+  */
   /*
   int meter_compute(unsigned int _interval,int _activeISO) //Light Meter Helper Compute uses assigned ISO parameter
     {
@@ -171,13 +176,37 @@
   }
   */
   
-  int meter_compute(unsigned int _interval,int _activeISO){
+  int meter_compute(int _selector,int _activeISO){
     int _myISO = _activeISO;
 
     #if LMDEBUG
       Serial.print("Lightmeter Helper compute: Uses this ISO for metering: ");
       Serial.println(_myISO);
     #endif
+
+    if !measuring{
+      meter_set_iso(_activeISO);
+      measuring = true;
+      meter_init();
+      startMillis = millis();
+    }
+    else{
+      endMillis = millis;
+      uint32_t timeElapsed =  endMillis - startMillis;
+      uint32_t counter = TCNT1;
+      if((timeElapsed) >= METER_INTERVAL){
+        lmTimer_stop();
+
+        // Finding slope based on
+        float slope = counter/timeElapsed;
+        int pred_milli = round(outputCompare/slope); 
+        if(_selector <= 11){
+          if(abs(ShutterSpeed[_selector] - pred_milli) <= (shutt))
+        }
+        
+      }
+    }
+
   }
 
   void meter_integrate(){
@@ -315,7 +344,7 @@
       activeISO = ReadISO(); //read ISO from EEPROM
     }
       
-    PredictedExposure = meter_compute(200,activeISO); //Calculates the estimated Exposure Value
+    PredictedExposure = meter_compute(_selector,activeISO); //Calculates the estimated Exposure Value
 
     if (PredictedExposure == -1) //-1 occurs on First run of LM
     {
