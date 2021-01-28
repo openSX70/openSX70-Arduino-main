@@ -91,6 +91,12 @@
       measuring = true;
       meter_init();
       startMillis = millis();
+
+      #if LMDEBUG
+        Serial.print("Metering started at: ");
+        Serial.print(startMillis);
+        Serial.println(" ms");
+      #endif
     }
     else{
       endMillis = millis;
@@ -102,6 +108,26 @@
 
         float slope = counter/timeElapsed;
         int pred_milli = round(outputCompare/slope); 
+
+        #if LMDEBUG
+          Serial.print("Metering ended at ");
+          Serial.print(endMillis);
+          Serial.println(" ms");
+
+          Serial.print("Metering time elapsed: ");
+          Serial.print(timeElapsed);
+          Serial.println(" ms");
+
+          Serial.print("Magic number used: ");
+          Serial.println(outputCompare);
+
+          Serial.print("Meter counter ended at ");
+          Serial.println(counter);
+
+          Serial.print("Magic number hit at ");
+          Serial.print(pred_milli);
+          Serial.println(" ms");
+        #endif
 
         // pred_milli is how many ms the meter will take to reach the set 
         // magic number. Every scene should generally have a linear increase
@@ -195,12 +221,10 @@
     int predictedMillis;
     int activeISO;
 
-    if((ShutterSpeed[_selector]) == AUTO600)
-    {
+    if((ShutterSpeed[_selector]) == AUTO600){
       activeISO = ISO_600;
     }
-    else if((ShutterSpeed[_selector] == AUTO100))
-    {
+    else if((ShutterSpeed[_selector] == AUTO100)){
       activeISO = ISO_SX70;
     }
     else{
@@ -216,24 +240,38 @@
     int meterRange = round(ShutterSpeed[_selector] * METER_RANGE);
     int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
 
+    #if LMDEBUG
+      Serial.print("Distance from meter: ");
+      Serial.println(meterDifference);
+    #endif
+
     if(_type ==2){ // Manual mode
       
       // Within range
       if((meterDifference <= (ShutterSpeed[_selector] + meterRange)) && (meterDifference >= (ShutterSpeed[_selector] - meterRange))){
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, HIGH);
+        #if LMDEBUG
+          Serial.println("Selector within meter range");
+        #endif
         return;
       }
       // Lower speed required
       else if((meterDifference < (ShutterSpeed[_selector] - meterRange))){
         digitalWrite(PIN_LED1, LOW);
         digitalWrite(PIN_LED2, HIGH);
+        #if LMDEBUG
+          Serial.println("Selector under meter range");
+        #endif
         return;
       }
       // Higher speed needed
       else{
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, LOW);
+        #if LMDEBUG
+          Serial.println("Selector over meter range");
+        #endif
         return;
       }
     }
@@ -241,10 +279,16 @@
       if(meterDifference >= METER_AUTO_WARNING){ //Low light warning
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, LOW);
+        #if LMDEBUG
+          Serial.println("Auto mode low light warning");
+        #endif
       }
       else{
         digitalWrite(PIN_LED1, LOW);
         digitalWrite(PIN_LED2, HIGH);
+        #if LMDEBUG
+          Serial.println("Auto mode Enough light");
+        #endif
       }
     }
 
