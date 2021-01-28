@@ -86,7 +86,7 @@
       Serial.println(_myISO);
     #endif
 
-    if !measuring{
+    if(measuring == false){
       meter_set_iso(_activeISO);
       measuring = true;
       meter_init();
