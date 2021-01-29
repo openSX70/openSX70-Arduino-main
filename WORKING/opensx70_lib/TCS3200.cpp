@@ -81,35 +81,29 @@
   int meter_compute(byte _selector,int _activeISO){
     int _myISO = _activeISO;
 
-    #if LMDEBUG
-      Serial.print("Lightmeter Helper compute: Uses this ISO for metering: ");
-      Serial.println(_myISO);
-    #endif
-
     if(measuring == false){
       meter_set_iso(_activeISO);
       measuring = true;
       meter_init();
       startMillis = millis();
 
-      #if LMDEBUG
+      #if LMHELPERDEBUG
         Serial.print("Metering started at: ");
         Serial.print(startMillis);
         Serial.println(" ms");
       #endif
     }
     else{
-      endMillis = millis;
+      endMillis = millis();
       uint32_t timeElapsed =  endMillis - startMillis;
       if((timeElapsed) >= METER_INTERVAL){
         uint32_t counter = TCNT1;
-        lmTimer_stop();
         measuring = false;
 
-        float slope = counter/timeElapsed;
-        int pred_milli = round(outputCompare/slope); 
+        float slope = float(counter)/float(timeElapsed);
+        int pred_milli = round(float(outputCompare)/float(slope)); 
 
-        #if LMDEBUG
+        #if LMHELPERDEBUG
           Serial.print("Metering ended at ");
           Serial.print(endMillis);
           Serial.println(" ms");
@@ -127,7 +121,17 @@
           Serial.print("Magic number hit at ");
           Serial.print(pred_milli);
           Serial.println(" ms");
+
+          Serial.print("slope: ");
+          Serial.println(slope);
         #endif
+
+        /*
+        #if LMDEBUG
+          Serial.print("PREDMILLI: ");
+          Serial.println(pred_milli);
+        #endif
+        */
 
         // pred_milli is how many ms the meter will take to reach the set 
         // magic number. Every scene should generally have a linear increase
@@ -167,7 +171,7 @@
   ISR(TIMER1_COMPA_vect){ // ISR for complete conversion. Should set a flag read by the main loop.
     TIMSK1 = 0;
     integrationFinished = 1;
-    //#if ALMDEBUG
+    //#if ALMHELPERDEBUG
       //Serial.print("Integration finished CTC ");
       //Serial.print("Counter1 Time: ");
       //Serial.println(TCNT1);
@@ -185,7 +189,7 @@
   }
 
   ISR(TIMER1_OVF_vect){//Timer overflow
-    #if LMDEBUG
+    #if LMHELPERDEBUG
       Serial.print("Timer overflow, Timver value before reset: ");
       Serial.print(TCNT1);
       TCNT1 = 0;             //set Counter to 0
@@ -240,27 +244,34 @@
     int meterRange = round(ShutterSpeed[_selector] * METER_RANGE);
     int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
 
-    #if LMDEBUG
-      Serial.print("Distance from meter: ");
-      Serial.println(meterDifference);
+
+    #if LMHELPERDEBUG
+      Serial.print("meter range at Selector: ");
+      Serial.print(_selector);
+      Serial.print(" ");
+      Serial.print(ShutterSpeed[_selector]);
+      Serial.print(" is ");
+      Serial.println(meterRange);
+      Serial.print("Predictedmillis: ");
+      Serial.println(predictedMillis);
     #endif
 
     if(_type ==2){ // Manual mode
       
       // Within range
-      if((meterDifference <= (ShutterSpeed[_selector] + meterRange)) && (meterDifference >= (ShutterSpeed[_selector] - meterRange))){
+      if((predictedMillis <= (ShutterSpeed[_selector] + meterRange)) && (predictedMillis >= (ShutterSpeed[_selector] - meterRange))){
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, HIGH);
-        #if LMDEBUG
+        #if LMHELPERDEBUG
           Serial.println("Selector within meter range");
         #endif
         return;
       }
       // Lower speed required
-      else if((meterDifference < (ShutterSpeed[_selector] - meterRange))){
+      else if((predictedMillis < (ShutterSpeed[_selector] - meterRange))){
         digitalWrite(PIN_LED1, LOW);
         digitalWrite(PIN_LED2, HIGH);
-        #if LMDEBUG
+        #if LMHELPERDEBUG
           Serial.println("Selector under meter range");
         #endif
         return;
@@ -269,24 +280,24 @@
       else{
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, LOW);
-        #if LMDEBUG
+        #if LMHELPERDEBUG
           Serial.println("Selector over meter range");
         #endif
         return;
       }
     }
     else if(_type == 1){ // Automode
-      if(meterDifference >= METER_AUTO_WARNING){ //Low light warning
+      if(predictedMillis >= METER_AUTO_WARNING){ //Low light warning
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, LOW);
-        #if LMDEBUG
+        #if LMHELPERDEBUG
           Serial.println("Auto mode low light warning");
         #endif
       }
       else{
         digitalWrite(PIN_LED1, LOW);
         digitalWrite(PIN_LED2, HIGH);
-        #if LMDEBUG
+        #if LMHELPERDEBUG
           Serial.println("Auto mode Enough light");
         #endif
       }
