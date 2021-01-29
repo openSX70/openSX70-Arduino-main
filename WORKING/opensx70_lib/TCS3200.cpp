@@ -100,7 +100,7 @@
         uint32_t counter = TCNT1;
         measuring = false;
 
-        float slope = float(counter)/float(timeElapsed);
+        float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
         int pred_milli = round(float(outputCompare)/float(slope)); 
 
         #if LMHELPERDEBUG
