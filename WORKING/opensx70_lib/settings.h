@@ -10,7 +10,7 @@
   #define BASICDEBUG 0      // Debug of Basic Camera Functions
   #define MXDEBUG 0         // Multiple Exposure Debug
   #define LMDEBUG 0         //Lightmeter Debug
-  #define LMHELPERDEBUG 1   //Lightmeter Debug
+  #define LMHELPERDEBUG 0   //Lightmeter Debug
   #define ROTARYDEBUG 0     //Rotaryswitch on Dongle Debug
   #define STATEDEBUG 0      //Debug state transitions
   #define FOCUSDEBUG 0      //Focus Debug on Sonar
@@ -49,9 +49,11 @@
   // Sets how long each meter measurement is taken in ms
   #define METER_INTERVAL 100 
   // METER_RANGE defines the percentage left and right that is acceptable for the meter to be "accurate"
-  #define METER_RANGE 0.3
+  #define METER_RANGE 0.35
   // If predicted ms is over this value, warning LED will shine in auto mode
-  #define METER_AUTO_WARNING 100
+  #define METER_AUTO_WARNING 150
+
+  #define METER_SLOPE_HANDICAP 0
 
   //---------------END METER SETTINGS----------------------------------------
 
