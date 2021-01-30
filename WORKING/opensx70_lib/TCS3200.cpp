@@ -257,7 +257,7 @@
     #endif
 
     if(_type ==2){ // Manual mode
-      
+      predictedMillis = predictedMillis + METER_PREDICTION_OFFSET;
       // Within range
       if((predictedMillis <= (ShutterSpeed[_selector] + meterRange)) && (predictedMillis >= (ShutterSpeed[_selector] - meterRange))){
         digitalWrite(PIN_LED1, HIGH);
