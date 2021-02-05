@@ -34,6 +34,10 @@ int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175, 
 int flashDelay = 1; //new flash "system"
   // (These are default if not set, but changeable for convenience)
 
-int MeterRange[] = {     0.20, 0.11, 0.09,  0.07, 0.07, 0.07,0.20, 0.20,   0.20, 0.20,0.20,0.20,1,1,1,1}
+int MeterRange[] = {     0.20, 0.11, 0.09,  0.07, 0.07, 0.07,0.20, 0.20,   0.20, 0.20,0.20,0.20,1,1,1,1};
+//int ShutterSpeed[] = { 2000, 1000,  500,   250,  125,   60,  30,   15,      8,    4,   2,   1
+//                          0     1     2      3    4     5    6     7       8     9    10   11
+
+int ShutterVariance[] = {  15,   10,   10,    10,   10,   10,   0,    0,      0,    0,   0,   0};
 //int ShutterSpeed[] = { 2000, 1000,  500,   250,  125,   60,  30,   15,      8,    4,   2,   1
 //                          0     1     2      3    4     5    6     7       8     9    10   11
