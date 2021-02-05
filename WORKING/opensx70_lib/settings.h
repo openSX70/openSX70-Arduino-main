@@ -46,7 +46,7 @@
   //---------------END ISO VALUES--------------------------------------------
 
   //---------------Shutter Settings------------------------------------------
-  #define SHUTTER_SPEED_VARIANCE 0.75 // This is a percentage. range (0.0 - 1.0) Sets minimum bounds for shutter to fire at high EVs. EX at .80 at EV17 (25ms) it will fire within the range of 20ms-25ms (5ms or 20% variance)
+  #define SHUTTER_SPEED_VARIANCE 0.70 // This is a percentage. range (0.0 - 1.0) Sets minimum bounds for shutter to fire at high EVs. EX at .80 at EV17 (25ms) it will fire within the range of 20ms-25ms (5ms or 20% variance)
   #define SELECTOR_LIMIT 5 // Sets what selector it will stop varying the speed at (starting from 0 to the number you set)
   //---------------End Shutter Settings--------------------------------------
 
