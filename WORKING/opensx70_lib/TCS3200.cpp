@@ -241,7 +241,7 @@
       return;
     }
 
-    int meterRange = round(ShutterSpeed[_selector] * METER_RANGE);
+    int meterRange = round(ShutterSpeed[_selector] * meterRange[_selector]);
     int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
 
 
