@@ -49,9 +49,9 @@
   // Sets how long each meter measurement is taken in ms
   #define METER_INTERVAL 100 
   // METER_RANGE defines the percentage left and right that is acceptable for the meter to be "accurate"
-  #define METER_RANGE 0.20
+  //#define METER_RANGE 0.20 Moved to MeterRange in settings.cpp
   // If predicted ms is over this value, warning LED will shine in auto mode
-  #define METER_AUTO_WARNING 150
+  #define METER_AUTO_WARNING 100
 
   #define METER_SLOPE_HANDICAP 0
   // in ms
