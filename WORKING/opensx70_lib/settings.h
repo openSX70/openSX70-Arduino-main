@@ -83,6 +83,10 @@
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
   //flashDelay is the time it takes to fire the flash (even if none is connected) when slow shutterspeeds
   extern int flashDelay; //new flash "system"
+
+  extern int MeterRange[];
+
+  extern int ShutterVariance[];
   //this speed and SLOWER will trigger flash
   extern int mxshots; //Multiple exposure counter
   extern byte lightmeterHelper;
