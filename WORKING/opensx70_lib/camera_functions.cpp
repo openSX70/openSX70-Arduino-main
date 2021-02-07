@@ -5,7 +5,7 @@
 #include "sx70_pcb.h"
 //#include "Clickbutton.h"
 #include "settings.h"
-#include "uDongle2.h"
+#include "udongle2.h"
 
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;

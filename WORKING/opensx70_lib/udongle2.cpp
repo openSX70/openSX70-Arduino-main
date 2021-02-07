@@ -1,5 +1,5 @@
 #include "DS2408.h"
-#include "uDongle2.h"
+#include "udongle2.h"
 #include "settings.h" // included because of for #if ORIGAMIV1
 
 byte previous_count = 0; //for debouncing
