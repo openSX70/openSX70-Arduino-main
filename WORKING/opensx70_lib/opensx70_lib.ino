@@ -80,15 +80,15 @@ void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println("Welcome to openSX70 Version: 28_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version + AutoFF");
-    Serial.print("Magic Number: A100=");
+    Serial.println(F("Welcome to openSX70 Version: 28_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version + AutoFF"));
+    Serial.print(F("Magic Number: A100="));
     Serial.print(A100);
-    Serial.print("| A600 =");
+    Serial.print(F("| A600 ="));
     Serial.print(A600);
-    Serial.println(" scaling = 100% | filter = clear");
-    Serial.println("State machine core by Zane, Sonar code by Hannes");
-    Serial.println("PCB design and original code by Joaquin");
-    Serial.print("currentPicture stored in EEPROM: ");
+    Serial.println(F(" scaling = 100% | filter = clear"));
+    Serial.println(F("State machine core by Zane, Sonar code by Hannes"));
+    Serial.println(F("PCB design and original code by Joaquin"));
+    Serial.print(F("currentPicture stored in EEPROM: "));
     Serial.println(currentPicture);
   #endif
   
@@ -116,14 +116,14 @@ void setup() {//setup - Inizialize
   {
     openSX70.mirrorDOWN();
     #if SIMPLEDEBUG
-      Serial.println ("Initialize: mirrorDOWN");
+      Serial.println(F("Initialize: mirrorDOWN"));
     #endif
   }
 
   #if SIMPLEDEBUG
-    Serial.print("Inizialized: ");
+    Serial.print(F("Inizialized: "));
     Serial.println(inizialized);
-    Serial.print("currentPicture: ");
+    Serial.print(F("currentPicture: "));
     Serial.println(currentPicture);
   #endif
 }
@@ -161,8 +161,8 @@ camera_state do_state_darkslide (void) {
         myDongle.dongleLed(GREEN, LOW); //switching off green uDongle LED
       }
       #if SIMPLEDEBUG
-        Serial.println("STATE1: EJECT DARK SLIDE");
-        Serial.print("currentPicture on Darkslide eject: ");
+        Serial.println(F("STATE1: EJECT DARK SLIDE"));
+        Serial.print(F("currentPicture on Darkslide eject: "));
         Serial.println(currentPicture);
       #endif
     }
@@ -172,21 +172,21 @@ camera_state do_state_darkslide (void) {
       delay(100);
       BlinkISO();
       #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE");
+        Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
     else if ((selector == 100) && (myDongle.checkDongle() == 0)){
       result = STATE_FLASHBAR;
 
       #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE");
+        Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
       #endif
     }
     else{
       result = STATE_NODONGLE;
 
       #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE");
+        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
   #if SHUTTERDARKSLIDE
@@ -225,7 +225,7 @@ camera_state do_state_noDongle (void){
   //Checks for dongle or flashbar insertion
   if (myDongle.checkDongle() > 0){
     #if STATEDEBUG
-      Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE");
+      Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
     #endif
     result = STATE_DONGLE;
     //myDongle.initDS2408();
@@ -233,14 +233,14 @@ camera_state do_state_noDongle (void){
       saveISOChange();
     }
     else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
-      //Serial.println("Transition from no dongle to dongle");
+      //Serial.println(F("Transition from no dongle to dongle"));
       BlinkISO();
     }
   }
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
     #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE");
+        Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
     #endif
   }
   return result;
@@ -304,7 +304,7 @@ camera_state do_state_dongle (void){
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
     #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE");
+        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
     #endif
   } 
   // Multiple Exposure switch flipped
@@ -313,7 +313,7 @@ camera_state do_state_dongle (void){
     multipleExposureMode = true;
     mEXPFirstRun = true;
     #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE");
+        Serial.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
     #endif
   }
 
@@ -343,7 +343,7 @@ camera_state do_state_flashBar (void){
   if ((selector == 200) && (myDongle.checkDongle() == 0)){
     result = STATE_NODONGLE;
     #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR");
+        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
   } 
   return result;
@@ -421,7 +421,7 @@ camera_state do_state_multi_exp (void){
       result = STATE_DONGLE;
 
       #if STATEDEBUG
-        Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
+        Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
       #endif
     }
     sw_S1.Reset();
@@ -431,7 +431,7 @@ camera_state do_state_multi_exp (void){
     result = STATE_DONGLE;
     multipleExposureMode = false;
     #if STATEDEBUG
-      Serial.println("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP");
+      Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
     #endif
   }
   return result;
@@ -439,17 +439,17 @@ camera_state do_state_multi_exp (void){
 
 #if SONAR
 void printReadings() {
-  //Serial.print("GTD: ");
+  //Serial.print(F("GTD: "));
   //Serial.print(openSX70.getGTD());
-  Serial.print("Is Focused: ");
+  Serial.print(F("Is Focused: "));
   Serial.print(isFocused);
-  Serial.print(" | GTD: ");
+  Serial.print(F(" | GTD: "));
   Serial.print(analogRead(PIN_GTD));
-  Serial.print(" | S1F: ");
+  Serial.print(F(" | S1F: "));
   Serial.print(digitalRead(PIN_S1F));
-  Serial.print(" | FT: ");
+  Serial.print(F(" | FT: "));
   Serial.print(analogRead(PIN_FT));
-  Serial.print(" | FF: ");
+  Serial.print(F(" | FF: "));
   Serial.println(digitalRead(PIN_FF));
   return;
 }
@@ -498,7 +498,7 @@ void DongleInserted() { //Dongle is pressend LOOP
   #if SONAR
     if (digitalRead(PIN_S1F) != S1Logic) { //Dont run DongleInserted Function on S1F pressed
   #endif
-      { //Serial.println("S1F HIGH");
+      { //Serial.println(F("S1F HIGH"));
         //selector = myDongle.selector();
         switch1 = myDongle.switch1();
         switch2 = myDongle.switch2();
@@ -508,15 +508,15 @@ void DongleInserted() { //Dongle is pressend LOOP
         if ((selector != prev_selector)) //Update Dongle changes
         {
           #if ADVANCEDEBUG
-            Serial.print ("DONGLE Mode:  ");
-            Serial.print ("Selector: ");
-            Serial.print (selector);
-            Serial.print (" Switch1: ");
-            Serial.print (switch1);
-            Serial.print (" Switch2: ");
-            Serial.print (switch2);
-            Serial.print (" speed: ");
-            Serial.println (ShutterSpeed[selector]);
+            Serial.print(F("DONGLE Mode:  "));
+            Serial.print(F("Selector: "));
+            Serial.print(selector);
+            Serial.print(F(" Switch1: "));
+            Serial.print(switch1);
+            Serial.print(F(" Switch2: "));
+            Serial.print(switch2);
+            Serial.print(F(" speed: "));
+            Serial.println(ShutterSpeed[selector]);
           #endif
           blinkAutomode();
           //blinkSpecialmode(); //B and T Mode Selector LED Blink
@@ -541,7 +541,7 @@ void lmEnable(){
           delay(100);
           digitalWrite(PIN_LED2, LOW);
           #if SIMPLEDEBUG
-            Serial.println("Lightmeter is on");
+            Serial.println(F("Lightmeter is on"));
           #endif
         }
       }
@@ -556,7 +556,7 @@ void lmEnable(){
           delay(100);
           digitalWrite(PIN_LED1, LOW);
         #if SIMPLEDEBUG
-          Serial.println("Lightmeter is off");
+          Serial.println(F("Lightmeter is off"));
         #endif
         }
       }
@@ -568,7 +568,7 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
   switch2 = myDongle.switch2();
   if((switch2 != 1) || (switch1 != 1)){ //Not Save ISO //Changed to OR 01.06.2020
       #if SIMPLEDEBUG
-        Serial.println("Blink for the saved ISO setting on Dongle insertion.");
+        Serial.println(F("Blink for the saved ISO setting on Dongle insertion."));
       #endif
       //blinkAutomode();
       savedISO = ReadISO();
@@ -583,13 +583,13 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
       }
       else{
       #if SIMPLEDEBUG
-        Serial.println("No ISO Selected");
+        Serial.println(F("No ISO Selected"));
         myDongle.simpleBlink(5, RED);
       #endif
       }
       #if SIMPLEDEBUG
-          Serial.print ("EEPROM READ ISO: ");
-          Serial.println (savedISO);
+          Serial.print(F("EEPROM READ ISO: "));
+          Serial.println(savedISO);
       #endif
       prevDongle = nowDongle;
       checkFilmCount();
@@ -603,14 +603,14 @@ void blinkAutomode(){
     if(ShutterSpeed[selector]== AUTO600){
       myDongle.simpleBlink(2, GREEN);
       #if SIMPLEDEBUG
-        Serial.print("blinkAutomode() - Blink 2 times Green on Auto600 selected: ");
+        Serial.print(F("blinkAutomode() - Blink 2 times Green on Auto600 selected: "));
         Serial.println(ShutterSpeed[selector]);
       #endif
       //return;
     }else if(ShutterSpeed[selector]== AUTO100){
       myDongle.simpleBlink(1, GREEN);
       #if SIMPLEDEBUG
-        Serial.print("blinkAutomode() - Blink 1 times Green on Auto100 selected: ");
+        Serial.print(F("blinkAutomode() - Blink 1 times Green on Auto100 selected: "));
         Serial.println(ShutterSpeed[selector]);
       #endif
       //return;
@@ -636,7 +636,7 @@ void blinkSpecialmode(){
 
 void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
   #if SIMPLEDEBUG
-      Serial.print("Blink RED on ISO change: ");
+      Serial.print(F("Blink RED on ISO change: "));
   #endif
   turnLedsOff();
   if (activeISO == ISO_SX70){
@@ -646,8 +646,8 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
     myDongle.simpleBlink(2, RED);
   }
   #if SIMPLEDEBUG
-      Serial.print ("active ISO: ");
-      Serial.println (activeISO);
+      Serial.print(F("active ISO: "));
+      Serial.println(activeISO);
   #endif
   checkFilmCount();
   //return;
@@ -707,8 +707,8 @@ void switch2Function(int mode) {
 void checkFilmCount(){
   if ((currentPicture == 8) || (currentPicture == 9)){
       #if SIMPLEDEBUG
-        Serial.print("Two Frames left!");
-        Serial.print(", currentPicture on Two Frames left: ");
+        Serial.print(F("Two Frames left!"));
+        Serial.print(F(", currentPicture on Two Frames left: "));
         Serial.println(currentPicture);
       #endif
       //myDongle.simpleBlink(2, RED);
@@ -718,8 +718,8 @@ void checkFilmCount(){
   }
   else if(currentPicture == 10){ 
     #if SIMPLEDEBUG
-      Serial.print("Ten Frames shot!");
-      Serial.print(", currentPicture: ");
+      Serial.print(F("Ten Frames shot!"));
+      Serial.print(F(", currentPicture: "));
       Serial.println(currentPicture);
     #endif
     myDongle.dongleLed(GREEN, LOW);
@@ -738,12 +738,12 @@ void ispackEmpty(){ //This is doing nothing right now
     if (firstRun==0){ //Run only one time when Switch S9 change to HIGH
       firstRun++;
       if  (nowDongle != 0) {
-        //Serial.println("STATE2: Set LED RED to High");
+        //Serial.println(F("STATE2: Set LED RED to High"));
         //myDongle.dongleLed(RED, HIGH);
       }
       #if SIMPLEDEBUG
-          Serial.print("STATE2: PACK IS EMPTY - S9 Closed");
-          Serial.print(", Current Picture on Empty Pack: ");
+          Serial.print(F("STATE2: PACK IS EMPTY - S9 Closed"));
+          Serial.print(F(", Current Picture on Empty Pack: "));
           Serial.println(currentPicture);
       #endif
     }
@@ -798,12 +798,12 @@ void saveISOChange() {
   }
   if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
     #if SIMPLEDEBUG
-      Serial.print("SaveISOChange() Function: ");
-      Serial.print("ISO has changed, previos saved ISO (from EEPROM): ");
+      Serial.print(F("SaveISOChange() Function: "));
+      Serial.print(F("ISO has changed, previos saved ISO (from EEPROM): "));
       Serial.println(savedISO);
-      Serial.print("Saving new selected ISO ");
+      Serial.print(F("Saving new selected ISO "));
       Serial.print(_selectedISO);
-      Serial.println(" to the EEPROM");
+      Serial.println(F(" to the EEPROM"));
     #endif
     activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
     WriteISO(_selectedISO); //Write ISO to EEPROM
@@ -812,8 +812,8 @@ void saveISOChange() {
   }
   else{
     #if SIMPLEDEBUG
-      Serial.print("SaveISOChange() Function: ");
-      Serial.println("savedISO is equal to selected ISO, dont save!");
+      Serial.print(F("SaveISOChange() Function: "));
+      Serial.println(F("savedISO is equal to selected ISO, dont save!"));
     #endif
     activeISO = _selectedISO;
     BlinkISORed(); //Blink ISO Red
