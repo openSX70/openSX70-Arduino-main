@@ -2,7 +2,7 @@
 //#include <EEPROM.h>
 //#include "Arduino.h"
 #include "sx70_pcb.h"
-#include "open_SX70.h"
+#include "open_sx70.h"
 #include "meter.h"
 
 //For SONAR PCB

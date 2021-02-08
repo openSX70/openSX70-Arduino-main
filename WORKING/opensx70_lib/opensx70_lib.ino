@@ -1,5 +1,5 @@
  #include "Arduino.h"
-#include "open_SX70.h"
+#include "open_sx70.h"
 
 /* 
   Version for Edwin, Meroe, Land, and Sonar-FBW PCBs. Works with TSL237T and TCS3200 sensors.
