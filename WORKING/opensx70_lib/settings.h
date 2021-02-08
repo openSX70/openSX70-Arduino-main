@@ -86,6 +86,10 @@
 
   extern int MeterRange[];
 
+  extern int MaxRange[];
+
+  extern int MinRange[];
+
   extern int ShutterVariance[];
   //this speed and SLOWER will trigger flash
   extern int mxshots; //Multiple exposure counter
