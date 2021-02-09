@@ -42,7 +42,7 @@
   #define ISO_SX70 125
   #define ISO_600 640
   #define ISO_600BW 400
-  #define DEFAULT_ISO ISO_SX70
+  #define DEFAULT_ISO ISO_600
   //---------------END ISO VALUES--------------------------------------------
 
   //---------------METER SETTINGS--------------------------------------------

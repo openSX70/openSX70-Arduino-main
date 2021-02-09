@@ -253,7 +253,7 @@ camera_state do_state_dongle (void){
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){
   #endif
-    if(selector<11){
+    if(selector<=11){
       LightMeterHelper(2); //LMHelper Manual Mode
     }
     else if(selector==14 || selector==15){

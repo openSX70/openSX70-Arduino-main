@@ -294,6 +294,7 @@
           Serial.println("Auto mode low light warning");
         #endif
       }
+      /*
       else{
         digitalWrite(PIN_LED1, LOW);
         digitalWrite(PIN_LED2, HIGH);
@@ -301,6 +302,7 @@
           Serial.println("Auto mode Enough light");
         #endif
       }
+      */
     }
 
   }
