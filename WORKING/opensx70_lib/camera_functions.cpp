@@ -509,7 +509,7 @@ void Camera::VariableManualExposure(int _myISO){
   delay (YDelay);
 
   int ShutterSpeedDelay = ShutterSpeed[selector];
-  int MinShutterSpeedDelay = (ShutterSpeedDelay - 15);
+  int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
   
   #if ADVANCEDEBUG
     extern int selector;
