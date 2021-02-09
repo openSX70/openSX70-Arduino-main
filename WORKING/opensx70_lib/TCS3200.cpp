@@ -290,7 +290,7 @@
     if(_type ==2){ // Manual mode
       predictedMillis = predictedMillis + METER_PREDICTION_OFFSET;
       // Within range
-      if((predictedMillis <= MaxRange[_selector])  && (predictedMillis >= MaxRange[_selector])){
+      if((predictedMillis <= MaxRange[_selector])  && (predictedMillis >= MinRange[_selector])){
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, HIGH);
         #if LMHELPERDEBUG
