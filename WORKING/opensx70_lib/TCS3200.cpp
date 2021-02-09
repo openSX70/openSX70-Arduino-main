@@ -190,7 +190,7 @@
 
   ISR(TIMER1_OVF_vect){//Timer overflow
     #if LMHELPERDEBUG
-      Serial.print("Timer overflow, Timver value before reset: ");
+      Serial.print(F("Timer overflow, Timver value before reset: "));
       Serial.print(TCNT1);
       TCNT1 = 0;             //set Counter to 0
     #endif
@@ -241,21 +241,21 @@
       return;
     }
 
-    int meterRange = round(ShutterSpeed[_selector] * METER_RANGE);
+    //int meterRange = round(ShutterSpeed[_selector] * MeterRange[_selector]);
     int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
 
 
     #if LMHELPERDEBUG
-      Serial.print("meter range at Selector: ");
+      Serial.print(F("meter range at Selector: "));
       Serial.print(_selector);
-      Serial.print(" ");
+      Serial.print(F(" "));
       Serial.print(ShutterSpeed[_selector]);
-      Serial.print(" is ");
+      Serial.print(F(" is "));
       Serial.println(meterRange);
-      Serial.print("Predictedmillis: ");
+      Serial.print(F("Predictedmillis: "));
       Serial.println(predictedMillis);
     #endif
-
+    /*
     if(_type ==2){ // Manual mode
       predictedMillis = predictedMillis + METER_PREDICTION_OFFSET;
       // Within range
@@ -263,7 +263,7 @@
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, HIGH);
         #if LMHELPERDEBUG
-          Serial.println("Selector within meter range");
+          Serial.println(F("Selector within meter range"));
         #endif
         return;
       }
@@ -272,7 +272,7 @@
         digitalWrite(PIN_LED1, LOW);
         digitalWrite(PIN_LED2, HIGH);
         #if LMHELPERDEBUG
-          Serial.println("Selector under meter range");
+          Serial.println(F("Selector under meter range"));
         #endif
         return;
       }
@@ -281,7 +281,38 @@
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, LOW);
         #if LMHELPERDEBUG
-          Serial.println("Selector over meter range");
+          Serial.println(F("Selector over meter range"));
+        #endif
+        return;
+      }
+    }
+    */
+    if(_type ==2){ // Manual mode
+      predictedMillis = predictedMillis + METER_PREDICTION_OFFSET;
+      // Within range
+      if((predictedMillis <= MaxRange[_selector])  && (predictedMillis >= MinRange[_selector])){
+        digitalWrite(PIN_LED1, HIGH);
+        digitalWrite(PIN_LED2, HIGH);
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector within meter range"));
+        #endif
+        return;
+      }
+      // Lower speed required
+      else if(predictedMillis < MinRange[_selector]){
+        digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, HIGH);
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector under meter range"));
+        #endif
+        return;
+      }
+      // Higher speed needed
+      else{
+        digitalWrite(PIN_LED1, HIGH);
+        digitalWrite(PIN_LED2, LOW);
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector over meter range"));
         #endif
         return;
       }
@@ -291,7 +322,7 @@
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, LOW);
         #if LMHELPERDEBUG
-          Serial.println("Auto mode low light warning");
+          Serial.println(F("Auto mode low light warning"));
         #endif
       }
       /*

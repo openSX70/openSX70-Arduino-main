@@ -42,21 +42,20 @@
   #define ISO_SX70 125
   #define ISO_600 640
   #define ISO_600BW 400
-  #define DEFAULT_ISO ISO_SX70
+  #define DEFAULT_ISO ISO_600
   //---------------END ISO VALUES--------------------------------------------
 
+  //---------------Shutter Settings------------------------------------------
+  //#define SHUTTER_SPEED_VARIANCE 0.70 // This is a percentage. range (0.0 - 1.0) Sets minimum bounds for shutter to fire at high EVs. EX at .80 at EV17 (25ms) it will fire within the range of 20ms-25ms (5ms or 20% variance)
+  #define SELECTOR_LIMIT 5 // Sets what selector it will stop varying the speed at (starting from 0 to the number you set)
+  //---------------End Shutter Settings--------------------------------------
+
   //---------------METER SETTINGS--------------------------------------------
-  // Sets how long each meter measurement is taken in ms
-  #define METER_INTERVAL 100 
-  // METER_RANGE defines the percentage left and right that is acceptable for the meter to be "accurate"
-  #define METER_RANGE 0.20
-  // If predicted ms is over this value, warning LED will shine in auto mode
-  #define METER_AUTO_WARNING 150
-
-  #define METER_SLOPE_HANDICAP 0
-  // in ms
-  #define METER_PREDICTION_OFFSET 20
-
+  #define METER_INTERVAL 100 // Sets how long each meter measurement sample is taken in ms
+  //#define METER_RANGE 0.20 // METER_RANGE defines the percentage left and right that is acceptable for the meter to be "accurate"
+  #define METER_AUTO_WARNING 150 // If predicted ms is over this value, warning LED will shine in auto mode
+  #define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
+  #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
   //---------------END METER SETTINGS----------------------------------------
 
   #define EE_ADD_CUR   4    //-> CurrentPicture --> 1-8 "Pack" picture counter
@@ -84,6 +83,14 @@
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
   //flashDelay is the time it takes to fire the flash (even if none is connected) when slow shutterspeeds
   extern int flashDelay; //new flash "system"
+
+  extern int MeterRange[];
+
+  extern int MaxRange[];
+
+  extern int MinRange[];
+
+  extern int ShutterVariance[];
   //this speed and SLOWER will trigger flash
   extern int mxshots; //Multiple exposure counter
   extern byte lightmeterHelper;

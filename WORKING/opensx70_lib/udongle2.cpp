@@ -1,5 +1,5 @@
 #include "DS2408.h"
-#include "uDongle2.h"
+#include "udongle2.h"
 #include "settings.h" // included because of for #if ORIGAMIV1
 
 byte previous_count = 0; //for debouncing
@@ -24,7 +24,7 @@ void uDongle::initDS2408() //INTITIALIZE DS2408
   _ds->reset();
   previous_count = selector(); //For Debouncing
   #if ROTARYDEBUG
-  Serial.println("previous count on init:");
+  Serial.println(F("previous count on init:"));
   Serial.println(previous_count);
   #endif
   // THIS IS FUNDAMENTAL
@@ -46,18 +46,18 @@ byte uDongle::Read_DS2408_PIO(int slot)
   // Slot = 1 S1          //Return switch 1 on or off
   // Slot = 2 S2         //Return switch 2 on or off
   byte _Selector = B0000;
-  //Serial.print ("readDevice = ");
-  //Serial.println (readDevice, HEX);
+  //Serial.print("readDevice = ");
+  //Serial.println(readDevice, HEX);
   pinMode(_Pin, INPUT_PULLUP); //changed from INPUT_PULLUP 27_04
   if (digitalRead(_Pin) == LOW)   //////////////////////////////////////////////////////////// CASE FLASH
   {
     return 100; // FLASH
-    Serial.println("flash");
+    Serial.println(F("flash"));
   }
   if  ((_device_count == 0) && (digitalRead(_Pin) == HIGH)) ////////////////////////////////////////////////////////////CASE NOTHING CONNECTED
   {  
     return 200; //NOTHING
-    Serial.println("nothing");
+    Serial.println(F("nothing"));
   }
 
   if (slot == 0) 
@@ -233,19 +233,19 @@ byte uDongle::selector()
         delay(800);
         encoder_count = uDongle::Read_DS2408_PIO(0);
         #if ROTARYDEBUG
-          Serial.println("False reading, wait short and reread: Encoder Count: ");
+          Serial.println(F("False reading, wait short and reread: Encoder Count: "));
           Serial.println(encoder_count);
         #endif
         if((encoder_count==(previous_count+1)||encoder_count==(previous_count-1))){
               #if ROTARYDEBUG
-                 Serial.println("Corrected");
+                 Serial.println(F("Corrected"));
               #endif
               previous_count = encoder_count;
               return encoder_count;
         }
         delay(1500);
         encoder_count = uDongle::Read_DS2408_PIO(0);
-        Serial.println("False reading, wait longer and reread");
+        Serial.println(F("False reading, wait longer and reread"));
          previous_count = encoder_count;
        return encoder_count;
       }else if (encoder_count == previous_count + 1 || encoder_count == previous_count - 1){
@@ -257,7 +257,7 @@ byte uDongle::selector()
         return encoder_count;
      }
    else{
-        Serial.println("else handling");
+        Serial.println(F("else handling"));
         return -2;
       }
 }
