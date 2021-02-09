@@ -146,17 +146,17 @@ void meter_led(byte _selector, byte _type)
     int slot = nearest(PredictedExposure, ShutterSpeed, 11, false);
 
 /*
-    Serial.print ("PredictedExposure: ");
-    Serial.println (PredictedExposure);
+    Serial.print("PredictedExposure: ");
+    Serial.println(PredictedExposure);
 
-    Serial.print ("Estimated SLOT: ");
-    Serial.println (slot);
-    Serial.print ("Actual SLOT: ");
-    Serial.println (_selector);
+    Serial.print("Estimated SLOT: ");
+    Serial.println(slot);
+    Serial.print("Actual SLOT: ");
+    Serial.println(_selector);
 */
     if (_selector < slot)
     {
-      //     Serial.println ("_selector < slot");
+      //     Serial.println("_selector < slot");
       digitalWrite(PIN_LED1, HIGH);
       digitalWrite(PIN_LED2, LOW);
       //digitalWrite(PIN_LED1, LOW);
@@ -166,7 +166,7 @@ void meter_led(byte _selector, byte _type)
     }
     else if (_selector > slot)
     {
-      //     Serial.println ("_selector > slot");
+      //     Serial.println("_selector > slot");
       digitalWrite(PIN_LED2, HIGH);
       digitalWrite(PIN_LED1, LOW);
       //digitalWrite(PIN_LED2, LOW);
@@ -177,7 +177,7 @@ void meter_led(byte _selector, byte _type)
     else if (_selector == slot)
     {
 
-      //   Serial.println ("_selector == slot");
+      //   Serial.println("_selector == slot");
       digitalWrite(PIN_LED2, LOW);
       digitalWrite(PIN_LED1, LOW);
       //digitalWrite(PIN_LED2, HIGH);
@@ -192,7 +192,7 @@ void meter_led(byte _selector, byte _type)
     {
       digitalWrite(PIN_LED2, HIGH);
       digitalWrite(PIN_LED1, HIGH);
-      Serial.println ("LOW LIGHT");
+      Serial.println("LOW LIGHT");
       return;
 
     } else
@@ -236,17 +236,17 @@ int meter_compute(unsigned int _interval) //////////////////////////////////////
       measuring = false;
       PredExp = (((float)myMillis) / ((float) counter)) * (float)outputCompare;
 
-      //Serial.print ("pr mil: ");
-      //Serial.println (previousMillis);
-      //Serial.print ("mil: ");
-      //Serial.println (myMillis);
+      //Serial.print("pr mil: ");
+      //Serial.println(previousMillis);
+      //Serial.print("mil: ");
+      //Serial.println(myMillis);
 
-      //Serial.print ("_interval: ");
-      //Serial.println (_interval);
-      //Serial.print ("counter: ");
-      //Serial.println (counter);
-      //Serial.print ("output compare: ");
-      //Serial.println (outputCompare);
+      //Serial.print("_interval: ");
+      //Serial.println(_interval);
+      //Serial.print("counter: ");
+      //Serial.println(counter);
+      //Serial.print("output compare: ");
+      //Serial.println(outputCompare);
       /*
         Serial.print("                      PredExp: ");
         Serial.println(PredExp);
