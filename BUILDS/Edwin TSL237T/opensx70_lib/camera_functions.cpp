@@ -5,7 +5,7 @@
 #include "sx70_pcb.h"
 //#include "Clickbutton.h"
 #include "settings.h"
-#include "uDongle2.h"
+#include "udongle2.h"
 
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
@@ -69,7 +69,7 @@ int Camera::getGTD() {
 void Camera::S1F_Focus(){
     //int i=0;
     #if FOCUSDEBUG
-      Serial.println ("Focus on");
+      Serial.println("Focus on");
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
@@ -88,7 +88,7 @@ void Camera::S1F_Focus(){
 
 int Camera::S1F_Focus1(){
     #if FOCUSDEBUG
-      Serial.println ("Focus on");
+      Serial.println("Focus on");
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
@@ -108,7 +108,7 @@ int Camera::S1F_Focus1(){
 
 void Camera::S1F_Unfocus(){
     #if FOCUSDEBUG
-      Serial.println ("Focus off");
+      Serial.println("Focus off");
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite (PIN_S1F_FBW, LOW);
@@ -148,7 +148,7 @@ void Camera::SelfTimerMUP(){
 
 void Camera::shutterCLOSE(){
   #if BASICDEBUG
-    Serial.println ("shutterCLOSE");
+    Serial.println("shutterCLOSE");
   #endif
   Camera::HighSpeedPWM();
   analogWrite(PIN_SOL1, 255);
@@ -159,7 +159,7 @@ void Camera::shutterCLOSE(){
 
 void Camera::shutterOPEN(){
   #if BASICDEBUG
-    Serial.println ("shutterOPEN");
+    Serial.println("shutterOPEN");
   #endif
   analogWrite (PIN_SOL1, 0);
   return; //Added 26.10.
@@ -174,14 +174,14 @@ void Camera::motorON(){
 
 void Camera::motorOFF(){
   #if BASICDEBUG
-    Serial.println ("motorOFF");
+    Serial.println("motorOFF");
   #endif
   digitalWrite(PIN_MOTOR, LOW);
 }
 
 void Camera::mirrorDOWN(){
   #if BASICDEBUG
-    Serial.println ("mirrorDOWN");
+    Serial.println("mirrorDOWN");
   #endif
   Camera::motorON();
   while (Camera::DebouncedRead(PIN_S5) != LOW){
@@ -195,7 +195,7 @@ void Camera::mirrorDOWN(){
 
 void Camera::mirrorUP(){
   #if BASICDEBUG
-    Serial.println ("mirrorUP");
+    Serial.println("mirrorUP");
   #endif
   motorON ();
 
@@ -210,7 +210,7 @@ void Camera::mirrorUP(){
 
 void Camera::darkslideEJECT(){
   #if SIMPLEDEBUG
-    Serial.println ("darkslideEJECT");
+    Serial.println(F("darkslideEJECT"));
   #endif
   Camera::shutterCLOSE();
   Camera::mirrorUP();
@@ -231,7 +231,7 @@ void Camera::DongleFlashNormal(){
 void DongleFlashF8()
 { 
     #if SIMPLEDEBUG
-    Serial.println ("DONGLE FLASH F8");
+    Serial.println("DONGLE FLASH F8");
     #endif
     //                 byte PictureType = 4;
     //                 CurrentPicture = EEPROM.read(4) ;
@@ -411,11 +411,11 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
       }
       // set the LED with the ledState of the variable:
       if (type == 1) {
-        //Serial.println ("TYPE 1 - PCB Only");
+        //Serial.println("TYPE 1 - PCB Only");
         digitalWrite (PinPCB, ledState);
       }  
       else if (type == 2) {
-        //Serial.println ("TYPE 2 - PCB and DONGLE");
+        //Serial.println("TYPE 2 - PCB and DONGLE");
         digitalWrite (PinPCB, ledState);
         _dongle->Write_DS2408_PIO (PinDongle, ledState);
       }
@@ -509,7 +509,7 @@ void Camera::VariableManualExposure(int _myISO){
   delay (YDelay);
 
   int ShutterSpeedDelay = ShutterSpeed[selector];
-  int MinShutterSpeedDelay = (ShutterSpeedDelay - 15);
+  int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
   
   #if ADVANCEDEBUG
     extern int selector;
@@ -880,7 +880,7 @@ void Camera::FastFlash(){
 bool Camera::setLIGHTMETER_HELPER(bool state){
   #if LMHELPERDEBUG
     Serial.print("Set Lightmeterhelper status: ");
-    Serial.println(active);
+    Serial.println(state);
   #endif
   lightmeterHelper = state;
   return state;
