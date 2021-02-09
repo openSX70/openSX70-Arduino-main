@@ -250,9 +250,12 @@
       Serial.print(_selector);
       Serial.print(F(" "));
       Serial.print(ShutterSpeed[_selector]);
-      Serial.print(F(" is "));
-      Serial.println(meterRange);
+      Serial.print(F(" min: "));
+      Serial.println(MinRange[_selector]);
+      Serial.print(F(" max "));
+      Serial.println(MaxRange[_selector]);
       Serial.print(F("Predictedmillis: "));
+      
       Serial.println(predictedMillis);
     #endif
     /*
