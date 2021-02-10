@@ -132,9 +132,6 @@ void setup() {//setup - Inizialize
 void loop() {
   savedISO = ReadISO();
   selector = myDongle.selector();
-  #if SONAR
-    preFocus();
-  #endif
   normalOperation();
   state = STATE_MACHINE[state]();
   #if SONAR
@@ -202,6 +199,7 @@ camera_state do_state_noDongle (void){
   //savedISO = ReadISO();
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){ //Do only if S1F is pressed
+  preFocus();
   #endif
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
@@ -252,6 +250,7 @@ camera_state do_state_dongle (void){
   
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){
+  preFocus();
   #endif
     if(selector<=11){
       LightMeterHelper(2); //LMHelper Manual Mode
@@ -322,6 +321,9 @@ camera_state do_state_dongle (void){
 
 camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
+  #if SONAR
+  preFocus();
+  #endif
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
   {
     beginExposure();
@@ -353,23 +355,25 @@ camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
 
-  /*
+  #if SONAR
+    if(switch1 == 1){
+      preFocus();
+    }
+  #endif
 
-  Don't know how we would implement the meter while in mEXP mode. Would not make sense.
 
   #if SONAR
     if ((digitalRead(PIN_S1F) == HIGH)){
-    #endif
+  #endif
       if(selector<11){
         LightMeterHelper(2); //LMHelper Manual Mode
       }
       else if(selector==14 || selector==15){
         LightMeterHelper(1); //LMHelper Auto Mode
       }
-    #if SONAR
+  #if SONAR
     }
   #endif
-  */
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
