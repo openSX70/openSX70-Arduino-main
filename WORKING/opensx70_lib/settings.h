@@ -2,8 +2,6 @@
   #define settings_h
   #include "Arduino.h"
   //------------DEBUG OPTIONS---------------------------------------------
-  #define LIGHMETER_HELPER 1
-  //LIGHMETER_HELPER 0  NO helper, 1 for VE helper, 2 future dongle helper
   #define DEBUG 0
   #define SIMPLEDEBUG 0     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //Simple Debug On 1 - Off 0
@@ -28,7 +26,7 @@
   #define RED 7   //DONGLE RED LED ADRESS
   #define DOUBLECLICK 0
   #define SHUTTERDARKSLIDE 0 // makes you press shutter button to eject darkslide. This is to prevent externally powered cameras from firing the darkslide when opening.
-  
+  #define LIGHMETER_HELPER 1
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_SX70 125
   #define ISO_600 640
