@@ -52,21 +52,7 @@
   #define EE_ADD_PIC   13    //-> ActualPicture --> Counter from begining
   #define EE_ADD_ISO   20   //-> camera current ISO (dongleless)
   //---------------OPTION REGARDING SELECTOR WHEEL---------------------------
-  //enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
-  enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
-  //enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; //uDONGLE original
-  //enum positions_t {POST = -100, AUTO600, AUTO600BW, AUTO100}; //uDONGLE Optoflow
-  //enum positions_t {POST = -100, POSB, AUTO600, AUTO600BW, AUTO100}; //uDONGLE Optoflow POST = -100, POSB=-99, AUTO600=-98, AUTO600BW=-97, AUTO100=-96
-  /*
-    TO CLARIFY:
-  
-      uDongle               AnalogueDongle    AnalogueDongle 600BW
-      AUTO600 = - 100       POST = -100       POST =-100
-      AUTO100 = -99         POSB = -99        POSB =-99
-      POST = -98            AUTO600 = - 98    AUTO600 = -98
-      POSB = -97            AUTO100 = - 97    AUTO600BW = -97
-                                              AUTO100 = -96
-  */
+
   extern int ShutterConstant;
   //OPTION
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
