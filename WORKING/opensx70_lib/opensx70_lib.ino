@@ -86,8 +86,6 @@ void setup() {//setup - Inizialize
     Serial.print(F("| A600 ="));
     Serial.print(A600);
     Serial.println(F(" scaling = 100% | filter = clear"));
-    Serial.println(F("State machine core by Zane, Sonar code by Hannes"));
-    Serial.println(F("PCB design and original code by Joaquin"));
     Serial.print(F("currentPicture stored in EEPROM: "));
     Serial.println(currentPicture);
   #endif
