@@ -732,57 +732,8 @@ void checkFilmCount(){
   }
 }
 
-void ispackEmpty(){ //This is doing nothing right now
-  static int firstRun = 0;
-  //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH
-  //Camera Counter is Zero and Switch S9 is CLOSED
-  // changed this to allow shooting until counter is actually 0, in case "something" happens and I loose count!
-  if ((digitalRead(PIN_S8) == LOW && digitalRead(PIN_S9) == HIGH) && (currentPicture >= 8))
-  {
-    if (firstRun==0){ //Run only one time when Switch S9 change to HIGH
-      firstRun++;
-      if  (nowDongle != 0) {
-        //Serial.println(F("STATE2: Set LED RED to High"));
-        //myDongle.dongleLed(RED, HIGH);
-      }
-      #if SIMPLEDEBUG
-          Serial.print(F("STATE2: PACK IS EMPTY - S9 Closed"));
-          Serial.print(F(", Current Picture on Empty Pack: "));
-          Serial.println(currentPicture);
-      #endif
-    }
-  }
-}
-
 void normalOperation(){
-  //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
   if (digitalRead(PIN_S8) == LOW && digitalRead(PIN_S9) == LOW){
-      //WHAT TO DO WHEN POWER-UP:
-      //  S8     S9
-      // closed  open  --> EJECT DARKSLIDE (DEFAULT)
-      // open  closed --> FILM REACH 0 (NO FLASH)
-      // open   open  --> NORMAL OPERATION 10 TO 1
-      // ///////////////////////////////////PICTURE TAKING OPERATION//////////////////////////////////////////////////
-      //    FOUR CASES:
-      //   *  CASE 1 NORMAL OPERATION: FULL CYCLE
-      //   *  SELECTOR = NORMAL (LOW)
-      //   *  NXSHOTS = 0
-      //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
-      //   *
-      //   *  CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
-      //   *  SELECTOR = DOUBLE (HIGH)
-      //   *  MXSHOTS = 0
-      //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
-      //   *
-      //   *  CASE 3 DOUBLE EXPOSURE ULTERIOR MXSHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
-      //   *  SELECTOR = DOUBLE (HIGH)
-      //   *  NXSHOTS >= 1
-      //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
-      //   *
-      //   *  CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
-      //   *
-      //   *  SELECTOR = NORMAL (LOW)
-      //   *  MXSHOTS >= 1
     sw_S1.Update();
   }
 }
