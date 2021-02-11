@@ -80,7 +80,7 @@ void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println(F("Welcome to openSX70 Version: 28_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version + AutoFF"));
+    Serial.println(F("Welcome to openSX70 Version: 11_02_2021 Light meter helper"));
     Serial.print(F("Magic Number: A100="));
     Serial.print(A100);
     Serial.print(F("| A600 ="));
