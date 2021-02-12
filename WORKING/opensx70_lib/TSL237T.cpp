@@ -2,6 +2,11 @@
 #if defined (TSL237T)
   volatile bool integrationFinished = 0;
   int _myISO = 0;
+
+  bool measuring = false;
+
+  uint32_t startMillis;
+  uint32_t endMillis;
   //uint16_t outputCompare = A100;
   uint16_t outputCompare;
   const uint8_t PIN_OE = 9;
@@ -47,8 +52,12 @@
   void meter_set_iso(const uint16_t& iso) { //set the output Compare Value for Timer1 -- Magicnumber for ISO
     if (iso == ISO_600) {
       outputCompare = A600;
-    } else if (iso == ISO_SX70) {
+    } 
+    else if (iso == ISO_SX70) {
       outputCompare = A100;
+    }
+    else{
+      outputCompare = iso; //FF Delay Magicnumber as well as      
     }
   }
 
@@ -107,221 +116,161 @@
     return 0;
   }
 
-  int meter_compute(unsigned int _interval,int _activeISO) //Light Meter Helper Compute uses assigned ISO parameter
-  {
-    //int _myISO = ReadISO(); //Read ISO from EEPROM
-    _myISO = _activeISO;
-    #if ADVANCEDEBUG
-      //Serial.print(F("Meter Compute: Uses this ISO for metering: "));
-      //Serial.println(_myISO);
-    #endif
-    static uint32_t previousMillis = 0;
-    static bool measuring = false;
-    uint32_t PredExp;
-    meter_set_iso(_activeISO); //Set the correct compare Table for the set ISO
-  
-    if (!measuring) //Initialize Measuring
-    {
-      meter_init();
-      previousMillis = millis();
-      measuring = true;
-    }
-    else
-    {
-      uint32_t myMillis = millis() - previousMillis;
-      if (myMillis  >= _interval)
-      {
-        if(counter==-1){
-            counter = 65536;
-            #if LMDEBUG
-              Serial.println(F("Using Max Value(16bit) on Lightsensor overflow"));
-            #endif
-        }else{
-          counter = TCNT1;
-        }
-        PredExp = round((((float)myMillis) / ((float) counter)) * (float)outputCompare);
-        measuring = false; //set measuring to false because the current measure is finished
-        #if LMDEBUG
-        Serial.print(F("pr mil: "));
-        Serial.print(previousMillis);
-        Serial.print(F(", mil: "));
-        Serial.print(myMillis);
-        Serial.print(F(", _interval: "));
-        Serial.print(_interval);
-        Serial.print(F(", counter: "));
-        Serial.print(counter);
-        Serial.print(F(", output compare: "));
-        Serial.print(outputCompare);
-        Serial.print(F(", PredExp: "));
-        Serial.print(PredExp);
-        Serial.print(F(" PredExp+ShutterConstant: "));
-        Serial.println(PredExp+ShutterConstant);
-        #endif
-        PredExp = PredExp + ShutterConstant;
-        if(PredExp>44250){ //bigger then a reliable Value | doesnt know if its needed
-          #if LMDEBUG
-          Serial.println(F("Exception: PredExp > 44250"));
-          #endif
-          return -2;
-        }
-        return PredExp; //return -1 for firstrun(nothing computed only initialized)
-      }
-    }
-    return -1; //return -1 on the initial run because the meter has not calculated yet
-  }
-  
-  int nearest(int predExpVal, int shutterSpeeds[], int slots, bool sorted) //int slot = nearest(PredictedExposure, ShutterSpeed, 11, false); //Calculate the slot (
-  {
-    int idx = 0; // by default near first element
-    int distance = abs(shutterSpeeds[idx] - predExpVal);
-    for (int i = 1; i < slots; i++)
-    {
-      int d = abs(shutterSpeeds[i] - predExpVal);
-      if (d < distance)
-      {
-        idx = i;
-        distance = d;
-      }
-      else if (sorted) return idx;
-    }
-    return idx;
-  }
+int meter_compute(byte _selector,int _activeISO){
+    int _myISO = _activeISO;
 
-  int predictSlot(int predExpVal, int shutterSpeeds[], int slots, bool sorted) //int slot = nearest(PredictedExposure, ShutterSpeed, 11, false); //Calculate the slot (
-  {      //Shutterspeeds: 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, 
-    int idx = 0; // by default near first element
-    int distance = abs(shutterSpeeds[idx] - predExpVal);
-    for (int i = 1; i <= slots; i++)
-    {
-      int d = abs(shutterSpeeds[i] - predExpVal);
-      if (d < distance)
-      {
-        idx = i;
-        distance = d;
-      }
-      else if (sorted) return idx;
-    }
-    if(predExpVal<(shutterSpeeds[0]-6)){ //Let the LM Led light Blue and blink Red or light red and blink blue as a warning for Exposure Values out of possible Shutter Speeds
-      /*Serial.print(F("predictedValue is smaller than smallest Shutterspeed"));
-      Serial.print(F(" sugested Shutterspeed slot: "));
-      Serial.print(shutterSpeeds[idx]);
-      Serial.print(F(" smallest Shutterspeed slot: "));
-      Serial.println(shutterSpeeds[0]);
-      */
-      return -2; //If the predivtedValue is faster than the fastest Shutterspeed with a Margin of one ~Aperture Value
-    }
-   else if(predExpVal>(shutterSpeeds[slots]+128)){
-      /*Serial.print(F("predictedValue is bigger than biggest Shutterspeed"));
-      Serial.print(F(" sugested Shutterspeed slot: "));
-      Serial.print(shutterSpeeds[idx]);
-      Serial.print(F(" bigest Shutterspeed slot: "));
-      Serial.println(shutterSpeeds[slots]);
-      */
-      return (slots+1); //If the predivted Exposure Value is slower than the slowest Shutterspeed with a Margin of one ~Aperture Value
-    }
-    return idx;
-  }
-  void meter_led(byte _selector, byte _type)
-  {
-    if (_type == 0) //OFF
-    {
-      #if LMDEBUG
-      Serial.println(F("LM Helper OFF "));
+    if(measuring == false){
+      meter_set_iso(_activeISO);
+      measuring = true;
+      meter_init();
+      startMillis = millis();
+
+      #if LMHELPERDEBUG
+        Serial.print("Metering started at: ");
+        Serial.print(startMillis);
+        Serial.println(" ms");
       #endif
+    }
+    else{
+      endMillis = millis();
+      uint32_t timeElapsed =  endMillis - startMillis;
+      if((timeElapsed) >= METER_INTERVAL){
+        uint32_t counter = TCNT1;
+        measuring = false;
+
+        float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
+        int pred_milli = round(float(outputCompare)/float(slope)); 
+
+        #if LMHELPERDEBUG
+          Serial.print("Metering ended at ");
+          Serial.print(endMillis);
+          Serial.println(" ms");
+
+          Serial.print("Metering time elapsed: ");
+          Serial.print(timeElapsed);
+          Serial.println(" ms");
+
+          Serial.print("Magic number used: ");
+          Serial.println(outputCompare);
+
+          Serial.print("Meter counter ended at ");
+          Serial.println(counter);
+
+          Serial.print("Magic number hit at ");
+          Serial.print(pred_milli);
+          Serial.println(" ms");
+
+          Serial.print("slope: ");
+          Serial.println(slope);
+        #endif
+
+        /*
+        #if LMDEBUG
+          Serial.print("PREDMILLI: ");
+          Serial.println(pred_milli);
+        #endif
+        */
+
+        // pred_milli is how many ms the meter will take to reach the set 
+        // magic number. Every scene should generally have a linear increase
+        // of the counter, therefore we can use basic algebra to extrapolate
+        // when the counter will hit the magic number.
+        return pred_milli; 
+      }
+    }
+    return -1;
+  }
+  
+  
+    void meter_led(byte _selector, byte _type){
+    if(_type == 0){ //OFF
       digitalWrite(PIN_LED1, LOW);
       digitalWrite(PIN_LED2, LOW);
       return;
     }
-    int PredictedExposure;
-    int activeISO = ReadISO(); //read ISO from EEPROM
-    //original int PredictedExposure = meter_compute(200);
-    if((ShutterSpeed[_selector]) == AUTO600)
-    {
+
+    int predictedMillis;
+    int activeISO;
+
+    if((ShutterSpeed[_selector]) == AUTO600){
       activeISO = ISO_600;
-    }/*
-    else if((ShutterSpeed[_selector]) == AUTO600BW)
-    {
-      activeISO = ISO_600BW;
-    }*/else if((ShutterSpeed[_selector] == AUTO100))
-    {
+    }
+    else if((ShutterSpeed[_selector] == AUTO100)){
       activeISO = ISO_SX70;
     }
-      
-    PredictedExposure = meter_compute(200,activeISO); //Calculates the estimated Exposure Value
+    else{
+      activeISO = ReadISO();
+    }
 
-    if (PredictedExposure == -1) //-1 occurs on First run of LM
-    {
+    predictedMillis = meter_compute(_selector, activeISO);
+
+    if(predictedMillis == -1){ // Still measuring!
       return;
     }
-    if (_type == 2) //Manual Mode
-    {
-      //PredictedExposure = meter_compute(200,activeISO);
-      //int slot = nearest(PredictedExposure, ShutterSpeed, 11, false); //Calculate the slot (
-      int slot = predictSlot(PredictedExposure, ShutterSpeed, 10, false);
-      //Shutterspeeds: 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, 
-      #if LMHELPERDEBUG
-        Serial.print(F("PredictedExposure: "));
-        Serial.print(PredictedExposure);
-        Serial.print(F(" Estimated SLOT: "));
-        Serial.print(slot);
-        Serial.print(F(" Actual SLOT: "));
-        Serial.println(_selector);
-      #endif
-      if(slot == -2){//PredExpValue slower than slowest Shutterspeed
-        digitalWrite(PIN_LED2, digitalRead(PIN_LED2) ^ 1); //Blink RED LED
-        //digitalWrite(PIN_LED1, HIGH); //maybe blink
-        digitalWrite(PIN_LED1, LOW); 
-      }
-      else if(slot == 11){ //PredExpValue faster then fastest Shutterspeed
-        digitalWrite(PIN_LED2, LOW);
-        digitalWrite(PIN_LED1, digitalRead(PIN_LED1) ^ 1); //Blink BLUE LED
-        //digitalWrite(PIN_LED2, HIGH);
-      }
-      else
-      {
-        if (_selector < slot)
-        {
-          //Serial.println(F("_selector < slot"));
-          digitalWrite(PIN_LED1, HIGH);
-          digitalWrite(PIN_LED2, LOW);
-          return;
-        }
-        else if (_selector > slot)
-        {
-          //Serial.println(F("_selector > slot"));
-          digitalWrite(PIN_LED1, LOW);
-          digitalWrite(PIN_LED2, HIGH);
-          return;
-        }
-        else if (_selector == slot)
-        {
-          //Serial.println(F("_selector == slot"));
-          digitalWrite(PIN_LED1, LOW);
-          digitalWrite(PIN_LED2, LOW);
-          return;
-        }
-      }
-    }
-    else if (_type == 1) //Automode
-    {
-      #if LMHELPERDEBUG
-      Serial.print(F("LM Helper PredictedExposure on Auto Mode , PredictedExposure: "));
-      Serial.println(PredictedExposure);
-      #endif
-      if (PredictedExposure > 100)
-      {
+
+    //int meterRange = round(ShutterSpeed[_selector] * MeterRange[_selector]);
+    int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
+
+
+    #if LMHELPERDEBUG
+      Serial.print(F("meter range at Selector: "));
+      Serial.print(_selector);
+      Serial.print(F(" "));
+      Serial.print(ShutterSpeed[_selector]);
+      Serial.print(F(" is "));
+      Serial.println(meterRange);
+      Serial.print(F("Predictedmillis: "));
+      Serial.println(predictedMillis);
+    #endif
+
+    if(_type ==2){ // Manual mode
+      predictedMillis = predictedMillis + METER_PREDICTION_OFFSET;
+      // Within range
+      if((predictedMillis <= MaxRange[_selector])  && (predictedMillis >= MinRange[_selector])){
         digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, HIGH);
-        #if LMDEBUG
-          Serial.println(F("LOW LIGHT"));
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector within meter range"));
         #endif
         return;
-      } else
-      {
+      }
+      // Lower speed required
+      else if(predictedMillis < MinRange[_selector]){
         digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, HIGH);
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector under meter range"));
+        #endif
+        return;
+      }
+      // Higher speed needed
+      else{
+        digitalWrite(PIN_LED1, HIGH);
         digitalWrite(PIN_LED2, LOW);
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector over meter range"));
+        #endif
         return;
       }
     }
+    else if(_type == 1){ // Automode
+      if(predictedMillis >= METER_AUTO_WARNING){ //Low light warning
+        digitalWrite(PIN_LED1, HIGH);
+        digitalWrite(PIN_LED2, LOW);
+        #if LMHELPERDEBUG
+          Serial.println(F("Auto mode low light warning"));
+        #endif
+      }
+      /*
+      else{
+        digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, HIGH);
+        #if LMHELPERDEBUG
+          Serial.println("Auto mode Enough light");
+        #endif
+      }
+      */
+    }
+
   }
 #endif
