@@ -146,7 +146,7 @@ camera_state do_state_darkslide (void) {
   camera_state result = STATE_DARKSLIDE;
   #if SHUTTERDARKSLIDE
   sw_S1.Update();
-  if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
+  if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
   #endif
     if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
       currentPicture = 0; 
