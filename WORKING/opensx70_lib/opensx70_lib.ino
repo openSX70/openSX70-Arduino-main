@@ -11,7 +11,7 @@
   The move to a state machine also cuts down on if statement checks.
 
   The sonar code was entirely done by Hannes (Thank you!).
-  Merged last Soanr Version with Zanes Version (Greetings Hannes)
+  Merged last Sonar Version with Zanes Version (Greetings Hannes)
 */
 
 ClickButton sw_S1(PIN_S1, S1Logic);
@@ -34,6 +34,9 @@ static int metercount;
 extern bool mEXPFirstRun = false;
 extern bool multipleExposureMode = false;
 static int multipleExposureCounter = 0;
+#if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
+  static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
+#endif
 /*
 #if SONAR == 0 
   bool GTD = 1; //For non Sonar Models
@@ -377,9 +380,12 @@ camera_state do_state_multi_exp (void){
       if(mEXPFirstRun){
         beginExposure();
         mEXPFirstRun = false;
+        #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
+          multipleExposureLastStartTimestamp = millis();
+        #endif
       }
       if(switch2 == 1){
-        switch2Function(0);
+        switch2Function(0); // start self timer 
       }
 
       if((selector>=0) && (selector<=3)){ //fast manual speeds
@@ -418,6 +424,9 @@ camera_state do_state_multi_exp (void){
       openSX70.multipleExposureLastClick();
       checkFilmCount();
       multipleExposureCounter = 0;
+      #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
+        multipleExposureLastStartTimestamp = 0;
+      #endif
       result = STATE_DONGLE;
 
       #if STATEDEBUG
@@ -426,6 +435,17 @@ camera_state do_state_multi_exp (void){
     }
     sw_S1.Reset();
   }
+
+  #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
+    // Finish multiple exposure due to timeout.
+    if(multipleExposureLastStartTimestamp != 0 && millis() - multipleExposureLastStartTimestamp > MULTIPLE_EXPOSURES_TIMEOUT){
+      myDongle.simpleBlink(2, RED);
+      openSX70.multipleExposureLastClick();
+      checkFilmCount();
+      multipleExposureCounter = 0;
+      multipleExposureLastStartTimestamp = 0;
+    }
+  #endif
 
   if(switch1 == 0 && multipleExposureCounter == 0){
     result = STATE_DONGLE;
@@ -762,7 +782,7 @@ void normalOperation(){
       //    FOUR CASES:
       //   *  CASE 1 NORMAL OPERATION: FULL CYCLE
       //   *  SELECTOR = NORMAL (LOW)
-      //   *  NXSHOTS = 0
+      //   *  MXSHOTS = 0
       //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
       //   *
       //   *  CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
@@ -772,7 +792,7 @@ void normalOperation(){
       //   *
       //   *  CASE 3 DOUBLE EXPOSURE ULTERIOR MXSHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
       //   *  SELECTOR = DOUBLE (HIGH)
-      //   *  NXSHOTS >= 1
+      //   *  MXSHOTS >= 1
       //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
       //   *
       //   *  CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
