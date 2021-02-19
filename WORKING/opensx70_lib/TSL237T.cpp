@@ -261,6 +261,13 @@ int meter_compute(byte _selector,int _activeISO){
           Serial.println(F("Auto mode low light warning"));
         #endif
       }
+      else{ //Low light warning
+        digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, LOW);
+        #if LMHELPERDEBUG
+          Serial.println(F("Enough light detected"));
+        #endif
+      }
       /*
       else{
         digitalWrite(PIN_LED1, LOW);
