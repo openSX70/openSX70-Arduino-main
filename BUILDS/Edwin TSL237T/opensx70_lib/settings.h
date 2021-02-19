@@ -15,10 +15,10 @@
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
   //----------------------END DEBUG OPTIONS------------------------------
   //----------------------CAMERA PCB OPTIONS SELECTION-------------------
-  #define TCS3200         //TSL237T TSL235R TCS3200
-  #define S1Logic HIGH    //HIGH for sonar, LOW for Alpha
-  #define ALPHA 0         //1 if ALPHA camera/PCB
-  #define SONAR 1         //   
+  #define TSL237T         //TSL237T TSL235R TCS3200
+  #define S1Logic LOW    //HIGH for sonar, LOW for Alpha
+  #define ALPHA 1         //1 if ALPHA camera/PCB
+  #define SONAR 0         //   
   #define ORIGAMI 0
   #define ORIGAMIV1 0
   #define UDONGLE 1
