@@ -20,7 +20,7 @@
   const uint8_t PIN_LED2 = A3; //LED BLUE
   const uint8_t PIN_FF = 4;
   
-  #if SONAR_PCB
+  #if SONAR
   const uint8_t PIN_GTD = A5; // Sonar gone that distance
   const uint8_t PIN_S1F = 10; //Sonar S1 Focus //Analog imput only
   const uint8_t PIN_FT = A7; //Sonar Flash Triggerd INPUT -- Cave Analoge Input only!
