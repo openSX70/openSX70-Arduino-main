@@ -250,9 +250,12 @@
       Serial.print(_selector);
       Serial.print(F(" "));
       Serial.print(ShutterSpeed[_selector]);
-      Serial.print(F(" is "));
-      Serial.println(meterRange);
+      Serial.print(F(" min: "));
+      Serial.println(MinRange[_selector]);
+      Serial.print(F(" max "));
+      Serial.println(MaxRange[_selector]);
       Serial.print(F("Predictedmillis: "));
+      
       Serial.println(predictedMillis);
     #endif
     /*
@@ -323,6 +326,13 @@
         digitalWrite(PIN_LED2, LOW);
         #if LMHELPERDEBUG
           Serial.println(F("Auto mode low light warning"));
+        #endif
+      }
+      else{ //Low light warning off
+        digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, LOW);
+        #if LMHELPERDEBUG
+          Serial.println(F("Enough Light Detected"));
         #endif
       }
       /*
