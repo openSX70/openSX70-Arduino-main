@@ -2,10 +2,8 @@
   #define settings_h
   #include "Arduino.h"
   //------------DEBUG OPTIONS---------------------------------------------
-  #define LIGHMETER_HELPER 1
-  //LIGHMETER_HELPER 0  NO helper, 1 for VE helper, 2 future dongle helper
   #define DEBUG 0
-  #define SIMPLEDEBUG 0     //Simple Debug On 1 - Off 0
+  #define SIMPLEDEBUG 0     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //Simple Debug On 1 - Off 0
   #define BASICDEBUG 0      // Debug of Basic Camera Functions
   #define MXDEBUG 0         // Multiple Exposure Debug
@@ -16,28 +14,19 @@
   #define FOCUSDEBUG 0      //Focus Debug on Sonar
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
   //----------------------END DEBUG OPTIONS------------------------------
-  //----------------------CAMERA PCB OPTIONS SELECTION---------------------------
-  //#define TSL237T
-  //#define TSL235R
-  #define TCS3200
-  //S1Logic LOW = Alphas, Meroë, Edwin
-  //#define S1Logic HIGH //= Sonar 
-  #define S1Logic LOW
-  #define ALPHA 1
-  #define SONAR 0
+  //----------------------CAMERA PCB OPTIONS SELECTION-------------------
+  #define TCS3200         //TSL237T TSL235R TCS3200
+  #define S1Logic HIGH    //HIGH for sonar, LOW for Alpha
+  #define ALPHA 0         //1 if ALPHA camera/PCB
+  #define SONAR 1         //   
   #define ORIGAMI 0
-  #define ORIGAMIV1 0 //V1 Version of Origami with inverted Rotaryswitch
+  #define ORIGAMIV1 0
   #define UDONGLE 1
   #define GREEN 6 //DONGLE GREEN LED ADRESS
   #define RED 7   //DONGLE RED LED ADRESS
   #define DOUBLECLICK 0
   #define SHUTTERDARKSLIDE 0 // makes you press shutter button to eject darkslide. This is to prevent externally powered cameras from firing the darkslide when opening.
-  extern const uint8_t YDelay;
-  extern const byte PowerDownDelay; //time it takes to be fully closed
-  extern const byte PowerDown; //max 255 = full power/POWERUP mode
-  #define DEBOUNCECOUNT 5 
-  extern int currentPicture;
-  extern int prevDongle;
+  #define LIGHMETER_HELPER 1
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_SX70 125
   #define ISO_600 640
@@ -47,7 +36,7 @@
 
   //---------------Shutter Settings------------------------------------------
   //#define SHUTTER_SPEED_VARIANCE 0.70 // This is a percentage. range (0.0 - 1.0) Sets minimum bounds for shutter to fire at high EVs. EX at .80 at EV17 (25ms) it will fire within the range of 20ms-25ms (5ms or 20% variance)
-  #define SELECTOR_LIMIT 5 // Sets what selector it will stop varying the speed at (starting from 0 to the number you set)
+  #define SELECTOR_LIMIT 11 // Sets what selector it will stop varying the speed at (starting from 0 to the number you set)
   //---------------End Shutter Settings--------------------------------------
 
   //---------------METER SETTINGS--------------------------------------------
@@ -101,31 +90,10 @@
   //this speed and SLOWER will trigger flash
   extern int mxshots; //Multiple exposure counter
   extern byte lightmeterHelper;
-  /*
-  struct PictureData
-  {
-    uint16_t StructPicture;         //total count of pictures since init
-    uint16_t StructPackPicture;          //pic count within this pack
-    uint16_t StructType;           //picture type
-    // PictureType = 0 ---> MANUAL
-    // PictureType = 1 ---> A100
-    // PictureType = 2 ---> FLASH DONGLELESS
-    // PictureType = 4 ---> FLASH F8 DONGLE
-    // PictureType = 6 ---> A600
-    // PictureType = 7 ---> BULB
-    // PictureType = 8 ---> T
-    // PictureType = +10 ---> MULTIPLE EXPOSURE
-    // PictureType = +100 ---> TIMER DELAY
-    uint16_t StructSpeed;           //shutter speed
-  };
-
-    //EEPROM CHEATSHEET
-    //  0-> S  initialization purposes
-    //  1-> X  initialization purppses
-    //  3-> ActualPicture --> From the begining absolute picture counter
-    //  4-> CurrentPicture --> 1-8 "Pack" picture counter   EE_ADD_CUR   
-    // 30-> eeAddress Where to write next                   EE_ADD_ADD
-    // 13-> ActualPicture --> Counter from begining         EE_ADD_PIC
-    // 20-> camera current ISO (dongleless)                 EE_ADD_ISO
-*/
+  extern const uint8_t YDelay;
+  extern const byte PowerDownDelay; //time it takes to be fully closed
+  extern const byte PowerDown; //max 255 = full power/POWERUP mode
+  #define DEBOUNCECOUNT 5 
+  extern int currentPicture;
+  extern int prevDongle;
 #endif
