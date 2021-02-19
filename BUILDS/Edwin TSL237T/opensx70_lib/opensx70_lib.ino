@@ -11,7 +11,7 @@
   The move to a state machine also cuts down on if statement checks.
 
   The sonar code was entirely done by Hannes (Thank you!).
-  Merged last Soanr Version with Zanes Version (Greetings Hannes)
+  Merged last Sonar Version with Zanes Version (Greetings Hannes)
 */
 
 ClickButton sw_S1(PIN_S1, S1Logic);
@@ -34,6 +34,9 @@ static int metercount;
 extern bool mEXPFirstRun = false;
 extern bool multipleExposureMode = false;
 static int multipleExposureCounter = 0;
+#if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
+  static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
+#endif
 /*
 #if SONAR == 0 
   bool GTD = 1; //For non Sonar Models
@@ -80,14 +83,12 @@ void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println(F("Welcome to openSX70 Version: 28_10_2020_SONAR_FBW-2_TCS3200 GTD and UDONGLE - SM Version + AutoFF"));
+    Serial.println(F("Welcome to openSX70 Version: 11_02_2021 Light meter helper"));
     Serial.print(F("Magic Number: A100="));
     Serial.print(A100);
     Serial.print(F("| A600 ="));
     Serial.print(A600);
     Serial.println(F(" scaling = 100% | filter = clear"));
-    Serial.println(F("State machine core by Zane, Sonar code by Hannes"));
-    Serial.println(F("PCB design and original code by Joaquin"));
     Serial.print(F("currentPicture stored in EEPROM: "));
     Serial.println(currentPicture);
   #endif
@@ -132,9 +133,6 @@ void setup() {//setup - Inizialize
 void loop() {
   savedISO = ReadISO();
   selector = myDongle.selector();
-  #if SONAR
-    preFocus();
-  #endif
   normalOperation();
   state = STATE_MACHINE[state]();
   #if SONAR
@@ -146,7 +144,7 @@ camera_state do_state_darkslide (void) {
   camera_state result = STATE_DARKSLIDE;
   #if SHUTTERDARKSLIDE
   sw_S1.Update();
-  if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
+  if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
   #endif
     if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
       currentPicture = 0; 
@@ -202,6 +200,7 @@ camera_state do_state_noDongle (void){
   //savedISO = ReadISO();
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){ //Do only if S1F is pressed
+  preFocus();
   #endif
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
@@ -252,6 +251,7 @@ camera_state do_state_dongle (void){
   
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){
+  preFocus();
   #endif
     if(selector<=11){
       LightMeterHelper(2); //LMHelper Manual Mode
@@ -322,6 +322,9 @@ camera_state do_state_dongle (void){
 
 camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
+  #if SONAR
+  preFocus();
+  #endif
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
   {
     beginExposure();
@@ -353,23 +356,25 @@ camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
 
-  /*
+  #if SONAR
+    if(switch1 == 1){
+      preFocus();
+    }
+  #endif
 
-  Don't know how we would implement the meter while in mEXP mode. Would not make sense.
 
   #if SONAR
     if ((digitalRead(PIN_S1F) == HIGH)){
-    #endif
+  #endif
       if(selector<11){
         LightMeterHelper(2); //LMHelper Manual Mode
       }
       else if(selector==14 || selector==15){
         LightMeterHelper(1); //LMHelper Auto Mode
       }
-    #if SONAR
+  #if SONAR
     }
   #endif
-  */
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
@@ -377,9 +382,12 @@ camera_state do_state_multi_exp (void){
       if(mEXPFirstRun){
         beginExposure();
         mEXPFirstRun = false;
+        #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
+          multipleExposureLastStartTimestamp = millis();
+        #endif
       }
       if(switch2 == 1){
-        switch2Function(0);
+        switch2Function(0); // start self timer 
       }
 
       if((selector>=0) && (selector<=3)){ //fast manual speeds
@@ -418,6 +426,9 @@ camera_state do_state_multi_exp (void){
       openSX70.multipleExposureLastClick();
       checkFilmCount();
       multipleExposureCounter = 0;
+      #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
+        multipleExposureLastStartTimestamp = 0;
+      #endif
       result = STATE_DONGLE;
 
       #if STATEDEBUG
@@ -426,6 +437,17 @@ camera_state do_state_multi_exp (void){
     }
     sw_S1.Reset();
   }
+
+  #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
+    // Finish multiple exposure due to timeout.
+    if(multipleExposureLastStartTimestamp != 0 && millis() - multipleExposureLastStartTimestamp > MULTIPLE_EXPOSURES_TIMEOUT){
+      myDongle.simpleBlink(2, RED);
+      openSX70.multipleExposureLastClick();
+      checkFilmCount();
+      multipleExposureCounter = 0;
+      multipleExposureLastStartTimestamp = 0;
+    }
+  #endif
 
   if(switch1 == 0 && multipleExposureCounter == 0){
     result = STATE_DONGLE;
@@ -728,30 +750,7 @@ void checkFilmCount(){
   }
 }
 
-void ispackEmpty(){ //This is doing nothing right now
-  static int firstRun = 0;
-  //STATE 2: PACK IS EMPTY--> NO WASTE OF FLASH
-  //Camera Counter is Zero and Switch S9 is CLOSED
-  // changed this to allow shooting until counter is actually 0, in case "something" happens and I loose count!
-  if ((digitalRead(PIN_S8) == LOW && digitalRead(PIN_S9) == HIGH) && (currentPicture >= 8))
-  {
-    if (firstRun==0){ //Run only one time when Switch S9 change to HIGH
-      firstRun++;
-      if  (nowDongle != 0) {
-        //Serial.println(F("STATE2: Set LED RED to High"));
-        //myDongle.dongleLed(RED, HIGH);
-      }
-      #if SIMPLEDEBUG
-          Serial.print(F("STATE2: PACK IS EMPTY - S9 Closed"));
-          Serial.print(F(", Current Picture on Empty Pack: "));
-          Serial.println(currentPicture);
-      #endif
-    }
-  }
-}
-
 void normalOperation(){
-  //STATE 3: NORMAL OPERATION *************************************************************************************************************************************************
   if (digitalRead(PIN_S8) == LOW && digitalRead(PIN_S9) == LOW){
       //WHAT TO DO WHEN POWER-UP:
       //  S8     S9
@@ -762,7 +761,7 @@ void normalOperation(){
       //    FOUR CASES:
       //   *  CASE 1 NORMAL OPERATION: FULL CYCLE
       //   *  SELECTOR = NORMAL (LOW)
-      //   *  NXSHOTS = 0
+      //   *  MXSHOTS = 0
       //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
       //   *
       //   *  CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
@@ -772,7 +771,7 @@ void normalOperation(){
       //   *
       //   *  CASE 3 DOUBLE EXPOSURE ULTERIOR MXSHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
       //   *  SELECTOR = DOUBLE (HIGH)
-      //   *  NXSHOTS >= 1
+      //   *  MXSHOTS >= 1
       //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
       //   *
       //   *  CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)

@@ -102,7 +102,7 @@ void ClickButton::Update()
       if(clicks != 0){
         changed = true;
       //#if SIMPLEDEBUG
-        Serial.println("Single Click");
+        Serial.println(F("Single Click"));
       //#endif
       }
     }
@@ -119,7 +119,7 @@ void ClickButton::Update()
     if(clicks != 0){
       changed = true;
       //#if SIMPLEDEBUG
-        Serial.println("Long Click");
+        Serial.println(F("Long Click"));
       //#endif
     }
   }
