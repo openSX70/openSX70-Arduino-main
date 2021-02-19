@@ -18,9 +18,7 @@
   #define TCS3200         //TSL237T TSL235R TCS3200
   #define S1Logic HIGH    //HIGH for sonar, LOW for Alpha
   #define ALPHA 0         //1 if ALPHA camera/PCB
-  #define SONAR 1         //
-  #define ALPHA_PCB 0
-  #define SONAR_PCB 1   
+  #define SONAR 1         //   
   #define ORIGAMI 0
   #define ORIGAMIV1 0
   #define UDONGLE 1
