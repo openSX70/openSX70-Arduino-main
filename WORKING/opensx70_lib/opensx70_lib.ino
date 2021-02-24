@@ -264,12 +264,12 @@ camera_state do_state_dongle (void){
   #endif
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
-    LightMeterHelper(0); //Turns off LMHelper on picutre Taking
-    beginExposure(); //may just move this directly before each other call. may feel clunky
+    LightMeterHelper(0);
+
     if(switch2 == 1){
       switch2Function(0); //switch2Function Manual Mode
     }
-
+    beginExposure();
     if((selector>=0) && (selector<=SELECTOR_LIMIT)){ //fast manual speeds
       openSX70.VariableManualExposure(savedISO);
     }
