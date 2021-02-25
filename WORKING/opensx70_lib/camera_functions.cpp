@@ -442,6 +442,15 @@ void Camera::ManualExposure(){
      Serial.println("waiting for S3 to OPEN");
      #endif
   }
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
   delay (YDelay);
 
   int ShutterSpeedDelay = ((ShutterSpeed[selector]) + ShutterConstant);
@@ -506,6 +515,15 @@ void Camera::VariableManualExposure(int _myISO){
      Serial.println("waiting for S3 to OPEN");
      #endif
   }
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
   delay (YDelay);
 
   int ShutterSpeedDelay = ShutterSpeed[selector];
@@ -575,6 +593,16 @@ void Camera::AutoExposure(int _myISO){
      Serial.println("waiting for S3 to OPEN");
      #endif
   }
+
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
   delay(YDelay);
 
   meter_init();
