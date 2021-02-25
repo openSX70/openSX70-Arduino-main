@@ -26,6 +26,7 @@
   #define RED 7   //DONGLE RED LED ADRESS
   #define DOUBLECLICK 0
   #define SHUTTERDARKSLIDE 0 // makes you press shutter button to eject darkslide. This is to prevent externally powered cameras from firing the darkslide when opening.
+  #define APERTURE_PRIORITY 0
   #define LIGHMETER_HELPER 1
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_SX70 125
