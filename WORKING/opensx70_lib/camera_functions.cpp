@@ -536,6 +536,12 @@ void Camera::VariableManualExposure(int _myISO){
       break;
     }
   }
+  if (selector >= 3){
+    #if SIMPLEDEBUG
+        Serial.println("FF - Fill Flash");
+    #endif
+    Camera::FastFlash ();
+  }
 
   #if LMDEBUG
     uint32_t shutterCloseTime = millis(); //Shutter Debug
