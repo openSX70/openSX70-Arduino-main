@@ -822,16 +822,17 @@ void Camera::ExposureFinish()
     #if MXDEBUG
       Serial.println("mEXP");
     #endif
+    return;
   }
   else{
     delay (100);
     Camera::mirrorDOWN ();
     delay (300); //WAS 100
     while(digitalRead(PIN_S1) == S1Logic){ 
-    //wait for s1 to stop being pressed...
-    #if BASICDEBUG
-      Serial.println("wait for s1 to stop being pressed...");
-    #endif
+      //wait for s1 to stop being pressed...
+      #if BASICDEBUG
+        Serial.println("wait for s1 to stop being pressed...");
+      #endif
     }
     Camera::shutterOPEN();
     #if SONAR
@@ -843,16 +844,16 @@ void Camera::ExposureFinish()
     #endif
   }
   #if SIMPLEDEBUG
-  if (_dongle->checkDongle() > 0){ //Dongle present
-    #if SIMPLEDEBUG
-      Serial.println("Exposure Finish - Dongle Mode, ");
-    #endif
-  }
-  else if (_dongle->checkDongle() == 0){ //No Dongle
-    #if SIMPLEDEBUG
-      Serial.print("Exposure Finish - No Dongle Mode, ");
-    #endif
-  }
+    if (_dongle->checkDongle() > 0){ //Dongle present
+      #if SIMPLEDEBUG
+        Serial.println("Exposure Finish - Dongle Mode, ");
+      #endif
+    }
+    else if (_dongle->checkDongle() == 0){ //No Dongle
+      #if SIMPLEDEBUG
+        Serial.print("Exposure Finish - No Dongle Mode, ");
+      #endif
+    }
   #endif
   return;
 }
