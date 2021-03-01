@@ -29,7 +29,6 @@ int savedISO;
 int activeISO;
 //static int checkedcount;
 static int inizialized = 0;
-static int metercount;
 
 extern bool mEXPFirstRun = false;
 extern bool multipleExposureMode = false;
@@ -46,7 +45,6 @@ static int multipleExposureCounter = 0;
   bool FT = 0;
   bool S1F = 0;
   bool isFocused = 0; //neccessary? should be done by GTD???
-  int currentPicOnFocus; //dont know what this is for
 #endif
 
 
@@ -109,7 +107,7 @@ void setup() {//setup - Inizialize
   prev_selector = selector;
 
   io_init();
-  metercount = 0; //For the Lightmeter Helper Skipping Function
+
   checkFilmCount();
   inizialized++;
 
@@ -479,7 +477,6 @@ void printReadings() {
 void preFocus() {
   if ((digitalRead(PIN_S1F) == HIGH) && (isFocused == 0)) { // S1F pressed
     openSX70.S1F_Focus();
-    currentPicOnFocus = currentPicture;
     isFocused = 1;
     return;
   }
@@ -490,7 +487,6 @@ void unfocusing(){
   if ((digitalRead(PIN_S1F) == LOW) && (isFocused == 1)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
     //delay(100);
     openSX70.S1F_Unfocus();
-    //currentPicOnFocus = currentPicture;
     isFocused = 0;
     turnLedsOff();
     //return;
@@ -823,6 +819,5 @@ void saveISOChange() {
 void LightMeterHelper(byte ExposureType){
   if(openSX70.getLIGHTMETER_HELPER()){
     meter_led(selector, ExposureType);
-    metercount=0;
   }
 }
