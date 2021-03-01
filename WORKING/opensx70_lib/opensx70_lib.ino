@@ -166,7 +166,11 @@ camera_state do_state_darkslide (void) {
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
       delay(100);
+      #if COUNTER_BLINK
+      CounterBlink();
+      #else
       BlinkISO();
+      #endif
       #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
       #endif
@@ -211,7 +215,7 @@ camera_state do_state_noDongle (void){
   if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
     LightMeterHelper(0); 
     beginExposure();
-    delay (10000);
+    switch2Function(1);
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
   }
@@ -230,8 +234,11 @@ camera_state do_state_noDongle (void){
       saveISOChange();
     }
     else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
-      //Serial.println(F("Transition from no dongle to dongle"));
+      #if COUNTER_BLINK
+      CounterBlink();
+      #else
       BlinkISO();
+      #endif
     }
   }
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
@@ -334,7 +341,7 @@ camera_state do_state_flashBar (void){
   if (sw_S1.clicks == 2)
   {
     beginExposure();
-    delay(10000); //Switch Two Function in Flash Mode
+    switch2Function(1);
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount(); 
@@ -516,13 +523,10 @@ void DongleInserted() { //Dongle is pressend LOOP
   #if SONAR
     if (digitalRead(PIN_S1F) != S1Logic) { //Dont run DongleInserted Function on S1F pressed
   #endif
-      { //Serial.println(F("S1F HIGH"));
-        //selector = myDongle.selector();
+      {
         switch1 = myDongle.switch1();
         switch2 = myDongle.switch2();
-        //saveISOChange();//added 26.10.
         lmEnable(); //added 26.10.
-        //BlinkISO(); //check if dongle inserted, read the default ISO and blink once for SX70 and twice for 600.
         if ((selector != prev_selector)) //Update Dongle changes
         {
           #if ADVANCEDEBUG
@@ -537,9 +541,7 @@ void DongleInserted() { //Dongle is pressend LOOP
             Serial.println(ShutterSpeed[selector]);
           #endif
           blinkAutomode();
-          //blinkSpecialmode(); //B and T Mode Selector LED Blink
           prev_selector = selector;
-          //return;
         }
       }
   #if SONAR
@@ -581,6 +583,24 @@ void lmEnable(){
     }
 }
 
+#if COUNTER_BLINK
+
+void CounterBlink(){
+  switch1 = myDongle.switch1();
+  switch2 = myDongle.switch2();
+  if((switch2 != 1) && (switch1 != 1)){
+    turnLedsOff();
+    myDongle.simpleBlink((8-currentPicture), GREEN);
+    delay(500);
+    #if SIMPLEDEBUG
+     Serial.print(8 - currentPicture);
+     Serial.println(" Shots remaining");
+    #endif
+  }
+}
+
+#else
+
 void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 600
   switch1 = myDongle.switch1();
   switch2 = myDongle.switch2();
@@ -614,6 +634,7 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
       //return;
     }
 }
+#endif
 
 void blinkAutomode(){
   if ((switch2 != 1) || (switch1 != 1)) { //Save ISO Mode
@@ -637,21 +658,6 @@ void blinkAutomode(){
   }
 }
 
-void blinkSpecialmode(){
-  turnLedsOff();
-  if((switch2 != 1) || (switch1 != 1)){ //Not Save ISO Mode
-    if(ShutterSpeed[selector]== POST){
-      myDongle.simpleBlink(1, GREEN);
-      myDongle.simpleBlink(1, RED);
-    }
-    if(ShutterSpeed[selector]== POSB){
-      myDongle.simpleBlink(1, RED);
-      myDongle.simpleBlink(1, GREEN);
-    }
-    checkFilmCount();  
-  }
-}
-
 void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
   #if SIMPLEDEBUG
       Serial.print(F("Blink RED on ISO change: "));
@@ -672,13 +678,14 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
 }
 
 void switch2Function(int mode) {
-  //0 Manual, 1 Auto600, 2 AutoSX70, FlashBar
+  //0 Dongle 1 No dongle
   if (mode == 0) {
-    openSX70.shutterCLOSE();
     #if SONAR
       openSX70.S1F_Unfocus();
     #endif
-    openSX70.SelfTimerMUP();
+    #if TIMER_MIRROR_UP
+      openSX70.SelfTimerMUP();
+    #endif
     digitalWrite(PIN_LED2, LOW);
     digitalWrite(PIN_LED1, LOW);
     #if SONAR
@@ -687,38 +694,20 @@ void switch2Function(int mode) {
     openSX70.BlinkTimerDelay (GREEN, RED, 10);
   }
   else if (mode == 1) {
-    openSX70.SelfTimerMUP();
     #if SONAR
       openSX70.S1F_Unfocus();
     #endif
-    digitalWrite(PIN_LED2, LOW);
-    digitalWrite(PIN_LED1, LOW);
-    #if SONAR
-      openSX70.S1F_Focus();
+    #if TIMER_MIRROR_UP
+      openSX70.SelfTimerMUP();
     #endif
-    openSX70.BlinkTimerDelay (GREEN, RED, 10);
-  } else if (mode == 2) {
-    openSX70.SelfTimerMUP();
-    #if SONAR
-      openSX70.S1F_Unfocus();
-    #endif
-    digitalWrite(PIN_LED2, LOW);
-    digitalWrite(PIN_LED1, LOW);
-    #if SONAR
-      openSX70.S1F_Focus();
-    #endif
-    openSX70.BlinkTimerDelay (GREEN, RED, 10);
-  } else if (mode == 3) {
-    #if SONAR
-      openSX70.S1F_Unfocus();
-    #endif
-    openSX70.SelfTimerMUP();
     delay (10000); //NoDongleMode
-    //preFocus();
     #if SONAR
       openSX70.S1F_Focus();
     #endif
     delay(1000);
+  } 
+  else{
+    //undefined
   }
 }
 
