@@ -27,6 +27,9 @@
   #define DOUBLECLICK 0
   #define SHUTTERDARKSLIDE 0 // makes you press shutter button to eject darkslide. This is to prevent externally powered cameras from firing the darkslide when opening.
   #define APERTURE_PRIORITY 0
+  #define COUNTER_BLINK 0
+  #define TIMER_MIRROR_UP 1
+  #define EIGHT_SHOT_PACK 1
   #define LIGHMETER_HELPER 1
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_SX70 125
