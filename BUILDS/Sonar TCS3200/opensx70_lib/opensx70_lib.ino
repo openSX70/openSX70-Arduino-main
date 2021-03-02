@@ -592,24 +592,45 @@ void lmEnable(){
 void CounterBlink(){
   switch1 = myDongle.switch1();
   switch2 = myDongle.switch2();
-  int remainingShots = 8-currentPicture;
-  if((switch2 != 1) && (switch1 != 1)){
-    if(remainingShots>0){
-      turnLedsOff();
-      myDongle.simpleBlink((remainingShots), GREEN);
-      delay(500);
-    }
-    else{
+  #if EIGHT_SHOT_PACK
+    int remainingShots = 8-currentPicture;
+    if((switch2 != 1) && (switch1 != 1)){
+      if(remainingShots>0){
+        turnLedsOff();
+        myDongle.simpleBlink((remainingShots), GREEN);
+        delay(500);
+      }
+      else{
+        return;
+      }
+      
+      
+      #if SIMPLEDEBUG
+      Serial.print(8 - currentPicture);
+      Serial.println(" Shots remaining");
+      #endif
       return;
     }
-    
-    
-    #if SIMPLEDEBUG
-     Serial.print(8 - currentPicture);
-     Serial.println(" Shots remaining");
-    #endif
-    return;
-  }
+  #else
+    int remainingShots = 10-currentPicture;
+    if((switch2 != 1) && (switch1 != 1)){
+      if(remainingShots>0){
+        turnLedsOff();
+        myDongle.simpleBlink((remainingShots), GREEN);
+        delay(500);
+      }
+      else{
+        return;
+      }
+      
+      
+      #if SIMPLEDEBUG
+      Serial.print(10 - currentPicture);
+      Serial.println(" Shots remaining");
+      #endif
+      return;
+    }
+  #endif
 }
 
 #else
