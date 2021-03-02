@@ -442,6 +442,15 @@ void Camera::ManualExposure(){
      Serial.println("waiting for S3 to OPEN");
      #endif
   }
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
   delay (YDelay);
 
   int ShutterSpeedDelay = ((ShutterSpeed[selector]) + ShutterConstant);
@@ -484,10 +493,6 @@ void Camera::ManualExposure(){
   return; //Added 26.10.
 }
 
-/*
-  Might add another argument to this function. May want to change how varied the shutter is 
-  based on the selector. Smaller vs larger ranges.
-*/
 void Camera::VariableManualExposure(int _myISO){
 
   #if SONAR
@@ -506,6 +511,15 @@ void Camera::VariableManualExposure(int _myISO){
      Serial.println("waiting for S3 to OPEN");
      #endif
   }
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
   delay (YDelay);
 
   int ShutterSpeedDelay = ShutterSpeed[selector];
@@ -535,6 +549,12 @@ void Camera::VariableManualExposure(int _myISO){
     if(millis() >= (initialMillis + ShutterSpeedDelay)){
       break;
     }
+  }
+  if (selector >= 3){
+    #if SIMPLEDEBUG
+        Serial.println("FF - Fill Flash");
+    #endif
+    Camera::FastFlash ();
   }
 
   #if LMDEBUG
@@ -569,6 +589,16 @@ void Camera::AutoExposure(int _myISO){
      Serial.println("waiting for S3 to OPEN");
      #endif
   }
+
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
   delay(YDelay);
 
   meter_init();
@@ -685,8 +715,7 @@ void Camera::AutoExposureFF(int _myISO){
     Serial.print("ExposureTime on Automode + FF: ");
     Serial.println(exposureTime);
   #endif
-  currentPicture++; 
-  WritePicture(currentPicture);
+
   return; //Added 26.10.
 }
 
@@ -708,30 +737,23 @@ void Camera::ShutterB()
      Serial.println("waiting for S3 to OPEN");
      #endif
   }
-  delay (40);
-  if (_dongle->switch2() ==  1){
-    analogWrite(PIN_SOL2, 255);
-  }
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
+  delay (YDelay);
 
   Camera::shutterOPEN ();
-  if (_dongle->switch2() ==  1){
-    analogWrite(PIN_SOL2, 130);
-  }
+
   while (digitalRead(PIN_S1) == S1Logic){
     
   }
   Camera::FastFlash();
-  Camera::shutterCLOSE ();
-  if (_dongle->switch2() ==  1){
-    analogWrite(PIN_SOL2, 0);
-  }
-  #if SONAR
-      delay(100);
-      S1F_Unfocus(); //neccesary???
-      #if FOCUSDEBUG
-        Serial.println("Unfocus");
-      #endif
-  #endif
 
   ExposureFinish();
   return; //Added 26.10.
@@ -752,6 +774,15 @@ void Camera::ShutterT(){
   while (DebouncedRead(PIN_S3) != HIGH){
     //waiting for S3 to OPEN˚
   }
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
 
   delay (40);
 
@@ -766,18 +797,12 @@ void Camera::ShutterT(){
     #endif
     //do nothing
   }
-  if (digitalRead(PIN_S1) == S1Logic){
-    Camera::FastFlash();
-    Camera::shutterCLOSE ();
-  }
+  Camera::FastFlash();
 
-  #if SONAR
-    delay(100);
-    S1F_Unfocus(); //neccesary???
-    #if FOCUSDEBUG
-      Serial.println("Unfocus");
-    #endif
+  #if APERTURE_PRIORITY
+    analogWrite(PIN_SOL2, 0);
   #endif
+
 
   //multiple exposure test (Should not work in T Mode?!)
   ExposureFinish();
@@ -787,60 +812,50 @@ void Camera::ShutterT(){
 void Camera::ExposureFinish()
 {
   Camera::shutterCLOSE();
-  lmTimer_stop(); //Lightmeter Timer stop
-  #if SONAR
-    delay (100);
-    S1F_Unfocus(); //neccesary???
-    #if FOCUSDEBUG
-      Serial.println("Unfocus");
-    #endif
+  #if APERTURE_PRIORITY
+    analogWrite(PIN_SOL2, 0);
   #endif
+  lmTimer_stop(); //Lightmeter Timer stop
   delay (200); //Was 20
 
   if(multipleExposureMode == true){
-    while(digitalRead(PIN_S1) == S1Logic){
-      //wait for s1 to stop being pressed...
-      #if BASICDEBUG
-        Serial.println("wait for s1 to stop being pressed...");
-      #endif
-    }
     #if MXDEBUG
       Serial.println("mEXP");
     #endif
+    return;
   }
-  else if (_dongle->checkDongle() > 0){ //Dongle present
+  else{
     delay (100);
     Camera::mirrorDOWN ();
     delay (300); //WAS 100
-    while(digitalRead(PIN_S1) == S1Logic){ //should be on the end
+    while(digitalRead(PIN_S1) == S1Logic){ 
       //wait for s1 to stop being pressed...
       #if BASICDEBUG
         Serial.println("wait for s1 to stop being pressed...");
       #endif
     }
     Camera::shutterOPEN();
-    #if SIMPLEDEBUG
-      Serial.println("Exposure Finish - Dongle Mode, ");
-      //Serial.print("mxshots count: ");
-      //Serial.println(mxshots);
+    #if SONAR
+      delay (100);
+      S1F_Unfocus(); //neccesary???
+      #if FOCUSDEBUG
+        Serial.println("Unfocus");
+      #endif
     #endif
-    return; //added 26.10.
   }
-  else if (_dongle->checkDongle() == 0){ //No Dongle
-    delay (100);
-    Camera::mirrorDOWN ();
-    delay (300); //WAS 60
-    while(digitalRead(PIN_S1) == S1Logic){
-      #if BASICDEBUG
-        Serial.println("wait for s1 to stop being pressed...");
+  #if SIMPLEDEBUG
+    if (_dongle->checkDongle() > 0){ //Dongle present
+      #if SIMPLEDEBUG
+        Serial.println("Exposure Finish - Dongle Mode, ");
       #endif
     }
-    Camera::shutterOPEN();
-    #if SIMPLEDEBUG
-      Serial.print("Exposure Finish - No Dongle Mode, ");
-    #endif
-    return; //added 26.10.
-  }
+    else if (_dongle->checkDongle() == 0){ //No Dongle
+      #if SIMPLEDEBUG
+        Serial.print("Exposure Finish - No Dongle Mode, ");
+      #endif
+    }
+  #endif
+  return;
 }
 
 void Camera::multipleExposureLastClick(){
