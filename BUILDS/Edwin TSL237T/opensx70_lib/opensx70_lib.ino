@@ -210,7 +210,9 @@ camera_state do_state_noDongle (void){
     beginExposure();
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
-    CounterBlink();
+    #if COUNTER_BLINK
+      CounterBlink();
+    #endif
   }
   #if DOUBLECLICK
   if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
@@ -219,7 +221,9 @@ camera_state do_state_noDongle (void){
     switch2Function(1);
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
-    CounterBlink();
+    #if COUNTER_BLINK
+      CounterBlink();
+    #endif
   }
   #endif
   #if SONAR
@@ -305,7 +309,9 @@ camera_state do_state_dongle (void){
     }
     sw_S1.Reset();
     checkFilmCount();
-    CounterBlink();
+    #if COUNTER_BLINK
+      CounterBlink();
+    #endif
   } 
 
   // Dongle Removed
@@ -338,7 +344,9 @@ camera_state do_state_flashBar (void){
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount();
-    CounterBlink();
+    #if COUNTER_BLINK
+      CounterBlink();
+    #endif
   }
   #if DOUBLECLICK
   if (sw_S1.clicks == 2){
@@ -347,7 +355,9 @@ camera_state do_state_flashBar (void){
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount(); 
-    CounterBlink();
+    #if COUNTER_BLINK
+      CounterBlink();
+    #endif
   } 
   #endif
   
@@ -444,7 +454,9 @@ camera_state do_state_multi_exp (void){
       #endif
     }
     sw_S1.Reset();
-    CounterBlink();
+    #if COUNTER_BLINK
+      CounterBlink();
+    #endif
   }
 
   #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
