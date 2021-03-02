@@ -210,6 +210,7 @@ camera_state do_state_noDongle (void){
     beginExposure();
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
+    CounterBlink();
   }
   #if DOUBLECLICK
   if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
@@ -218,6 +219,7 @@ camera_state do_state_noDongle (void){
     switch2Function(1);
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
+    CounterBlink();
   }
   #endif
   #if SONAR
@@ -303,6 +305,7 @@ camera_state do_state_dongle (void){
     }
     sw_S1.Reset();
     checkFilmCount();
+    CounterBlink();
   } 
 
   // Dongle Removed
@@ -330,21 +333,21 @@ camera_state do_state_flashBar (void){
   #if SONAR
   preFocus();
   #endif
-  if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1))
-  {
+  if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     beginExposure();
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount();
+    CounterBlink();
   }
   #if DOUBLECLICK
-  if (sw_S1.clicks == 2)
-  {
+  if (sw_S1.clicks == 2){
     beginExposure();
     switch2Function(1);
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount(); 
+    CounterBlink();
   } 
   #endif
   
@@ -441,6 +444,7 @@ camera_state do_state_multi_exp (void){
       #endif
     }
     sw_S1.Reset();
+    CounterBlink();
   }
 
   #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
@@ -588,14 +592,23 @@ void lmEnable(){
 void CounterBlink(){
   switch1 = myDongle.switch1();
   switch2 = myDongle.switch2();
+  int remainingShots = 8-currentPicture;
   if((switch2 != 1) && (switch1 != 1)){
-    turnLedsOff();
-    myDongle.simpleBlink((8-currentPicture), GREEN);
-    delay(500);
+    if(remainingShots>0){
+      turnLedsOff();
+      myDongle.simpleBlink((remainingShots), GREEN);
+      delay(500);
+    }
+    else{
+      return;
+    }
+    
+    
     #if SIMPLEDEBUG
      Serial.print(8 - currentPicture);
      Serial.println(" Shots remaining");
     #endif
+    return;
   }
 }
 
@@ -712,6 +725,18 @@ void switch2Function(int mode) {
 }
 
 void checkFilmCount(){
+  #if EIGHT_SHOT_PACK
+    if(currentPicture >= 8){ 
+      #if SIMPLEDEBUG
+        Serial.print(F("Ten Frames shot!"));
+        Serial.print(F(", currentPicture: "));
+        Serial.println(currentPicture);
+      #endif
+      myDongle.dongleLed(GREEN, LOW);
+      myDongle.dongleLed(RED, HIGH);
+      return;
+    }
+  #else
   if ((currentPicture == 8) || (currentPicture == 9)){
       #if SIMPLEDEBUG
         Serial.print(F("Two Frames left!"));
@@ -721,7 +746,7 @@ void checkFilmCount(){
       //myDongle.simpleBlink(2, RED);
       myDongle.dongleLed(RED, LOW);
       myDongle.dongleLed(GREEN, HIGH);
-      //return;
+      return;
   }
   else if(currentPicture == 10){ 
     #if SIMPLEDEBUG
@@ -731,8 +756,9 @@ void checkFilmCount(){
     #endif
     myDongle.dongleLed(GREEN, LOW);
     myDongle.dongleLed(RED, HIGH);
-    //return;
+    return;
   }
+  #endif
 }
 
 void normalOperation(){
