@@ -197,7 +197,10 @@ void Camera::mirrorUP(){
   #if BASICDEBUG
     Serial.println("mirrorUP");
   #endif
-  motorON ();
+  pinMode(PIN_S3, INPUT_PULLUP);
+  if(digitalRead(PIN_S3) != HIGH){
+    motorON ();
+  }
 
   while (DebouncedRead(PIN_S5) != HIGH){
     #if BASICDEBUG
