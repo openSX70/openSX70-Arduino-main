@@ -30,8 +30,10 @@ int activeISO;
 //static int checkedcount;
 static int inizialized = 0;
 
-extern bool mEXPFirstRun = false;
-extern bool multipleExposureMode = false;
+bool mEXPFirstRun;
+bool multipleExposureMode;
+
+
 static int multipleExposureCounter = 0;
 #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
   static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
@@ -107,6 +109,9 @@ void setup() {//setup - Inizialize
   prev_selector = selector;
 
   io_init();
+
+  mEXPFirstRun = false;
+  multipleExposureMode = false;
 
   checkFilmCount();
   inizialized++;
