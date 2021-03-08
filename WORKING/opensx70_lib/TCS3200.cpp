@@ -101,8 +101,14 @@
         measuring = false;
 
         float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
-        int pred_milli = round(float(outputCompare)/float(slope)); 
-
+        int pred_milli; 
+        if(slope == 0){
+          pred_milli = 9999;
+        }
+        else{
+          pred_milli = round(float(outputCompare)/float(slope)); 
+        }
+        
         #if LMHELPERDEBUG
           Serial.print("Metering ended at ");
           Serial.print(endMillis);
