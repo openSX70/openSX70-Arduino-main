@@ -1,7 +1,7 @@
 #ifndef settings_h
   #define settings_h
   #include "Arduino.h"
-  //------------DEBUG OPTIONS---------------------------------------------
+  //----------------DEBUG OPTIONS----------------------------------------
   #define DEBUG 0
   #define SIMPLEDEBUG 0     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //Simple Debug On 1 - Off 0
@@ -13,24 +13,33 @@
   #define STATEDEBUG 0      //Debug state transitions
   #define FOCUSDEBUG 0      //Focus Debug on Sonar
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
-  //----------------------END DEBUG OPTIONS------------------------------
-  //----------------------CAMERA PCB OPTIONS SELECTION-------------------
-  #define TCS3200         //TSL237T TSL235R TCS3200
-  #define S1Logic LOW    //HIGH for sonar, LOW for Alpha
-  #define ALPHA 1         //1 if ALPHA camera/PCB
-  #define SONAR 0         //   
+  //----------------END DEBUG OPTIONS------------------------------------
+
+  //----------------CAMERA PCB OPTIONS SELECTION-------------------------
+  //      Sensor Selection
+  #define TCS3200 1          //Meroe, Land
+  #define TSL237T 0          //Edwin
+  #define TSL235R 0
+  //      Camera Options
+  #define S1Logic LOW        //HIGH for sonar, LOW for Alpha
+  #define ALPHA 1            //1 if ALPHA camera/PCB
+  #define SONAR 0               
+  //      Dongle Options 
   #define ORIGAMI 0
   #define ORIGAMIV1 0
   #define UDONGLE 1
-  #define GREEN 6 //DONGLE GREEN LED ADRESS
-  #define RED 7   //DONGLE RED LED ADRESS
-  #define DOUBLECLICK 0
-  #define SHUTTERDARKSLIDE 0 // makes you press shutter button to eject darkslide. This is to prevent externally powered cameras from firing the darkslide when opening.
+  #define GREEN 6
+  #define RED 7
+  //      Feature toggles
+  #define DOUBLECLICK 0      
+  #define SHUTTERDARKSLIDE 0
   #define APERTURE_PRIORITY 0
-  #define COUNTER_BLINK 1
+  #define COUNTER_BLINK 0
   #define TIMER_MIRROR_UP 1
   #define EIGHT_SHOT_PACK 1
   #define LIGHMETER_HELPER 1
+  //----------------END CAMERA PCB OPTIONS SELECTION------------------------
+
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_SX70 125
   #define ISO_600 640
@@ -38,15 +47,26 @@
   #define DEFAULT_ISO ISO_600
   //---------------END ISO VALUES--------------------------------------------
 
+  //---------------MAGIC NUMBERS---------------------------------------------
+  #if TCS3200 
+    #define A100 400
+    #define A600 150
+  #elif TSL237T
+    #define A100 950
+    #define A600 420
+  #elif TSL235R
+    #define A100 485
+    #define A600 225
+  #endif
+  //---------------END MAGIC NUMBERS-----------------------------------------
+
   //---------------Shutter Settings------------------------------------------
-  //#define SHUTTER_SPEED_VARIANCE 0.70 // This is a percentage. range (0.0 - 1.0) Sets minimum bounds for shutter to fire at high EVs. EX at .80 at EV17 (25ms) it will fire within the range of 20ms-25ms (5ms or 20% variance)
   #define SELECTOR_LIMIT 5 // Sets what selector it will stop varying the speed at (starting from 0 to the number you set)
   //---------------End Shutter Settings--------------------------------------
 
   //---------------METER SETTINGS--------------------------------------------
   #define METER_INTERVAL 100 // Sets how long each meter measurement sample is taken in ms
-  //#define METER_RANGE 0.20 // METER_RANGE defines the percentage left and right that is acceptable for the meter to be "accurate"
-  #define METER_AUTO_WARNING 150 // If predicted ms is over this value, warning LED will shine in auto mode
+  #define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
   #define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
   #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
   //---------------END METER SETTINGS----------------------------------------
@@ -78,6 +98,8 @@
       POSB = -97            AUTO100 = - 97    AUTO600BW = -97
                                               AUTO100 = -96
   */
+  extern int FD100;
+  extern int FD600;
   extern int ShutterConstant;
   //OPTION
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
