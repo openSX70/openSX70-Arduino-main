@@ -202,25 +202,6 @@
     #endif
   }
 
-  int nearest(int x, int myArray[], int elements, bool sorted) //estimate the correct Slot for the Estimated Exposure Value
-  {
-    int idx = 0; // by default near first element
-    int distance = abs(myArray[idx] - x);
-    for (int i = 1; i < elements; i++)
-    {
-      int d = abs(myArray[i] - x);
-      if (d < distance)
-      {
-        idx = i;
-        distance = d;
-      }
-      else if (sorted){ 
-        return idx;
-      }
-    }
-    return idx;
-  }
-
   void meter_led(byte _selector, byte _type){
     if(_type == 0){ //OFF
       digitalWrite(PIN_LED1, LOW);
