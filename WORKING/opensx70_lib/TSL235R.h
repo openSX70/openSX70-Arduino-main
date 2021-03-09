@@ -65,6 +65,8 @@ bool meter_update();
 
 void meter_led(byte _selector, byte _type);
 
+void lmTimer_stop();
+
 // Init timer 1 for reading sensor, enable sensor
 void tsl235_init();
 
