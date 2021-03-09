@@ -17,9 +17,15 @@
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
-  #define TCS3200 1          //Meroe, Land
+  #define TCS3200 0          //Meroe, Land
   #define TSL237T 0          //Edwin
-  #define TSL235R 0
+  #define TSL235R 1
+  //      Board Version
+  #define MEROE_PCB 0
+  #define LAND_PCB 0
+  #define SONAR_PCB 0
+  #define EDWIN_PCB 0
+  #define ALPHA2_PCB 1
   //      Camera Options
   #define S1Logic LOW        //HIGH for sonar, LOW for Alpha
   #define ALPHA 1            //1 if ALPHA camera/PCB
