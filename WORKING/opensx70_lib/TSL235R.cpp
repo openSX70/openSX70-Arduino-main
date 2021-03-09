@@ -49,13 +49,17 @@ void meter_init(){
   tsl235_init();
 }
 
-void meter_set_iso(const uint16_t& iso){
-    if (iso == ISO_600) {
-      outputCompare = A600;
-    } else if (iso == ISO_SX70) {
-      outputCompare = A100;
-    }
-}
+void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Timer1 -- Magicnumber for ISO
+      if (iso == ISO_600) {
+        outputCompare = A600;
+      } 
+      else if (iso == ISO_SX70) {
+        outputCompare = A100;
+      }
+      else{
+        outputCompare = iso; //FF Delay Magicnumber as well as      
+      }
+  }
 
 void meter_integrate(){
 	tsl235_start_integration();
