@@ -26,6 +26,10 @@
   
   // initialise Timer 1 for light sensor integration.
   void tcs3200_init(){
+    #if ALPHA
+    pinMode(PIN_OE, OUTPUT); 
+    digitalWrite(PIN_OE, LOW); //LOW = enabled
+    #endif
     integrationFinished = 0; //not sure if needed
     //TCS3200_S0_Pin = HIGH(3.3V) Jumper on PCB
     //TCS3200_S1_Pin = On Pin 9 ATMEGA
