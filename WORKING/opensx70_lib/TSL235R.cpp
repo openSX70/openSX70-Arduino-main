@@ -34,7 +34,7 @@
  */
 
 #include "open_sx70.h"
-#if defined (TSL235R)
+#if TSL235R
 volatile bool integrationFinished = 0;
 
 uint16_t outputCompare = A100;

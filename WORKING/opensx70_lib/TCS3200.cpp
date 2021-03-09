@@ -1,5 +1,5 @@
 #include "open_sx70.h"
-#if defined (TCS3200)
+#if TCS3200
   volatile bool integrationFinished = 0;
 
   bool measuring = false;

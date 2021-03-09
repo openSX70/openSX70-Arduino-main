@@ -1,5 +1,5 @@
 #include "open_sx70.h"
-#if defined (TSL237T)
+#if TSL237T
   volatile bool integrationFinished = 0;
   int _myISO = 0;
 
