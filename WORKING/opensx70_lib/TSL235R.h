@@ -46,9 +46,6 @@
 #ifndef OPENSX70_TSL235R_H
 #define OPENSX70_TSL235R_H
 
-#define A100 485
-#define A600 225
-#define A400 300 //need to estimate right Value for BW 600
 
 
 /* These functions are called by the main loop.
