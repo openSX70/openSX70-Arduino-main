@@ -26,6 +26,10 @@
   
   // initialise Timer 1 for light sensor integration.
   void tcs3200_init(){
+    #if ALPHA
+    pinMode(PIN_OE, OUTPUT); 
+    digitalWrite(PIN_OE, LOW); //LOW = enabled
+    #endif
     integrationFinished = 0; //not sure if needed
     //TCS3200_S0_Pin = HIGH(3.3V) Jumper on PCB
     //TCS3200_S1_Pin = On Pin 9 ATMEGA
@@ -101,8 +105,14 @@
         measuring = false;
 
         float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
-        int pred_milli = round(float(outputCompare)/float(slope)); 
-
+        int pred_milli; 
+        if(slope == 0){
+          pred_milli = 9999;
+        }
+        else{
+          pred_milli = round(float(outputCompare)/float(slope)); 
+        }
+        
         #if LMHELPERDEBUG
           Serial.print("Metering ended at ");
           Serial.print(endMillis);
