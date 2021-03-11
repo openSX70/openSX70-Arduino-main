@@ -17,15 +17,15 @@
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
-  #define TCS3200 0          //Meroe, Land
+  #define TCS3200 1          //Meroe, Land
   #define TSL237T 0          //Edwin
-  #define TSL235R 1
+  #define TSL235R 0
   //      Board Version
-  #define MEROE_PCB 0
+  #define MEROE_PCB 1
   #define LAND_PCB 0
   #define SONAR_PCB 0
   #define EDWIN_PCB 0
-  #define ALPHA2_PCB 1
+  #define ALPHA2_PCB 0
   //      Camera Options
   #define S1Logic LOW        //HIGH for sonar, LOW for Alpha
   #define ALPHA 1            //1 if ALPHA camera/PCB
@@ -77,53 +77,31 @@
   #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
   //---------------END METER SETTINGS----------------------------------------
 
-  #define EE_ADD_CUR   4    //-> CurrentPicture --> 1-8 "Pack" picture counter
-  #define EE_ADD_ADD   30    //-> eeAddress Where to write next
-  #define EE_ADD_PIC   13    //-> ActualPicture --> Counter from begining
-  #define EE_ADD_ISO   20   //-> camera current ISO (dongleless)
-
   //---------------MULTIPLE EXPOSURES MODE SETTINGS--------------------------
   #define MULTIPLE_EXPOSURES_TIMEOUT_ENABLED 1 // 1 -> MX mode will finish after timeout. 0 -> No time limit for MX mode.
   #define MULTIPLE_EXPOSURES_TIMEOUT 120000 // Max time that MX mode can run for after the first exposure (in milliseconds)
   //---------------END MULTIPLE EXPOSURES MODE SETTINGS----------------------
 
-  //---------------METER SETTINGS--------------------------------------------
-  //---------------OPTION REGARDING SELECTOR WHEEL---------------------------
-  //enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
+  #define EE_ADD_CUR   4    //-> CurrentPicture --> 1-8 "Pack" picture counter
+  #define EE_ADD_ADD   30    //-> eeAddress Where to write next
+  #define EE_ADD_PIC   13    //-> ActualPicture --> Counter from begining
+  #define EE_ADD_ISO   20   //-> camera current ISO (dongleless) 
+
   enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
-  //enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; //uDONGLE original
-  //enum positions_t {POST = -100, AUTO600, AUTO600BW, AUTO100}; //uDONGLE Optoflow
-  //enum positions_t {POST = -100, POSB, AUTO600, AUTO600BW, AUTO100}; //uDONGLE Optoflow POST = -100, POSB=-99, AUTO600=-98, AUTO600BW=-97, AUTO100=-96
-  /*
-    TO CLARIFY:
-  
-      uDongle               AnalogueDongle    AnalogueDongle 600BW
-      AUTO600 = - 100       POST = -100       POST =-100
-      AUTO100 = -99         POSB = -99        POSB =-99
-      POST = -98            AUTO600 = - 98    AUTO600 = -98
-      POSB = -97            AUTO100 = - 97    AUTO600BW = -97
-                                              AUTO100 = -96
-  */
+
   extern int FD100;
   extern int FD600;
   extern int ShutterConstant;
-  //OPTION
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
-  //flashDelay is the time it takes to fire the flash (even if none is connected) when slow shutterspeeds
   extern int flashDelay; //new flash "system"
-
   extern int MeterRange[];
-
   extern int MaxRange[];
-
   extern int MinRange[];
-
   extern int ShutterVariance[];
-  //this speed and SLOWER will trigger flash
-  extern int mxshots; //Multiple exposure counter
+  extern int mxshots;
   extern byte lightmeterHelper;
   extern const uint8_t YDelay;
-  extern const byte PowerDownDelay; //time it takes to be fully closed
+  extern const byte PowerDownDelay;
   extern const byte PowerDown; //max 255 = full power/POWERUP mode
   #define DEBOUNCECOUNT 5 
   extern int currentPicture;
