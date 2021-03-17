@@ -491,7 +491,7 @@ void Camera::VariableManualExposure(int _myISO){
   }
   if (selector >= 3){
     #if SIMPLEDEBUG
-        Serial.println("FF - Fill Flash");
+        Serial.println(F("Sending FF signal to Dongle"));
     #endif
     Camera::FastFlash ();
   }
@@ -829,6 +829,9 @@ void Camera::FastFlash(){
   delay (1);                      //FLASH TRIGGERING
   digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
+
+  //I think we need a delay to actually catch the flash from a strobe. 
+  delay(20);
 }
 
 bool Camera::setLIGHTMETER_HELPER(bool state){
