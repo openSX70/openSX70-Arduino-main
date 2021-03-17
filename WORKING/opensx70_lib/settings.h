@@ -69,6 +69,7 @@
 
   //---------------Shutter Settings------------------------------------------
   #define SELECTOR_LIMIT 5 // Sets what selector it will stop varying the speed at (starting from 0 to the number you set)
+  #define SELECTOR_LIMIT_FLASH 6
   //---------------End Shutter Settings--------------------------------------
 
   //---------------METER SETTINGS--------------------------------------------
