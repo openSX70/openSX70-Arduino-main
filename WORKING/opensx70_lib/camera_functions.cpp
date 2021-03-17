@@ -73,16 +73,6 @@ void Camera::S1F_Focus(){
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
-    
-    /*test(!getGTD());
-    {
-      i++;
-      Serial.println("Wait for GTD to go 1");
-      Serial.print("getGTD iteration: ");
-      Serial.println(i);
-      
-      digitalWrite(PIN_S1F_FBW, HIGH);
-    }*/
     return;
 }
 
