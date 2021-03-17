@@ -481,10 +481,11 @@ void Camera::VariableManualExposure(int _myISO){
   meter_integrate();
 
   uint32_t initialMillis = millis();
+  uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
   Camera::shutterOPEN();
   delay(MinShutterSpeedDelay);
   while(meter_update() == false){
-    if(millis() >= (initialMillis + ShutterSpeedDelay)){
+    if(millis() >= maxMillis){
       break;
     }
   }
