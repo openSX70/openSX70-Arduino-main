@@ -98,7 +98,7 @@ void setup() {//setup - Inizialize
   sw_S1.debounceTime   = 15;   // Debounce timer in ms 15
   sw_S1.multiclickTime = 250;  // Time limit for multi clicks
   #if SONAR
-  sw_S1.longClickTime = 300;
+  sw_S1.longClickTime = 50;
   #else
   sw_S1.longClickTime  = 0; // time until "held-down clicks" register
   #endif

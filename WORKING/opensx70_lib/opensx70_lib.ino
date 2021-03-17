@@ -100,7 +100,7 @@ void setup() {//setup - Inizialize
   sw_S1.debounceTime   = 15;   // Debounce timer in ms 15
   sw_S1.multiclickTime = 250;  // Time limit for multi clicks
   #if SONAR
-  sw_S1.longClickTime = 300;
+  sw_S1.longClickTime = 50;
   #else
   sw_S1.longClickTime  = 0; // time until "held-down clicks" register
   #endif
@@ -693,14 +693,14 @@ void blinkAutomode(){
     if(ShutterSpeed[selector]== AUTO600){
       myDongle.simpleBlink(2, GREEN);
       #if SIMPLEDEBUG
-        Serial.print(F("blinkAutomode() - Blink 2 times Green on Auto600 selected: "));
+        Serial.print(F("Selector at A600, Blink 2"));
         Serial.println(ShutterSpeed[selector]);
       #endif
       //return;
     }else if(ShutterSpeed[selector]== AUTO100){
       myDongle.simpleBlink(1, GREEN);
       #if SIMPLEDEBUG
-        Serial.print(F("blinkAutomode() - Blink 1 times Green on Auto100 selected: "));
+        Serial.print(F("Selector at A100, Blink 1"));
         Serial.println(ShutterSpeed[selector]);
       #endif
       //return;
@@ -711,7 +711,7 @@ void blinkAutomode(){
 
 void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
   #if SIMPLEDEBUG
-      Serial.print(F("Blink RED on ISO change: "));
+      Serial.print(F("Blinking ISO change"));
   #endif
   turnLedsOff();
   if (activeISO == ISO_SX70){
@@ -721,14 +721,17 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
     myDongle.simpleBlink(2, RED);
   }
   #if SIMPLEDEBUG
-      Serial.print(F("active ISO: "));
-      Serial.println(activeISO);
+    Serial.print(F("active ISO: "));
+    Serial.println(activeISO);
   #endif
   checkFilmCount();
   //return;
 }
 
 void switch2Function(int mode) {
+  #if SIMPLEDEBUG
+    Serial.println(F("Self Timer Activated"));
+  #endif
   //0 Dongle 1 No dongle
   if (mode == 0) {
     #if SONAR
@@ -760,13 +763,16 @@ void switch2Function(int mode) {
   else{
     //undefined
   }
+  #if SIMPLEDEBUG
+    Serial.println(F("Self Timer End"));
+  #endif
 }
 
 void checkFilmCount(){
   #if EIGHT_SHOT_PACK
     if(currentPicture >= 8){ 
       #if SIMPLEDEBUG
-        Serial.print(F("Ten Frames shot!"));
+        Serial.print(F("All 8 Frames shot!"));
         Serial.print(F(", currentPicture: "));
         Serial.println(currentPicture);
       #endif
@@ -788,7 +794,7 @@ void checkFilmCount(){
   }
   else if(currentPicture == 10){ 
     #if SIMPLEDEBUG
-      Serial.print(F("Ten Frames shot!"));
+      Serial.print(F("All ten Frames shot!"));
       Serial.print(F(", currentPicture: "));
       Serial.println(currentPicture);
     #endif
