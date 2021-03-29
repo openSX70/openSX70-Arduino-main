@@ -31,6 +31,7 @@
   #define TIMER_MIRROR_UP 1
   #define EIGHT_SHOT_PACK 1
   #define LIGHMETER_HELPER 1
+  #define EJECT_AFTER_DEPRESSING 0 // Ejects the film only after depressing the shutter button. This gives time to the photographer to shield the camera from light.
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_SX70 125
   #define ISO_600 640
