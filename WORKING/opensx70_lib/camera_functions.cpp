@@ -829,9 +829,6 @@ void Camera::FastFlash(){
   delay (1);                      //FLASH TRIGGERING
   digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
-
-  //I think we need a delay to actually catch the flash from a strobe. 
-  delay(20);
 }
 
 bool Camera::setLIGHTMETER_HELPER(bool state){
