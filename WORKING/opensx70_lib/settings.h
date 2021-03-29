@@ -24,6 +24,7 @@
   #define MEROE_PCB 1
   #define LAND_PCB 0
   #define SONAR_PCB 0
+  #define SONAR_UNI_PCB 0
   #define EDWIN_PCB 0
   #define ALPHA2_PCB 0
   //      Camera Options
