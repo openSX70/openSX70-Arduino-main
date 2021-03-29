@@ -327,7 +327,7 @@ camera_state do_state_dongle (void){
     #endif
   } 
   // Multiple Exposure switch flipped
-  else if ((switch1 == 1) && (switch2 == 0)){
+  else if (switch1 == 1){
     result = STATE_MULTI_EXP;
     multipleExposureMode = true;
     mEXPFirstRun = true;
