@@ -46,11 +46,12 @@
   #define EIGHT_SHOT_PACK 1    //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
   #define LIGHMETER_HELPER 1   //1 Enables viewfinder light meter helper
   #define EJECT_AFTER_DEPRESSING 0 // Ejects the film only after releasing the shutter button. This gives time to the photographer to shield the film from light.
+  #define DISABLE_BUTTON_WHEN_EMPTY 0 //disables shutter button when camera is empty
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_600 640
-  #define ISO_600BW 400
+  #define ISO_SX70 125
   #define DEFAULT_ISO ISO_600
   //---------------END ISO VALUES--------------------------------------------
 

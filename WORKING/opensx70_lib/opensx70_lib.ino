@@ -57,6 +57,7 @@ typedef enum{
   STATE_DONGLE,
   STATE_FLASHBAR,
   STATE_MULTI_EXP,
+  STATE_EMPTY_PACK,
   STATE_N
 } camera_state;
 
@@ -67,13 +68,15 @@ camera_state do_state_noDongle (void);
 camera_state do_state_dongle (void);
 camera_state do_state_flashBar (void);
 camera_state do_state_multi_exp (void);
+camera_state do_state_empty_pack (void);
 
 static const camera_state_funct STATE_MACHINE [STATE_N] = {
   &do_state_darkslide,
   &do_state_noDongle,
   &do_state_dongle,
   &do_state_flashBar,
-  &do_state_multi_exp
+  &do_state_multi_exp,
+  &do_state_empty_pack
 };
 
 //Default state
@@ -167,14 +170,23 @@ camera_state do_state_darkslide (void) {
         Serial.println(currentPicture);
       #endif
     }
-    
-    if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
+
+    if(emptyCheck()){
+      #if BASICDEBUG
+        Serial.println(F("S8 S9 LOW. PACK EMPTY."));
+      #endif
+      #if STATEDEBUG
+        Serial.println(F("TRANSITION TO STATE_PACK_EMPTY FROM STATE_DARKSLIDE"));
+      #endif
+      result = STATE_EMPTY_PACK;
+    }
+    else if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
       savedISO = ReadISO();
       delay(100);
       #if COUNTER_BLINK
       CounterBlink();
-      #else
+      #else 
       BlinkISO();
       #endif
       #if STATEDEBUG
@@ -216,6 +228,9 @@ camera_state do_state_noDongle (void){
     beginExposure();
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
+    if(emptyCheck()){
+      return STATE_EMPTY_PACK;
+    }
     #if COUNTER_BLINK
       CounterBlink();
     #endif
@@ -227,6 +242,9 @@ camera_state do_state_noDongle (void){
     switch2Function(1);
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
+    if(emptyCheck()){
+      return STATE_EMPTY_PACK;
+    }
     #if COUNTER_BLINK
       CounterBlink();
     #endif
@@ -288,10 +306,10 @@ camera_state do_state_dongle (void){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
-    if((selector>=0) && (selector<=SELECTOR_LIMIT)){ //fast manual speeds
+    if((selector>=0) && (selector<=SELECTOR_LIMIT_FLASH)){ //fast manual speeds
       openSX70.VariableManualExposure(savedISO);
     }
-    else if((selector>SELECTOR_LIMIT) && (selector<12)){ //MANUAL SPEEDS  
+    else if((selector>SELECTOR_LIMIT_FLASH) && (selector<12)){ //MANUAL SPEEDS  
       openSX70.ManualExposure();
     }
     else if(selector == 12){ //POST
@@ -316,6 +334,9 @@ camera_state do_state_dongle (void){
     }
     sw_S1.Reset();
     checkFilmCount();
+    if(emptyCheck()){
+      return STATE_EMPTY_PACK;
+    }
     #if COUNTER_BLINK
       CounterBlink();
     #endif
@@ -352,6 +373,9 @@ camera_state do_state_flashBar (void){
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount();
+    if(emptyCheck()){
+      return STATE_EMPTY_PACK;
+    }
     #if COUNTER_BLINK
       CounterBlink();
     #endif
@@ -362,7 +386,10 @@ camera_state do_state_flashBar (void){
     switch2Function(1);
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
-    checkFilmCount(); 
+    checkFilmCount();
+    if(emptyCheck()){
+      return STATE_EMPTY_PACK;
+    } 
     #if COUNTER_BLINK
       CounterBlink();
     #endif
@@ -452,6 +479,9 @@ camera_state do_state_multi_exp (void){
     else if(switch1 == 0 && multipleExposureCounter > 0){
       openSX70.multipleExposureLastClick();
       checkFilmCount();
+      if(emptyCheck()){
+        return STATE_EMPTY_PACK;
+      }
       multipleExposureCounter = 0;
       #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
         multipleExposureLastStartTimestamp = 0;
@@ -487,6 +517,10 @@ camera_state do_state_multi_exp (void){
     #endif
   }
   return result;
+}
+
+camera_state do_state_empty_pack (void) {
+
 }
 
 #if SONAR
@@ -838,6 +872,15 @@ void normalOperation(){
       //   *  SELECTOR = NORMAL (LOW)
       //   *  MXSHOTS >= 1
     sw_S1.Update();
+  }
+}
+
+bool emptyCheck() {
+  if(digitalRead(PIN_S8) == LOW && digitalRead(PIN_S9) == LOW){
+    return true;
+  }
+  else{
+    return false;
   }
 }
 
