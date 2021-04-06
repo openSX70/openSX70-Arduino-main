@@ -139,7 +139,7 @@ void setup() {//setup - Inizialize
 void loop() {
   //savedISO = ReadISO();
   selector = myDongle.selector();
-  normalOperation();
+  sw_S1.Update();
   state = STATE_MACHINE[state]();
   #if SONAR
     unfocusing();
@@ -229,6 +229,12 @@ camera_state do_state_noDongle (void){
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
     if(emptyCheck()){
+      #if BASICDEBUG
+        Serial.println(F("S8 S9 LOW. PACK EMPTY."));
+      #endif
+      #if STATEDEBUG
+        Serial.println(F("TRANSITION TO STATE_PACK_EMPTY FROM STATE_NODONGLE"));
+      #endif
       return STATE_EMPTY_PACK;
     }
     #if COUNTER_BLINK
@@ -243,6 +249,12 @@ camera_state do_state_noDongle (void){
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
     if(emptyCheck()){
+      #if BASICDEBUG
+        Serial.println(F("S8 S9 LOW. PACK EMPTY."));
+      #endif
+      #if STATEDEBUG
+        Serial.println(F("TRANSITION TO STATE_PACK_EMPTY FROM STATE_NODONGLE"));
+      #endif
       return STATE_EMPTY_PACK;
     }
     #if COUNTER_BLINK
@@ -335,6 +347,12 @@ camera_state do_state_dongle (void){
     sw_S1.Reset();
     checkFilmCount();
     if(emptyCheck()){
+      #if BASICDEBUG
+        Serial.println(F("S8 S9 LOW. PACK EMPTY."));
+      #endif
+      #if STATEDEBUG
+        Serial.println(F("TRANSITION TO STATE_PACK_EMPTY FROM STATE_DONGLE"));
+      #endif
       return STATE_EMPTY_PACK;
     }
     #if COUNTER_BLINK
@@ -374,6 +392,12 @@ camera_state do_state_flashBar (void){
     sw_S1.Reset();
     checkFilmCount();
     if(emptyCheck()){
+      #if BASICDEBUG
+        Serial.println(F("S8 S9 LOW. PACK EMPTY."));
+      #endif
+      #if STATEDEBUG
+        Serial.println(F("TRANSITION TO STATE_PACK_EMPTY FROM STATE_FLASHBAR"));
+      #endif
       return STATE_EMPTY_PACK;
     }
     #if COUNTER_BLINK
@@ -388,6 +412,12 @@ camera_state do_state_flashBar (void){
     sw_S1.Reset();
     checkFilmCount();
     if(emptyCheck()){
+      #if BASICDEBUG
+        Serial.println(F("S8 S9 LOW. PACK EMPTY."));
+      #endif
+      #if STATEDEBUG
+        Serial.println(F("TRANSITION TO STATE_PACK_EMPTY FROM STATE_FLASHBAR"));
+      #endif
       return STATE_EMPTY_PACK;
     } 
     #if COUNTER_BLINK
@@ -480,6 +510,12 @@ camera_state do_state_multi_exp (void){
       openSX70.multipleExposureLastClick();
       checkFilmCount();
       if(emptyCheck()){
+        #if BASICDEBUG
+        Serial.println(F("S8 S9 LOW. PACK EMPTY."));
+        #endif
+        #if STATEDEBUG
+          Serial.println(F("TRANSITION TO STATE_PACK_EMPTY FROM STATE_DARKSLIDE"));
+        #endif
         return STATE_EMPTY_PACK;
       }
       multipleExposureCounter = 0;
@@ -520,7 +556,31 @@ camera_state do_state_multi_exp (void){
 }
 
 camera_state do_state_empty_pack (void) {
-
+  #if DISABLE_BUTTON_WHEN_EMPTY
+    if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
+      #if BASICDEBUG
+        Serial.println(F("OUT OF SHOTS. NOT FIRING SHUTTER"));
+      #endif
+      myDongle.simpleBlink(3, RED);
+      sw_S1.Reset();
+    }
+  #else
+    if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
+      #if BASICDEBUG
+        Serial.println(F("OUT OF SHOTS. DOING QUICK CYCLE"));
+      #endif
+      openSX70.shutterCLOSE();
+      delay(100)
+      openSX70.mirrorUP();
+      delay(40);
+      openSX70.shutterOPEN();
+      delay(70);
+      openSX70.shutterCLOSE();
+      openSX70.mirrorDOWN();
+      delay(40);
+      openSX70.shutterOPEN();
+    }
+  #endif
 }
 
 #if SONAR
