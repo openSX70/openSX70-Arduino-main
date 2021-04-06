@@ -134,7 +134,7 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
-  savedISO = ReadISO();
+  //savedISO = ReadISO();
   selector = myDongle.selector();
   normalOperation();
   state = STATE_MACHINE[state]();
@@ -170,6 +170,7 @@ camera_state do_state_darkslide (void) {
     
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
+      savedISO = ReadISO();
       delay(100);
       #if COUNTER_BLINK
       CounterBlink();
@@ -182,14 +183,14 @@ camera_state do_state_darkslide (void) {
     }
     else if ((selector == 100) && (myDongle.checkDongle() == 0)){
       result = STATE_FLASHBAR;
-
+      savedISO = ReadISO();
       #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
       #endif
     }
     else{
       result = STATE_NODONGLE;
-
+      savedISO = ReadISO();
       #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
       #endif
@@ -240,7 +241,7 @@ camera_state do_state_noDongle (void){
       Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
     #endif
     result = STATE_DONGLE;
-    //myDongle.initDS2408();
+    savedISO = ReadISO();
     if(((myDongle.switch1() == 1) && (myDongle.switch2() == 1))){
       saveISOChange();
     }
@@ -254,6 +255,7 @@ camera_state do_state_noDongle (void){
   }
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
+    savedISO = ReadISO();
     #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
     #endif
@@ -322,6 +324,7 @@ camera_state do_state_dongle (void){
   // Dongle Removed
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
+    savedISO = ReadISO();
     #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
     #endif
@@ -368,6 +371,7 @@ camera_state do_state_flashBar (void){
   
   if ((selector == 200) && (myDongle.checkDongle() == 0)){
     result = STATE_NODONGLE;
+    savedISO = ReadISO();
     #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
