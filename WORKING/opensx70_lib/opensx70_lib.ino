@@ -570,7 +570,7 @@ camera_state do_state_empty_pack (void) {
         Serial.println(F("OUT OF SHOTS. DOING QUICK CYCLE"));
       #endif
       openSX70.shutterCLOSE();
-      delay(100);
+      delay(100)
       openSX70.mirrorUP();
       delay(40);
       openSX70.shutterOPEN();
