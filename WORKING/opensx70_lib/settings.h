@@ -50,7 +50,7 @@
 
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_600 640
-  #define ISO_600BW 400
+  #define ISO_SX70 125
   #define DEFAULT_ISO ISO_600
   //---------------END ISO VALUES--------------------------------------------
 
