@@ -288,10 +288,10 @@ camera_state do_state_dongle (void){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
-    if((selector>=0) && (selector<=SELECTOR_LIMIT)){ //fast manual speeds
+    if((selector>=0) && (selector<=SELECTOR_LIMIT_FLASH)){ //fast manual speeds
       openSX70.VariableManualExposure(savedISO);
     }
-    else if((selector>SELECTOR_LIMIT) && (selector<12)){ //MANUAL SPEEDS  
+    else if((selector>SELECTOR_LIMIT_FLASH) && (selector<12)){ //MANUAL SPEEDS  
       openSX70.ManualExposure();
     }
     else if(selector == 12){ //POST
