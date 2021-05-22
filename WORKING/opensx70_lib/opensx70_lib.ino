@@ -729,6 +729,8 @@ void switch2Function(int mode) {
     #if SONAR
       openSX70.S1F_Unfocus();
     #endif
+    openSX70.shutterCLOSE();
+    delay(100);
     #if TIMER_MIRROR_UP
       openSX70.SelfTimerMUP();
     #endif
@@ -743,6 +745,8 @@ void switch2Function(int mode) {
     #if SONAR
       openSX70.S1F_Unfocus();
     #endif
+    openSX70.shutterCLOSE();
+    delay(100);
     #if TIMER_MIRROR_UP
       openSX70.SelfTimerMUP();
     #endif
