@@ -2,10 +2,10 @@
   #define settings_h
   #include "Arduino.h"
   //------------DEBUG OPTIONS---------------------------------------------
-  #define DEBUG 0
-  #define SIMPLEDEBUG 0     //Debug of opensx70 functions
+  #define DEBUG 1
+  #define SIMPLEDEBUG 1     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //Simple Debug On 1 - Off 0
-  #define BASICDEBUG 0      // Debug of Basic Camera Functions
+  #define BASICDEBUG 1      // Debug of Basic Camera Functions
   #define MXDEBUG 0         // Multiple Exposure Debug
   #define LMDEBUG 0         //Lightmeter Debug
   #define LMHELPERDEBUG 0   //Lightmeter Debug

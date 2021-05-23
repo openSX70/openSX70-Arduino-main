@@ -796,10 +796,12 @@ void Camera::ShutterT(){
   #endif
   Camera::shutterOPEN ();
   while(DebouncedRead(PIN_S1) == S1Logic){
-    // wait for button to stop being pressed so we can debounce
+    #if SIMPLEDEBUG
+      Serial.println("WAITING FOR BUTTON TO DEPRESS");
+    #endif
   }
   while (digitalRead(PIN_S1) == !S1Logic){
-    #if BASICDEBUG
+    #if SIMPLEDEBUG
       Serial.println("Shutter stays open");
     #endif
     //do nothing
@@ -809,7 +811,9 @@ void Camera::ShutterT(){
   #if APERTURE_PRIORITY
     analogWrite(PIN_SOL2, 0);
   #endif
-
+  #if SIMPLEDEBUG
+    Serial.println("Exp finish T mode");
+  #endif
 
   //multiple exposure test (Should not work in T Mode?!)
   ExposureFinish();
