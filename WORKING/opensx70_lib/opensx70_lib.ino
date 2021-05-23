@@ -275,6 +275,9 @@ camera_state do_state_dongle (void){
   #endif
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
+    #if SIMPLEDEBUG
+      Serial.println(selector);
+    #endif
     LightMeterHelper(0);
 
     if(switch2 == 1){
