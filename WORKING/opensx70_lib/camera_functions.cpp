@@ -795,7 +795,7 @@ void Camera::ShutterT(){
   }
   #endif
   Camera::shutterOPEN ();
-  while(digitalRead(PIN_S1) == S1Logic){
+  while(DebouncedRead(PIN_S1) == S1Logic){
     // wait for button to stop being pressed so we can debounce
   }
   while (digitalRead(PIN_S1) == !S1Logic){
