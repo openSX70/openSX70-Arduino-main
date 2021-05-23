@@ -788,15 +788,16 @@ void Camera::ShutterT(){
   #endif
 
   delay (40);
-  while(digitalRead(PIN_S1) == S1Logic){
-    // wait for button to stop being pressed so we can debounce
-  }
+  
 
   #if SONAR
   while (digitalRead(PIN_S1F) == HIGH){
   }
   #endif
   Camera::shutterOPEN ();
+  while(digitalRead(PIN_S1) == S1Logic){
+    // wait for button to stop being pressed so we can debounce
+  }
   while (digitalRead(PIN_S1) == !S1Logic){
     #if BASICDEBUG
       Serial.println("Shutter stays open");
