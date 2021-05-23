@@ -276,6 +276,7 @@ camera_state do_state_dongle (void){
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     #if SIMPLEDEBUG
+      Serial.print("SELECTOR: ");
       Serial.println(selector);
     #endif
     LightMeterHelper(0);
