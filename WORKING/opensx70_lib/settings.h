@@ -40,13 +40,15 @@
   //---------------END ISO VALUES--------------------------------------------
 
   //---------------MAGIC NUMBERS---------------------------------------------
-  #if TCS3200 
+  #ifdef TCS3200
     #define A100 400
     #define A600 150
-  #elif TSL237T
+  #endif
+  #ifdef TSL237T
     #define A100 950
     #define A600 420
-  #elif TSL235R
+  #endif
+  #ifdef TSL235R
     #define A100 485
     #define A600 225
   #endif
