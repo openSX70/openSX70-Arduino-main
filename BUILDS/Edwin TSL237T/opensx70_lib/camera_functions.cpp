@@ -440,7 +440,7 @@ void Camera::ManualExposure(){
   #endif
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
      #if BASICDEBUG
      Serial.println("waiting for S3 to OPEN");
      #endif
@@ -509,7 +509,7 @@ void Camera::VariableManualExposure(int _myISO){
   #endif
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
      #if BASICDEBUG
      Serial.println("waiting for S3 to OPEN");
      #endif
@@ -587,7 +587,7 @@ void Camera::AutoExposure(int _myISO){
   meter_set_iso(_myISO); 
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
      #if BASICDEBUG
      Serial.println("waiting for S3 to OPEN");
      #endif
@@ -639,7 +639,7 @@ void Camera::AutoExposureFF(int _myISO){
   Camera::shutterCLOSE();
   Camera::mirrorUP();   
   pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN˚
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
      #if BASICDEBUG
      Serial.println("waiting for S3 to OPEN");
      #endif
@@ -775,7 +775,7 @@ void Camera::ShutterT(){
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (DebouncedRead(PIN_S3) != HIGH){
-    //waiting for S3 to OPEN˚
+    //waiting for S3 to OPEN
   }
   #if APERTURE_PRIORITY
     pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
@@ -829,14 +829,15 @@ void Camera::ExposureFinish()
   }
   else{
     delay (100);
-    Camera::mirrorDOWN ();
-    delay (300); //WAS 100
-    while(digitalRead(PIN_S1) == S1Logic){ 
-      //wait for s1 to stop being pressed...
-      #if BASICDEBUG
-        Serial.println("wait for s1 to stop being pressed...");
-      #endif
-    }
+    #if EJECT_AFTER_DEPRESSING
+      while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
+      Camera::mirrorDOWN ();
+      delay (300);
+    #else
+      Camera::mirrorDOWN ();
+      delay (300);
+      while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
+    #endif
     Camera::shutterOPEN();
     #if SONAR
       delay (100);

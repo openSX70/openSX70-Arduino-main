@@ -272,6 +272,10 @@ camera_state do_state_dongle (void){
   #endif
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
+    #if SIMPLEDEBUG
+      Serial.print("SELECTOR: ");
+      Serial.println(selector);
+    #endif
     LightMeterHelper(0);
 
     if(switch2 == 1){
@@ -719,6 +723,8 @@ void switch2Function(int mode) {
     #if SONAR
       openSX70.S1F_Unfocus();
     #endif
+    openSX70.shutterCLOSE();
+    delay(100);
     #if TIMER_MIRROR_UP
       openSX70.SelfTimerMUP();
     #endif
@@ -733,6 +739,8 @@ void switch2Function(int mode) {
     #if SONAR
       openSX70.S1F_Unfocus();
     #endif
+    openSX70.shutterCLOSE();
+    delay(100);
     #if TIMER_MIRROR_UP
       openSX70.SelfTimerMUP();
     #endif
