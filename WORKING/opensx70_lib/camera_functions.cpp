@@ -671,13 +671,14 @@ void Camera::AutoExposureFF(int _myISO){
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
-  uint32_t integrationStartTime = millis();
+  
   analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
   #if FFDEBUG
     Serial.println("SOL2: 130 - Powersave");
   #endif   
   meter_init();
   meter_integrate();
+  uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   //Start FlashDelay  
   while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
