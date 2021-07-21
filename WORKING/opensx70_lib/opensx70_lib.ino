@@ -528,7 +528,7 @@ void beginExposure(){
   WritePicture(currentPicture);
 
   openSX70.shutterCLOSE();
-  delay(100);
+  delay(40);
   openSX70.mirrorUP();
 }
 

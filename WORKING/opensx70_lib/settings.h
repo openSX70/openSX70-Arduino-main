@@ -2,10 +2,10 @@
   #define settings_h
   #include "Arduino.h"
   //------------DEBUG OPTIONS---------------------------------------------
-  #define DEBUG 1
-  #define SIMPLEDEBUG 1     //Debug of opensx70 functions
+  #define DEBUG 0
+  #define SIMPLEDEBUG 0     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //Simple Debug On 1 - Off 0
-  #define BASICDEBUG 1      // Debug of Basic Camera Functions
+  #define BASICDEBUG 0      // Debug of Basic Camera Functions
   #define MXDEBUG 0         // Multiple Exposure Debug
   #define LMDEBUG 0         //Lightmeter Debug
   #define LMHELPERDEBUG 0   //Lightmeter Debug
@@ -16,9 +16,9 @@
   //----------------------END DEBUG OPTIONS------------------------------
   //----------------------CAMERA PCB OPTIONS SELECTION-------------------
   #define TCS3200         //TSL237T TSL235R TCS3200
-  #define S1Logic LOW  //HIGH for sonar, LOW for Alpha
-  #define ALPHA 1        //1 if ALPHA camera/PCB
-  #define SONAR 0         //   
+  #define S1Logic HIGH  //HIGH for sonar, LOW for Alpha
+  #define ALPHA 0        //1 if ALPHA camera/PCB
+  #define SONAR 1         //   
   #define ORIGAMI 0
   #define ORIGAMIV1 0
   #define UDONGLE 1
