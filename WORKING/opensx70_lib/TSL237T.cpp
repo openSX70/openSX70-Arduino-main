@@ -140,6 +140,9 @@ int meter_compute(byte _selector,int _activeISO){
 
         float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
         int pred_milli = round(float(outputCompare)/float(slope)); 
+        if(slope == 0){
+          pred_milli = 9999;
+        }
 
         #if LMHELPERDEBUG
           Serial.print("Metering ended at ");

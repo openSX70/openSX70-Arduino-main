@@ -114,26 +114,15 @@ void Camera::ExposureStart(){
       break;
     }
   }
-  
-  //while(getGTD()!=1){ //Not sure if this is nececcary!!!
-  //if(GTD==1)
-  //  break;
-  //S1F_Focus();
-
-  //Serial.println("getGTD");
-  //delay(1000);
-  //}
-  
   return;
-  //delay(200);
 }
 #endif
 
 void Camera::SelfTimerMUP(){
-    #if BASICDEBUG
-      Serial.println("Selftimer preMirror Up");
-    #endif
-    Camera::mirrorUP();
+  #if BASICDEBUG
+    Serial.println("Selftimer preMirror Up");
+  #endif
+  Camera::mirrorUP();
 }
 
 void Camera::shutterCLOSE(){
@@ -219,50 +208,6 @@ void Camera::DongleFlashNormal(){
   digitalWrite(PIN_FF, LOW);        //FLASH TRIGGERING
   pinMode(PIN_SOL2, INPUT_PULLUP);  //S2 back to dongle mode
 }
-
-/*
-void DongleFlashF8()
-{ 
-    #if SIMPLEDEBUG
-    Serial.println("DONGLE FLASH F8");
-    #endif
-    //                 byte PictureType = 4;
-    //                 CurrentPicture = EEPROM.read(4) ;
-    //
-    //                 eepromUpdate ();
-    //  if (takePicture == true)
-    {
-     byte PictureType = 6;
-    //    eepromUpdate ();
-     //         HighSpeedPWM ();
-     //         analogWrite(Solenoid2, 255);
-     Camera::shutterCLOSE ();
-     mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-     ///////while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
-     while (DebouncedRead(S3) != HIGH)            //waiting for S3 to OPEN
-       ;
-     //         analogWrite (Solenoid2, 130);
-    delay     (YDelay);                               //S3 is now open start Y-delay (40ms)
-     shutterOPEN ();
-     //                  delay (66);
-     delay (80);
-     Write_DS2408_PIO (7, 1); // this is for dongle (jack flash)
-     //                  digitalWrite(FFA, HIGH); //this is for in-camera flash
-     delay (1);
-     //                  analogWrite (Solenoid2,0);
-     //                  digitalWrite(FFA, LOW);
-     Write_DS2408_PIO (7, 0);
-     delay (10u);
-     shutterCLOSE();
-     delay (500);
-     delay (200);                             //AGAIN is this delay necessary?
-     mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-     delay (200);                             //AGAIN is this delay necessary?
-     shutterOPEN();
-     mxshots = 0;
-     return;
-    }
-}*/
 
 void Camera::Ydelay (){
   delay (120);
@@ -447,7 +392,7 @@ void Camera::ManualExposure(){
   delay (YDelay);
 
   int ShutterSpeedDelay = ((ShutterSpeed[selector]) + ShutterConstant);
-  if (selector >= 6){
+  if (selector >= SELECTOR_LIMIT_FLASH){
     ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
   }
   #if ADVANCEDEBUG
@@ -536,16 +481,17 @@ void Camera::VariableManualExposure(int _myISO){
   meter_integrate();
 
   uint32_t initialMillis = millis();
+  uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
   Camera::shutterOPEN();
   delay(MinShutterSpeedDelay);
   while(meter_update() == false){
-    if(millis() >= (initialMillis + ShutterSpeedDelay)){
+    if(millis() >= maxMillis){
       break;
     }
   }
   if (selector >= 3){
     #if SIMPLEDEBUG
-        Serial.println("FF - Fill Flash");
+        Serial.println(F("Sending FF signal to Dongle"));
     #endif
     Camera::FastFlash ();
   }

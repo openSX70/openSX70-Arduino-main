@@ -30,8 +30,10 @@ int activeISO;
 //static int checkedcount;
 static int inizialized = 0;
 
-extern bool mEXPFirstRun = false;
-extern bool multipleExposureMode = false;
+bool mEXPFirstRun;
+bool multipleExposureMode;
+
+
 static int multipleExposureCounter = 0;
 #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
   static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
@@ -108,6 +110,9 @@ void setup() {//setup - Inizialize
 
   io_init();
 
+  mEXPFirstRun = false;
+  multipleExposureMode = false;
+
   checkFilmCount();
   inizialized++;
 
@@ -129,7 +134,7 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
-  savedISO = ReadISO();
+  //savedISO = ReadISO();
   selector = myDongle.selector();
   normalOperation();
   state = STATE_MACHINE[state]();
@@ -165,26 +170,23 @@ camera_state do_state_darkslide (void) {
     
     if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
       result = STATE_DONGLE;
+      savedISO = ReadISO();
       delay(100);
-      #if COUNTER_BLINK
-      CounterBlink();
-      #else
       BlinkISO();
-      #endif
       #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
     else if ((selector == 100) && (myDongle.checkDongle() == 0)){
       result = STATE_FLASHBAR;
-
+      savedISO = ReadISO();
       #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
       #endif
     }
     else{
       result = STATE_NODONGLE;
-
+      savedISO = ReadISO();
       #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
       #endif
@@ -210,9 +212,6 @@ camera_state do_state_noDongle (void){
     beginExposure();
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
-    #if COUNTER_BLINK
-      CounterBlink();
-    #endif
   }
   #if DOUBLECLICK
   if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
@@ -221,9 +220,6 @@ camera_state do_state_noDongle (void){
     switch2Function(1);
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
-    #if COUNTER_BLINK
-      CounterBlink();
-    #endif
   }
   #endif
   #if SONAR
@@ -235,7 +231,7 @@ camera_state do_state_noDongle (void){
       Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
     #endif
     result = STATE_DONGLE;
-    //myDongle.initDS2408();
+    savedISO = ReadISO();
     if(((myDongle.switch1() == 1) && (myDongle.switch2() == 1))){
       saveISOChange();
     }
@@ -249,6 +245,7 @@ camera_state do_state_noDongle (void){
   }
   else if ((selector == 100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
+    savedISO = ReadISO();
     #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
     #endif
@@ -285,10 +282,10 @@ camera_state do_state_dongle (void){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
-    if((selector>=0) && (selector<=SELECTOR_LIMIT)){ //fast manual speeds
+    if((selector>=0) && (selector<=SELECTOR_LIMIT_FLASH)){ //fast manual speeds
       openSX70.VariableManualExposure(savedISO);
     }
-    else if((selector>SELECTOR_LIMIT) && (selector<12)){ //MANUAL SPEEDS  
+    else if((selector>SELECTOR_LIMIT_FLASH) && (selector<12)){ //MANUAL SPEEDS  
       openSX70.ManualExposure();
     }
     else if(selector == 12){ //POST
@@ -313,14 +310,12 @@ camera_state do_state_dongle (void){
     }
     sw_S1.Reset();
     checkFilmCount();
-    #if COUNTER_BLINK
-      CounterBlink();
-    #endif
   } 
 
   // Dongle Removed
   if (myDongle.checkDongle() == 0){
     result = STATE_NODONGLE;
+    savedISO = ReadISO();
     #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
     #endif
@@ -348,9 +343,6 @@ camera_state do_state_flashBar (void){
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount();
-    #if COUNTER_BLINK
-      CounterBlink();
-    #endif
   }
   #if DOUBLECLICK
   if (sw_S1.clicks == 2){
@@ -359,14 +351,12 @@ camera_state do_state_flashBar (void){
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
     checkFilmCount(); 
-    #if COUNTER_BLINK
-      CounterBlink();
-    #endif
   } 
   #endif
   
   if ((selector == 200) && (myDongle.checkDongle() == 0)){
     result = STATE_NODONGLE;
+    savedISO = ReadISO();
     #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
@@ -458,9 +448,6 @@ camera_state do_state_multi_exp (void){
       #endif
     }
     sw_S1.Reset();
-    #if COUNTER_BLINK
-      CounterBlink();
-    #endif
   }
 
   #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED

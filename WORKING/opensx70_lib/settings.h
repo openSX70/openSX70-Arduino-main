@@ -13,7 +13,6 @@
   #define STATEDEBUG 0      //Debug state transitions
   #define FOCUSDEBUG 0      //Focus Debug on Sonar
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
-  //----------------END DEBUG OPTIONS------------------------------------
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
@@ -24,6 +23,7 @@
   #define MEROE_PCB 1
   #define LAND_PCB 0
   #define SONAR_PCB 0
+  #define SONAR_UNI_PCB 0
   #define EDWIN_PCB 0
   #define ALPHA2_PCB 0
   #define ECM_PCB 0
@@ -49,9 +49,8 @@
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
   //----------------ISO VALUES VALUES---------------------------------------
-  #define ISO_SX70 125
   #define ISO_600 640
-  #define ISO_600BW 400
+  #define ISO_SX70 125
   #define DEFAULT_ISO ISO_600
   //---------------END ISO VALUES--------------------------------------------
 
@@ -71,7 +70,7 @@
   //---------------END MAGIC NUMBERS-----------------------------------------
 
   //---------------Shutter Settings------------------------------------------
-  #define SELECTOR_LIMIT 5 // Sets what selector it will stop varying the speed at (starting from 0 to the number you set)
+  #define SELECTOR_LIMIT_FLASH 6
   //---------------End Shutter Settings--------------------------------------
 
   //---------------METER SETTINGS--------------------------------------------
