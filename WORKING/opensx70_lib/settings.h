@@ -71,7 +71,7 @@
   //---------------END MAGIC NUMBERS-----------------------------------------
 
   //---------------Shutter Settings------------------------------------------
-  #define SELECTOR_LIMIT_FLASH 6
+  #define SELECTOR_LIMIT_VARIANCE 6
   //---------------End Shutter Settings--------------------------------------
 
   //---------------METER SETTINGS--------------------------------------------

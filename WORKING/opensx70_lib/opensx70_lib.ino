@@ -282,10 +282,10 @@ camera_state do_state_dongle (void){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
-    if((selector>=0) && (selector<=SELECTOR_LIMIT_FLASH)){ //fast manual speeds
+    if((selector>=0) && (selector<=SELECTOR_LIMIT_VARIANCE)){ //fast manual speeds
       openSX70.VariableManualExposure(savedISO);
     }
-    else if((selector>SELECTOR_LIMIT_FLASH) && (selector<12)){ //MANUAL SPEEDS  
+    else if((selector>SELECTOR_LIMIT_VARIANCE) && (selector<12)){ //MANUAL SPEEDS  
       openSX70.ManualExposure();
     }
     else if(ShutterSpeed[selector] == POST){ //POST
@@ -402,11 +402,11 @@ camera_state do_state_multi_exp (void){
         switch2Function(0); // start self timer 
       }
 
-      if((selector>=0) && (selector<=3)){ //fast manual speeds
+      if((selector>=0) && (selector<=SELECTOR_LIMIT_VARIANCE)){ //fast manual speeds
         openSX70.VariableManualExposure(savedISO);
         multipleExposureCounter++;
       }
-      else if((selector>3) && (selector<12)){ //MANUAL SPEEDS  
+      else if((selector>SELECTOR_LIMIT_VARIANCE) && (selector<12)){ //MANUAL SPEEDS  
         openSX70.ManualExposure();
         multipleExposureCounter++;
       }
