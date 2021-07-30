@@ -616,12 +616,20 @@ void Camera::AutoExposureFF(int _myISO){
   meter_integrate();
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
-  //Start FlashDelay  
-  while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
-    if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
-      break;
-    }  
-  }
+  //Start FlashDelay 
+  #if Flashbar_Change
+    while ((meter_update() == false) && ((millis() - integrationStartTime) <= 47)){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
+      if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
+        break;
+      }  
+    }
+  #else
+    while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
+      if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
+        break;
+      }  
+    }
+  #endif
   #if FFDEBUG
     Serial.print(millis()-integrationStartTime);
     Serial.println("ms Flash Delay Time, Flash fired!");

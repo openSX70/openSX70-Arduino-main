@@ -14,6 +14,9 @@
   #define FOCUSDEBUG 0      //Focus Debug on Sonar
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
 
+  //----------------EXPERIMENTAL OPTIONS---------------------------------
+  #define Flashbar_Change 0
+
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
   #define TCS3200 1                //Meroe, Land
