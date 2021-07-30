@@ -288,12 +288,12 @@ camera_state do_state_dongle (void){
     else if((selector>SELECTOR_LIMIT_FLASH) && (selector<12)){ //MANUAL SPEEDS  
       openSX70.ManualExposure();
     }
-    else if(selector == 12){ //POST
+    else if(ShutterSpeed[selector] == POST){ //POST
       lmTimer_stop();
       turnLedsOff();
       openSX70.ShutterT();
     }
-    else if(selector == 13){ //POSB
+    else if(ShutterSpeed[selector] == POSB){ //POSB
       lmTimer_stop();
       turnLedsOff(); //why?
       openSX70.ShutterB();
@@ -410,13 +410,13 @@ camera_state do_state_multi_exp (void){
         openSX70.ManualExposure();
         multipleExposureCounter++;
       }
-      else if(selector == 12){ //POST
+      else if(ShutterSpeed[selector] == POST){ //POST
         lmTimer_stop();
         turnLedsOff();
         openSX70.ShutterT();
         multipleExposureCounter++;
       }
-      else if(selector == 13){ //POSB
+      else if(ShutterSpeed[selector] == POSB){ //POSB
         lmTimer_stop();
         turnLedsOff(); //why?
         openSX70.ShutterB();
@@ -838,6 +838,7 @@ void saveISOChange() {
     _selectedISO = ISO_SX70;
   }
   else {
+    //Fall back to current ISO if A100 or A600 are not selected
     _selectedISO = DEFAULT_ISO;
   }
   if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
