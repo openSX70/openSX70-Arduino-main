@@ -73,16 +73,6 @@ void Camera::S1F_Focus(){
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
-    
-    /*test(!getGTD());
-    {
-      i++;
-      Serial.println("Wait for GTD to go 1");
-      Serial.print("getGTD iteration: ");
-      Serial.println(i);
-      
-      digitalWrite(PIN_S1F_FBW, HIGH);
-    }*/
     return;
 }
 
@@ -124,26 +114,15 @@ void Camera::ExposureStart(){
       break;
     }
   }
-  
-  //while(getGTD()!=1){ //Not sure if this is nececcary!!!
-  //if(GTD==1)
-  //  break;
-  //S1F_Focus();
-
-  //Serial.println("getGTD");
-  //delay(1000);
-  //}
-  
   return;
-  //delay(200);
 }
 #endif
 
 void Camera::SelfTimerMUP(){
-    #if BASICDEBUG
-      Serial.println("Selftimer preMirror Up");
-    #endif
-    Camera::mirrorUP();
+  #if BASICDEBUG
+    Serial.println("Selftimer preMirror Up");
+  #endif
+  Camera::mirrorUP();
 }
 
 void Camera::shutterCLOSE(){
@@ -229,50 +208,6 @@ void Camera::DongleFlashNormal(){
   digitalWrite(PIN_FF, LOW);        //FLASH TRIGGERING
   pinMode(PIN_SOL2, INPUT_PULLUP);  //S2 back to dongle mode
 }
-
-/*
-void DongleFlashF8()
-{ 
-    #if SIMPLEDEBUG
-    Serial.println("DONGLE FLASH F8");
-    #endif
-    //                 byte PictureType = 4;
-    //                 CurrentPicture = EEPROM.read(4) ;
-    //
-    //                 eepromUpdate ();
-    //  if (takePicture == true)
-    {
-     byte PictureType = 6;
-    //    eepromUpdate ();
-     //         HighSpeedPWM ();
-     //         analogWrite(Solenoid2, 255);
-     Camera::shutterCLOSE ();
-     mirrorUP();   //Motor Starts: MIRROR COMES UP!!!
-     ///////while (digitalRead(S3) != HIGH)            //waiting for S3 to OPEN
-     while (DebouncedRead(S3) != HIGH)            //waiting for S3 to OPEN
-       ;
-     //         analogWrite (Solenoid2, 130);
-    delay     (YDelay);                               //S3 is now open start Y-delay (40ms)
-     shutterOPEN ();
-     //                  delay (66);
-     delay (80);
-     Write_DS2408_PIO (7, 1); // this is for dongle (jack flash)
-     //                  digitalWrite(FFA, HIGH); //this is for in-camera flash
-     delay (1);
-     //                  analogWrite (Solenoid2,0);
-     //                  digitalWrite(FFA, LOW);
-     Write_DS2408_PIO (7, 0);
-     delay (10u);
-     shutterCLOSE();
-     delay (500);
-     delay (200);                             //AGAIN is this delay necessary?
-     mirrorDOWN ();                          //Motor starts, let bring the mirror DOWN
-     delay (200);                             //AGAIN is this delay necessary?
-     shutterOPEN();
-     mxshots = 0;
-     return;
-    }
-}*/
 
 void Camera::Ydelay (){
   delay (120);
@@ -457,7 +392,7 @@ void Camera::ManualExposure(){
   delay (YDelay);
 
   int ShutterSpeedDelay = ((ShutterSpeed[selector]) + ShutterConstant);
-  if (selector >= 6){
+  if (selector >= SELECTOR_LIMIT_VARIANCE){
     ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
   }
   #if ADVANCEDEBUG
@@ -546,16 +481,17 @@ void Camera::VariableManualExposure(int _myISO){
   meter_integrate();
 
   uint32_t initialMillis = millis();
+  uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
   Camera::shutterOPEN();
   delay(MinShutterSpeedDelay);
   while(meter_update() == false){
-    if(millis() >= (initialMillis + ShutterSpeedDelay)){
+    if(millis() >= maxMillis){
       break;
     }
   }
   if (selector >= 3){
     #if SIMPLEDEBUG
-        Serial.println("FF - Fill Flash");
+        Serial.println(F("Sending FF signal to Dongle"));
     #endif
     Camera::FastFlash ();
   }
@@ -680,12 +616,20 @@ void Camera::AutoExposureFF(int _myISO){
   meter_integrate();
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
-  //Start FlashDelay  
-  while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
-    if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
-      break;
-    }  
-  }
+  //Start FlashDelay 
+  #if Flashbar_Change
+    while ((meter_update() == false) && ((millis() - integrationStartTime) <= 47)){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
+      if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
+        break;
+      }  
+    }
+  #else
+    while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
+      if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
+        break;
+      }  
+    }
+  #endif
   #if FFDEBUG
     Serial.print(millis()-integrationStartTime);
     Serial.println("ms Flash Delay Time, Flash fired!");

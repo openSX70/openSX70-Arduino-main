@@ -19,13 +19,13 @@
   extern void meter_set_iso(uint16_t const& iso);
   //void meter_led(byte _selector, bool _type);
   // preprocessor conditionnal inlusion for specific chip header file.
-  #if defined (TSL237T)
+  #if TSL237T
     #	include "TSL237T.h"
-  #elif defined (TSL235R)
+  #elif TSL235R
     #	include "TSL235R.h"
-  #elif defined (TCS3200)
+  #elif TCS3200
     #	include "TCS3200.h"
-  #elif defined (TSL2591)
+  #elif TSL2591
     #	include "TSL2591.h"
   #else
     #	warning	"no meter included"

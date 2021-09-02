@@ -1,5 +1,5 @@
 #include "open_sx70.h"
-#if defined (TCS3200)
+#if TCS3200
   volatile bool integrationFinished = 0;
 
   bool measuring = false;
@@ -26,9 +26,9 @@
   
   // initialise Timer 1 for light sensor integration.
   void tcs3200_init(){
-    #if ALPHA
-    pinMode(PIN_OE, OUTPUT); 
-    digitalWrite(PIN_OE, LOW); //LOW = enabled
+    #if MEROE_PCB
+      pinMode(PIN_OE, OUTPUT);
+      digitalWrite(PIN_OE, LOW);
     #endif
     integrationFinished = 0; //not sure if needed
     //TCS3200_S0_Pin = HIGH(3.3V) Jumper on PCB
@@ -204,25 +204,6 @@
       Serial.print(TCNT1);
       TCNT1 = 0;             //set Counter to 0
     #endif
-  }
-
-  int nearest(int x, int myArray[], int elements, bool sorted) //estimate the correct Slot for the Estimated Exposure Value
-  {
-    int idx = 0; // by default near first element
-    int distance = abs(myArray[idx] - x);
-    for (int i = 1; i < elements; i++)
-    {
-      int d = abs(myArray[i] - x);
-      if (d < distance)
-      {
-        idx = i;
-        distance = d;
-      }
-      else if (sorted){ 
-        return idx;
-      }
-    }
-    return idx;
   }
 
   void meter_led(byte _selector, byte _type){
