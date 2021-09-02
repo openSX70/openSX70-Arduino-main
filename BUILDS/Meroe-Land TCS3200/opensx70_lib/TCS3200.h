@@ -10,12 +10,6 @@
 
 #ifndef OPENSX70_TCS3200_H
   #define OPENSX70_TCS3200_H
-  
-  #define A100 400
-  #define A600 150
-  #define FD100 116
-  #define FD600 44
-  
   /* These functions are called by the main loop.
    * They provide uniform handling for whatever light sensor is used on a specific board.
    * Note : over/under-exposure is handled by the wheel on the camera at left hand.
@@ -38,6 +32,5 @@
   
   // Start to integrate measure.
   void tcs3200_start_integration();
-  int nearest(int x, int myArray[], int elements, bool sorted);
   void meter_led(byte _selector, byte _type);
 #endif

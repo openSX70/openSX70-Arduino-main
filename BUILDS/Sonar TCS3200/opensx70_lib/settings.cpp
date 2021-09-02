@@ -5,6 +5,8 @@ int mxshots = 0; //Multiple exposure counter
 const uint8_t YDelay = 120;
 const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 195; //max 255 = full power/POWERUP mode
+int FD100 = round(.29*A100);
+int FD600 = round(.29*A600);
 int ShutterConstant = 0; // was 9; Setting this to 0 to remove need for doing math. putting this in the raw speed. - Zane
 byte lightmeterHelper = true;
 //enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; //uDONGLE
@@ -19,7 +21,11 @@ byte lightmeterHelper = true;
 //int ShutterSpeed[] = { 3, 5, 9, 11, 20, 30, 35, 55, 166, 302, 600, 1100, POST, POSB, AUTO600, AUTO100 };  //SANTI DONGLE WHEEL
 
 // Added to remove the need to check for selector values prior to picture taking.
-int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175,  311, 609, 1109, POST, POSB, AUTO600, AUTO100 };
+#if FLIP_ORDER
+  int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175,  311, 609, 1109, A600, A100, POST, POSB };
+#else
+  int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175,  311, 609, 1109, POST, POSB, AUTO600, AUTO100 };
+#endif
 //int ShutterSpeed[] = { 2000, 1000,  500,   250, 125,   60,  30,   15,      8,    4,   2,    1, T, B, AUTO600, AUTO100 };
 //                          0     1     2      3    4     5    6     7       8     9    10   11
 //OPTION line above are the wheel "raw" speeds (have to keep in mind smaller time = smaller aperture -> inefficient shutter)
