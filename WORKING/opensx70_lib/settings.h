@@ -52,7 +52,7 @@
   #define EJECT_AFTER_DEPRESSING 0 //1 Enables the user to hold the shutter button to prevent photo ejection
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
-  //----------------ISO VALUES VALUES---------------------------------------
+  //----------------ISO VALUES----------------------------------------------
   #define ISO_600 640
   #define ISO_SX70 125
   #define DEFAULT_ISO ISO_600

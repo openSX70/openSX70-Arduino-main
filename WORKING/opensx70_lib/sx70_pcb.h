@@ -99,8 +99,6 @@
     const uint8_t PIN_LED1 = 13;
     const uint8_t PIN_LED2 = A3;
 
-  #endif
-
   #elif ECM_PCB
     const uint8_t PIN_S1 = 12; //Sonar S1T S1 Trigger Redbutton
     const uint8_t PIN_S2 = A4;

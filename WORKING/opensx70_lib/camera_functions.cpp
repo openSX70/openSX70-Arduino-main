@@ -392,7 +392,7 @@ void Camera::ManualExposure(){
   delay (YDelay);
 
   int ShutterSpeedDelay = ((ShutterSpeed[selector]) + ShutterConstant);
-  if (selector >= SELECTOR_LIMIT_FLASH){
+  if (selector >= SELECTOR_LIMIT_VARIANCE){
     ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
   }
   #if ADVANCEDEBUG
