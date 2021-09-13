@@ -519,7 +519,7 @@ void Camera::AutoExposure(int _myISO){
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
-
+  lmTimer_stop()
   #if LMDEBUG
   Serial.print(F("AE setting meter to : "));
   Serial.println(_myISO);
