@@ -520,6 +520,11 @@ void Camera::AutoExposure(int _myISO){
     Serial.println(currentPicture);
   #endif
 
+  #if LMDEBUG
+  Serial.print(F("AE setting meter to : "));
+  Serial.println(_myISO);
+  #endif
+
   meter_set_iso(_myISO); 
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
@@ -539,6 +544,10 @@ void Camera::AutoExposure(int _myISO){
     analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
   #endif
   delay(YDelay);
+
+  #if LMDEBUG
+  Serial.print(F("METER_UPDATE status : "));
+  Serial.println(meter_update());
 
   meter_init();
   meter_integrate();

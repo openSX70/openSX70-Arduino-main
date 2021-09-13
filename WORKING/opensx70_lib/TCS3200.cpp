@@ -71,6 +71,10 @@
   }
   
   void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Timer1 -- Magicnumber for ISO
+      #if LMDEBUG
+      Serial.print(F("meter_set_iso : "));
+      Serial.println(iso);
+      #endif
       if (iso == ISO_600) {
         outputCompare = A600;
       } 
@@ -80,6 +84,10 @@
       else{
         outputCompare = iso; //FF Delay Magicnumber as well as      
       }
+      #if LMDEBUG
+      Serial.print(F("outputcompare set to : "));
+      Serial.println(outputCompare);
+      #endif
   }
   
   int meter_compute(byte _selector,int _activeISO){
