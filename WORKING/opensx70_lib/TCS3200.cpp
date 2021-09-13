@@ -167,6 +167,10 @@
   
   bool meter_update(){
     if(integrationFinished){
+      #if LMDEBUG
+      Serial.print(F("Integrated counter value : "));
+      Serial.println(TCNT1);
+      #endif
       integrationFinished = 0;
       return 1;
     }
