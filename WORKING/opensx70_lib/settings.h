@@ -15,7 +15,10 @@
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
 
   //----------------EXPERIMENTAL OPTIONS---------------------------------
-  #define Flashbar_Change 0
+  #define Flashbar_Change 1
+  #define Flash_Capture_Delay 4
+  #define Flash_Max_Time 63
+  #define Flash_Min_Time 47
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
@@ -23,17 +26,17 @@
   #define TSL237T 0                //Edwin
   #define TSL235R 0                //Alpha 2
   //      Board Version
-  #define MEROE_PCB 1
+  #define MEROE_PCB 0
   #define LAND_PCB 0
-  #define SONAR_PCB 0
+  #define SONAR_PCB 1
   #define SONAR_UNI_PCB 0
   #define EDWIN_PCB 0
   #define ALPHA2_PCB 0
   #define ECM_PCB 0
   //      Camera Options
-  #define S1Logic LOW              //LOW for Alpha shutters and HIGH for Sonar shutters
-  #define ALPHA 1                  //1 if ALPHA camera functions
-  #define SONAR 0                  //1 for Sonar camera functions   
+  #define S1Logic HIGH              //LOW for Alpha shutters and HIGH for Sonar shutters
+  #define ALPHA 0                  //1 if ALPHA camera functions
+  #define SONAR 1                  //1 for Sonar camera functions   
   //      Dongle Options 
   #define FLIP_ORDER 0             //1 to set dongle selector order to "a600 a100 T B" rather than "T B a600 a100". This is for older dongle revisions.
   #define UDONGLE 1
@@ -52,7 +55,7 @@
   #define EJECT_AFTER_DEPRESSING 0 //1 Enables the user to hold the shutter button to prevent photo ejection
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
-  //----------------ISO VALUES----------------------------------------------
+  //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_600 640
   #define ISO_SX70 125
   #define DEFAULT_ISO ISO_600
@@ -60,7 +63,7 @@
 
   //---------------MAGIC NUMBERS---------------------------------------------
   #if TCS3200
-    #define A100 400
+    #define A100 450
     #define A600 150
   #endif
   #if TSL237T
