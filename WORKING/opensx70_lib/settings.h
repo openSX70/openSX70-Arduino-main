@@ -2,12 +2,12 @@
   #define settings_h
   #include "Arduino.h"
   //----------------DEBUG OPTIONS----------------------------------------
-  #define DEBUG 0
+  #define DEBUG 1
   #define SIMPLEDEBUG 0     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //More detailed view of OpenSX70 functions
   #define BASICDEBUG 0      //Debug of Basic Camera Functions
   #define MXDEBUG 0         //Multiple Exposure Debug
-  #define LMDEBUG 0         //Lightmeter Debug
+  #define LMDEBUG 1         //Lightmeter Debug
   #define LMHELPERDEBUG 0   //Lightmeter Debug
   #define ROTARYDEBUG 0     //Rotaryswitch on Dongle Debug
   #define STATEDEBUG 0      //Debug state transitions
@@ -58,7 +58,7 @@
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_600 640
   #define ISO_SX70 125
-  #define DEFAULT_ISO ISO_600
+  #define DEFAULT_ISO ISO_SX70
   //---------------END ISO VALUES--------------------------------------------
 
   //---------------MAGIC NUMBERS---------------------------------------------

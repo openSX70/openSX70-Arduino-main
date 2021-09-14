@@ -519,7 +519,7 @@ void Camera::AutoExposure(int _myISO){
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
-  lmTimer_stop()
+  lmTimer_stop();
   #if LMDEBUG
   Serial.print(F("AE setting meter to : "));
   Serial.println(_myISO);
@@ -548,7 +548,8 @@ void Camera::AutoExposure(int _myISO){
   #if LMDEBUG
   Serial.print(F("METER_UPDATE status : "));
   Serial.println(meter_update());
-
+  #endif
+  
   meter_init();
   meter_integrate();
   Camera::shutterOPEN();

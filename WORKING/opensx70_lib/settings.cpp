@@ -22,7 +22,7 @@ byte lightmeterHelper = true;
 
 // Added to remove the need to check for selector values prior to picture taking.
 #if FLIP_ORDER
-  int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175,  311, 609, 1109, A600, A100, POST, POSB };
+  int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175,  311, 609, 1109, AUTO600, AUTO100, POST, POSB };
 #else
   int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175,  311, 609, 1109, POST, POSB, AUTO600, AUTO100 };
 #endif
