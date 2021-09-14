@@ -264,7 +264,7 @@ camera_state do_state_dongle (void){
     if(selector<=11){
       LightMeterHelper(2); //LMHelper Manual Mode
     }
-    else if(selector==14 || selector==15){
+    else if(ShutterSpeed[selector] == A100 || ShutterSpeed[selector] == A600){
       LightMeterHelper(1); //LMHelper Auto Mode
     }
   #if SONAR
