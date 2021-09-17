@@ -363,6 +363,7 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
 
 
 void Camera::ManualExposure(){
+  uint32_t initialMillis;
   //changed sonar compile check
   #if SONAR
   Camera::ExposureStart();
@@ -408,7 +409,7 @@ void Camera::ManualExposure(){
     #endif
 
     Camera::shutterOPEN();
-    uint32_t initialMillis = millis();
+    initialMillis = millis();
     while (millis() < (initialMillis + ShutterSpeedDelay)){
       //Take the Picture
     }
@@ -432,7 +433,7 @@ void Camera::ManualExposure(){
     #endif
 
     Camera::shutterOPEN();
-    uint32_t initialMillis = millis();
+    initialMillis = millis();
     while (millis() < (initialMillis + ShutterSpeedDelay)){
       //Take the Picture
     }
@@ -451,6 +452,7 @@ void Camera::ManualExposure(){
 }
 
 void Camera::VariableManualExposure(int _myISO){
+  uint32_t initialMillis;
 
   #if SONAR
   Camera::ExposureStart();
@@ -499,7 +501,7 @@ void Camera::VariableManualExposure(int _myISO){
     meter_init();
     meter_integrate();
 
-    uint32_t initialMillis = millis();
+    initialMillis = millis();
     uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
     Camera::shutterOPEN();
     delay(MinShutterSpeedDelay);
@@ -509,7 +511,7 @@ void Camera::VariableManualExposure(int _myISO){
       }
     }
     Camera::FastFlash ();
-    delay(Flash_Capture_Delay)
+    delay(Flash_Capture_Delay);
 
   }
   else{
@@ -533,7 +535,7 @@ void Camera::VariableManualExposure(int _myISO){
     meter_init();
     meter_integrate();
 
-    uint32_t initialMillis = millis();
+    initialMillis = millis();
     uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
     Camera::shutterOPEN();
     delay(MinShutterSpeedDelay);

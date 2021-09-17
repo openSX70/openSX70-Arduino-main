@@ -2,12 +2,12 @@
   #define settings_h
   #include "Arduino.h"
   //----------------DEBUG OPTIONS----------------------------------------
-  #define DEBUG 1
+  #define DEBUG 0
   #define SIMPLEDEBUG 0     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //More detailed view of OpenSX70 functions
   #define BASICDEBUG 0      //Debug of Basic Camera Functions
   #define MXDEBUG 0         //Multiple Exposure Debug
-  #define LMDEBUG 1         //Lightmeter Debug
+  #define LMDEBUG 0         //Lightmeter Debug
   #define LMHELPERDEBUG 0   //Lightmeter Debug
   #define ROTARYDEBUG 0     //Rotaryswitch on Dongle Debug
   #define STATEDEBUG 0      //Debug state transitions
@@ -27,17 +27,17 @@
   #define TSL237T 0                //Edwin
   #define TSL235R 0                //Alpha 2
   //      Board Version
-  #define MEROE_PCB 0
+  #define MEROE_PCB 1
   #define LAND_PCB 0
-  #define SONAR_PCB 1
+  #define SONAR_PCB 0
   #define SONAR_UNI_PCB 0
   #define EDWIN_PCB 0
   #define ALPHA2_PCB 0
   #define ECM_PCB 0
   //      Camera Options
-  #define S1Logic HIGH              //LOW for Alpha shutters and HIGH for Sonar shutters
-  #define ALPHA 0                  //1 if ALPHA camera functions
-  #define SONAR 1                  //1 for Sonar camera functions   
+  #define S1Logic LOW             //LOW for Alpha shutters and HIGH for Sonar shutters
+  #define ALPHA 1                  //1 if ALPHA camera functions
+  #define SONAR 0                  //1 for Sonar camera functions   
   //      Dongle Options 
   #define FLIP_ORDER 0             //1 to set dongle selector order to "a600 a100 T B" rather than "T B a600 a100". This is for older dongle revisions.
   #define UDONGLE 1
