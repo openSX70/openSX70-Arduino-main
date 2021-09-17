@@ -19,6 +19,7 @@
   #define Flash_Capture_Delay 4
   #define Flash_Max_Time 63
   #define Flash_Min_Time 47
+  #define Dongle_Flash_Limit 4
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
