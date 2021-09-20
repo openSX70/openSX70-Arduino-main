@@ -363,6 +363,7 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
 
 
 void Camera::ManualExposure(){
+  uint32_t initialMillis;
   //changed sonar compile check
   #if SONAR
   Camera::ExposureStart();
@@ -391,34 +392,53 @@ void Camera::ManualExposure(){
   #endif
   delay (YDelay);
 
-  int ShutterSpeedDelay = ((ShutterSpeed[selector]) + ShutterConstant);
-  if (selector >= SELECTOR_LIMIT_VARIANCE){
-    ShutterSpeedDelay = (ShutterSpeedDelay - flashDelay);
-  }
-  #if ADVANCEDEBUG
-    extern int selector;
-    Serial.print("Manual Exposure Debug: ");
-    Serial.print("ShutterSpeed[");
-    Serial.print(selector);
-    Serial.print("] :");
-    Serial.println(ShutterSpeed[selector]);
-    Serial.print("ShutterConstant:");
-    Serial.println(ShutterConstant);
-    Serial.print("ShutterSpeedDelay:");
-    Serial.println(ShutterSpeedDelay);
-  #endif
-  
-  Camera::shutterOPEN();
-  uint32_t initialMillis = millis();
-  while (millis() <= (initialMillis + ShutterSpeedDelay)){
-    //Take the Picture
-  }
-  if (selector >= 3){
-    #if SIMPLEDEBUG
-        Serial.println("FF - Fill Flash");
+  if (selector >= Dongle_Flash_Limit){
+    int ShutterSpeedDelay = (ShutterSpeed[selector] - Flash_Capture_Delay);
+
+    #if ADVANCEDEBUG
+      Serial.print("Manual Exposure Debug: ");
+      Serial.print("ShutterSpeed[");
+      Serial.print(selector);
+      Serial.print("] :");
+      Serial.println(ShutterSpeed[selector]);
+      Serial.print("ShutterConstant:");
+      Serial.println(ShutterConstant);
+      Serial.print("ShutterSpeedDelay:");
+      Serial.println(ShutterSpeedDelay);
+      Serial.println("Dongle Flash Enabled");
     #endif
+
+    Camera::shutterOPEN();
+    initialMillis = millis();
+    while (millis() < (initialMillis + ShutterSpeedDelay)){
+      //Take the Picture
+    }
     Camera::FastFlash ();
+    delay(Flash_Capture_Delay);
   }
+  else{
+    int ShutterSpeedDelay = ShutterSpeed[selector];
+
+    #if ADVANCEDEBUG
+      Serial.print("Manual Exposure Debug: ");
+      Serial.print("ShutterSpeed[");
+      Serial.print(selector);
+      Serial.print("] :");
+      Serial.println(ShutterSpeed[selector]);
+      Serial.print("ShutterConstant:");
+      Serial.println(ShutterConstant);
+      Serial.print("ShutterSpeedDelay:");
+      Serial.println(ShutterSpeedDelay);
+      Serial.println("Dongle Flash Disabled");
+    #endif
+
+    Camera::shutterOPEN();
+    initialMillis = millis();
+    while (millis() < (initialMillis + ShutterSpeedDelay)){
+      //Take the Picture
+    }
+  }
+
   #if LMDEBUG
     uint32_t shutterCloseTime = millis(); //Shutter Debug
   #endif
@@ -432,6 +452,7 @@ void Camera::ManualExposure(){
 }
 
 void Camera::VariableManualExposure(int _myISO){
+  uint32_t initialMillis;
 
   #if SONAR
   Camera::ExposureStart();
@@ -460,40 +481,69 @@ void Camera::VariableManualExposure(int _myISO){
   #endif
   delay (YDelay);
 
-  int ShutterSpeedDelay = ShutterSpeed[selector];
-  int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
-  
-  #if ADVANCEDEBUG
-    extern int selector;
-    Serial.print("Manual Exposure Debug: ");
-    Serial.print("ShutterSpeed[");
-    Serial.print(selector);
-    Serial.print("] :");
-    Serial.println(ShutterSpeed[selector]);
-    Serial.print("ShutterConstant:");
-    Serial.println(ShutterConstant);
-    Serial.print("ShutterSpeedDelay:");
-    Serial.println(ShutterSpeedDelay);
-  #endif
-
-  meter_set_iso(_myISO);
-  meter_init();
-  meter_integrate();
-
-  uint32_t initialMillis = millis();
-  uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
-  Camera::shutterOPEN();
-  delay(MinShutterSpeedDelay);
-  while(meter_update() == false){
-    if(millis() >= maxMillis){
-      break;
-    }
-  }
-  if (selector >= 3){
-    #if SIMPLEDEBUG
-        Serial.println(F("Sending FF signal to Dongle"));
+  if(selector>= Dongle_Flash_Limit){
+    int ShutterSpeedDelay = ShutterSpeed[selector] - Flash_Capture_Delay;
+    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
+    #if ADVANCEDEBUG
+      extern int selector;
+      Serial.print("Manual Exposure Debug: ");
+      Serial.print("ShutterSpeed[");
+      Serial.print(selector);
+      Serial.print("] :");
+      Serial.println(ShutterSpeed[selector]);
+      Serial.print("ShutterConstant:");
+      Serial.println(ShutterConstant);
+      Serial.print("ShutterSpeedDelay:");
+      Serial.println(ShutterSpeedDelay);
     #endif
+
+    meter_set_iso(_myISO);
+    meter_init();
+    meter_integrate();
+
+    initialMillis = millis();
+    uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
+    Camera::shutterOPEN();
+    delay(MinShutterSpeedDelay);
+    while(meter_update() == false){
+      if(millis() >= maxMillis){
+        break;
+      }
+    }
     Camera::FastFlash ();
+    delay(Flash_Capture_Delay);
+
+  }
+  else{
+    int ShutterSpeedDelay = ShutterSpeed[selector];
+    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
+
+    #if ADVANCEDEBUG
+      extern int selector;
+      Serial.print("Manual Exposure Debug: ");
+      Serial.print("ShutterSpeed[");
+      Serial.print(selector);
+      Serial.print("] :");
+      Serial.println(ShutterSpeed[selector]);
+      Serial.print("ShutterConstant:");
+      Serial.println(ShutterConstant);
+      Serial.print("ShutterSpeedDelay:");
+      Serial.println(ShutterSpeedDelay);
+    #endif
+
+    meter_set_iso(_myISO);
+    meter_init();
+    meter_integrate();
+
+    initialMillis = millis();
+    uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
+    Camera::shutterOPEN();
+    delay(MinShutterSpeedDelay);
+    while(meter_update() == false){
+      if(millis() >= maxMillis){
+        break;
+      }
+    }
   }
 
   #if LMDEBUG
@@ -519,6 +569,11 @@ void Camera::AutoExposure(int _myISO){
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
+  lmTimer_stop();
+  #if LMDEBUG
+  Serial.print(F("AE setting meter to : "));
+  Serial.println(_myISO);
+  #endif
 
   meter_set_iso(_myISO); 
 
@@ -540,6 +595,11 @@ void Camera::AutoExposure(int _myISO){
   #endif
   delay(YDelay);
 
+  #if LMDEBUG
+  Serial.print(F("METER_UPDATE status : "));
+  Serial.println(meter_update());
+  #endif
+  
   meter_init();
   meter_integrate();
   Camera::shutterOPEN();
@@ -617,25 +677,18 @@ void Camera::AutoExposureFF(int _myISO){
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   //Start FlashDelay 
-  #if Flashbar_Change
-    while ((meter_update() == false) && ((millis() - integrationStartTime) <= 47)){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
-      if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
-        break;
-      }  
-    }
-  #else
-    while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
-      if((millis() - integrationStartTime) >= 56){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
-        break;
-      }  
-    }
-  #endif
+  while ((meter_update() == false) && ((millis() - integrationStartTime) <= Flash_Min_Time)){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
+    if((millis() - integrationStartTime) >= Flash_Max_Time){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
+      break;
+    }  
+  }
+
   #if FFDEBUG
     Serial.print(millis()-integrationStartTime);
     Serial.println("ms Flash Delay Time, Flash fired!");
   #endif
   digitalWrite(PIN_FF, HIGH);  //FireFlash
-  delay(2);   //Capture Flash 
+  delay(Flash_Capture_Delay);   //Capture Flash 
   #if FFDEBUG
     Serial.print((millis() - flashExposureStartTime));
     Serial.println("ms FlashExposure Integrationtime");
@@ -702,6 +755,7 @@ void Camera::ShutterB()
     
   }
   Camera::FastFlash();
+  delay(Flash_Capture_Delay);   //Capture Flash 
 
   ExposureFinish();
   return; //Added 26.10.
@@ -752,6 +806,7 @@ void Camera::ShutterT(){
     //do nothing
   }
   Camera::FastFlash();
+  delay(Flash_Capture_Delay);   //Capture Flash 
 
   #if APERTURE_PRIORITY
     analogWrite(PIN_SOL2, 0);
