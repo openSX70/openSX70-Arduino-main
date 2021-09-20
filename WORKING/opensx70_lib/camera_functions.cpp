@@ -755,6 +755,7 @@ void Camera::ShutterB()
     
   }
   Camera::FastFlash();
+  delay(Flash_Capture_Delay);   //Capture Flash 
 
   ExposureFinish();
   return; //Added 26.10.
@@ -805,6 +806,7 @@ void Camera::ShutterT(){
     //do nothing
   }
   Camera::FastFlash();
+  delay(Flash_Capture_Delay);   //Capture Flash 
 
   #if APERTURE_PRIORITY
     analogWrite(PIN_SOL2, 0);
