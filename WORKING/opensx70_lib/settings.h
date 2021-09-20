@@ -15,11 +15,8 @@
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
 
   //----------------EXPERIMENTAL OPTIONS---------------------------------
-  #define Flashbar_Change 1
-  #define Flash_Capture_Delay 4
-  #define Flash_Max_Time 63
-  #define Flash_Min_Time 47
-  #define Dongle_Flash_Limit 4
+  
+  // NONE CURRENTLY!
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
@@ -76,6 +73,14 @@
     #define A600 225
   #endif
   //---------------END MAGIC NUMBERS-----------------------------------------
+
+  //---------------Flashbar and Dongle Flash---------------------------------
+  #define Flashbar_Change 1
+  #define Flash_Capture_Delay 4
+  #define Flash_Max_Time 63
+  #define Flash_Min_Time 47
+  #define Dongle_Flash_Limit 4
+  //---------------End Flash settings----------------------------------------
 
   //---------------Shutter Settings------------------------------------------
   #define SELECTOR_LIMIT_VARIANCE 6
