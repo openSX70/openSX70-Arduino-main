@@ -721,7 +721,9 @@ void switch2Function(int mode) {
   //0 Dongle 1 No dongle
   if (mode == 0) {
     #if SONAR
+    #if TIMER_MIRROR_UP
       openSX70.S1F_Unfocus();
+    #endif
     #endif
     openSX70.shutterCLOSE();
     delay(100);
@@ -731,7 +733,9 @@ void switch2Function(int mode) {
     digitalWrite(PIN_LED2, LOW);
     digitalWrite(PIN_LED1, LOW);
     #if SONAR
+    #if TIMER_MIRROR_UP
       openSX70.S1F_Focus();
+    #endif
     #endif
     openSX70.BlinkTimerDelay (GREEN, RED, 10);
   }
@@ -739,14 +743,19 @@ void switch2Function(int mode) {
     #if SONAR
       openSX70.S1F_Unfocus();
     #endif
-    openSX70.shutterCLOSE();
     delay(100);
     #if TIMER_MIRROR_UP
+      openSX70.shutterCLOSE();
       openSX70.SelfTimerMUP();
     #endif
     delay (10000); //NoDongleMode
     #if SONAR
+    #if TIMER_MIRROR_UP
       openSX70.S1F_Focus();
+    #else
+      openSX70.S1F_Focus();
+      openSX70.shutterCLOSE();
+    #endif
     #endif
     delay(1000);
   } 
