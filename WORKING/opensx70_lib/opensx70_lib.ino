@@ -134,8 +134,6 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
-  //savedISO = ReadISO();
-  selector = myDongle.selector();
   normalOperation();
   state = STATE_MACHINE[state]();
   #if SONAR
@@ -205,6 +203,7 @@ camera_state do_state_noDongle (void){
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){ //Do only if S1F is pressed
   preFocus();
+  
   #endif
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
@@ -256,6 +255,7 @@ camera_state do_state_noDongle (void){
 camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
   DongleInserted();
+  selector = myDongle.selector();
   
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){
@@ -367,6 +367,7 @@ camera_state do_state_flashBar (void){
 camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
+  selector = myDongle.selector();
 
   #if SONAR
     if(switch1 == 1){
@@ -498,7 +499,7 @@ void preFocus() {
 
 void unfocusing(){
   //delay(100);
-  if ((digitalRead(PIN_S1F) == LOW) && (isFocused == 1)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
+  if ((digitalRead(PIN_S1F) == LOW) && (digitalRead(PIN_GTD) == HIGH)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
     //delay(100);
     openSX70.S1F_Unfocus();
     isFocused = 0;
@@ -720,24 +721,12 @@ void switch2Function(int mode) {
   #endif
   //0 Dongle 1 No dongle
   if (mode == 0) {
-    #if SONAR
-    #if TIMER_MIRROR_UP
-      openSX70.S1F_Unfocus();
-    #endif
-    #endif
-    openSX70.shutterCLOSE();
-    delay(100);
-    #if TIMER_MIRROR_UP
-      openSX70.SelfTimerMUP();
-    #endif
+
     digitalWrite(PIN_LED2, LOW);
     digitalWrite(PIN_LED1, LOW);
-    #if SONAR
-    #if TIMER_MIRROR_UP
-      openSX70.S1F_Focus();
-    #endif
-    #endif
+    
     openSX70.BlinkTimerDelay (GREEN, RED, 10);
+
   }
   else if (mode == 1) {
     #if SONAR
