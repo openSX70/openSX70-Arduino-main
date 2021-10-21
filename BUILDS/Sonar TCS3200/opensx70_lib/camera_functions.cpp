@@ -68,11 +68,21 @@ int Camera::getGTD() {
 
 void Camera::S1F_Focus(){
     //int i=0;
+    int gtdDebounceCount = 0;
     #if FOCUSDEBUG
       Serial.println("Focus on");
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
+    uint32_t startMillis = millis();
+    while(gtdDebounceCount<10 || ((millis()-startMillis)<200)){
+      if(digitalRead(PIN_GTD) == HIGH){
+        gtdDebounceCount = gtdDebounceCount + 1;
+      }
+      else{
+        gtdDebounceCount = 0;
+      }
+    }
     return;
 }
 
@@ -264,35 +274,26 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   //uint32_t startTimer = millis();
   //*******************************************************
   uint32_t steps = (time * 1000) / 4;
-  // DS2408 and DONGLE LED BLINK
-  /*
-  #if SONAR
-    S1F_Unfocus(); //Camera Unfocus and start Focus again an almost end of the SelfTimer
-  #endif
-  Camera::Blink (1000, steps, led1, PIN_LED2, 2);
-  Camera::Blink (600, steps, led1, PIN_LED2, 2);
-  Camera::Blink (200, steps, led1, PIN_LED2, 2);
-  steps = steps / 2;
-  #if SONAR
-    S1F_Focus();
-  #endif
-  Camera::Blink (80, steps, led1, PIN_LED2, 2);
-  Camera::Blink (80, steps, led2, PIN_LED1, 2);
-  }
-  */
 
   // DS2408 LED BLINK
+
   #if SONAR
-    S1F_Unfocus(); //Camera Unfocus and start Focus again an almost end of the SelfTimer
+    Camera::S1F_Unfocus(); 
   #endif
   Camera::Blink (1000, steps, led1, 2);
   Camera::Blink (600, steps, led1, 2);
   Camera::Blink (200, steps, led1, 2);
   steps = steps / 2;
   #if SONAR
-    S1F_Focus();
+    Camera::S1F_Focus();
+  #endif
+  #if TIMER_MIRROR_UP
+    Camera::shutterCLOSE();
   #endif
   Camera::Blink (80, steps, led1, 2);
+  #if TIMER_MIRROR_UP
+    Camera::SelfTimerMUP();
+  #endif
   Camera::Blink (80, steps, led2, 2);
 }
 
@@ -512,6 +513,7 @@ void Camera::VariableManualExposure(int _myISO){
     }
     Camera::FastFlash ();
     delay(Flash_Capture_Delay);
+    
 
   }
   else{

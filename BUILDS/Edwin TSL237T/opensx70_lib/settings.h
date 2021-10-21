@@ -61,10 +61,10 @@
 
   //---------------MAGIC NUMBERS---------------------------------------------
   #if TCS3200
-    #define A100 450
-    #define A600 150
+    #define A100 585
+    #define A600 210
   #endif
-  #if TSL237T
+  #if TSL237T     
     #define A100 950
     #define A600 420
   #endif
