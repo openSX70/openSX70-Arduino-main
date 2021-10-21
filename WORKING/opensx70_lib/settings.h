@@ -24,17 +24,17 @@
   #define TSL237T 0                //Edwin
   #define TSL235R 0                //Alpha 2
   //      Board Version
-  #define MEROE_PCB 1
+  #define MEROE_PCB 0
   #define LAND_PCB 0
-  #define SONAR_PCB 0
+  #define SONAR_PCB 1
   #define SONAR_UNI_PCB 0
   #define EDWIN_PCB 0
   #define ALPHA2_PCB 0
   #define ECM_PCB 0
   //      Camera Options
-  #define S1Logic LOW             //LOW for Alpha shutters and HIGH for Sonar shutters
-  #define ALPHA 1                  //1 if ALPHA camera functions
-  #define SONAR 0                  //1 for Sonar camera functions   
+  #define S1Logic HIGH             //LOW for Alpha shutters and HIGH for Sonar shutters
+  #define ALPHA 0                  //1 if ALPHA camera functions
+  #define SONAR 1                  //1 for Sonar camera functions   
   //      Dongle Options 
   #define FLIP_ORDER 0             //1 to set dongle selector order to "a600 a100 T B" rather than "T B a600 a100". This is for older dongle revisions.
   #define UDONGLE 1
@@ -61,10 +61,10 @@
 
   //---------------MAGIC NUMBERS---------------------------------------------
   #if TCS3200
-    #define A100 450
-    #define A600 150
+    #define A100 585
+    #define A600 210
   #endif
-  #if TSL237T
+  #if TSL237T     
     #define A100 950
     #define A600 420
   #endif
