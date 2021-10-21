@@ -15,7 +15,8 @@
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
 
   //----------------EXPERIMENTAL OPTIONS---------------------------------
-  #define Flashbar_Change 0
+  
+  // NONE CURRENTLY!
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
@@ -31,7 +32,7 @@
   #define ALPHA2_PCB 0
   #define ECM_PCB 0
   //      Camera Options
-  #define S1Logic HIGH              //LOW for Alpha shutters and HIGH for Sonar shutters
+  #define S1Logic HIGH             //LOW for Alpha shutters and HIGH for Sonar shutters
   #define ALPHA 0                  //1 if ALPHA camera functions
   #define SONAR 1                  //1 for Sonar camera functions   
   //      Dongle Options 
@@ -52,15 +53,15 @@
   #define EJECT_AFTER_DEPRESSING 0 //1 Enables the user to hold the shutter button to prevent photo ejection
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
-  //----------------ISO VALUES----------------------------------------------
+  //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_600 640
   #define ISO_SX70 125
-  #define DEFAULT_ISO ISO_600
+  #define DEFAULT_ISO ISO_SX70
   //---------------END ISO VALUES--------------------------------------------
 
   //---------------MAGIC NUMBERS---------------------------------------------
   #if TCS3200
-    #define A100 400
+    #define A100 450
     #define A600 150
   #endif
   #if TSL237T
@@ -72,6 +73,14 @@
     #define A600 225
   #endif
   //---------------END MAGIC NUMBERS-----------------------------------------
+
+  //---------------Flashbar and Dongle Flash---------------------------------
+  #define Flashbar_Change 1
+  #define Flash_Capture_Delay 4
+  #define Flash_Max_Time 63
+  #define Flash_Min_Time 47
+  #define Dongle_Flash_Limit 4
+  //---------------End Flash settings----------------------------------------
 
   //---------------Shutter Settings------------------------------------------
   #define SELECTOR_LIMIT_VARIANCE 6
