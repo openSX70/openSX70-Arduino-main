@@ -135,6 +135,7 @@ void setup() {//setup - Inizialize
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
   normalOperation();
+  selector = myDongle.selector();
   state = STATE_MACHINE[state]();
   #if SONAR
     unfocusing();
@@ -242,7 +243,7 @@ camera_state do_state_noDongle (void){
       #endif
     }
   }
-  else if ((selector == 100) && (myDongle.checkDongle() == 0)){
+  else if ((selector==100) && (myDongle.checkDongle() == 0)){
     result = STATE_FLASHBAR;
     savedISO = ReadISO();
     #if STATEDEBUG
