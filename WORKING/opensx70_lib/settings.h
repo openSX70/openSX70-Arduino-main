@@ -37,6 +37,7 @@
   #define SONAR 1                  //1 for Sonar camera functions   
   //      Dongle Options 
   #define FLIP_ORDER 0             //1 to set dongle selector order to "a600 a100 T B" rather than "T B a600 a100". This is for older dongle revisions.
+  #define AFTER_EIGHT 1
   #define UDONGLE 1
   #define ORIGAMI 0
   #define ORIGAMIV1 0
