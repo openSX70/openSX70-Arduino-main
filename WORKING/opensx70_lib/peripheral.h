@@ -5,6 +5,7 @@
         public:
             peripheral(uint8_t pin);
 
+            getPeripheral();
             
 
 
