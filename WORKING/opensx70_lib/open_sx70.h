@@ -11,7 +11,7 @@
   #include "settings.h"
   #include "camera_functions.h"
   //#include "ClickButton.h"
-  #include "udongle2.h"
+  #include "peripheral.h"
   #include "ClickButton.h"
   #include "eeprom_init.h"
   #include "meter.h"

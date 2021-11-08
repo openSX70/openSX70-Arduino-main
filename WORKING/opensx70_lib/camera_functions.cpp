@@ -5,7 +5,7 @@
 #include "sx70_pcb.h"
 //#include "Clickbutton.h"
 #include "settings.h"
-#include "udongle2.h"
+#include "peripheral.h"
 
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
@@ -24,47 +24,6 @@ int Camera::getGTD(){
    GTD = digitalRead(PIN_GTD);
    return GTD;  
 }
-
-/*For Sonar-FBW where DigitalRead is not working
-#if SONAR
-int Camera::getGTD() {
-  //GTD = 1;
-  int val =  10;
-  int aGTD[val];
-  int dvdGTD = 0;
-  //int aGTD = 0;
-  for (int i=0; i <= val; i++){
-    aGTD[i] = analogRead(PIN_GTD);
-  }
-  for (int i=0; i <= val; i++){
-    if(aGTD[i] >= 310){
-      if(aGTD[i]==aGTD[i-1]){
-        dvdGTD++;
-      }
-    }
-  }
-  #if SIMPLEDEBUG
-  Serial.print("dvdGTD: ");
-  Serial.println(dvdGTD);
-  Serial.print("aGTD[0]: ");
-  Serial.println(aGTD[0]);
-  #endif
-  if(dvdGTD>=(val-1)){
-    if(aGTD[0] >= 310){
-      GTD = 1;
-      //delay(5000);
-      Serial.println("GTD True");
-      return GTD;
-    }else if(aGTD[0] <= 309)
-    {
-      GTD = 0;
-      return GTD;
-    }
-  }
-  //GTD = digitalRead(PIN_GTD);
-  return 0;
-}
-*/
 
 void Camera::S1F_Focus(){
     //int i=0;

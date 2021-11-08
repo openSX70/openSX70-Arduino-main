@@ -1,7 +1,7 @@
 #ifndef Camera_h
   #define Camera_h
   #include "Arduino.h"
-  #include "udongle2.h"
+  #include "peripheral.h"
   class Camera
   {
     public:
