@@ -1,5 +1,5 @@
 #include "DS2408.h"
-#include "peripheral.h"
+#include "udongle2.h"
 #include "settings.h" // included because of for #if ORIGAMIV1
 
 byte previous_count = 0; //for debouncing
@@ -187,6 +187,81 @@ byte uDongle::selector()
     return sel;
 }
 
+/*debounced version of selector()
+byte uDongle::selector()
+{
+    byte encoder_count = uDongle::Read_DS2408_PIO(0);
+    static int newencoder_count;
+      if (encoder_count == previous_count || encoder_count == previous_count){
+          return encoder_count;
+     }
+     else if(previous_count == 0){
+          newencoder_count = uDongle::Read_DS2408_PIO(0);
+          if(newencoder_count == 15  || newencoder_count == 1){
+              encoder_count = newencoder_count;
+              previous_count = encoder_count;
+              #if ROTARYDEBUG
+                Serial.print("new encoder_count Zero Handling: ");
+                Serial.println(encoder_count);
+             #endif
+             return (encoder_count);
+          }
+    }
+    else if (previous_count == 15){  //fix for switching from 15 to 1 and viceversa
+          newencoder_count = encoder_count;
+          if(newencoder_count == 0 || newencoder_count == 14){
+              encoder_count = newencoder_count;
+              previous_count = encoder_count;
+              #if ROTARYDEBUG
+                Serial.print("new encoder_count 15 handling: ");
+                Serial.println(encoder_count);
+              #endif
+               return (encoder_count);
+          }else{
+          delay(500);
+          byte encoder_count = uDongle::Read_DS2408_PIO(0);
+          #if ROTARYDEBUG
+            Serial.print("new encoder_count 15 handling: ");
+            Serial.println(encoder_count);
+          #endif
+          previous_count = encoder_count;
+               return (encoder_count);
+          }
+    }
+    if (encoder_count > previous_count + 1 || encoder_count < previous_count - 1) //not 1 bigger or smaller than lastCount
+    {
+        delay(800);
+        encoder_count = uDongle::Read_DS2408_PIO(0);
+        #if ROTARYDEBUG
+          Serial.println(F("False reading, wait short and reread: Encoder Count: "));
+          Serial.println(encoder_count);
+        #endif
+        if((encoder_count==(previous_count+1)||encoder_count==(previous_count-1))){
+              #if ROTARYDEBUG
+                 Serial.println(F("Corrected"));
+              #endif
+              previous_count = encoder_count;
+              return encoder_count;
+        }
+        delay(1500);
+        encoder_count = uDongle::Read_DS2408_PIO(0);
+        Serial.println(F("False reading, wait longer and reread"));
+         previous_count = encoder_count;
+       return encoder_count;
+      }else if (encoder_count == previous_count + 1 || encoder_count == previous_count - 1){
+        #if ROTARYDEBUG
+           Serial.print("Correct Read new encoder_count: ");
+           Serial.println(encoder_count);      
+        #endif
+        previous_count = encoder_count;
+        return encoder_count;
+     }
+   else{
+        Serial.println(F("else handling"));
+        return -2;
+      }
+}
+*/
 
 byte uDongle::switch1()
 {
@@ -199,6 +274,17 @@ byte uDongle::switch2()
   byte sw = uDongle::Read_DS2408_PIO(2);
   return sw;
 }   
+
+/*void uDongle::led1(bool on)
+{
+  Write_DS2408_PIO(6,on);
+  
+}
+void uDongle::led2(bool on)
+{
+  Write_DS2408_PIO(7,on);
+  
+}*/
 
 void uDongle::dongleLed (byte _led,bool on)
 {
