@@ -21,10 +21,6 @@
       
       // Methods
       void initDS2408();
-      //byte selector();
-      //byte switch1();
-      //byte switch2();
-      //byte Read_DS2408_PIO(int slot);
       void Write_DS2408_PIO(byte port, bool ON);
       byte checkDongle();
       void dongleLed (byte led,bool on);
@@ -37,14 +33,8 @@
     private:
       byte Read_DS2408_PIO(int slot);
       byte get_peripheral_status();
-      //void Write_DS2408_PIO(byte port, bool ON);
       uint8_t _Pin;
-      //uint8_t _dongleDevice;
       uint8_t _device_count;
-      //byte _Selector;
-      //byte _Switch1;
-      //byte _Switch2;
-      //byte _Switch;
       DS2408* _ds;
       Device  _dongleDevice;
       status peripheral_status;
