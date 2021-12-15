@@ -24,7 +24,7 @@ In a nutshell: manual control of the camera:
 
 ## **Where is openSX70?**
 
- This is our [main webpage](www.opensx70.com). We also have a [Facebook group](https://www.facebook.com/groups/739071666267626/ "Facebook openSX70 group"). We are also on instagram (@opensx70).
+ This is our [main webpage](https://www.opensx70.com/). We also have a [Facebook group](https://www.facebook.com/groups/739071666267626/ "Facebook openSX70 group"). We are also on instagram (@opensx70).
 
 ## **But, hasn’t this already been done?**
 
