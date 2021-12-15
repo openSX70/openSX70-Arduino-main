@@ -35,12 +35,12 @@ byte uDongle::get_peripheral_status(){
   if (digitalRead(_Pin) == LOW){
     //CASE: FLASH
     peripheral_status.selector = 100;
-    return this->peripheral_status; // FLASH
+    return peripheral_status; // FLASH
   }
-  if  ((_device_count == 0) && (digitalRead(_Pin) == HIGH)){  
+  else if((_device_count == 0) && (digitalRead(_Pin) == HIGH)){  
     //CASE: NO PERIPHERAL
     peripheral_status.selector = 200;
-    return this->peripheral_status;
+    return peripheral_status;
   }
 
   readDevice = _ds->get_state(_dongleDevice);
@@ -54,7 +54,7 @@ byte uDongle::get_peripheral_status(){
   peripheral_status.switch1 = readDevice & switch1_mask;
   peripheral_status.switch2 = readDevice & switch2_mask;
 
-  return this->peripheral_status;
+  return peripheral_status;
 }
 
 
