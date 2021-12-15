@@ -59,19 +59,8 @@ byte uDongle::get_peripheral_status(){
     //TODO!
   #endif
 
-  if((readDevice & switch1_mask)>0){
-    peripheral_status.switch1 = true;
-  }
-  else{
-    peripheral_status.switch1 = false;
-  }
-
-  if((readDevice & switch2_mask)>0){
-    peripheral_status.switch2 = true;
-  }
-  else{
-    peripheral_status.switch2 = false;
-  }
+  peripheral_status.switch1 = readDevice & switch1_mask;
+  peripheral_status.switch2 = readDevice & switch2_mask;
 
   return this->peripheral_status;
 }
