@@ -7,6 +7,12 @@
     #include "WProgram.h" //??
   #endif
   #include "DS2408.h"
+
+  struct status{
+    uint8_t selector;
+    bool switch1;
+    bool switch2;
+  };
   
   class uDongle {
     public:
@@ -15,9 +21,9 @@
       
       // Methods
       void initDS2408();
-      byte selector();
-      byte switch1();
-      byte switch2();
+      //byte selector();
+      //byte switch1();
+      //byte switch2();
       //byte Read_DS2408_PIO(int slot);
       void Write_DS2408_PIO(byte port, bool ON);
       byte checkDongle();
@@ -25,9 +31,12 @@
       void simpleBlink (int _times, int _led);
       void bothBlink (int _times);
       void doubleBlink (int _times);
+
+      
  
     private:
       byte Read_DS2408_PIO(int slot);
+      byte get_peripheral_status();
       //void Write_DS2408_PIO(byte port, bool ON);
       uint8_t _Pin;
       //uint8_t _dongleDevice;
@@ -38,5 +47,6 @@
       //byte _Switch;
       DS2408* _ds;
       Device  _dongleDevice;
+      status peripheral_status;
   };
 #endif

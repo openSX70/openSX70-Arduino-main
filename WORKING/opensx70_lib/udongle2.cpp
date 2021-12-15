@@ -9,6 +9,7 @@ uDongle::uDongle (uint8_t pin)
   _ds = new DS2408(pin);
   Device  _dongleDevice;
   _Pin = pin;
+  status peripheral_status;
 }
 
 void uDongle::initDS2408() //INTITIALIZE DS2408
@@ -35,120 +36,46 @@ void uDongle::initDS2408() //INTITIALIZE DS2408
   //Device dongleDevice;
 }
 
-byte uDongle::Read_DS2408_PIO(int slot)
-{
-  //  Device  _dongleDevice;
-  //
+byte uDongle::get_peripheral_status(){
   uint8_t readDevice;
-  //  uint8_t _device_count;
-  //  byte slot;
-  // Slot = 0 selector    // return value 0-15 (selector) 100 = Flash inserted 200 = NOTHING INSERTED
-  // Slot = 1 S1          //Return switch 1 on or off
-  // Slot = 2 S2         //Return switch 2 on or off
-  byte _Selector = B0000;
-  //Serial.print("readDevice = ");
-  //Serial.println(readDevice, HEX);
-  pinMode(_Pin, INPUT_PULLUP); //changed from INPUT_PULLUP 27_04
-  if (digitalRead(_Pin) == LOW)   //////////////////////////////////////////////////////////// CASE FLASH
-  {
-    return 100; // FLASH
-    Serial.println(F("flash"));
+  uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
+
+  pinMode(_Pin, INPUT_PULLUP);
+  if (digitalRead(_Pin) == LOW){
+    //CASE: FLASH
+    peripheral_status.selector = 100;
+    return this->peripheral_status; // FLASH
   }
-  if  ((_device_count == 0) && (digitalRead(_Pin) == HIGH)) ////////////////////////////////////////////////////////////CASE NOTHING CONNECTED
-  {  
-    return 200; //NOTHING
-    Serial.println(F("nothing"));
+  if  ((_device_count == 0) && (digitalRead(_Pin) == HIGH)){  
+    //CASE: NO PERIPHERAL
+    peripheral_status.selector = 200;
+    return this->peripheral_status;
   }
 
-  if (slot == 0) 
-  { 
-    readDevice = _ds->get_state(_dongleDevice);
-    #if UDONGLE
-      if (readDevice & 0b00000001) {
-        bitSet(_Selector, 0);
-      } else
-      {
-        bitClear(_Selector, 0);
-      }
-      if (readDevice & 0b00000010)
-      {
-        bitSet(_Selector, 1);
-      } else 
-      {
-        bitClear(_Selector, 1);
-      }
-      if (readDevice & 0b00000100) 
-      {
-        bitSet(_Selector, 2);
-      } else
-      {
-        bitClear(_Selector, 2);
-      }
-      if (readDevice & 0b000001000)
-      {
-        bitSet(_Selector, 3);
-      } else{
-        bitClear(_Selector, 3);
-      }
-      return _Selector;
-    #endif
-    #if ORIGAMIV1
-      if (readDevice & 0b00000001) {
-        bitSet(_Selector, 3);
-      } else
-      {
-        bitClear(_Selector, 3);
-      }
-      if (readDevice & 0b00000010)
-      {
-        bitSet(_Selector, 2);
-      } else 
-      {
-        bitClear(_Selector, 2);
-      }
-      if (readDevice & 0b00000100) 
-      {
-        bitSet(_Selector, 1);
-      } else
-      {
-        bitClear(_Selector, 1);
-      }
-      if (readDevice & 0b000001000)
-      {
-        bitSet(_Selector, 0);
-      } else{
-        bitClear(_Selector, 0);
-      }
-      
-      return _Selector;
-    #endif
-  }//END OF Slot=0
-  byte  _Switch = 0;
-  if (slot == 1) {
-    readDevice = _ds->get_state(_dongleDevice);
-    if (readDevice & 0b00010000) {
-      bitSet(_Switch, 0);
-    } else
-    {
-      bitClear(_Switch, 0);
-    }
-  return _Switch;
+  readDevice = _ds->get_state(_dongleDevice);
+  #if UDONGLE
+    peripheral_status.selector = readDevice & selector_mask;
+  #elif ORIGAMIV1
+    //TODO!
+  #endif
+
+  if((readDevice & switch1_mask)>0){
+    peripheral_status.switch1 = true;
   }
-  if (slot == 2)
-  {
-    readDevice = _ds->get_state(_dongleDevice);
-    if (readDevice & 0b00100000)
-    {
-      bitSet(_Switch, 0);
-    }else
-    {
-      bitClear(_Switch, 0);
-    }
-    return _Switch;
-  } else{
-    return 0;
+  else{
+    peripheral_status.switch1 = false;
   }
+
+  if((readDevice & switch2_mask)>0){
+    peripheral_status.switch2 = true;
+  }
+  else{
+    peripheral_status.switch2 = false;
+  }
+
+  return this->peripheral_status;
 }
+
 
 void uDongle::Write_DS2408_PIO(byte port, bool ON) 
 {
@@ -176,115 +103,6 @@ byte uDongle::checkDongle()
   _device_count = _ds->findsingle(&_dongleDevice);
   return _device_count;
 }
-//int recursioncounter= 0;
-
-
-byte uDongle::selector()
-{
-    byte sel = uDongle::Read_DS2408_PIO(0);
-    //Serial.print("selectorread: ");
-    //Serial.println(sel);
-    return sel;
-}
-
-/*debounced version of selector()
-byte uDongle::selector()
-{
-    byte encoder_count = uDongle::Read_DS2408_PIO(0);
-    static int newencoder_count;
-      if (encoder_count == previous_count || encoder_count == previous_count){
-          return encoder_count;
-     }
-     else if(previous_count == 0){
-          newencoder_count = uDongle::Read_DS2408_PIO(0);
-          if(newencoder_count == 15  || newencoder_count == 1){
-              encoder_count = newencoder_count;
-              previous_count = encoder_count;
-              #if ROTARYDEBUG
-                Serial.print("new encoder_count Zero Handling: ");
-                Serial.println(encoder_count);
-             #endif
-             return (encoder_count);
-          }
-    }
-    else if (previous_count == 15){  //fix for switching from 15 to 1 and viceversa
-          newencoder_count = encoder_count;
-          if(newencoder_count == 0 || newencoder_count == 14){
-              encoder_count = newencoder_count;
-              previous_count = encoder_count;
-              #if ROTARYDEBUG
-                Serial.print("new encoder_count 15 handling: ");
-                Serial.println(encoder_count);
-              #endif
-               return (encoder_count);
-          }else{
-          delay(500);
-          byte encoder_count = uDongle::Read_DS2408_PIO(0);
-          #if ROTARYDEBUG
-            Serial.print("new encoder_count 15 handling: ");
-            Serial.println(encoder_count);
-          #endif
-          previous_count = encoder_count;
-               return (encoder_count);
-          }
-    }
-    if (encoder_count > previous_count + 1 || encoder_count < previous_count - 1) //not 1 bigger or smaller than lastCount
-    {
-        delay(800);
-        encoder_count = uDongle::Read_DS2408_PIO(0);
-        #if ROTARYDEBUG
-          Serial.println(F("False reading, wait short and reread: Encoder Count: "));
-          Serial.println(encoder_count);
-        #endif
-        if((encoder_count==(previous_count+1)||encoder_count==(previous_count-1))){
-              #if ROTARYDEBUG
-                 Serial.println(F("Corrected"));
-              #endif
-              previous_count = encoder_count;
-              return encoder_count;
-        }
-        delay(1500);
-        encoder_count = uDongle::Read_DS2408_PIO(0);
-        Serial.println(F("False reading, wait longer and reread"));
-         previous_count = encoder_count;
-       return encoder_count;
-      }else if (encoder_count == previous_count + 1 || encoder_count == previous_count - 1){
-        #if ROTARYDEBUG
-           Serial.print("Correct Read new encoder_count: ");
-           Serial.println(encoder_count);      
-        #endif
-        previous_count = encoder_count;
-        return encoder_count;
-     }
-   else{
-        Serial.println(F("else handling"));
-        return -2;
-      }
-}
-*/
-
-byte uDongle::switch1()
-{
-    byte sw = uDongle::Read_DS2408_PIO(1);
-    return sw;
-}  
-
-byte uDongle::switch2()
-{
-  byte sw = uDongle::Read_DS2408_PIO(2);
-  return sw;
-}   
-
-/*void uDongle::led1(bool on)
-{
-  Write_DS2408_PIO(6,on);
-  
-}
-void uDongle::led2(bool on)
-{
-  Write_DS2408_PIO(7,on);
-  
-}*/
 
 void uDongle::dongleLed (byte _led,bool on)
 {
