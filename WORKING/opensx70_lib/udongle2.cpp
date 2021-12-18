@@ -27,6 +27,8 @@ status uDongle::get_peripheral_status(){
   uint8_t readDevice;
   uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
 
+  _device_count = checkDongle();
+
   pinMode(_Pin, INPUT_PULLUP);
   if (digitalRead(_Pin) == LOW){
     //CASE: FLASH
