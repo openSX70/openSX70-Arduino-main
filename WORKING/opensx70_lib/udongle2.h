@@ -27,12 +27,12 @@
       void simpleBlink (int _times, int _led);
       void bothBlink (int _times);
       void doubleBlink (int _times);
-
+      status get_peripheral_status();
       
  
     private:
       byte Read_DS2408_PIO(int slot);
-      byte get_peripheral_status();
+      
       uint8_t _Pin;
       uint8_t _device_count;
       DS2408* _ds;

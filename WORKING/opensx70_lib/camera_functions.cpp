@@ -9,7 +9,7 @@
 
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
-extern int selector;
+//extern int selector;
 
 int GTD = 0;
 
@@ -363,7 +363,7 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
 }
 
 
-void Camera::ManualExposure(){
+void Camera::ManualExposure(uint8_t selector){
   uint32_t initialMillis;
   //changed sonar compile check
   #if SONAR
@@ -452,7 +452,7 @@ void Camera::ManualExposure(){
   return; //Added 26.10.
 }
 
-void Camera::VariableManualExposure(int _myISO){
+void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
 
   #if SONAR

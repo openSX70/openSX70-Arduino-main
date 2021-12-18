@@ -20,14 +20,10 @@ void uDongle::initDS2408(){
   }
   _ds->write(0x3C);
   _ds->reset();
-  previous_count = selector(); //For Debouncing
-  #if ROTARYDEBUG
-    Serial.println(F("previous count on init:"));
-    Serial.println(previous_count);
-  #endif
+
 }
 
-byte uDongle::get_peripheral_status(){
+status uDongle::get_peripheral_status(){
   uint8_t readDevice;
   uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
 
