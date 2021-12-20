@@ -136,7 +136,7 @@ void loop() {
     Serial.println(analogRead(PIN_S2));
   #else
   normalOperation();
-  selector = peripheral.selector();
+
   state = STATE_MACHINE[state]();
   #if SONAR
     unfocusing();
