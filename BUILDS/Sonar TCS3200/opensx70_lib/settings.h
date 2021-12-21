@@ -37,6 +37,7 @@
   #define SONAR 1                  //1 for Sonar camera functions   
   //      Dongle Options 
   #define FLIP_ORDER 0             //1 to set dongle selector order to "a600 a100 T B" rather than "T B a600 a100". This is for older dongle revisions.
+  #define AFTER_EIGHT 0
   #define UDONGLE 1
   #define ORIGAMI 0
   #define ORIGAMIV1 0
@@ -61,10 +62,10 @@
 
   //---------------MAGIC NUMBERS---------------------------------------------
   #if TCS3200
-    #define A100 450
-    #define A600 150
+    #define A100 585
+    #define A600 210
   #endif
-  #if TSL237T
+  #if TSL237T     
     #define A100 950
     #define A600 420
   #endif
