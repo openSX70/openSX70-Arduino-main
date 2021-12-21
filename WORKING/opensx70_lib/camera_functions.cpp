@@ -9,7 +9,7 @@
 
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
-//extern int selector;
+//
 
 int GTD = 0;
 
@@ -486,7 +486,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     int ShutterSpeedDelay = ShutterSpeed[selector] - Flash_Capture_Delay;
     int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
     #if ADVANCEDEBUG
-      extern int selector;
       Serial.print("Manual Exposure Debug: ");
       Serial.print("ShutterSpeed[");
       Serial.print(selector);
@@ -521,7 +520,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
 
     #if ADVANCEDEBUG
-      extern int selector;
+      
       Serial.print("Manual Exposure Debug: ");
       Serial.print("ShutterSpeed[");
       Serial.print(selector);

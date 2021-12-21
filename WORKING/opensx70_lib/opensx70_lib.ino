@@ -19,29 +19,22 @@ ClickButton sw_S1(PIN_S1, S1Logic);
 uDongle peripheral(PIN_S2);
 Camera openSX70(&peripheral);
 
-status prev_status;
 status current_status;
+uint8_t prev_selector;
 
-int prevDongle ;
-int nowDongle ;
+
 int savedISO;
 int activeISO;
-//static int checkedcount;
-static int inizialized = 0;
 
 bool mEXPFirstRun;
 bool multipleExposureMode;
-
-
 static int multipleExposureCounter = 0;
 #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
   static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
 #endif
 
 #if SONAR
-  bool FT = 0;
-  bool S1F = 0;
-  bool isFocused = 0; //neccessary? should be done by GTD???
+  //bool isFocused = 0; //neccessary? should be done by GTD???
 #endif
 
 
@@ -101,7 +94,7 @@ void setup() {//setup - Inizialize
   #endif
 
   current_status = peripheral.get_peripheral_status();
-  prev_status = current_status;
+  prev_selector = current_status.selector;
 
   io_init();
 
@@ -109,7 +102,6 @@ void setup() {//setup - Inizialize
   multipleExposureMode = false;
 
   checkFilmCount();
-  inizialized++;
 
   if (digitalRead(PIN_S5) != LOW)
   {
@@ -120,8 +112,6 @@ void setup() {//setup - Inizialize
   }
 
   #if SIMPLEDEBUG
-    Serial.print(F("Inizialized: "));
-    Serial.println(inizialized);
     Serial.print(F("currentPicture: "));
     Serial.println(currentPicture);
   #endif
@@ -130,17 +120,10 @@ void setup() {//setup - Inizialize
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
   current_status = peripheral.get_peripheral_status();
-  prev_status = current_status;
-  #if AFTER_EIGHT
-
-    Serial.println(analogRead(PIN_S2));
-  #else
   normalOperation();
-
   state = STATE_MACHINE[state]();
   #if SONAR
     unfocusing();
-  #endif
   #endif
 }
 
@@ -277,7 +260,7 @@ camera_state do_state_dongle (void){
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     #if SIMPLEDEBUG
       Serial.print("SELECTOR: ");
-      Serial.println(selector);
+      Serial.println(current_status.selector);
     #endif
     LightMeterHelper(0);
 
@@ -475,38 +458,16 @@ camera_state do_state_multi_exp (void){
 }
 
 #if SONAR
-void printReadings() {
-  //Serial.print(F("GTD: "));
-  //Serial.print(openSX70.getGTD());
-  Serial.print(F("Is Focused: "));
-  Serial.print(isFocused);
-  Serial.print(F(" | GTD: "));
-  Serial.print(analogRead(PIN_GTD));
-  Serial.print(F(" | S1F: "));
-  Serial.print(digitalRead(PIN_S1F));
-  Serial.print(F(" | FT: "));
-  Serial.print(analogRead(PIN_FT));
-  Serial.print(F(" | FF: "));
-  Serial.println(digitalRead(PIN_FF));
-  return;
-}
-
 void preFocus() {
-  if ((digitalRead(PIN_S1F) == HIGH) && (isFocused == 0)) { // S1F pressed
+  if ((digitalRead(PIN_S1F) == HIGH)) { // S1F pressed
     openSX70.S1F_Focus();
-    isFocused = 1;
-    return;
   }
 }
 
 void unfocusing(){
-  //delay(100);
   if ((digitalRead(PIN_S1F) == LOW) && (digitalRead(PIN_GTD) == HIGH)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
-    //delay(100);
     openSX70.S1F_Unfocus();
-    isFocused = 0;
     turnLedsOff();
-    //return;
   }
 }
 #endif
@@ -535,21 +496,21 @@ void DongleInserted() { //Dongle is pressend LOOP
   #endif
       {
         lmEnable(); //added 26.10.
-        if ((current_status.selector != prev_status.selector)) //Update Dongle changes
+        if ((current_status.selector != prev_selector)) //Update Dongle changes
         {
           #if ADVANCEDEBUG
             Serial.print(F("DONGLE Mode:  "));
             Serial.print(F("Selector: "));
             Serial.print(current_status.selector);
             Serial.print(F(" Switch1: "));
-            Serial.print(switch1);
+            Serial.print(current_status.switch1);
             Serial.print(F(" Switch2: "));
-            Serial.print(switch2);
+            Serial.print(current_status.switch2);
             Serial.print(F(" speed: "));
             Serial.println(ShutterSpeed[current_status.selector]);
           #endif
           blinkAutomode();
-          prev_status = current_status;
+          prev_selector = current_status.selector;
         }
       }
   #if SONAR
@@ -663,7 +624,6 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
           Serial.print(F("EEPROM READ ISO: "));
           Serial.println(savedISO);
       #endif
-      prevDongle = nowDongle;
       checkFilmCount();
       //return;
     }
