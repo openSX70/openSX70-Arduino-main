@@ -16,37 +16,25 @@
 
 ClickButton sw_S1(PIN_S1, S1Logic);
 
-int selector ;
-bool switch1 ;
-bool switch2 ;
+uDongle peripheral(PIN_S2);
+Camera openSX70(&peripheral);
 
-uDongle myDongle (PIN_S2);
-Camera openSX70(&myDongle);
-byte prev_selector = 0;
-int prevDongle ;
-int nowDongle ;
+status current_status;
+uint8_t prev_selector;
+
+
 int savedISO;
 int activeISO;
-//static int checkedcount;
-static int inizialized = 0;
 
 bool mEXPFirstRun;
 bool multipleExposureMode;
-
-
 static int multipleExposureCounter = 0;
 #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
   static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
 #endif
-/*
-#if SONAR == 0 
-  bool GTD = 1; //For non Sonar Models
-#endif
-*/
+
 #if SONAR
-  bool FT = 0;
-  bool S1F = 0;
-  bool isFocused = 0; //neccessary? should be done by GTD???
+  //bool isFocused = 0; //neccessary? should be done by GTD???
 #endif
 
 
@@ -93,7 +81,7 @@ void setup() {//setup - Inizialize
     Serial.println(currentPicture);
   #endif
   
-  myDongle.initDS2408();
+  peripheral.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
 
   // (These are default if not set, but changeable for convenience)
@@ -105,8 +93,8 @@ void setup() {//setup - Inizialize
   sw_S1.longClickTime  = 0; // time until "held-down clicks" register
   #endif
 
-  selector = myDongle.selector();
-  prev_selector = selector;
+  current_status = peripheral.get_peripheral_status();
+  prev_selector = current_status.selector;
 
   io_init();
 
@@ -114,7 +102,6 @@ void setup() {//setup - Inizialize
   multipleExposureMode = false;
 
   checkFilmCount();
-  inizialized++;
 
   if (digitalRead(PIN_S5) != LOW)
   {
@@ -125,8 +112,6 @@ void setup() {//setup - Inizialize
   }
 
   #if SIMPLEDEBUG
-    Serial.print(F("Inizialized: "));
-    Serial.println(inizialized);
     Serial.print(F("currentPicture: "));
     Serial.println(currentPicture);
   #endif
@@ -134,8 +119,8 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
+  current_status = peripheral.get_peripheral_status();
   normalOperation();
-  selector = myDongle.selector();
   state = STATE_MACHINE[state]();
   #if SONAR
     unfocusing();
@@ -152,13 +137,13 @@ camera_state do_state_darkslide (void) {
       currentPicture = 0; 
       WritePicture(currentPicture);
       checkFilmCount();
-      if(myDongle.checkDongle() == 0){
+      if(peripheral.checkDongle() == 0){
         openSX70.darkslideEJECT(); 
       }
       else{
-        myDongle.dongleLed(GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
+        peripheral.dongleLed(GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
         openSX70.darkslideEJECT();
-        myDongle.dongleLed(GREEN, LOW); //switching off green uDongle LED
+        peripheral.dongleLed(GREEN, LOW); //switching off green uDongle LED
       }
       #if SIMPLEDEBUG
         Serial.println(F("STATE1: EJECT DARK SLIDE"));
@@ -167,7 +152,7 @@ camera_state do_state_darkslide (void) {
       #endif
     }
     
-    if ((selector <= 15) && (myDongle.checkDongle() > 0)){ //((selector <= 15) && (myDongle.checkDongle() > 0))
+    if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
       result = STATE_DONGLE;
       savedISO = ReadISO();
       delay(100);
@@ -176,7 +161,7 @@ camera_state do_state_darkslide (void) {
         Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
-    else if ((selector == 100) && (myDongle.checkDongle() == 0)){
+    else if ((current_status.selector == 100) && (peripheral.checkDongle() == 0)){
       result = STATE_FLASHBAR;
       savedISO = ReadISO();
       #if STATEDEBUG
@@ -226,16 +211,17 @@ camera_state do_state_noDongle (void){
   }
   #endif
   //Checks for dongle or flashbar insertion
-  if (myDongle.checkDongle() > 0){
+
+  if (current_status.selector<=15){
     #if STATEDEBUG
       Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
     #endif
     result = STATE_DONGLE;
     savedISO = ReadISO();
-    if(((myDongle.switch1() == 1) && (myDongle.switch2() == 1))){
+    if(((current_status.switch1 == 1) && (current_status.switch2 == 1))){
       saveISOChange();
     }
-    else if(myDongle.selector()<=13){ //Dont blink on AUTOMODE
+    else if(current_status.selector<=13){ //Dont blink on AUTOMODE
       #if COUNTER_BLINK
       CounterBlink();
       #else
@@ -243,7 +229,7 @@ camera_state do_state_noDongle (void){
       #endif
     }
   }
-  else if ((selector==100) && (myDongle.checkDongle() == 0)){
+  else if (current_status.selector==100){
     result = STATE_FLASHBAR;
     savedISO = ReadISO();
     #if STATEDEBUG
@@ -256,16 +242,15 @@ camera_state do_state_noDongle (void){
 camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
   DongleInserted();
-  selector = myDongle.selector();
   
   #if SONAR
   if ((digitalRead(PIN_S1F) == HIGH)){
   preFocus();
   #endif
-    if(selector<=11){
+    if(current_status.selector<=11){
       LightMeterHelper(2); //LMHelper Manual Mode
     }
-    else if(ShutterSpeed[selector] == A100 || ShutterSpeed[selector] == A600){
+    else if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
       LightMeterHelper(1); //LMHelper Auto Mode
     }
   #if SONAR
@@ -275,32 +260,32 @@ camera_state do_state_dongle (void){
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     #if SIMPLEDEBUG
       Serial.print("SELECTOR: ");
-      Serial.println(selector);
+      Serial.println(current_status.selector);
     #endif
     LightMeterHelper(0);
 
-    if(switch2 == 1){
+    if(current_status.switch2 == 1){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
-    if((selector>=0) && (selector<=SELECTOR_LIMIT_VARIANCE)){ //fast manual speeds
-      openSX70.VariableManualExposure(savedISO);
+    if((current_status.selector>=0) && (current_status.selector<=SELECTOR_LIMIT_VARIANCE)){ //fast manual speeds
+      openSX70.VariableManualExposure(savedISO, current_status.selector);
     }
-    else if((selector>SELECTOR_LIMIT_VARIANCE) && (selector<12)){ //MANUAL SPEEDS  
-      openSX70.ManualExposure();
+    else if((current_status.selector>SELECTOR_LIMIT_VARIANCE) && (current_status.selector<12)){ //MANUAL SPEEDS  
+      openSX70.ManualExposure(current_status.selector);
     }
-    else if(ShutterSpeed[selector] == POST){ //POST
+    else if(ShutterSpeed[current_status.selector] == POST){ //POST
       lmTimer_stop();
       turnLedsOff();
       openSX70.ShutterT();
     }
-    else if(ShutterSpeed[selector] == POSB){ //POSB
+    else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
       lmTimer_stop();
       turnLedsOff(); //why?
       openSX70.ShutterB();
     }
     else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
-      switch(ShutterSpeed[selector]){
+      switch(ShutterSpeed[current_status.selector]){
         case AUTO100:
           openSX70.AutoExposure(ISO_SX70);
           break;
@@ -314,7 +299,7 @@ camera_state do_state_dongle (void){
   } 
 
   // Dongle Removed
-  if (myDongle.checkDongle() == 0){
+  if (current_status.selector == 200){
     result = STATE_NODONGLE;
     savedISO = ReadISO();
     #if STATEDEBUG
@@ -322,7 +307,7 @@ camera_state do_state_dongle (void){
     #endif
   } 
   // Multiple Exposure switch flipped
-  else if (switch1 == 1){
+  else if (current_status.switch1){
     result = STATE_MULTI_EXP;
     multipleExposureMode = true;
     mEXPFirstRun = true;
@@ -355,7 +340,7 @@ camera_state do_state_flashBar (void){
   } 
   #endif
   
-  if ((selector == 200) && (myDongle.checkDongle() == 0)){
+  if ((current_status.selector == 200) && (peripheral.checkDongle() == 0)){
     result = STATE_NODONGLE;
     savedISO = ReadISO();
     #if STATEDEBUG
@@ -368,10 +353,9 @@ camera_state do_state_flashBar (void){
 camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
-  selector = myDongle.selector();
 
   #if SONAR
-    if(switch1 == 1){
+    if(current_status.switch1){
       preFocus();
     }
   #endif
@@ -380,10 +364,10 @@ camera_state do_state_multi_exp (void){
   #if SONAR
     if ((digitalRead(PIN_S1F) == HIGH)){
   #endif
-      if(selector<11){
+      if(current_status.selector<11){
         LightMeterHelper(2); //LMHelper Manual Mode
       }
-      else if(selector==14 || selector==15){
+      else if(current_status.selector==14 || current_status.selector==15){
         LightMeterHelper(1); //LMHelper Auto Mode
       }
   #if SONAR
@@ -392,7 +376,7 @@ camera_state do_state_multi_exp (void){
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
-    if(switch1 == 1){ //Why Switch1 == true?!    This is for checking if we are still taking mexp pics
+    if(current_status.switch1){ //Why Switch1 == true?!    This is for checking if we are still taking mexp pics
       if(mEXPFirstRun){
         beginExposure();
         mEXPFirstRun = false;
@@ -400,32 +384,32 @@ camera_state do_state_multi_exp (void){
           multipleExposureLastStartTimestamp = millis();
         #endif
       }
-      if(switch2 == 1){
+      if(current_status.switch2){
         switch2Function(0); // start self timer 
       }
 
-      if((selector>=0) && (selector<=SELECTOR_LIMIT_VARIANCE)){ //fast manual speeds
-        openSX70.VariableManualExposure(savedISO);
+      if((current_status.selector>=0) && (current_status.selector<=SELECTOR_LIMIT_VARIANCE)){ //fast manual speeds
+        openSX70.VariableManualExposure(savedISO, current_status.selector);
         multipleExposureCounter++;
       }
-      else if((selector>SELECTOR_LIMIT_VARIANCE) && (selector<12)){ //MANUAL SPEEDS  
-        openSX70.ManualExposure();
+      else if((current_status.selector>SELECTOR_LIMIT_VARIANCE) && (current_status.selector<12)){ //MANUAL SPEEDS  
+        openSX70.ManualExposure(current_status.selector);
         multipleExposureCounter++;
       }
-      else if(ShutterSpeed[selector] == POST){ //POST
+      else if(ShutterSpeed[current_status.selector] == POST){ //POST
         lmTimer_stop();
         turnLedsOff();
         openSX70.ShutterT();
         multipleExposureCounter++;
       }
-      else if(ShutterSpeed[selector] == POSB){ //POSB
+      else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
         lmTimer_stop();
         turnLedsOff(); //why?
         openSX70.ShutterB();
         multipleExposureCounter++;
       }
       else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
-        switch(ShutterSpeed[selector]){
+        switch(ShutterSpeed[current_status.selector]){
         case AUTO100:
           openSX70.AutoExposure(ISO_SX70);
           break;
@@ -436,7 +420,7 @@ camera_state do_state_multi_exp (void){
         multipleExposureCounter++;
       }
     }
-    else if(switch1 == 0 && multipleExposureCounter > 0){
+    else if(current_status.switch1 == 0 && multipleExposureCounter > 0){
       openSX70.multipleExposureLastClick();
       checkFilmCount();
       multipleExposureCounter = 0;
@@ -455,7 +439,7 @@ camera_state do_state_multi_exp (void){
   #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
     // Finish multiple exposure due to timeout.
     if(multipleExposureLastStartTimestamp != 0 && millis() - multipleExposureLastStartTimestamp > MULTIPLE_EXPOSURES_TIMEOUT){
-      myDongle.simpleBlink(2, RED);
+      peripheral.simpleBlink(2, RED);
       openSX70.multipleExposureLastClick();
       checkFilmCount();
       multipleExposureCounter = 0;
@@ -463,7 +447,7 @@ camera_state do_state_multi_exp (void){
     }
   #endif
 
-  if(switch1 == 0 && multipleExposureCounter == 0){
+  if(current_status.switch1 == 0 && multipleExposureCounter == 0){
     result = STATE_DONGLE;
     multipleExposureMode = false;
     #if STATEDEBUG
@@ -474,38 +458,16 @@ camera_state do_state_multi_exp (void){
 }
 
 #if SONAR
-void printReadings() {
-  //Serial.print(F("GTD: "));
-  //Serial.print(openSX70.getGTD());
-  Serial.print(F("Is Focused: "));
-  Serial.print(isFocused);
-  Serial.print(F(" | GTD: "));
-  Serial.print(analogRead(PIN_GTD));
-  Serial.print(F(" | S1F: "));
-  Serial.print(digitalRead(PIN_S1F));
-  Serial.print(F(" | FT: "));
-  Serial.print(analogRead(PIN_FT));
-  Serial.print(F(" | FF: "));
-  Serial.println(digitalRead(PIN_FF));
-  return;
-}
-
 void preFocus() {
-  if ((digitalRead(PIN_S1F) == HIGH) && (isFocused == 0)) { // S1F pressed
+  if ((digitalRead(PIN_S1F) == HIGH)) { // S1F pressed
     openSX70.S1F_Focus();
-    isFocused = 1;
-    return;
   }
 }
 
 void unfocusing(){
-  //delay(100);
   if ((digitalRead(PIN_S1F) == LOW) && (digitalRead(PIN_GTD) == HIGH)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
-    //delay(100);
     openSX70.S1F_Unfocus();
-    isFocused = 0;
     turnLedsOff();
-    //return;
   }
 }
 #endif
@@ -533,24 +495,22 @@ void DongleInserted() { //Dongle is pressend LOOP
     if (digitalRead(PIN_S1F) != S1Logic) { //Dont run DongleInserted Function on S1F pressed
   #endif
       {
-        switch1 = myDongle.switch1();
-        switch2 = myDongle.switch2();
         lmEnable(); //added 26.10.
-        if ((selector != prev_selector)) //Update Dongle changes
+        if ((current_status.selector != prev_selector)) //Update Dongle changes
         {
           #if ADVANCEDEBUG
             Serial.print(F("DONGLE Mode:  "));
             Serial.print(F("Selector: "));
-            Serial.print(selector);
+            Serial.print(current_status.selector);
             Serial.print(F(" Switch1: "));
-            Serial.print(switch1);
+            Serial.print(current_status.switch1);
             Serial.print(F(" Switch2: "));
-            Serial.print(switch2);
+            Serial.print(current_status.switch2);
             Serial.print(F(" speed: "));
-            Serial.println(ShutterSpeed[selector]);
+            Serial.println(ShutterSpeed[current_status.selector]);
           #endif
           blinkAutomode();
-          prev_selector = selector;
+          prev_selector = current_status.selector;
         }
       }
   #if SONAR
@@ -560,49 +520,47 @@ void DongleInserted() { //Dongle is pressend LOOP
 }
 
 void lmEnable(){
-  if(selector == 12){ //POST
-      if ((switch2 == 1) && (switch1 == 1)) {
-        if (openSX70.getLIGHTMETER_HELPER() == false) {
-          openSX70.setLIGHTMETER_HELPER(true);
-          turnLedsOff();
-          digitalWrite(PIN_LED2, HIGH); //Blink Blue -- LMH On
-          myDongle.simpleBlink(1, GREEN);
-          delay(100);
-          digitalWrite(PIN_LED2, LOW);
-          #if SIMPLEDEBUG
-            Serial.println(F("Lightmeter is on"));
-          #endif
-        }
-      }
-    }
-    else if(selector == 13){ //POSB
-       if ((switch2 == 1) && (switch1 == 1)) {
-        if (openSX70.getLIGHTMETER_HELPER() == true) {
-          openSX70.setLIGHTMETER_HELPER(false);
-          turnLedsOff();
-          digitalWrite(PIN_LED1, HIGH); //Blink RED -- LMH Off
-          myDongle.simpleBlink(1, RED);
-          delay(100);
-          digitalWrite(PIN_LED1, LOW);
+  if(current_status.switch1 && current_status.switch2){
+    if(current_status.selector == 12){ //POST
+      if (openSX70.getLIGHTMETER_HELPER() == false) {
+        openSX70.setLIGHTMETER_HELPER(true);
+        turnLedsOff();
+        digitalWrite(PIN_LED2, HIGH); //Blink Blue -- LMH On
+        peripheral.simpleBlink(1, GREEN);
+        delay(100);
+        digitalWrite(PIN_LED2, LOW);
         #if SIMPLEDEBUG
-          Serial.println(F("Lightmeter is off"));
+          Serial.println(F("Lightmeter is on"));
         #endif
-        }
       }
     }
+    else if(current_status.selector == 13){ //POSB
+      if (openSX70.getLIGHTMETER_HELPER() == true) {
+        openSX70.setLIGHTMETER_HELPER(false);
+        turnLedsOff();
+        digitalWrite(PIN_LED1, HIGH); //Blink RED -- LMH Off
+        peripheral.simpleBlink(1, RED);
+        delay(100);
+        digitalWrite(PIN_LED1, LOW);
+      #if SIMPLEDEBUG
+        Serial.println(F("Lightmeter is off"));
+      #endif
+      }
+    }
+  }
 }
 
 #if COUNTER_BLINK
 
 void CounterBlink(){
-  switch1 = myDongle.switch1();
-  switch2 = myDongle.switch2();
+  switch1 = peripheral.switch1();
+  switch2 = peripheral.switch2();
   #if EIGHT_SHOT_PACK
     int remainingShots = 8-currentPicture;
     if((switch2 != 1) && (switch1 != 1)){
       if(remainingShots>0){
         turnLedsOff();
-        myDongle.simpleBlink((remainingShots), GREEN);
+        peripheral.simpleBlink((remainingShots), GREEN);
         delay(500);
       }
       else{
@@ -621,7 +579,7 @@ void CounterBlink(){
     if((switch2 != 1) && (switch1 != 1)){
       if(remainingShots>0){
         turnLedsOff();
-        myDongle.simpleBlink((remainingShots), GREEN);
+        peripheral.simpleBlink((remainingShots), GREEN);
         delay(500);
       }
       else{
@@ -641,9 +599,7 @@ void CounterBlink(){
 #else
 
 void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 600
-  switch1 = myDongle.switch1();
-  switch2 = myDongle.switch2();
-  if((switch2 != 1) || (switch1 != 1)){ //Not Save ISO //Changed to OR 01.06.2020
+  if((current_status.switch1 != 1) || (current_status.switch2 != 1)){ //Not Save ISO //Changed to OR 01.06.2020
       #if SIMPLEDEBUG
         Serial.println(F("Blink for the saved ISO setting on Dongle insertion."));
       #endif
@@ -651,24 +607,23 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
       savedISO = ReadISO();
       turnLedsOff();
       if (savedISO == ISO_600){
-        myDongle.simpleBlink(2, GREEN);
+        peripheral.simpleBlink(2, GREEN);
         delay(500);
       }
       else if (savedISO == ISO_SX70){
-        myDongle.simpleBlink(1, GREEN);
+        peripheral.simpleBlink(1, GREEN);
         delay(500);
       }
       else{
       #if SIMPLEDEBUG
         Serial.println(F("No ISO Selected"));
-        myDongle.simpleBlink(5, RED);
+        peripheral.simpleBlink(5, RED);
       #endif
       }
       #if SIMPLEDEBUG
           Serial.print(F("EEPROM READ ISO: "));
           Serial.println(savedISO);
       #endif
-      prevDongle = nowDongle;
       checkFilmCount();
       //return;
     }
@@ -676,20 +631,20 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
 #endif
 
 void blinkAutomode(){
-  if ((switch2 != 1) || (switch1 != 1)) { //Save ISO Mode
+  if ((current_status.switch1 != 1) || (current_status.switch2 != 1)) { //Save ISO Mode
     turnLedsOff();
-    if(ShutterSpeed[selector]== AUTO600){
-      myDongle.simpleBlink(2, GREEN);
+    if(ShutterSpeed[current_status.selector]== AUTO600){
+      peripheral.simpleBlink(2, GREEN);
       #if SIMPLEDEBUG
         Serial.print(F("Selector at A600, Blink 2"));
-        Serial.println(ShutterSpeed[selector]);
+        Serial.println(ShutterSpeed[current_status.selector]);
       #endif
       //return;
-    }else if(ShutterSpeed[selector]== AUTO100){
-      myDongle.simpleBlink(1, GREEN);
+    }else if(ShutterSpeed[current_status.selector]== AUTO100){
+      peripheral.simpleBlink(1, GREEN);
       #if SIMPLEDEBUG
         Serial.print(F("Selector at A100, Blink 1"));
-        Serial.println(ShutterSpeed[selector]);
+        Serial.println(ShutterSpeed[current_status.selector]);
       #endif
       //return;
     }
@@ -703,10 +658,10 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
   #endif
   turnLedsOff();
   if (activeISO == ISO_SX70){
-    myDongle.simpleBlink(1, RED);
+    peripheral.simpleBlink(1, RED);
   }
   else if (activeISO == ISO_600){
-    myDongle.simpleBlink(2, RED);
+    peripheral.simpleBlink(2, RED);
   }
   #if SIMPLEDEBUG
     Serial.print(F("active ISO: "));
@@ -765,8 +720,8 @@ void checkFilmCount(){
         Serial.print(F(", currentPicture: "));
         Serial.println(currentPicture);
       #endif
-      myDongle.dongleLed(GREEN, LOW);
-      myDongle.dongleLed(RED, HIGH);
+      peripheral.dongleLed(GREEN, LOW);
+      peripheral.dongleLed(RED, HIGH);
       return;
     }
   #else
@@ -776,9 +731,9 @@ void checkFilmCount(){
         Serial.print(F(", currentPicture on Two Frames left: "));
         Serial.println(currentPicture);
       #endif
-      //myDongle.simpleBlink(2, RED);
-      myDongle.dongleLed(RED, LOW);
-      myDongle.dongleLed(GREEN, HIGH);
+      //peripheral.simpleBlink(2, RED);
+      peripheral.dongleLed(RED, LOW);
+      peripheral.dongleLed(GREEN, HIGH);
       return;
   }
   else if(currentPicture == 10){ 
@@ -787,8 +742,8 @@ void checkFilmCount(){
       Serial.print(F(", currentPicture: "));
       Serial.println(currentPicture);
     #endif
-    myDongle.dongleLed(GREEN, LOW);
-    myDongle.dongleLed(RED, HIGH);
+    peripheral.dongleLed(GREEN, LOW);
+    peripheral.dongleLed(RED, HIGH);
     return;
   }
   #endif
@@ -828,12 +783,11 @@ void normalOperation(){
 
 void saveISOChange() {
   int _selectedISO;
-  selector = myDongle.selector();
   savedISO = ReadISO(); //read the savedISO from the EEPROM
-  if (((ShutterSpeed[selector]) == AUTO600)) {
+  if (((ShutterSpeed[current_status.selector]) == AUTO600)) {
     _selectedISO = ISO_600;
   }
-  else if (((ShutterSpeed[selector]) == AUTO100)) {
+  else if (((ShutterSpeed[current_status.selector]) == AUTO100)) {
     _selectedISO = ISO_SX70;
   }
   else {
@@ -862,11 +816,10 @@ void saveISOChange() {
     activeISO = _selectedISO;
     BlinkISORed(); //Blink ISO Red
   }
-  prev_selector = selector; //prevents green blink after ISO change
 }
 
 void LightMeterHelper(byte ExposureType){
   if(openSX70.getLIGHTMETER_HELPER()){
-    meter_led(selector, ExposureType);
+    meter_led(current_status.selector, ExposureType);
   }
 }

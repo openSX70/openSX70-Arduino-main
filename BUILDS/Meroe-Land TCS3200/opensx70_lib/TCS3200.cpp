@@ -8,6 +8,7 @@
   
   uint16_t outputCompare = A100;
   
+  /*
   //LM is pin 5
   #if SONAR
   const uint8_t TCS3200_S1_Pin = 9;
@@ -19,7 +20,7 @@
   const uint8_t TCS3200_S1_Pin = 2; //Pin 32 on Meroe2  (PD2-INT0)
   const uint8_t TCS3200_S3_Pin = 6; //Pin 10 on Meroe2 (PD6-AIN0)
   #endif
-  
+  */
   void meter_init(){
     tcs3200_init();
   }
