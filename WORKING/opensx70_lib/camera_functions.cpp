@@ -68,21 +68,27 @@ int Camera::getGTD() {
 
 void Camera::S1F_Focus(){
     //int i=0;
-    int gtdDebounceCount = 0;
+    uint8_t gtdDebounceCount = 0;
+    uint16_t prev_reading = 0;
+    uint16_t current_reading = 0;
     #if FOCUSDEBUG
       Serial.println("Focus on");
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
     uint32_t startMillis = millis();
-    while(gtdDebounceCount<10 || ((millis()-startMillis)<200)){
-      if(digitalRead(PIN_GTD) == HIGH){
+    
+    while(gtdDebounceCount < 10 || ((millis()-startMillis)<200)){
+      prev_reading = current_reading;
+      current_reading = analogRead(PIN_GTD);
+      if((current_reading - prev_reading)<=1){
         gtdDebounceCount = gtdDebounceCount + 1;
       }
       else{
         gtdDebounceCount = 0;
       }
     }
+    
     return;
 }
 
