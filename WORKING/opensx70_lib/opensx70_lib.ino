@@ -35,6 +35,7 @@ static int multipleExposureCounter = 0;
 
 #if SONAR
   //bool isFocused = 0; //neccessary? should be done by GTD???
+  bool isFocused = false;
 #endif
 
 
@@ -118,13 +119,13 @@ void setup() {//setup - Inizialize
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
-void loop() {
-  current_status = peripheral.get_peripheral_status();
+void loop() { 
   normalOperation();
   state = STATE_MACHINE[state]();
   #if SONAR
     unfocusing();
   #endif
+  current_status = peripheral.get_peripheral_status();
 }
 
 camera_state do_state_darkslide (void) {
@@ -297,7 +298,6 @@ camera_state do_state_dongle (void){
     sw_S1.Reset();
     checkFilmCount();
   } 
-
   // Dongle Removed
   if (current_status.selector == 200){
     result = STATE_NODONGLE;
@@ -460,13 +460,17 @@ camera_state do_state_multi_exp (void){
 #if SONAR
 void preFocus() {
   if ((digitalRead(PIN_S1F) == HIGH)) { // S1F pressed
-    openSX70.S1F_Focus();
+    if(isFocused == false){
+      openSX70.S1F_Focus();
+      isFocused = true;
+    }  
   }
 }
 
 void unfocusing(){
   if ((digitalRead(PIN_S1F) == LOW) && (digitalRead(PIN_GTD) == HIGH)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
     openSX70.S1F_Unfocus();
+    isFocused = false;
     turnLedsOff();
   }
 }

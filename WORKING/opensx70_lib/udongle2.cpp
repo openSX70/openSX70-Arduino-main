@@ -28,14 +28,19 @@ status uDongle::get_peripheral_status(){
   uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
 
   _device_count = checkDongle();
-
-  pinMode(_Pin, INPUT_PULLUP);
+  /*
+  Serial.print("D count: ");
+  Serial.println(_device_count);
+  Serial.print("Pin: ");
+  Serial.println(digitalRead(_Pin));
+  pinMode(_Pin, INPUT_PULLUP);*/
   if (digitalRead(_Pin) == LOW){
     //CASE: FLASH
     peripheral_status.selector = 100;
     return peripheral_status; // FLASH
   }
   else if((_device_count == 0) && (digitalRead(_Pin) == HIGH)){  
+    
     //CASE: NO PERIPHERAL
     peripheral_status.selector = 200;
     return peripheral_status;
