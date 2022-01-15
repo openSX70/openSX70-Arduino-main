@@ -76,8 +76,9 @@ void Camera::S1F_Focus(){
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
+
+    /*
     uint32_t startMillis = millis();
-    
     while(gtdDebounceCount < 10 || ((millis()-startMillis)<200)){
       prev_reading = current_reading;
       current_reading = analogRead(PIN_GTD);
@@ -88,7 +89,7 @@ void Camera::S1F_Focus(){
         gtdDebounceCount = 0;
       }
     }
-    
+    */
     return;
 }
 
