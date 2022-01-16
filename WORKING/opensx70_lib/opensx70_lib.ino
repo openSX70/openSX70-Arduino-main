@@ -124,8 +124,12 @@ void loop() {
   state = STATE_MACHINE[state]();
   #if SONAR
     unfocusing();
+    if(digitalRead(PIN_S1F)!=HIGH){
+      current_status = peripheral.get_peripheral_status();
+    }
+  #else
+    current_status = peripheral.get_peripheral_status();
   #endif
-  current_status = peripheral.get_peripheral_status();
 }
 
 camera_state do_state_darkslide (void) {
@@ -468,7 +472,7 @@ void preFocus() {
 }
 
 void unfocusing(){
-  if ((digitalRead(PIN_S1F) == LOW) && (digitalRead(PIN_GTD) == HIGH)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
+  if ((digitalRead(PIN_S1F) == LOW)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
     openSX70.S1F_Unfocus();
     isFocused = false;
     turnLedsOff();
