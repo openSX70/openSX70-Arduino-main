@@ -289,11 +289,12 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   #endif
   Camera::Blink (1000, steps, led1, 2);
   Camera::Blink (600, steps, led1, 2);
-  Camera::Blink (200, steps, led1, 2);
-  steps = steps / 2;
   #if SONAR
     Camera::S1F_Focus();
   #endif
+  Camera::Blink (200, steps, led1, 2);
+  steps = steps / 2;
+  
   #if TIMER_MIRROR_UP
     Camera::shutterCLOSE();
   #endif
