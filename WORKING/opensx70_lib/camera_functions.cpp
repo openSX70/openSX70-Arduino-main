@@ -839,6 +839,7 @@ void Camera::ExposureFinish()
   delay (200); //Was 20
 
   if(multipleExposureMode == true){
+    while(digitalRead(PIN_S1) == S1Logic);
     #if MXDEBUG
       Serial.println("mEXP");
     #endif
