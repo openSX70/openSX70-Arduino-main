@@ -25,93 +25,15 @@ int Camera::getGTD(){
    return GTD;  
 }
 
-/*For Sonar-FBW where DigitalRead is not working
-#if SONAR
-int Camera::getGTD() {
-  //GTD = 1;
-  int val =  10;
-  int aGTD[val];
-  int dvdGTD = 0;
-  //int aGTD = 0;
-  for (int i=0; i <= val; i++){
-    aGTD[i] = analogRead(PIN_GTD);
-  }
-  for (int i=0; i <= val; i++){
-    if(aGTD[i] >= 310){
-      if(aGTD[i]==aGTD[i-1]){
-        dvdGTD++;
-      }
-    }
-  }
-  #if SIMPLEDEBUG
-  Serial.print("dvdGTD: ");
-  Serial.println(dvdGTD);
-  Serial.print("aGTD[0]: ");
-  Serial.println(aGTD[0]);
-  #endif
-  if(dvdGTD>=(val-1)){
-    if(aGTD[0] >= 310){
-      GTD = 1;
-      //delay(5000);
-      Serial.println("GTD True");
-      return GTD;
-    }else if(aGTD[0] <= 309)
-    {
-      GTD = 0;
-      return GTD;
-    }
-  }
-  //GTD = digitalRead(PIN_GTD);
-  return 0;
-}
-*/
-
 void Camera::S1F_Focus(){
-    //int i=0;
-    uint8_t gtdDebounceCount = 0;
-    uint16_t prev_reading = 0;
-    uint16_t current_reading = 0;
     #if FOCUSDEBUG
       Serial.println("Focus on");
     #endif
     pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
-
-    /*
-    uint32_t startMillis = millis();
-    while(gtdDebounceCount < 10 || ((millis()-startMillis)<200)){
-      prev_reading = current_reading;
-      current_reading = analogRead(PIN_GTD);
-      if((current_reading - prev_reading)<=1){
-        gtdDebounceCount = gtdDebounceCount + 1;
-      }
-      else{
-        gtdDebounceCount = 0;
-      }
-    }
-    */
     return;
 }
 
-int Camera::S1F_Focus1(){
-    #if FOCUSDEBUG
-      Serial.println("Focus on");
-    #endif
-    pinMode(PIN_S1F_FBW, OUTPUT);
-    digitalWrite(PIN_S1F_FBW, HIGH);
-    int i = 0;
-    while(getGTD()!=1){
-      i++;
-      #if FOCUSDEBUG
-        Serial.println("Wait for GTD to go 1");
-      #endif
-      if(i==40){
-        break;
-        return 0;
-      } 
-    }
-    return 1;
-}
 
 void Camera::S1F_Unfocus(){
     #if FOCUSDEBUG
@@ -122,17 +44,6 @@ void Camera::S1F_Unfocus(){
     return;
 }
 
-void Camera::ExposureStart(){
-  int i = 0;
-  while(S1F_Focus1()!=1){
-    i++;
-    Serial.println("Wait for GTD");
-    if(i>=20){
-      break;
-    }
-  }
-  return;
-}
 #endif
 
 void Camera::SelfTimerMUP(){
@@ -146,10 +57,15 @@ void Camera::shutterCLOSE(){
   #if BASICDEBUG
     Serial.println("shutterCLOSE");
   #endif
-  Camera::HighSpeedPWM();
-  analogWrite(PIN_SOL1, 255);
-  delay (PowerDownDelay);
-  analogWrite (PIN_SOL1, PowerDown);
+  #if ECM_PCB
+    digitalWrite(PIN_SOL1, HIGH);    //ENGAGING SOLENOID 1
+    digitalWrite(PIN_SOL1LOW, HIGH); //ENGAGING SOLENOID 1 LOW POWER PIN
+  #else
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL1, 255);
+    delay (PowerDownDelay);
+    analogWrite (PIN_SOL1, PowerDown);
+  #endif
   return;
 }
 
@@ -157,7 +73,13 @@ void Camera::shutterOPEN(){
   #if BASICDEBUG
     Serial.println("shutterOPEN");
   #endif
-  analogWrite (PIN_SOL1, 0);
+  #if ECM_PCB
+    digitalWrite(PIN_SOL1LOW, LOW); //SOL1 LOW POWER OFF REMAINING ENGAGED
+    digitalWrite(PIN_SOL1, LOW);    //SOL1 POWER OFF JUST IN CASE
+  #else
+    analogWrite (PIN_SOL1, 0);
+  #endif
+
   return; //Added 26.10.
 }
 
@@ -219,10 +141,16 @@ void Camera::darkslideEJECT(){
 
 void Camera::DongleFlashNormal(){
   pinMode(PIN_S2, OUTPUT);
+  #if ECM_PCB
+    digitalWrite(PIN_FPIN, HIGH); //F- connected from GND
+  #endif
   digitalWrite(PIN_SOL2, LOW);      //So FFA recognizes the flash as such
   digitalWrite(PIN_FF, HIGH);       //FLASH TRIGGERING
   delay (1);                        //FLASH TRIGGERING
   digitalWrite(PIN_FF, LOW);        //FLASH TRIGGERING
+  #if ECM_PCB
+    digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
+  #endif
   pinMode(PIN_SOL2, INPUT_PULLUP);  //S2 back to dongle mode
 }
 
@@ -246,6 +174,7 @@ bool Camera::DebouncedRead(uint8_t pin){
   return lastState;
 }
 
+#if !ECM
 void Camera::HighSpeedPWM(){
   const byte n =224;      // for example, 71.111 kHz
   //PWM high speed
@@ -272,6 +201,7 @@ void Camera::HighSpeedPWM(){
   OCR2B = ((n + 1) / 2) - 1;                         // 50% duty cycle
   //THIS AFFECTS OUTPUT 3 (Solenoid1) AND OUTPUT 11 (Solenoid2)
 }
+#endif
 
 void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   // DONGLE-LED BLINKS ON COUNTDOWN (10secs)
@@ -374,9 +304,6 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
 void Camera::ManualExposure(uint8_t selector){
   uint32_t initialMillis;
   //changed sonar compile check
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
 
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
@@ -391,13 +318,7 @@ void Camera::ManualExposure(uint8_t selector){
      #endif
   }
   #if APERTURE_PRIORITY
-    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-    #if FFDEBUG
-      Serial.println("SOL2 255");
-    #endif
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+    AperturePriority();
   #endif
   delay (YDelay);
 
@@ -463,10 +384,6 @@ void Camera::ManualExposure(uint8_t selector){
 void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
 
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
-
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
     Serial.print(", current Picture: ");
@@ -480,13 +397,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
      #endif
   }
   #if APERTURE_PRIORITY
-    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-    #if FFDEBUG
-      Serial.println("SOL2 255");
-    #endif
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+    AperturePriority();
   #endif
   delay (YDelay);
 
@@ -568,10 +479,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
 }
 
 void Camera::AutoExposure(int _myISO){
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
-
   #if SIMPLEDEBUG
     Serial.print("take a picture on Auto Mode with ISO: ");
     Serial.print(_myISO);
@@ -594,13 +501,7 @@ void Camera::AutoExposure(int _myISO){
   }
 
   #if APERTURE_PRIORITY
-    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-    #if FFDEBUG
-      Serial.println("SOL2 255");
-    #endif
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+    AperturePriority();
   #endif
   delay(YDelay);
 
@@ -632,9 +533,6 @@ void Camera::AutoExposure(int _myISO){
 }
 
 void Camera::AutoExposureFF(int _myISO){
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
   #if SIMPLEDEBUG
       Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
       Serial.print(_myISO);
@@ -654,8 +552,13 @@ void Camera::AutoExposureFF(int _myISO){
   #if FFDEBUG
     Serial.println("SOL2 255");
   #endif
-  Camera::HighSpeedPWM();
-  analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #if ECM_PCB
+    digitalWrite(PIN_SOL2, HIGH);
+    digitalWrite(PIN_SOL2LOW, HIGH);
+  #else
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
   #if FFDEBUG
     Serial.print("_myISO: ");
@@ -676,8 +579,11 @@ void Camera::AutoExposureFF(int _myISO){
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
-  
-  analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
+  #if ECM_PCB
+    digitalWrite(PIN_SOL2, LOW); //ENTERING POWER SAVE "POWERDOWN" MODE PIN SOL2LOW REMANINS ENGAGED
+  #else  
+    analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
+  #endif
   #if FFDEBUG
     Serial.println("SOL2: 130 - Powersave");
   #endif   
@@ -703,7 +609,16 @@ void Camera::AutoExposureFF(int _myISO){
     Serial.println("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
-  analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
+  #if ECM_PCB
+    digitalWrite(PIN_SOL2, LOW);    //ENGAGING SOLENOID 1
+    digitalWrite(PIN_SOL2LOW, LOW); //ENGAGING SOLENOID 1 LOW POWER PIN
+  #else
+    Camera::HighSpeedPWM();
+    analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
+  #endif
+  #if ECM_PCB
+    digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
+  #endif
   delay(15);
   #if FFDEBUG
     Serial.print((millis()-flashExposureStartTime));
@@ -731,10 +646,6 @@ void Camera::AutoExposureFF(int _myISO){
 
 void Camera::ShutterB()
 {
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
-
   #if SIMPLEDEBUG
      Serial.print("take B Mode Picture");
      Serial.print(", current Picture: ");
@@ -748,13 +659,7 @@ void Camera::ShutterB()
      #endif
   }
   #if APERTURE_PRIORITY
-    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-    #if FFDEBUG
-      Serial.println("SOL2 255");
-    #endif
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+    AperturePriority();
   #endif
   delay (YDelay);
 
@@ -771,10 +676,6 @@ void Camera::ShutterB()
 }
 
 void Camera::ShutterT(){
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
-
   #if SIMPLEDEBUG
      Serial.print("take T Mode picture: ");
      Serial.print(", current Picture: ");
@@ -786,13 +687,7 @@ void Camera::ShutterT(){
     //waiting for S3 to OPEN
   }
   #if APERTURE_PRIORITY
-    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-    #if FFDEBUG
-      Serial.println("SOL2 255");
-    #endif
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+    AperturePriority();
   #endif
 
   delay (40);
@@ -818,7 +713,7 @@ void Camera::ShutterT(){
   delay(Flash_Capture_Delay);   //Capture Flash 
 
   #if APERTURE_PRIORITY
-    analogWrite(PIN_SOL2, 0);
+    AperturePriority();
   #endif
   #if SIMPLEDEBUG
     Serial.println("Exp finish T mode");
@@ -833,7 +728,7 @@ void Camera::ExposureFinish()
 {
   Camera::shutterCLOSE();
   #if APERTURE_PRIORITY
-    analogWrite(PIN_SOL2, 0);
+    AperturePriority();
   #endif
   lmTimer_stop(); //Lightmeter Timer stop
   delay (200); //Was 20
@@ -904,6 +799,9 @@ void Camera::FastFlash(){
   #if BASICDEBUG
     Serial.println("FastFlash");
   #endif
+  #if ECM_PCB
+    digitalWrite(PIN_FPIN, HIGH); //F- connected from GND
+  #endif
   pinMode(PIN_S2, OUTPUT);
   //     delay (2);
   digitalWrite (PIN_S2, LOW);     //So FFA recognizes the flash as such
@@ -912,7 +810,25 @@ void Camera::FastFlash(){
   delay (1);                      //FLASH TRIGGERING
   digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
+  #if ECM_PCB
+    digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
+  #endif
 }
+
+#if APERTURE_PRIORITY
+void Camera::AperturePriority(){
+  #if FFDEBUG
+    Serial.println("SOL2 ON");
+  #endif
+  #if ECM_PCB
+    digitalWrite(PIN_SOL2, HIGH);
+    digitalWrite(PIN_SOL2LOW, HIGH);
+  #else
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
+}
+#endif
 
 bool Camera::setLIGHTMETER_HELPER(bool state){
   #if LMHELPERDEBUG
