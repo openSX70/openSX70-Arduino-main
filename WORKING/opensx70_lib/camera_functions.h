@@ -43,6 +43,7 @@
       int getGTD();
     private:
       void FastFlash();
+      void AperturePriority();
       //  void ShutterB();
       //  void ShutterT();
       void DongleFlashF8();
