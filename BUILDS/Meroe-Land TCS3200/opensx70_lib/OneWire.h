@@ -281,6 +281,8 @@ class OneWire
     // Issue a 1-Wire rom select command, you do the reset first.
     void select(const uint8_t rom[8]);
 
+    void readrom(uint8_t rom[8]);
+    
     // Issue a 1-Wire rom skip command, to address all on bus.
     void skip(void);
 

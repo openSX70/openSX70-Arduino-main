@@ -37,19 +37,22 @@
     //TCS3200_S2_Pin = HIGH(3.3V) Jumper on PCB
     //TCS3200_S3_Pin = On Pin 6 ATMEGA
     //TCS3200_OE_Pin = LOW(GND) on PCB
-    
-    //pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
-    //digitalWrite(PIN_OE, LOW);
-    pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
-    pinMode(TCS3200_S3_Pin, OUTPUT); //Photodiode type selection input
-    //S2 (Photodiode type selection pin) & S0 (Output frequency scaling selection pin) should be high,
-    // both can be modified via jumper in PCB 
-    digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
-    digitalWrite(TCS3200_S3_Pin, LOW); //filter LOW = clear | HIGH = green
-    //S2 & S0 should be high can be modified via jumper in PCB 
-    //digitalWrite(S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
-    //digitalWrite(S3_Pin, LOW); //filter LOW = clear | HIGH = green
-  
+    #if ECM_PCB
+      pinMode(TCS3200_OE_Pin, OUTPUT);
+      digitalWrite(TCS3200_OE_Pin, HIGH);
+    #else
+      //pinMode(PIN_OE, OUTPUT); //Output Enable (OE) pin to enable/disable the Lightsensor
+      //digitalWrite(PIN_OE, LOW);
+      pinMode(TCS3200_S1_Pin, OUTPUT); //Output frequency scaling selection input
+      pinMode(TCS3200_S3_Pin, OUTPUT); //Photodiode type selection input
+      //S2 (Photodiode type selection pin) & S0 (Output frequency scaling selection pin) should be high,
+      // both can be modified via jumper in PCB 
+      digitalWrite(TCS3200_S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
+      digitalWrite(TCS3200_S3_Pin, LOW); //filter LOW = clear | HIGH = green
+      //S2 & S0 should be high can be modified via jumper in PCB 
+      //digitalWrite(S1_Pin, HIGH); //scaling LOW = 20% | HIGH = 100%
+      //digitalWrite(S3_Pin, LOW); //filter LOW = clear | HIGH = green
+    #endif
     cli(); //Stop all Interupts
     TIFR1 = (1 << ICF1) | (1 << OCF1B) | (1 << OCF1A) | (1 << TOV1);   // Clear all interrupts flags
     // Set timer 1(16 Bit) for normal operation, clocked by rising edge on T1 (port D5 / pin 5)
