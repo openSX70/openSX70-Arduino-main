@@ -31,7 +31,7 @@
   #define SONAR_UNI_PCB 0
   #define EDWIN_PCB 0
   #define ALPHA2_PCB 0
-  #define ECM_PCB 1
+  #define ECM_PCB 0
   //      Camera Options
   #define S1Logic HIGH             //LOW for Alpha shutters and HIGH for Sonar shutters
   #define ALPHA 0                  //1 if ALPHA camera functions
