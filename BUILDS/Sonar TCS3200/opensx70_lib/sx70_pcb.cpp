@@ -14,6 +14,7 @@ void io_init() {
   pinMode(PIN_MOTOR, OUTPUT);
   pinMode(PIN_LED1, OUTPUT);
   pinMode(PIN_LED2, OUTPUT);
+  pinMode(PIN_FPIN, OUTPUT); // GND
 
   // output default state set.
   digitalWrite(PIN_SOL1, LOW);
@@ -22,6 +23,7 @@ void io_init() {
   digitalWrite(PIN_MOTOR, LOW);
   digitalWrite(PIN_LED1, LOW);
   digitalWrite(PIN_LED2, LOW);
+  digitalWrite(PIN_FPIN, LOW);
 
   // input definition
   #if ALPHA == 1

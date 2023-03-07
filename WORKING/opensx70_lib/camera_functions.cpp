@@ -29,7 +29,6 @@ void Camera::S1F_Focus(){
     #if FOCUSDEBUG
       Serial.println("Focus on");
     #endif
-    pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite(PIN_S1F_FBW, HIGH);
     return;
 }
@@ -39,12 +38,33 @@ void Camera::S1F_Unfocus(){
     #if FOCUSDEBUG
       Serial.println("Focus off");
     #endif
-    pinMode(PIN_S1F_FBW, OUTPUT);
     digitalWrite (PIN_S1F_FBW, LOW);
     return;
 }
-
 #endif
+
+#if APERTURE_PRIORITY
+void Camera::AperturePriority(){
+  #if FFDEBUG
+    Serial.println("SOL2 ON");
+  #endif
+  #if ECM_PCB
+    digitalWrite(PIN_SOL2, HIGH);
+    digitalWrite(PIN_SOL2LOW, HIGH);
+  #else
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
+}
+#endif
+
+/*
+#if ECM_PCB
+  void Camera::sol1LowPower(){
+    digitalWrite(PIN_SOL1, LOW);
+  }
+#endif
+*/
 
 void Camera::SelfTimerMUP(){
   #if BASICDEBUG
@@ -59,7 +79,7 @@ void Camera::shutterCLOSE(){
   #endif
   #if ECM_PCB
     digitalWrite(PIN_SOL1, HIGH);    //ENGAGING SOLENOID 1
-    digitalWrite(PIN_SOL1LOW, HIGH); //ENGAGING SOLENOID 1 LOW POWER PIN
+    //digitalWrite(PIN_SOL1LOW, HIGH); //ENGAGING SOLENOID 1 LOW POWER PIN
   #else
     Camera::HighSpeedPWM();
     analogWrite(PIN_SOL1, 255);
@@ -74,7 +94,7 @@ void Camera::shutterOPEN(){
     Serial.println("shutterOPEN");
   #endif
   #if ECM_PCB
-    digitalWrite(PIN_SOL1LOW, LOW); //SOL1 LOW POWER OFF REMAINING ENGAGED
+    //digitalWrite(PIN_SOL1LOW, LOW); //SOL1 LOW POWER OFF REMAINING ENGAGED
     digitalWrite(PIN_SOL1, LOW);    //SOL1 POWER OFF JUST IN CASE
   #else
     analogWrite (PIN_SOL1, 0);
@@ -82,6 +102,28 @@ void Camera::shutterOPEN(){
 
   return; //Added 26.10.
 }
+
+void Camera::sol2Engage(){
+  #if ECM_PCB
+    digitalWrite(PIN_SOL2, HIGH);
+    digitalWrite(PIN_SOL2LOW, HIGH);
+  #else
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
+}
+
+void Camera::sol2Disengage(){
+  #if ECM_PCB
+    digitalWrite(PIN_SOL2, LOW);
+    digitalWrite(PIN_SOL2LOW, LOW);
+  #else
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 0);
+  #endif
+}
+
+
 
 void Camera::motorON(){
   #if BASICDEBUG
@@ -115,19 +157,27 @@ void Camera::mirrorUP(){
   #if BASICDEBUG
     Serial.println("mirrorUP");
   #endif
-  pinMode(PIN_S3, INPUT_PULLUP);
   if(digitalRead(PIN_S3) != HIGH){
     motorON ();
   }
 
   while (DebouncedRead(PIN_S5) != HIGH){
     #if BASICDEBUG
-      Serial.println("Wait for S5 to go low");
+      Serial.println("Wait for S5 to go high");
     #endif
   }
 
   motorOFF ();
 }
+
+void Camera::startMeter(int _myISO){
+  lmTimer_stop(); 
+  meter_set_iso(_myISO);
+  meter_init();
+  meter_integrate();
+}
+
+
 
 void Camera::darkslideEJECT(){
   #if SIMPLEDEBUG
@@ -144,14 +194,14 @@ void Camera::DongleFlashNormal(){
   #if ECM_PCB
     digitalWrite(PIN_FPIN, HIGH); //F- connected from GND
   #endif
-  digitalWrite(PIN_SOL2, LOW);      //So FFA recognizes the flash as such
+  digitalWrite(PIN_S2, LOW);      //So FFA recognizes the flash as such
   digitalWrite(PIN_FF, HIGH);       //FLASH TRIGGERING
   delay (1);                        //FLASH TRIGGERING
   digitalWrite(PIN_FF, LOW);        //FLASH TRIGGERING
   #if ECM_PCB
     digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
   #endif
-  pinMode(PIN_SOL2, INPUT_PULLUP);  //S2 back to dongle mode
+  pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to dongle mode
 }
 
 void Camera::Ydelay (){
@@ -174,7 +224,7 @@ bool Camera::DebouncedRead(uint8_t pin){
   return lastState;
 }
 
-#if !ECM
+#if !ECM_PCB
 void Camera::HighSpeedPWM(){
   const byte n =224;      // for example, 71.111 kHz
   //PWM high speed
@@ -300,170 +350,67 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
   }
 }
 
-
-void Camera::ManualExposure(uint8_t selector){
+void Camera::ManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
-  //changed sonar compile check
+  bool flashFlag = (selector>= Dongle_Flash_Limit) ? true : false;
+  bool varianceFlag = ((selector>SELECTOR_LIMIT_VARIANCE) && (selector<12)) ? true : false;
+  int ShutterSpeedDelay = (flashFlag) ? (ShutterSpeed[selector] - Flash_Capture_Delay) : ShutterSpeed[selector];
+  int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
 
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
-
-  pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
-     #if BASICDEBUG
-     Serial.println("waiting for S3 to OPEN");
-     #endif
-  }
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
-  delay (YDelay);
-
-  if (selector >= Dongle_Flash_Limit){
-    int ShutterSpeedDelay = (ShutterSpeed[selector] - Flash_Capture_Delay);
-
-    #if ADVANCEDEBUG
-      Serial.print("Manual Exposure Debug: ");
-      Serial.print("ShutterSpeed[");
-      Serial.print(selector);
-      Serial.print("] :");
-      Serial.println(ShutterSpeed[selector]);
-      Serial.print("ShutterConstant:");
-      Serial.println(ShutterConstant);
-      Serial.print("ShutterSpeedDelay:");
-      Serial.println(ShutterSpeedDelay);
-      Serial.println("Dongle Flash Enabled");
-    #endif
-
-    Camera::shutterOPEN();
-    initialMillis = millis();
-    while (millis() < (initialMillis + ShutterSpeedDelay)){
-      //Take the Picture
-    }
-    Camera::FastFlash ();
-    delay(Flash_Capture_Delay);
-  }
-  else{
-    int ShutterSpeedDelay = ShutterSpeed[selector];
-
-    #if ADVANCEDEBUG
-      Serial.print("Manual Exposure Debug: ");
-      Serial.print("ShutterSpeed[");
-      Serial.print(selector);
-      Serial.print("] :");
-      Serial.println(ShutterSpeed[selector]);
-      Serial.print("ShutterConstant:");
-      Serial.println(ShutterConstant);
-      Serial.print("ShutterSpeedDelay:");
-      Serial.println(ShutterSpeedDelay);
-      Serial.println("Dongle Flash Disabled");
-    #endif
-
-    Camera::shutterOPEN();
-    initialMillis = millis();
-    while (millis() < (initialMillis + ShutterSpeedDelay)){
-      //Take the Picture
-    }
-  }
-
-  #if LMDEBUG
-    uint32_t shutterCloseTime = millis(); //Shutter Debug
-  #endif
-  Camera::ExposureFinish();
-  #if LMDEBUG
-      uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
-      Serial.print("ExposureTime on Manualmode: ");
-      Serial.println(exposureTime);
-  #endif
-  return; //Added 26.10.
-}
-
-void Camera::VariableManualExposure(int _myISO, uint8_t selector){
-  uint32_t initialMillis;
-
-  #if SIMPLEDEBUG
-    Serial.print("take single Picture on  Manual Mode");
-    Serial.print(", current Picture: ");
-    Serial.println(currentPicture);
-  #endif
-
-  pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
-     #if BASICDEBUG
-     Serial.println("waiting for S3 to OPEN");
-     #endif
-  }
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
-  delay (YDelay);
-
-  if(selector>= Dongle_Flash_Limit){
-    int ShutterSpeedDelay = ShutterSpeed[selector] - Flash_Capture_Delay;
-    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
-    #if ADVANCEDEBUG
-      Serial.print("Manual Exposure Debug: ");
-      Serial.print("ShutterSpeed[");
-      Serial.print(selector);
-      Serial.print("] :");
-      Serial.println(ShutterSpeed[selector]);
-      Serial.print("ShutterConstant:");
-      Serial.println(ShutterConstant);
-      Serial.print("ShutterSpeedDelay:");
-      Serial.println(ShutterSpeedDelay);
-    #endif
-
-    meter_set_iso(_myISO);
-    meter_init();
-    meter_integrate();
-
-    initialMillis = millis();
-    uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
-    Camera::shutterOPEN();
-    delay(MinShutterSpeedDelay);
-    while(meter_update() == false){
-      if(millis() >= maxMillis){
-        break;
-      }
-    }
-    Camera::FastFlash ();
-    delay(Flash_Capture_Delay);
+  #if ADVANCEDEBUG
+    Serial.print("Manual Exposure Debug: ");
+    Serial.print("ShutterSpeed[");
+    Serial.print(selector);
+    Serial.print("] :");
+    Serial.println(ShutterSpeed[selector]);
+    Serial.print("flashflag: ");
+    Serial.println(flashFlag);
+    Serial.print("varianceflag:");
+    Serial.println(varianceFlag);
+    Serial.print("ShutterSpeedDelay:");
+    Serial.println(ShutterSpeedDelay);
     
+  #endif
+  #if APERTURE_PRIORITY
+    AperturePriority();
+  #endif
 
-  }
-  else{
-    int ShutterSpeedDelay = ShutterSpeed[selector];
-    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
+  delay (YDelay);
 
-    #if ADVANCEDEBUG
-      
-      Serial.print("Manual Exposure Debug: ");
-      Serial.print("ShutterSpeed[");
-      Serial.print(selector);
-      Serial.print("] :");
-      Serial.println(ShutterSpeed[selector]);
-      Serial.print("ShutterConstant:");
-      Serial.println(ShutterConstant);
-      Serial.print("ShutterSpeedDelay:");
-      Serial.println(ShutterSpeedDelay);
-    #endif
-
-    meter_set_iso(_myISO);
-    meter_init();
-    meter_integrate();
-
+  if(varianceFlag){
+    Camera::startMeter(_myISO);
     initialMillis = millis();
     uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
+    
     Camera::shutterOPEN();
     delay(MinShutterSpeedDelay);
+
     while(meter_update() == false){
       if(millis() >= maxMillis){
         break;
       }
     }
+
+  }
+  else{
+    Camera::shutterOPEN();
+    initialMillis = millis();
+    delay(ShutterSpeedDelay);
+    /*
+    while (millis() < (initialMillis + ShutterSpeedDelay)){
+      //Take the Picture
+    }
+    */
+  }
+
+  if(flashFlag){
+    Camera::FastFlash();
+    delay(Flash_Capture_Delay);
   }
 
   #if LMDEBUG
@@ -471,11 +418,11 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   #endif
   Camera::ExposureFinish();
   #if LMDEBUG
-      uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
-      Serial.print("ExposureTime on Manualmode: ");
-      Serial.println(exposureTime);
+    uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
+    Serial.print("ExposureTime on Manualmode: ");
+    Serial.println(exposureTime);
   #endif
-  return; //Added 26.10.
+  return;
 }
 
 void Camera::AutoExposure(int _myISO){
@@ -485,33 +432,17 @@ void Camera::AutoExposure(int _myISO){
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
-  lmTimer_stop();
   #if LMDEBUG
-  Serial.print(F("AE setting meter to : "));
-  Serial.println(_myISO);
+    Serial.print(F("AUTOMODE ISO: "));
+    Serial.println(_myISO);
   #endif
-
-  meter_set_iso(_myISO); 
-
-  pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
-     #if BASICDEBUG
-     Serial.println("waiting for S3 to OPEN");
-     #endif
-  }
-
   #if APERTURE_PRIORITY
     AperturePriority();
   #endif
+
   delay(YDelay);
 
-  #if LMDEBUG
-  Serial.print(F("METER_UPDATE status : "));
-  Serial.println(meter_update());
-  #endif
-  
-  meter_init();
-  meter_integrate();
+  Camera::startMeter(_myISO);
   Camera::shutterOPEN();
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
@@ -533,64 +464,38 @@ void Camera::AutoExposure(int _myISO){
 }
 
 void Camera::AutoExposureFF(int _myISO){
-  #if SIMPLEDEBUG
-      Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
-      Serial.print(_myISO);
-      Serial.print(", current Picture: ");
-      Serial.println(currentPicture);
-  #endif
-  Camera::shutterCLOSE();
-  Camera::mirrorUP();   
-  pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
-     #if BASICDEBUG
-     Serial.println("waiting for S3 to OPEN");
-     #endif
-  }
-  pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-  pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-  #if FFDEBUG
-    Serial.println("SOL2 255");
-  #endif
-  #if ECM_PCB
-    digitalWrite(PIN_SOL2, HIGH);
-    digitalWrite(PIN_SOL2LOW, HIGH);
-  #else
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
-  #endif
-  delay(YDelay);           //AT Yd and POWERS OFF AT FF
-  #if FFDEBUG
-    Serial.print("_myISO: ");
-    Serial.println(_myISO);
-  #endif
-  int FD_MN = 0;  //FlashDelay Magicnumber
-  if(_myISO == ISO_SX70){
-     FD_MN = FD100;  
-  }
-  else if(_myISO == ISO_600){
-    FD_MN = FD600;
-  }
-  meter_set_iso(FD_MN);
+  int FD_MN = (_myISO == ISO_SX70) ? FD100 : FD600;  //FlashDelay Magicnumber
   #if FFDEBUG
     Serial.print("FlashDelay Magicnumber: ");
     Serial.println(FD_MN);
   #endif
+  #if SIMPLEDEBUG
+    Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
+    Serial.print(_myISO);
+    Serial.print(", current Picture: ");
+    Serial.println(currentPicture);
+  #endif
+
+  Camera::shutterCLOSE();
+  Camera::mirrorUP();
+  Camera::sol2Engage();
+  delay(YDelay);           //AT Yd and POWERS OFF AT FF
+  
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
+
+  /* SOL2 powerdown may not be needed.
   #if ECM_PCB
-    digitalWrite(PIN_SOL2, LOW); //ENTERING POWER SAVE "POWERDOWN" MODE PIN SOL2LOW REMANINS ENGAGED
+    //digitalWrite(PIN_SOL1, LOW); //ENTERING POWER SAVE "POWERDOWN" MODE PIN SOL2LOW REMANINS ENGAGED
   #else  
     analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
   #endif
-  #if FFDEBUG
-    Serial.println("SOL2: 130 - Powersave");
-  #endif   
-  meter_init();
-  meter_integrate();
+  */
+
+  Camera::startMeter(FD_MN);
   uint32_t integrationStartTime = millis();
-  Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
+  Camera::shutterOPEN(); 
   //Start FlashDelay 
   while ((meter_update() == false) && ((millis() - integrationStartTime) <= Flash_Min_Time)){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
     if((millis() - integrationStartTime) >= Flash_Max_Time){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
@@ -609,13 +514,7 @@ void Camera::AutoExposureFF(int _myISO){
     Serial.println("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
-  #if ECM_PCB
-    digitalWrite(PIN_SOL2, LOW);    //ENGAGING SOLENOID 1
-    digitalWrite(PIN_SOL2LOW, LOW); //ENGAGING SOLENOID 1 LOW POWER PIN
-  #else
-    Camera::HighSpeedPWM();
-    analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
-  #endif
+  Camera::sol2Disengage();
   #if ECM_PCB
     digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
   #endif
@@ -652,12 +551,6 @@ void Camera::ShutterB()
      Serial.println(currentPicture);
   #endif
 
-  pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){
-     #if BASICDEBUG
-     Serial.println("waiting for S3 to OPEN");
-     #endif
-  }
   #if APERTURE_PRIORITY
     AperturePriority();
   #endif
@@ -682,10 +575,7 @@ void Camera::ShutterT(){
      Serial.println(currentPicture);
   #endif
 
-  pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (DebouncedRead(PIN_S3) != HIGH){
-    //waiting for S3 to OPEN
-  }
+
   #if APERTURE_PRIORITY
     AperturePriority();
   #endif
@@ -728,7 +618,7 @@ void Camera::ExposureFinish()
 {
   Camera::shutterCLOSE();
   #if APERTURE_PRIORITY
-    AperturePriority();
+    Camera::sol2Disengage();
   #endif
   lmTimer_stop(); //Lightmeter Timer stop
   delay (200); //Was 20
@@ -796,39 +686,24 @@ void Camera::multipleExposureLastClick(){
 }
 
 void Camera::FastFlash(){
+  pinMode(PIN_S2, OUTPUT);
   #if BASICDEBUG
     Serial.println("FastFlash");
   #endif
   #if ECM_PCB
     digitalWrite(PIN_FPIN, HIGH); //F- connected from GND
   #endif
-  pinMode(PIN_S2, OUTPUT);
-  //     delay (2);
   digitalWrite (PIN_S2, LOW);     //So FFA recognizes the flash as such
-  //     delay (2);
   digitalWrite(PIN_FF, HIGH);    //FLASH TRIGGERING
   delay (1);                      //FLASH TRIGGERING
   digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
-  pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
   #if ECM_PCB
     digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
   #endif
+  pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
 }
 
-#if APERTURE_PRIORITY
-void Camera::AperturePriority(){
-  #if FFDEBUG
-    Serial.println("SOL2 ON");
-  #endif
-  #if ECM_PCB
-    digitalWrite(PIN_SOL2, HIGH);
-    digitalWrite(PIN_SOL2LOW, HIGH);
-  #else
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
-  #endif
-}
-#endif
+
 
 bool Camera::setLIGHTMETER_HELPER(bool state){
   #if LMHELPERDEBUG
