@@ -514,7 +514,7 @@ void Camera::AutoExposureFF(int _myISO){
     Serial.println("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
-  Camera::sol2Disengage();
+  //Camera::sol2Disengage();
   #if ECM_PCB
     digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
   #endif
@@ -532,8 +532,9 @@ void Camera::AutoExposureFF(int _myISO){
   Serial.print("FF Status: ");
   Serial.println(FFState);
   #endif
+  
   Camera::ExposureFinish();
-
+  Camera::sol2Disengage();
   #if LMDEBUG
     uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
     Serial.print("ExposureTime on Automode + FF: ");
