@@ -27,6 +27,8 @@
     #	include "TCS3200.h"
   #elif TSL2591
     #	include "TSL2591.h"
+  #elif INTEGRATOR
+    # include "INTEGRATOR.h"
   #else
     #	warning	"no meter included"
   #endif

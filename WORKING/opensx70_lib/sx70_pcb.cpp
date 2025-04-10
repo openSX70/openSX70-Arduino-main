@@ -45,6 +45,5 @@ void io_init() {
     pinMode(PIN_FT, INPUT); // FT on Sonar 6V? -- CAVE Analogue Input only!!! -- Experimental
     pinMode(PIN_S8, INPUT); // 6V
     pinMode(PIN_S9, INPUT); // 6V
-  #endif
-  
+  #endif  
 }

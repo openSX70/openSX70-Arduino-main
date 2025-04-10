@@ -20,21 +20,23 @@
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
-  #define TCS3200 1                //Meroe, Land
+  #define TCS3200 0                //Meroe, Land
   #define TSL237T 0                //Edwin
   #define TSL235R 0                //Alpha 2
+  #define INTEGRATOR 1
   //      Board Version
   #define MEROE_PCB 0
   #define LAND_PCB 0
-  #define SONAR_PCB 1
+  #define SONAR_PCB 0
   #define SONAR_UNI_PCB 0
   #define EDWIN_PCB 0
   #define ALPHA2_PCB 0
   #define ECM_PCB 0
+  #define MEROE_Z 1
   //      Camera Options
-  #define S1Logic HIGH             //LOW for Alpha shutters and HIGH for Sonar shutters
-  #define ALPHA 0                  //1 if ALPHA camera functions
-  #define SONAR 1                  //1 for Sonar camera functions   
+  #define S1Logic LOW             //LOW for Alpha shutters and HIGH for Sonar shutters
+  #define ALPHA 1                  //1 if ALPHA camera functions
+  #define SONAR 0                  //1 for Sonar camera functions   
   //      Dongle Options 
   #define FLIP_ORDER 0             //1 to set dongle selector order to "a600 a100 T B" rather than "T B a600 a100". This is for older dongle revisions.
   #define AFTER_EIGHT 0
@@ -50,7 +52,7 @@
   #define COUNTER_BLINK 0          //1 Switches dongle LED functionality from displaying ISO to displaying the number of shots remaining in your film pack
   #define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
   #define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
-  #define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
+  #define LIGHMETER_HELPER 0       //1 Enables viewfinder light meter helper
   #define EJECT_AFTER_DEPRESSING 0 //1 Enables the user to hold the shutter button to prevent photo ejection
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
@@ -61,9 +63,13 @@
   //---------------END ISO VALUES--------------------------------------------
 
   //---------------MAGIC NUMBERS---------------------------------------------
+  #if INTEGRATOR
+    #define A100 64
+    #define A600 16
+  #endif
   #if TCS3200
-    #define A100 585
-    #define A600 210
+    #define A100 64
+    #define A600 16
   #endif
   #if TSL237T     
     #define A100 950
@@ -73,6 +79,7 @@
     #define A100 485
     #define A600 225
   #endif
+  
   //---------------END MAGIC NUMBERS-----------------------------------------
 
   //---------------Flashbar and Dongle Flash---------------------------------

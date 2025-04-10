@@ -136,6 +136,31 @@
       const uint8_t TCS3200_S1_Pin = 2; //Pin 32 on Meroe2  (PD2-INT0)
       const uint8_t TCS3200_S3_Pin = 6; //Pin 10 on Meroe2 (PD6-AIN0)
     #endif
+  #elif MEROE_Z
+    const uint8_t PIN_S1 = 12; //Sonar S1T S1 Trigger Redbutton
+    const uint8_t PIN_S2 = A4;
+    const uint8_t PIN_S3 = 8;
+    // const uint8_t PIN_S4 = ;
+    const uint8_t PIN_S5 = 7;
+    const uint8_t PIN_S8 = A2;
+    const uint8_t PIN_S9 = A1;
+
+    // Output pin definition
+    const uint8_t PIN_SOL1 = 3; //orig 3 PD3(INT1)
+    const uint8_t PIN_SOL2 = 11;
+
+    const uint8_t PIN_MOTOR = A3;
+    const uint8_t PIN_LED1 = 13; //LED RED
+    const uint8_t PIN_LED2 = 10; //LED BLUE
+    const uint8_t PIN_FF = A6;
+    const uint8_t PIN_LM = A0;
+    const uint8_t PIN_LM_RST = 2;
+    #if SONAR
+      const uint8_t PIN_GTD = A7; // Sonar gone that distance
+      const uint8_t PIN_S1F = 9; //Sonar S1 Focus //Analog imput only
+      //const uint8_t PIN_FT = A7; //Sonar Flash Triggerd INPUT -- Cave Analoge Input only!
+      const uint8_t PIN_S1F_FBW = 4; //engage SONAR prefocus
+    #endif
   #endif
 
   void io_init();

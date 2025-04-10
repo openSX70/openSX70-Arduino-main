@@ -570,7 +570,7 @@ void Camera::AutoExposure(int _myISO){
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
-  lmTimer_stop();
+  //lmTimer_stop();
   #if LMDEBUG
   Serial.print(F("AE setting meter to : "));
   Serial.println(_myISO);
@@ -827,7 +827,7 @@ void Camera::ExposureFinish()
   #if APERTURE_PRIORITY
     analogWrite(PIN_SOL2, 0);
   #endif
-  lmTimer_stop(); //Lightmeter Timer stop
+  //lmTimer_stop(); //Lightmeter Timer stop
   delay (200); //Was 20
 
   if(multipleExposureMode == true){
