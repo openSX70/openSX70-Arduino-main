@@ -691,7 +691,7 @@ void switch2Function(int mode) {
     delay(100);
     #if TIMER_MIRROR_UP
       openSX70.shutterCLOSE();
-      openSX70.SelfTimerMUP();
+      openSX70.mirrorUP();
     #endif
     delay (10000); //NoDongleMode
     #if SONAR

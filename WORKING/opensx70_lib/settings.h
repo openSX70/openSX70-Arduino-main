@@ -20,21 +20,13 @@
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
-  #define TCS3200 0                //Meroe, Land
-  #define TSL237T 0                //Edwin
-  #define TSL235R 0                //Alpha 2
+  // !TODO! Remove preprocessor for this. This will be the only light meter.
   #define INTEGRATOR 1
   //      Board Version
-  #define MEROE_PCB 0
-  #define LAND_PCB 0
-  #define SONAR_PCB 0
-  #define SONAR_UNI_PCB 0
-  #define EDWIN_PCB 0
-  #define ALPHA2_PCB 0
-  #define ECM_PCB 0
-  #define MEROE_Z 1
+  #define MEROE_Z_V1 1
+  #define MEROE_Z_V2 0
   //      Camera Options
-  #define S1Logic LOW             //LOW for Alpha shutters and HIGH for Sonar shutters
+  #define S1Logic HIGH             // This may be removable (Hard code logic). !TODO!
   #define ALPHA 1                  //1 if ALPHA camera functions
   #define SONAR 0                  //1 for Sonar camera functions   
   //      Dongle Options 
@@ -63,21 +55,10 @@
   //---------------END ISO VALUES--------------------------------------------
 
   //---------------MAGIC NUMBERS---------------------------------------------
+  // !TODO! Remove preprocessor for this. This will be the only light meter.
   #if INTEGRATOR
     #define A100 64
     #define A600 16
-  #endif
-  #if TCS3200
-    #define A100 64
-    #define A600 16
-  #endif
-  #if TSL237T     
-    #define A100 950
-    #define A600 420
-  #endif
-  #if TSL235R
-    #define A100 485
-    #define A600 225
   #endif
   
   //---------------END MAGIC NUMBERS-----------------------------------------
