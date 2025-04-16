@@ -8,8 +8,6 @@
       Camera(uDongle *dongle);
       void S1F_Unfocus();
       void S1F_Focus();
-      int S1F_Focus1();
-      void SelfTimerMUP();
       void shutterCLOSE();
       void shutterOPEN();
       void mirrorDOWN();
@@ -28,7 +26,6 @@
       void HighSpeedPWM ();
       void AutoExposure(int _myISO);
       void AutoExposureFF(int _myISO);
-      void ExposureStart();
       void ExposureFinish();
       void ManualExposure(uint8_t selector);
       void VariableManualExposure(int _myISO,uint8_t selector);

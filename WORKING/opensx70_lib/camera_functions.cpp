@@ -9,7 +9,6 @@
 
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
-//
 
 int GTD = 0;
 
@@ -20,120 +19,40 @@ Camera::Camera(uDongle *dongle){
 }
 
 #if SONAR
-int Camera::getGTD(){
-   GTD = digitalRead(PIN_GTD);
-   return GTD;  
-}
-
-/*For Sonar-FBW where DigitalRead is not working
-#if SONAR
-int Camera::getGTD() {
-  //GTD = 1;
-  int val =  10;
-  int aGTD[val];
-  int dvdGTD = 0;
-  //int aGTD = 0;
-  for (int i=0; i <= val; i++){
-    aGTD[i] = analogRead(PIN_GTD);
+  int Camera::getGTD(){
+    GTD = digitalRead(PIN_GTD);
+    return GTD;  
   }
-  for (int i=0; i <= val; i++){
-    if(aGTD[i] >= 310){
-      if(aGTD[i]==aGTD[i-1]){
-        dvdGTD++;
-      }
-    }
-  }
-  #if SIMPLEDEBUG
-  Serial.print("dvdGTD: ");
-  Serial.println(dvdGTD);
-  Serial.print("aGTD[0]: ");
-  Serial.println(aGTD[0]);
-  #endif
-  if(dvdGTD>=(val-1)){
-    if(aGTD[0] >= 310){
-      GTD = 1;
-      //delay(5000);
-      Serial.println("GTD True");
-      return GTD;
-    }else if(aGTD[0] <= 309)
-    {
-      GTD = 0;
-      return GTD;
-    }
-  }
-  //GTD = digitalRead(PIN_GTD);
-  return 0;
-}
-*/
 
-void Camera::S1F_Focus(){
-    //int i=0;
-    int gtdDebounceCount = 0;
-    #if FOCUSDEBUG
-      Serial.println("Focus on");
-    #endif
-    pinMode(PIN_S1F_FBW, OUTPUT);
-    digitalWrite(PIN_S1F_FBW, HIGH);
-    uint32_t startMillis = millis();
-    while(gtdDebounceCount<10 || ((millis()-startMillis)<200)){
-      if(digitalRead(PIN_GTD) == HIGH){
-        gtdDebounceCount = gtdDebounceCount + 1;
-      }
-      else{
-        gtdDebounceCount = 0;
-      }
-    }
-    return;
-}
-
-int Camera::S1F_Focus1(){
-    #if FOCUSDEBUG
-      Serial.println("Focus on");
-    #endif
-    pinMode(PIN_S1F_FBW, OUTPUT);
-    digitalWrite(PIN_S1F_FBW, HIGH);
-    int i = 0;
-    while(getGTD()!=1){
-      i++;
+  void Camera::S1F_Focus(){
+      //int i=0;
+      int gtdDebounceCount = 0;
       #if FOCUSDEBUG
-        Serial.println("Wait for GTD to go 1");
+        Serial.println("Focus on");
       #endif
-      if(i==40){
-        break;
-        return 0;
-      } 
-    }
-    return 1;
-}
-
-void Camera::S1F_Unfocus(){
-    #if FOCUSDEBUG
-      Serial.println("Focus off");
-    #endif
-    pinMode(PIN_S1F_FBW, OUTPUT);
-    digitalWrite (PIN_S1F_FBW, LOW);
-    return;
-}
-
-void Camera::ExposureStart(){
-  int i = 0;
-  while(S1F_Focus1()!=1){
-    i++;
-    Serial.println("Wait for GTD");
-    if(i>=20){
-      break;
-    }
+      pinMode(PIN_S1F_FBW, OUTPUT);
+      digitalWrite(PIN_S1F_FBW, HIGH);
+      uint32_t startMillis = millis();
+      while(gtdDebounceCount<10 || ((millis()-startMillis)<200)){
+        if(digitalRead(PIN_GTD) == HIGH){
+          gtdDebounceCount = gtdDebounceCount + 1;
+        }
+        else{
+          gtdDebounceCount = 0;
+        }
+      }
+      return;
   }
-  return;
-}
-#endif
 
-void Camera::SelfTimerMUP(){
-  #if BASICDEBUG
-    Serial.println("Selftimer preMirror Up");
-  #endif
-  Camera::mirrorUP();
-}
+  void Camera::S1F_Unfocus(){
+      #if FOCUSDEBUG
+        Serial.println("Focus off");
+      #endif
+      pinMode(PIN_S1F_FBW, OUTPUT);
+      digitalWrite (PIN_S1F_FBW, LOW);
+      return;
+  }
+#endif
 
 void Camera::shutterCLOSE(){
   #if BASICDEBUG
@@ -292,7 +211,7 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   #endif
   Camera::Blink (80, steps, led1, 2);
   #if TIMER_MIRROR_UP
-    Camera::SelfTimerMUP();
+    Camera::mirrorUP();
   #endif
   Camera::Blink (80, steps, led2, 2);
 }
@@ -365,10 +284,6 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
 
 void Camera::ManualExposure(uint8_t selector){
   uint32_t initialMillis;
-  //changed sonar compile check
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
 
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
@@ -454,10 +369,6 @@ void Camera::ManualExposure(uint8_t selector){
 
 void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
-
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
 
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
@@ -560,9 +471,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
 }
 
 void Camera::AutoExposure(int _myISO){
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
 
   #if SIMPLEDEBUG
     Serial.print("take a picture on Auto Mode with ISO: ");
@@ -624,9 +532,6 @@ void Camera::AutoExposure(int _myISO){
 }
 
 void Camera::AutoExposureFF(int _myISO){
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
   #if SIMPLEDEBUG
       Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
       Serial.print(_myISO);
@@ -723,10 +628,6 @@ void Camera::AutoExposureFF(int _myISO){
 
 void Camera::ShutterB()
 {
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
-
   #if SIMPLEDEBUG
      Serial.print("take B Mode Picture");
      Serial.print(", current Picture: ");
@@ -763,10 +664,6 @@ void Camera::ShutterB()
 }
 
 void Camera::ShutterT(){
-  #if SONAR
-  Camera::ExposureStart();
-  #endif
-
   #if SIMPLEDEBUG
      Serial.print("take T Mode picture: ");
      Serial.print(", current Picture: ");
