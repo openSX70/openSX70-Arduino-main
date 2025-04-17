@@ -483,7 +483,7 @@ void beginExposure(){
   openSX70.mirrorUP();
 }
 
-void turnLedsOff(){ //todo:move to camerafunction
+void turnLedsOff(){ //TODO :move to camerafunction
    digitalWrite(PIN_LED1, LOW);
    digitalWrite(PIN_LED2, LOW);
    //delay(400); 
