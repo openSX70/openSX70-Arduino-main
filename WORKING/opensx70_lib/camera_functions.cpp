@@ -409,8 +409,10 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     #endif
 
     meter_set_iso(_myISO);
+    // TODO - Move this to top level, does not need to run per exposure
+
     meter_init();
-    meter_integrate();
+    meter_reset();
 
     initialMillis = millis();
     uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
@@ -444,8 +446,10 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     #endif
 
     meter_set_iso(_myISO);
+    // TODO - Move this to top level, does not need to run per exposure
+
     meter_init();
-    meter_integrate();
+    meter_reset();
 
     initialMillis = millis();
     uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
@@ -509,8 +513,10 @@ void Camera::AutoExposure(int _myISO){
   Serial.println(meter_update());
   #endif
   
+  // TODO - Move this to top level, does not need to run per exposure
+
   meter_init();
-  meter_integrate();
+  meter_reset();
   Camera::shutterOPEN();
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
@@ -578,8 +584,10 @@ void Camera::AutoExposureFF(int _myISO){
   #if FFDEBUG
     Serial.println("SOL2: 130 - Powersave");
   #endif   
+  // TODO - Move this to top level, does not need to run per exposure
+
   meter_init();
-  meter_integrate();
+  meter_reset();
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   //Start FlashDelay 
