@@ -20,13 +20,13 @@
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Sensor Selection
-  // !TODO! Remove preprocessor for this. This will be the only light meter.
+  // TODO! Remove preprocessor for this. This will be the only light meter.
   #define INTEGRATOR 1
   //      Board Version
   #define MEROE_Z_V1 1
   #define MEROE_Z_V2 0
   //      Camera Options
-  #define S1Logic HIGH             // This may be removable (Hard code logic). !TODO!
+  #define S1Logic HIGH
   #define ALPHA 1                  //1 if ALPHA camera functions
   #define SONAR 0                  //1 for Sonar camera functions   
   //      Dongle Options 
@@ -55,11 +55,10 @@
   //---------------END ISO VALUES--------------------------------------------
 
   //---------------MAGIC NUMBERS---------------------------------------------
-  // !TODO! Remove preprocessor for this. This will be the only light meter.
-  #if INTEGRATOR
-    #define A100 64
-    #define A600 16
-  #endif
+  // Magic numbers in this case can change depending on meter capacitor size.
+  // Going to start with 1000pf
+  #define A100 800
+  #define A600 200
   
   //---------------END MAGIC NUMBERS-----------------------------------------
 
@@ -80,6 +79,7 @@
   #define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
   #define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
   #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
+  #define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
   //---------------END METER SETTINGS----------------------------------------
 
   //---------------MULTIPLE EXPOSURES MODE SETTINGS--------------------------

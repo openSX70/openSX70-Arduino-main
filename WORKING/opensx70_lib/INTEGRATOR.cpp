@@ -12,16 +12,21 @@
     integrator_init();
   }
 
+  void meter_reset(){
+    integrator_reset();
+  }
+
   void integrator_init(){
     pinMode(PIN_LM, INPUT);
-    //pinMode(PIN_LM_RST, OUTPUT);
-    //digitalWrite(PIN_LM_RST, LOW);
+    pinMode(PIN_LM_RST, OUTPUT);
+    digitalWrite(PIN_LM_RST, LOW);
   }
 
   void integrator_reset(){
-    //!TODO, See how much time a cap reset takes and add a delay if required.
-    //digitalWrite(PIN_LM_RST, HIGH);
-    //digitalWrite(PIN_LM_RST, LOW);
+    //TODO, See how much time a cap reset takes and add a delay if required.
+    digitalWrite(PIN_LM_RST, HIGH);
+    delay(METER_RESET_DELAY);
+    digitalWrite(PIN_LM_RST, LOW);
   }
 
   void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Timer1 -- Magicnumber for ISO
@@ -45,14 +50,14 @@
   }
   
   int meter_compute(byte _selector,int _activeISO){
-    /*
-    !TODO! adjust this for new metering mode
+    // TODO If possible, change this to use an integrated timer and interrupt rather than checking time manually.
+    // Doing this on a new microcontroller would probably be more worthwhile time wise.
     int _myISO = _activeISO;
 
     if(measuring == false){
       meter_set_iso(_activeISO);
       measuring = true;
-      meter_init();
+      meter_reset();
       startMillis = millis();
 
       #if LMHELPERDEBUG
@@ -65,7 +70,7 @@
       endMillis = millis();
       uint32_t timeElapsed =  endMillis - startMillis;
       if((timeElapsed) >= METER_INTERVAL){
-        uint32_t counter = TCNT1;
+        uint16_t counter = analogRead(PIN_LM);
         measuring = false;
 
         float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
@@ -114,19 +119,15 @@
         return pred_milli; 
       }
     }
-    return -1;  
-    */  
-
-    // !TODO! THIS IS A PLACEHOLDER VALUE. REMOVE LATER.
-    return 0;
+    return -1;   
   }
 
   void meter_integrate(){
+    //all we need to do when starting a new metering session is reset the capacitor
     integrator_reset();
   }
   
   bool meter_update(){
-    /*
     uint8_t integration_value = analogRead(PIN_LM);
     if( integration_value >= outputCompare){
         #if LMDEBUG
@@ -138,8 +139,6 @@
     else{
         return 0;
     }
-    */
-    return 1;
   }
 
   void meter_led(byte _selector, byte _type){
