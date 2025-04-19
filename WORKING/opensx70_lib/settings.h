@@ -23,8 +23,8 @@
   // TODO! Remove preprocessor for this. This will be the only light meter.
   #define INTEGRATOR 1
   //      Board Version
-  #define MEROE_Z_V1 1
-  #define MEROE_Z_V2 0
+  #define MEROE_Z_V1 0
+  #define MEROE_Z_V2 1
   //      Camera Options
   #define S1Logic HIGH
   #define ALPHA 1                  //1 if ALPHA camera functions
@@ -57,8 +57,8 @@
   //---------------MAGIC NUMBERS---------------------------------------------
   // Magic numbers in this case can change depending on meter capacitor size.
   // Going to start with 1000pf
-  #define A100 800
-  #define A600 200
+  #define A100 830
+  #define A600 230
   
   //---------------END MAGIC NUMBERS-----------------------------------------
 
