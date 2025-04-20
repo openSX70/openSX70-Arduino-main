@@ -44,7 +44,7 @@
   #define COUNTER_BLINK 0          //1 Switches dongle LED functionality from displaying ISO to displaying the number of shots remaining in your film pack
   #define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
   #define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
-  #define LIGHMETER_HELPER 0       //1 Enables viewfinder light meter helper
+  #define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
   #define EJECT_AFTER_DEPRESSING 0 //1 Enables the user to hold the shutter button to prevent photo ejection
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
@@ -57,8 +57,8 @@
   //---------------MAGIC NUMBERS---------------------------------------------
   // Magic numbers in this case can change depending on meter capacitor size.
   // Going to start with 1000pf
-  #define A100 830
-  #define A600 230
+  #define A100 850
+  #define A600 250
   
   //---------------END MAGIC NUMBERS-----------------------------------------
 
