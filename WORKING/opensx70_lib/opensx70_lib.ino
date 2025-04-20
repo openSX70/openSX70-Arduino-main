@@ -454,6 +454,13 @@ camera_state do_state_multi_exp (void){
       Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
     #endif
   }
+  else if((current_status.selector == 200) && multipleExposureCounter == 0){
+    // Edge case where dongle is removed during onewire communication, causing it to think it should be in MEXP mode.
+    result = STATE_NODONGLE;
+    #if STATEDEBUG
+      Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_MULTI_EXP"));
+    #endif
+  }
   return result;
 }
 
