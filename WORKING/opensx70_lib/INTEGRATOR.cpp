@@ -55,7 +55,7 @@
     int _myISO = _activeISO;
 
     if(measuring == false){
-      meter_set_iso(_activeISO);
+      //meter_set_iso(_activeISO);
       measuring = true;
       meter_reset();
       startMillis = millis();
@@ -128,10 +128,14 @@
   }
   
   bool meter_update(){
-    uint8_t integration_value = analogRead(PIN_LM);
+    uint16_t integration_value = analogRead(PIN_LM);
+    #if LMDEBUG
+        Serial.print(F("Integrated counter value : "));
+        Serial.println(integration_value);
+    #endif
     if( integration_value >= outputCompare){
         #if LMDEBUG
-            Serial.print(F("Integrated counter value : "));
+            Serial.print(F("Final integrated counter value : "));
             Serial.println(integration_value);
         #endif
         return 1;
