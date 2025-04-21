@@ -1,4 +1,4 @@
- #include "Arduino.h"
+#include "Arduino.h"
 #include "open_sx70.h"
 
 /* 
@@ -80,7 +80,9 @@ void setup() {//setup - Inizialize
     Serial.print(F("currentPicture stored in EEPROM: "));
     Serial.println(currentPicture);
   #endif
-  
+
+  io_init();
+
   peripheral.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
 
@@ -96,12 +98,12 @@ void setup() {//setup - Inizialize
   current_status = peripheral.get_peripheral_status();
   prev_selector = current_status.selector;
 
-  io_init();
-
   mEXPFirstRun = false;
   multipleExposureMode = false;
 
   checkFilmCount();
+
+  meter_set_iso(ReadISO());
 
   if (digitalRead(PIN_S5) != LOW)
   {
@@ -813,7 +815,9 @@ void saveISOChange() {
     activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
     WriteISO(_selectedISO); //Write ISO to EEPROM
     savedISO = ReadISO();
+    meter_set_iso(activeISO);
     BlinkISORed();
+
   }
   else{
     #if SIMPLEDEBUG

@@ -408,7 +408,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
       Serial.println(ShutterSpeedDelay);
     #endif
 
-    meter_set_iso(_myISO);
+    //meter_set_iso(_myISO);
     // TODO - Move this to top level, does not need to run per exposure
 
     meter_init();
@@ -445,7 +445,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
       Serial.println(ShutterSpeedDelay);
     #endif
 
-    meter_set_iso(_myISO);
+    //meter_set_iso(_myISO);
     // TODO - Move this to top level, does not need to run per exposure
 
     meter_init();
@@ -488,7 +488,7 @@ void Camera::AutoExposure(int _myISO){
   Serial.println(_myISO);
   #endif
 
-  meter_set_iso(_myISO); 
+  //meter_set_iso(_myISO); 
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
