@@ -20,9 +20,7 @@
   extern void meter_set_iso(uint16_t const& iso);
   //void meter_led(byte _selector, bool _type);
   // preprocessor conditionnal inlusion for specific chip header file.
-  #if INTEGRATOR
-    # include "INTEGRATOR.h"
-  #else
-    #	warning	"no meter included"
-  #endif
+
+  #include "INTEGRATOR.h"
+
 #endif

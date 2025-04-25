@@ -33,11 +33,6 @@ static int multipleExposureCounter = 0;
   static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
 #endif
 
-#if SONAR
-  //bool isFocused = 0; //neccessary? should be done by GTD???
-#endif
-
-
 /*------------BEGIN STATE MACHINE SET_UP------------*/
 typedef enum{
   STATE_DARKSLIDE,
@@ -474,8 +469,7 @@ void preFocus() {
 }
 
 void unfocusing(){
-  //if ((digitalRead(PIN_S1F) == LOW) && (digitalRead(PIN_GTD) == HIGH)) {
-  if ((digitalRead(PIN_S1F) == LOW)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
+  if ((digitalRead(PIN_S1F) == LOW)) {
     openSX70.S1F_Unfocus();
     turnLedsOff();
   }
