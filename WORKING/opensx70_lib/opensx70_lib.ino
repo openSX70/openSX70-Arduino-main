@@ -474,7 +474,8 @@ void preFocus() {
 }
 
 void unfocusing(){
-  if ((digitalRead(PIN_S1F) == LOW) && (digitalRead(PIN_GTD) == HIGH)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
+  //if ((digitalRead(PIN_S1F) == LOW) && (digitalRead(PIN_GTD) == HIGH)) {
+  if ((digitalRead(PIN_S1F) == LOW)) { // S1F pressed  -- selftimer (doubleclick the red button) is not working this way
     openSX70.S1F_Unfocus();
     turnLedsOff();
   }

@@ -32,6 +32,7 @@ Camera::Camera(uDongle *dongle){
       #endif
       pinMode(PIN_S1F_FBW, OUTPUT);
       digitalWrite(PIN_S1F_FBW, HIGH);
+      /*
       uint32_t startMillis = millis();
       while(gtdDebounceCount<10 || ((millis()-startMillis)<200)){
         if(digitalRead(PIN_GTD) == HIGH){
@@ -41,6 +42,8 @@ Camera::Camera(uDongle *dongle){
           gtdDebounceCount = 0;
         }
       }
+      */
+      
       return;
   }
 

@@ -27,8 +27,8 @@
   #define MEROE_Z_V2 1
   //      Camera Options
   #define S1Logic HIGH
-  #define ALPHA 1                  //1 if ALPHA camera functions
-  #define SONAR 0                  //1 for Sonar camera functions   
+  #define ALPHA 0                  //1 if ALPHA camera functions
+  #define SONAR 1                  //1 for Sonar camera functions   
   //      Dongle Options 
   #define FLIP_ORDER 0             //1 to set dongle selector order to "a600 a100 T B" rather than "T B a600 a100". This is for older dongle revisions.
   #define AFTER_EIGHT 0
