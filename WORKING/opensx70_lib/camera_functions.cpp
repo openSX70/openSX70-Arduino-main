@@ -10,8 +10,6 @@
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
 
-int GTD = 0;
-
 Camera::Camera(uDongle *dongle){
   _dongle = dongle;
   //   io_init();
@@ -19,31 +17,11 @@ Camera::Camera(uDongle *dongle){
 }
 
 #if SONAR
-  int Camera::getGTD(){
-    GTD = digitalRead(PIN_GTD);
-    return GTD;  
-  }
-
   void Camera::S1F_Focus(){
-      //int i=0;
-      int gtdDebounceCount = 0;
       #if FOCUSDEBUG
         Serial.println("Focus on");
       #endif
-      pinMode(PIN_S1F_FBW, OUTPUT);
       digitalWrite(PIN_S1F_FBW, HIGH);
-      /*
-      uint32_t startMillis = millis();
-      while(gtdDebounceCount<10 || ((millis()-startMillis)<200)){
-        if(digitalRead(PIN_GTD) == HIGH){
-          gtdDebounceCount = gtdDebounceCount + 1;
-        }
-        else{
-          gtdDebounceCount = 0;
-        }
-      }
-      */
-      
       return;
   }
 
@@ -51,7 +29,6 @@ Camera::Camera(uDongle *dongle){
       #if FOCUSDEBUG
         Serial.println("Focus off");
       #endif
-      pinMode(PIN_S1F_FBW, OUTPUT);
       digitalWrite (PIN_S1F_FBW, LOW);
       return;
   }

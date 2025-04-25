@@ -37,7 +37,6 @@
       bool setLIGHTMETER_HELPER(bool active);
       bool getLIGHTMETER_HELPER();
       void multipleExposureLastClick();
-      int getGTD();
     private:
       void FastFlash();
       //  void ShutterB();
