@@ -19,11 +19,9 @@
   const uint8_t PIN_LM = A1;
   const uint8_t PIN_LM_RST = A2;
   const uint8_t PIN_FT = A3; //Sonar Flash Triggerd INPUT -- Cave Analoge Input only!
-  #if SONAR
-    const uint8_t PIN_GTD = A6; // Sonar gone that distance
-    const uint8_t PIN_S1F = 9; //Sonar S1 Focus //Analog imput only
-    const uint8_t PIN_S1F_FBW = 4; //engage SONAR prefocus
-  #endif
+  const uint8_t PIN_GTD = A6; // Sonar gone that distance
+  const uint8_t PIN_S1F = 9; //Sonar S1 Focus //Analog imput only
+  const uint8_t PIN_S1F_FBW = 4; //engage SONAR prefocus
 
   void io_init();
 #endif

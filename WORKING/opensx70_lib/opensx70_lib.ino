@@ -84,11 +84,7 @@ void setup() {//setup - Inizialize
   // (These are default if not set, but changeable for convenience)
   sw_S1.debounceTime   = 15;   // Debounce timer in ms 15
   sw_S1.multiclickTime = 250;  // Time limit for multi clicks
-  #if SONAR
-  sw_S1.longClickTime = 50;
-  #else
   sw_S1.longClickTime  = 0; // time until "held-down clicks" register
-  #endif
 
   current_status = peripheral.get_peripheral_status();
   prev_selector = current_status.selector;
@@ -116,12 +112,15 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
+  if ((digitalRead(PIN_S1F) == HIGH)){
+    preFocus();
+  }
+  else{
+    unfocusing();
+  }
   current_status = peripheral.get_peripheral_status();
   normalOperation();
   state = STATE_MACHINE[state]();
-  #if SONAR
-    unfocusing();
-  #endif
 }
 
 camera_state do_state_darkslide (void) {
@@ -183,11 +182,6 @@ camera_state do_state_darkslide (void) {
 camera_state do_state_noDongle (void){
   camera_state result = STATE_NODONGLE;
   //savedISO = ReadISO();
-  #if SONAR
-  if ((digitalRead(PIN_S1F) == HIGH)){ //Do only if S1F is pressed
-  preFocus();
-  
-  #endif
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
@@ -202,9 +196,6 @@ camera_state do_state_noDongle (void){
     switch2Function(1);
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
-  }
-  #endif
-  #if SONAR
   }
   #endif
   //Checks for dongle or flashbar insertion
@@ -240,19 +231,12 @@ camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
   DongleInserted();
   
-  #if SONAR
-  if ((digitalRead(PIN_S1F) == HIGH)){
-  preFocus();
-  #endif
-    if(current_status.selector<=11){
-      LightMeterHelper(2); //LMHelper Manual Mode
-    }
-    else if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
-      LightMeterHelper(1); //LMHelper Auto Mode
-    }
-  #if SONAR
+  if(current_status.selector<=11){
+    LightMeterHelper(2); //LMHelper Manual Mode
   }
-  #endif
+  else if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
+    LightMeterHelper(1); //LMHelper Auto Mode
+  }
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     #if SIMPLEDEBUG
@@ -318,9 +302,7 @@ camera_state do_state_dongle (void){
 
 camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
-  #if SONAR
-  preFocus();
-  #endif
+
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     beginExposure();
     openSX70.AutoExposureFF(savedISO);
@@ -351,25 +333,15 @@ camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
 
-  #if SONAR
-    if(current_status.switch1){
-      preFocus();
-    }
-  #endif
 
+  // TODO May want to remove lmhelper for MEXP
+  if(current_status.selector<11){
+    LightMeterHelper(2); //LMHelper Manual Mode
+  }
+  else if(current_status.selector==14 || current_status.selector==15){
+    LightMeterHelper(1); //LMHelper Auto Mode
+  }
 
-  #if SONAR
-    if ((digitalRead(PIN_S1F) == HIGH)){
-  #endif
-      if(current_status.selector<11){
-        LightMeterHelper(2); //LMHelper Manual Mode
-      }
-      else if(current_status.selector==14 || current_status.selector==15){
-        LightMeterHelper(1); //LMHelper Auto Mode
-      }
-  #if SONAR
-    }
-  #endif
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     LightMeterHelper(0); //Turns off LMHelper on picutre Taking
@@ -461,7 +433,6 @@ camera_state do_state_multi_exp (void){
   return result;
 }
 
-#if SONAR
 void preFocus() {
   if ((digitalRead(PIN_S1F) == HIGH)) { // S1F pressed
     openSX70.S1F_Focus();
@@ -474,7 +445,6 @@ void unfocusing(){
     turnLedsOff();
   }
 }
-#endif
 
 //Added to remove check for multiple exposure mode from standard manual exposure state. 
 //Offload the check to multiple exposure state
@@ -495,31 +465,23 @@ void turnLedsOff(){ //TODO :move to camerafunction
 
 void DongleInserted() { //Dongle is pressend LOOP
   if (digitalRead(PIN_S1) != S1Logic) { //Dont run DongleInserted Function on S1T pressed
-  #if SONAR
-    if (digitalRead(PIN_S1F) != S1Logic) { //Dont run DongleInserted Function on S1F pressed
-  #endif
-      {
-        lmEnable(); //added 26.10.
-        if ((current_status.selector != prev_selector)) //Update Dongle changes
-        {
-          #if ADVANCEDEBUG
-            Serial.print(F("DONGLE Mode:  "));
-            Serial.print(F("Selector: "));
-            Serial.print(current_status.selector);
-            Serial.print(F(" Switch1: "));
-            Serial.print(current_status.switch1);
-            Serial.print(F(" Switch2: "));
-            Serial.print(current_status.switch2);
-            Serial.print(F(" speed: "));
-            Serial.println(ShutterSpeed[current_status.selector]);
-          #endif
-          blinkAutomode();
-          prev_selector = current_status.selector;
-        }
-      }
-  #if SONAR
+    lmEnable(); //added 26.10.
+    if ((current_status.selector != prev_selector)){
+      #if ADVANCEDEBUG
+        Serial.print(F("DONGLE Mode:  "));
+        Serial.print(F("Selector: "));
+        Serial.print(current_status.selector);
+        Serial.print(F(" Switch1: "));
+        Serial.print(current_status.switch1);
+        Serial.print(F(" Switch2: "));
+        Serial.print(current_status.switch2);
+        Serial.print(F(" speed: "));
+        Serial.println(ShutterSpeed[current_status.selector]);
+      #endif
+      // TODO Move this into state transition
+      blinkAutomode();
+      prev_selector = current_status.selector;
     }
-  #endif
   }
 }
 
@@ -689,22 +651,18 @@ void switch2Function(int mode) {
 
   }
   else if (mode == 1) {
-    #if SONAR
-      openSX70.S1F_Unfocus();
-    #endif
+    openSX70.S1F_Unfocus();
     delay(100);
     #if TIMER_MIRROR_UP
       openSX70.shutterCLOSE();
       openSX70.mirrorUP();
     #endif
     delay (10000); //NoDongleMode
-    #if SONAR
     #if TIMER_MIRROR_UP
       openSX70.S1F_Focus();
     #else
       openSX70.S1F_Focus();
       openSX70.shutterCLOSE();
-    #endif
     #endif
     delay(1000);
   } 
