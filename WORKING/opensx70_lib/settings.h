@@ -19,13 +19,10 @@
   // NONE CURRENTLY!
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
-  //      Sensor Selection
-  // TODO! Remove preprocessor for this. This will be the only light meter.
-  #define INTEGRATOR 1
-  //      Board Version
-  #define MEROE_Z_V1 0
-  #define MEROE_Z_V2 1
   //      Camera Options
+  //May go crazy and take all of these out.
+  //There is really no difference between an alpha and a sonar camera other than S1F as far as logic is concerned.
+  //End user will probably never even feel a difference.
   #define S1Logic HIGH
   #define ALPHA 0                  //1 if ALPHA camera functions
   #define SONAR 1                  //1 for Sonar camera functions   
