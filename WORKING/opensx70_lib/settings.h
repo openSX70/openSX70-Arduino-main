@@ -57,7 +57,7 @@
   //---------------MAGIC NUMBERS---------------------------------------------
   // Magic numbers in this case can change depending on meter capacitor size.
   // Going to start with 1000pf
-  #define A100 850
+  #define A100 1000
   #define A600 250
   
   //---------------END MAGIC NUMBERS-----------------------------------------
