@@ -24,8 +24,6 @@
   //There is really no difference between an alpha and a sonar camera other than S1F as far as logic is concerned.
   //End user will probably never even feel a difference.
   #define S1Logic HIGH
-  #define ALPHA 0                  //1 if ALPHA camera functions
-  #define SONAR 1                  //1 for Sonar camera functions   
   //      Dongle Options 
   #define FLIP_ORDER 0             //1 to set dongle selector order to "a600 a100 T B" rather than "T B a600 a100". This is for older dongle revisions.
   #define AFTER_EIGHT 0

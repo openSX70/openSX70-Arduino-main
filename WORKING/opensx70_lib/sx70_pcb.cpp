@@ -23,12 +23,6 @@ void io_init() {
   digitalWrite(PIN_LED1, LOW);
   digitalWrite(PIN_LED2, LOW);
 
-  // input definition
-  #if ALPHA == 1
-  pinMode(PIN_S1, INPUT_PULLUP); // GND
-  pinMode(PIN_S8, INPUT_PULLUP); // GND
-  pinMode(PIN_S9, INPUT_PULLUP); // GND
-  #endif
   pinMode(PIN_S2, INPUT_PULLUP); //changed from INPUT_PULLUP 27_04
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   pinMode(PIN_S5, INPUT_PULLUP); // GND
