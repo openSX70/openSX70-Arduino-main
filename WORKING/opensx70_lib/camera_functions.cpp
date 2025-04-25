@@ -16,23 +16,21 @@ Camera::Camera(uDongle *dongle){
   //  init_EEPROM();
 }
 
-#if SONAR
-  void Camera::S1F_Focus(){
-      #if FOCUSDEBUG
-        Serial.println("Focus on");
-      #endif
-      digitalWrite(PIN_S1F_FBW, HIGH);
-      return;
-  }
+void Camera::S1F_Focus(){
+    #if FOCUSDEBUG
+      Serial.println("Focus on");
+    #endif
+    digitalWrite(PIN_S1F_FBW, HIGH);
+    return;
+}
 
-  void Camera::S1F_Unfocus(){
-      #if FOCUSDEBUG
-        Serial.println("Focus off");
-      #endif
-      digitalWrite (PIN_S1F_FBW, LOW);
-      return;
-  }
-#endif
+void Camera::S1F_Unfocus(){
+    #if FOCUSDEBUG
+      Serial.println("Focus off");
+    #endif
+    digitalWrite (PIN_S1F_FBW, LOW);
+    return;
+}
 
 void Camera::shutterCLOSE(){
   #if BASICDEBUG
@@ -176,16 +174,12 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
 
   // DS2408 LED BLINK
 
-  #if SONAR
-    Camera::S1F_Unfocus(); 
-  #endif
+  Camera::S1F_Unfocus(); 
   Camera::Blink (1000, steps, led1, 2);
   Camera::Blink (600, steps, led1, 2);
   Camera::Blink (200, steps, led1, 2);
   steps = steps / 2;
-  #if SONAR
-    Camera::S1F_Focus();
-  #endif
+  Camera::S1F_Focus();
   #if TIMER_MIRROR_UP
     Camera::shutterCLOSE();
   #endif
@@ -674,11 +668,9 @@ void Camera::ShutterT(){
 
   delay (40);
   
-
-  #if SONAR
   while (digitalRead(PIN_S1F) == HIGH){
   }
-  #endif
+
   Camera::shutterOPEN ();
   while(DebouncedRead(PIN_S1) == S1Logic){
     #if SIMPLEDEBUG
@@ -733,12 +725,10 @@ void Camera::ExposureFinish()
       while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
     #endif
     Camera::shutterOPEN();
-    #if SONAR
-      delay (100);
-      S1F_Unfocus(); //neccesary???
-      #if FOCUSDEBUG
-        Serial.println("Unfocus");
-      #endif
+    delay (100);
+    S1F_Unfocus(); //neccesary???
+    #if FOCUSDEBUG
+      Serial.println("Unfocus");
     #endif
   }
   #if SIMPLEDEBUG
@@ -764,13 +754,11 @@ void Camera::multipleExposureLastClick(){
     Serial.println(currentPicture);
   #endif
   Camera::mirrorDOWN(); 
-  delay(50);                             //AGAIN is this delay necessary? 100-->50
-  #if SONAR
-    delay (100);                             //AGAIN is this delay necessary?
-    S1F_Unfocus(); //neccesary???
-    #if FOCUSDEBUG
-      Serial.println("Unfocus");
-    #endif
+  //delay(50);                             //AGAIN is this delay necessary? 100-->50
+  //delay (100);                             //AGAIN is this delay necessary?
+  S1F_Unfocus(); //neccesary???
+  #if FOCUSDEBUG
+    Serial.println("Unfocus");
   #endif
   Camera::shutterOPEN();
   multipleExposureMode = false;
