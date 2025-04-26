@@ -26,33 +26,41 @@ void uDongle::initDS2408(){
 status uDongle::get_peripheral_status(){
   uint8_t readDevice;
   uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
+  uint8_t prev_readDevice;
 
-  _device_count = checkDongle();
+  //While loop acts as a debounce for peripheral state
+  //Need two confirmations of the same state in a row in order to get a returned change.
+  while(true){
+    _device_count = checkDongle();
 
-  pinMode(_Pin, INPUT_PULLUP);
-  if (digitalRead(_Pin) == LOW){
-    //CASE: FLASH
-    peripheral_status.selector = 100;
-    return peripheral_status; // FLASH
+    pinMode(_Pin, INPUT_PULLUP);
+    if (digitalRead(_Pin) == LOW){
+      //CASE: FLASH
+      peripheral_status.selector = 100;
+      peripheral_status.switch1 = false;
+      peripheral_status.switch2 = false;
+    }
+    else if((_device_count == 0) && (digitalRead(_Pin) == HIGH)){  
+      //CASE: NO PERIPHERAL
+      peripheral_status.selector = 200;
+      peripheral_status.switch1 = false;
+      peripheral_status.switch2 = false;
+    }
+    else{
+      //Case command module/dongle
+      readDevice = _ds->get_state(_dongleDevice);
+      peripheral_status.selector = readDevice & selector_mask;
+      peripheral_status.switch1 = readDevice & switch1_mask;
+      peripheral_status.switch2 = readDevice & switch2_mask;
+    }
+
+    if(prev_readDevice != readDevice){
+      prev_readDevice = readDevice;
+    }
+    else{
+      return peripheral_status;
+    }
   }
-  else if((_device_count == 0) && (digitalRead(_Pin) == HIGH)){  
-    //CASE: NO PERIPHERAL
-    peripheral_status.selector = 200;
-    return peripheral_status;
-  }
-
-  readDevice = _ds->get_state(_dongleDevice);
-  #if UDONGLE
-    peripheral_status.selector = readDevice & selector_mask;
-  #elif ORIGAMIV1
-    //TODO!
-    //We will need to map the selector bits to their mirror since the v1 origami dongle is inverted.
-  #endif
-
-  peripheral_status.switch1 = readDevice & switch1_mask;
-  peripheral_status.switch2 = readDevice & switch2_mask;
-
-  return peripheral_status;
 }
 
 
