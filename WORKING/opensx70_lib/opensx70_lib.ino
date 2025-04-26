@@ -64,20 +64,21 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 camera_state state = STATE_DARKSLIDE;
 
 camera_state update_state(){
-  camera_state current_state;
-  if(current_status.selector <= 15){
-    //DONGLE STATE
+  camera_state new_state;
+  camera_state current_state = state;
+  if((current_status.selector <= 15) && (prev_status.selector == 200)){
+    //DONGLE STATE FROM NO DONGLE
     if((prev_status.selector == 200) && (current_status.switch1 && current_status.switch2)){
       saveISOChange();
     }
-    else if(current_status.selector<=13){
+    else if((current_status.selector<=13)){
       #if COUNTER_BLINK
       CounterBlink();
       #else
       BlinkISO();
       #endif
     }
-    current_state = STATE_DONGLE;
+    new_state = STATE_DONGLE;
     savedISO = ReadISO();
     //delay(100);
     BlinkISO();
@@ -85,35 +86,37 @@ camera_state update_state(){
       Serial.println(F("TRANSITION TO STATE_DONGLE"));
     #endif
   }
+  // TODO Fix MEXP state. 
+  /*
   else if((current_status.selector <= 15) && (current_status.switch1)){
     //MEXP STATE
-    // TODO Fix MEXP state. 
-    /*
     if(prev_status != current_status)
     result = STATE_MULTI_EXP;
     multipleExposureMode = true;
     mEXPFirstRun = true;
     #if STATEDEBUG
         Serial.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
-    #endif
-    */
-    
+    #endif 
   }
-  else if (current_status.selector == 100){
-    current_state = STATE_FLASHBAR;
+  */
+  else if ((current_status.selector == 100) && (prev_status.selector == 200)){
+    new_state = STATE_FLASHBAR;
     savedISO = ReadISO();
     #if STATEDEBUG
       Serial.println(F("TRANSITION TO STATE_FLASHBAR"));
     #endif
   }
-  else{
-    current_state = STATE_NODONGLE;
+  else if((current_status.selector == 200) && (prev_status.selector != current_status.selector)){
+    new_state = STATE_NODONGLE;
     savedISO = ReadISO();
     #if STATEDEBUG
       Serial.println(F("TRANSITION TO STATE_NODONGLE"));
     #endif
   }
-  return current_state;
+  else{
+    return current_state;
+  }
+  return new_state;
 }
 
 
@@ -451,7 +454,7 @@ void turnLedsOff(){ //TODO :move to camerafunction
 void DongleInserted() { //Dongle is pressend LOOP
   if (digitalRead(PIN_S1) != S1Logic) { //Dont run DongleInserted Function on S1T pressed
     lmEnable(); //added 26.10.
-    if ((current_status.selector != prev_selector)){
+    if ((current_status.selector != prev_status.selector)){
       #if ADVANCEDEBUG
         Serial.print(F("DONGLE Mode:  "));
         Serial.print(F("Selector: "));
@@ -465,7 +468,6 @@ void DongleInserted() { //Dongle is pressend LOOP
       #endif
       // TODO Move this into state transition
       blinkAutomode();
-      prev_selector = current_status.selector;
     }
   }
 }
