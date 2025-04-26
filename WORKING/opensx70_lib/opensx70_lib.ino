@@ -154,9 +154,9 @@ void setup() {//setup - Inizialize
 
   if (digitalRead(PIN_S5) != LOW)
   {
-    openSX70.shutterClose();
+    openSX70.shutterCLOSE();
     openSX70.mirrorDOWN();
-    openSX70.shutterOpen();
+    openSX70.shutterOPEN();
     #if SIMPLEDEBUG
       Serial.println(F("Initialize: mirrorDOWN"));
     #endif
