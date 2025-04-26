@@ -66,12 +66,11 @@ void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
     Serial.begin(9600);
-    Serial.println(F("Welcome to openSX70 Version: 11_02_2021 Light meter helper"));
+    Serial.println(F("Welcome to openSX70 Version: 04_26_2025 Integrator"));
     Serial.print(F("Magic Number: A100="));
     Serial.print(A100);
     Serial.print(F("| A600 ="));
     Serial.print(A600);
-    Serial.println(F(" scaling = 100% | filter = clear"));
     Serial.print(F("currentPicture stored in EEPROM: "));
     Serial.println(currentPicture);
   #endif
