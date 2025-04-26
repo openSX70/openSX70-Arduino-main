@@ -62,6 +62,10 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 //Default state
 camera_state state = STATE_DARKSLIDE;
 
+
+
+
+
 void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
@@ -93,11 +97,14 @@ void setup() {//setup - Inizialize
 
   checkFilmCount();
 
-  meter_set_iso(ReadISO());
+  savedISO = ReadISO();
+  meter_set_iso(savedISO);
 
   if (digitalRead(PIN_S5) != LOW)
   {
+    openSX70.shutterClose();
     openSX70.mirrorDOWN();
+    openSX70.shutterOpen();
     #if SIMPLEDEBUG
       Serial.println(F("Initialize: mirrorDOWN"));
     #endif
