@@ -20,6 +20,7 @@ uDongle peripheral(PIN_S2);
 Camera openSX70(&peripheral);
 
 status current_status;
+status prev_status;
 uint8_t prev_selector;
 
 
@@ -62,7 +63,58 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 //Default state
 camera_state state = STATE_DARKSLIDE;
 
-
+camera_state update_state(){
+  camera_state current_state;
+  if(current_status.selector <= 15){
+    //DONGLE STATE
+    if((prev_status.selector == 200) && (current_status.switch1 && current_status.switch2)){
+      saveISOChange();
+    }
+    else if(current_status.selector<=13){
+      #if COUNTER_BLINK
+      CounterBlink();
+      #else
+      BlinkISO();
+      #endif
+    }
+    current_state = STATE_DONGLE;
+    savedISO = ReadISO();
+    //delay(100);
+    BlinkISO();
+    #if STATEDEBUG
+      Serial.println(F("TRANSITION TO STATE_DONGLE"));
+    #endif
+  }
+  else if((current_status.selector <= 15) && (current_status.switch1)){
+    //MEXP STATE
+    // TODO Fix MEXP state. 
+    /*
+    if(prev_status != current_status)
+    result = STATE_MULTI_EXP;
+    multipleExposureMode = true;
+    mEXPFirstRun = true;
+    #if STATEDEBUG
+        Serial.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
+    #endif
+    */
+    
+  }
+  else if (current_status.selector == 100){
+    current_state = STATE_FLASHBAR;
+    savedISO = ReadISO();
+    #if STATEDEBUG
+      Serial.println(F("TRANSITION TO STATE_FLASHBAR"));
+    #endif
+  }
+  else{
+    current_state = STATE_NODONGLE;
+    savedISO = ReadISO();
+    #if STATEDEBUG
+      Serial.println(F("TRANSITION TO STATE_NODONGLE"));
+    #endif
+  }
+  return current_state;
+}
 
 
 
@@ -124,13 +176,15 @@ void loop() {
   else{
     unfocusing();
   }
+  prev_status = current_status;
   current_status = peripheral.get_peripheral_status();
   normalOperation();
   state = STATE_MACHINE[state]();
 }
 
 camera_state do_state_darkslide (void) {
-  camera_state result = STATE_DARKSLIDE;
+  
+  camera_state current_state = STATE_DARKSLIDE;
   #if SHUTTERDARKSLIDE
   sw_S1.Update();
   if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
@@ -153,40 +207,16 @@ camera_state do_state_darkslide (void) {
         Serial.println(currentPicture);
       #endif
     }
-    
-    if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
-      result = STATE_DONGLE;
-      savedISO = ReadISO();
-      delay(100);
-      BlinkISO();
-      #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
-      #endif
-    }
-    else if ((current_status.selector == 100) && (peripheral.checkDongle() == 0)){
-      result = STATE_FLASHBAR;
-      savedISO = ReadISO();
-      #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
-      #endif
-    }
-    else{
-      result = STATE_NODONGLE;
-      savedISO = ReadISO();
-      #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
-      #endif
-    }
+    return update_state();
   #if SHUTTERDARKSLIDE
   sw_S1.Reset();
   }
   #endif
   
-  return result;
+  return current_state;
 }
 
 camera_state do_state_noDongle (void){
-  camera_state result = STATE_NODONGLE;
   //savedISO = ReadISO();
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
@@ -204,37 +234,11 @@ camera_state do_state_noDongle (void){
     sw_S1.Reset();
   }
   #endif
-  //Checks for dongle or flashbar insertion
 
-  if (current_status.selector<=15){
-    #if STATEDEBUG
-      Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
-    #endif
-    result = STATE_DONGLE;
-    savedISO = ReadISO();
-    if(((current_status.switch1 == 1) && (current_status.switch2 == 1))){
-      saveISOChange();
-    }
-    else if(current_status.selector<=13){ //Dont blink on AUTOMODE
-      #if COUNTER_BLINK
-      CounterBlink();
-      #else
-      BlinkISO();
-      #endif
-    }
-  }
-  else if (current_status.selector==100){
-    result = STATE_FLASHBAR;
-    savedISO = ReadISO();
-    #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
-    #endif
-  }
-  return result;
+  return update_state();
 }
 
 camera_state do_state_dongle (void){
-  camera_state result = STATE_DONGLE;
   DongleInserted();
   
   if(current_status.selector<=11){
@@ -283,32 +287,12 @@ camera_state do_state_dongle (void){
     }
     sw_S1.Reset();
     checkFilmCount();
-  } 
-
-  // Dongle Removed
-  if (current_status.selector == 200){
-    result = STATE_NODONGLE;
-    savedISO = ReadISO();
-    #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
-    #endif
-  } 
-  // Multiple Exposure switch flipped
-  else if (current_status.switch1){
-    result = STATE_MULTI_EXP;
-    multipleExposureMode = true;
-    mEXPFirstRun = true;
-    #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
-    #endif
   }
 
-  return result;
+  return update_state();
 }
 
 camera_state do_state_flashBar (void){
-  camera_state result = STATE_FLASHBAR;
-
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     beginExposure();
     openSX70.AutoExposureFF(savedISO);
@@ -324,17 +308,12 @@ camera_state do_state_flashBar (void){
     checkFilmCount(); 
   } 
   #endif
-  
-  if ((current_status.selector == 200) && (peripheral.checkDongle() == 0)){
-    result = STATE_NODONGLE;
-    savedISO = ReadISO();
-    #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
-    #endif
-  } 
-  return result;
+
+  return update_state();
 }
 
+
+// TODO This needs to be rewritten
 camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
