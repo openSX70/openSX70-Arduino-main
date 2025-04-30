@@ -75,6 +75,7 @@ void setup() {//setup - Inizialize
   #endif
 
   io_init();
+  meter_init();
 
   peripheral.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
