@@ -211,11 +211,7 @@ camera_state do_state_noDongle (void){
       saveISOChange();
     }
     else if(current_status.selector<=13){ //Dont blink on AUTOMODE
-      #if COUNTER_BLINK
-      CounterBlink();
-      #else
       BlinkISO();
-      #endif
     }
   }
   else if (current_status.selector==100){
@@ -505,54 +501,6 @@ void lmEnable(){
   }
 }
 
-#if COUNTER_BLINK
-
-void CounterBlink(){
-  switch1 = peripheral.switch1();
-  switch2 = peripheral.switch2();
-  #if EIGHT_SHOT_PACK
-    int remainingShots = 8-currentPicture;
-    if((switch2 != 1) && (switch1 != 1)){
-      if(remainingShots>0){
-        turnLedsOff();
-        peripheral.simpleBlink((remainingShots), GREEN);
-        delay(500);
-      }
-      else{
-        return;
-      }
-      
-      
-      #if SIMPLEDEBUG
-      Serial.print(8 - currentPicture);
-      Serial.println(" Shots remaining");
-      #endif
-      return;
-    }
-  #else
-    int remainingShots = 10-currentPicture;
-    if((switch2 != 1) && (switch1 != 1)){
-      if(remainingShots>0){
-        turnLedsOff();
-        peripheral.simpleBlink((remainingShots), GREEN);
-        delay(500);
-      }
-      else{
-        return;
-      }
-      
-      
-      #if SIMPLEDEBUG
-      Serial.print(10 - currentPicture);
-      Serial.println(" Shots remaining");
-      #endif
-      return;
-    }
-  #endif
-}
-
-#else
-
 void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 600
   if((current_status.switch1 != 1) || (current_status.switch2 != 1)){ //Not Save ISO //Changed to OR 01.06.2020
       #if SIMPLEDEBUG
@@ -583,7 +531,6 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
       //return;
     }
 }
-#endif
 
 void blinkAutomode(){
   if ((current_status.switch1 != 1) || (current_status.switch2 != 1)) { //Save ISO Mode
