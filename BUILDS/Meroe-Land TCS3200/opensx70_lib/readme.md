@@ -1,3 +1,0 @@
-# Working Directory
-
-This is where code that is in development is located. If you are reading this in the master branch you should generally be fine to make your own build using the code in this folder. If this is on an alternate branch then this code can be **VERY** experimental. There is no guarantee that any of the code in this folder works or has all features from the main branch or any other branch. **USE THIS CODE AT YOUR OWN RISK!!!**

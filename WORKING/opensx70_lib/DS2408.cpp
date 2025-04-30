@@ -127,7 +127,8 @@ bool DS2408::reset_activity() {
 
 void DS2408::select_device(Device device) {
     this->reset();
-    this->select(device);
+    this->skip();
+    //this->select(device);
 }
 
 uint8_t  DS2408::find(Devices* devices) {
@@ -148,11 +149,11 @@ uint8_t  DS2408::find(Devices* devices) {
 }
 
 uint8_t  DS2408::findsingle(Device* devices) {
-    this->reset_search();
-    if (this->search(devices[0]) && devices[0][0] == DS2408_FAMILY)
-  {
-    return 1;
-  }
-  else
-    return 0;
+    if (!this->reset())
+        return 0;
+        this->readrom(devices[0]);
+            //if (devices[0][0] == DS2408_FAMILY)
+            return 1;
+            //else
+            //return 0;
 }

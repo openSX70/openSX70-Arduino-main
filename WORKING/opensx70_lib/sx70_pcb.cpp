@@ -14,7 +14,11 @@ void io_init() {
   pinMode(PIN_MOTOR, OUTPUT);
   pinMode(PIN_LED1, OUTPUT);
   pinMode(PIN_LED2, OUTPUT);
-
+  
+  #if ECM_PCB
+    pinMode(PIN_FPIN, OUTPUT); // GND
+    digitalWrite(PIN_FPIN, LOW);
+  #endif
   // output default state set.
   digitalWrite(PIN_SOL1, LOW);
   digitalWrite(PIN_SOL2, LOW);
@@ -22,6 +26,7 @@ void io_init() {
   digitalWrite(PIN_MOTOR, LOW);
   digitalWrite(PIN_LED1, LOW);
   digitalWrite(PIN_LED2, LOW);
+  
 
   pinMode(PIN_S2, INPUT_PULLUP); //changed from INPUT_PULLUP 27_04
   pinMode(PIN_S3, INPUT_PULLUP); // GND

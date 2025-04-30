@@ -7,16 +7,17 @@
   #define ADVANCEDEBUG 0    //More detailed view of OpenSX70 functions
   #define BASICDEBUG 0      //Debug of Basic Camera Functions
   #define MXDEBUG 0         //Multiple Exposure Debug
-  #define LMDEBUG 0         //Lightmeter Debug
+  #define LMDEBUG 0      //Lightmeter Debug
   #define LMHELPERDEBUG 0   //Lightmeter Debug
   #define ROTARYDEBUG 0     //Rotaryswitch on Dongle Debug
   #define STATEDEBUG 0      //Debug state transitions
   #define FOCUSDEBUG 0      //Focus Debug on Sonar
   #define FFDEBUG 0         //AutoexposureFillFlash Debug
+  #define STATUSDEBUG 0
 
   //----------------EXPERIMENTAL OPTIONS---------------------------------
   
-  // NONE CURRENTLY!
+  #define APERTURE_PRIORITY 0      //1 Enables SOL2 engage on picture taking for experimental aperture priority mode
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
   //      Camera Options

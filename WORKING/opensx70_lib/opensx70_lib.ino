@@ -1,19 +1,6 @@
 #include "Arduino.h"
 #include "open_sx70.h"
 
-/* 
-  Version for Edwin, Meroe, Land, and Sonar-FBW PCBs. Works with TSL237T and TCS3200 sensors.
-  Changed code to be balanced between readablility and efficiency. 
-  Main change from previous versions of the code is the implementation of a state machine. This makes each loop more efficient by far.
-  For example, rather than checking every possible dongle-based variable when you do not have a dongle in, the no-dongle state will only check
-  for shutter button presses and if it needs to transition to the Dongle state or the Flashbar state. This makes every state of the camera faster
-  and ensures that there is no lag between shutter press and the exposure modes beginning.
-  The move to a state machine also cuts down on if statement checks.
-
-  The sonar code was entirely done by Hannes (Thank you!).
-  Merged last Sonar Version with Zanes Version (Greetings Hannes)
-*/
-
 ClickButton sw_S1(PIN_S1, S1Logic);
 
 uDongle peripheral(PIN_S2);
@@ -248,11 +235,8 @@ camera_state do_state_dongle (void){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
-    if((current_status.selector>=0) && (current_status.selector<=SELECTOR_LIMIT_VARIANCE)){ //fast manual speeds
-      openSX70.VariableManualExposure(savedISO, current_status.selector);
-    }
-    else if((current_status.selector>SELECTOR_LIMIT_VARIANCE) && (current_status.selector<12)){ //MANUAL SPEEDS  
-      openSX70.ManualExposure(current_status.selector);
+    if(current_status.selector<12){ //MANUAL SPEEDS  
+      openSX70.ManualExposure(savedISO, current_status.selector);
     }
     else if(ShutterSpeed[current_status.selector] == POST){ //POST
       turnLedsOff();
@@ -299,7 +283,6 @@ camera_state do_state_dongle (void){
 
 camera_state do_state_flashBar (void){
   camera_state result = STATE_FLASHBAR;
-
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     beginExposure();
     openSX70.AutoExposureFF(savedISO);
@@ -354,12 +337,8 @@ camera_state do_state_multi_exp (void){
         switch2Function(0); // start self timer 
       }
 
-      if((current_status.selector>=0) && (current_status.selector<=SELECTOR_LIMIT_VARIANCE)){ //fast manual speeds
-        openSX70.VariableManualExposure(savedISO, current_status.selector);
-        multipleExposureCounter++;
-      }
-      else if((current_status.selector>SELECTOR_LIMIT_VARIANCE) && (current_status.selector<12)){ //MANUAL SPEEDS  
-        openSX70.ManualExposure(current_status.selector);
+      if(current_status.selector<12){ //MANUAL SPEEDS  
+        openSX70.ManualExposure(savedISO, current_status.selector);;
         multipleExposureCounter++;
       }
       else if(ShutterSpeed[current_status.selector] == POST){ //POST
@@ -424,7 +403,10 @@ camera_state do_state_multi_exp (void){
 
 void preFocus() {
   if ((digitalRead(PIN_S1F) == HIGH)) { // S1F pressed
-    openSX70.S1F_Focus();
+    if(isFocused == false){
+      openSX70.S1F_Focus();
+      isFocused = true;
+    }  
   }
 }
 

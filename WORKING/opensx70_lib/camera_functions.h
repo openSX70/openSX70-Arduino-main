@@ -10,8 +10,11 @@
       void S1F_Focus();
       void shutterCLOSE();
       void shutterOPEN();
+      void sol2Engage();
+      void sol2Disengage();
       void mirrorDOWN();
       void mirrorUP();
+      void startMeter(int _myISO);
       void darkslideEJECT();
       void motorON();
       void motorOFF();
@@ -27,8 +30,7 @@
       void AutoExposure(int _myISO);
       void AutoExposureFF(int _myISO);
       void ExposureFinish();
-      void ManualExposure(uint8_t selector);
-      void VariableManualExposure(int _myISO,uint8_t selector);
+      void ManualExposure(int _myISO,uint8_t selector);
       void FlashBAR();
       void ShutterB();
       void ShutterT();
@@ -39,6 +41,7 @@
       void multipleExposureLastClick();
     private:
       void FastFlash();
+      void AperturePriority();
       //  void ShutterB();
       //  void ShutterT();
       void DongleFlashF8();

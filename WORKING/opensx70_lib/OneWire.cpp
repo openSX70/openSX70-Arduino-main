@@ -301,6 +301,14 @@ void OneWire::select(const uint8_t rom[8])
     for (i = 0; i < 8; i++) write(rom[i]);
 }
 
+void OneWire::readrom(uint8_t rom[8])
+{
+    uint8_t i;
+
+    write(0x33);           // Read Rom
+
+    for (i = 0; i < 8; i++) rom[i] = read();
+}
 //
 // Do a ROM skip
 //
