@@ -8,8 +8,6 @@
       Camera(uDongle *dongle);
       void S1F_Unfocus();
       void S1F_Focus();
-      int S1F_Focus1();
-      void SelfTimerMUP();
       void shutterCLOSE();
       void shutterOPEN();
       void sol2Engage();
@@ -31,7 +29,6 @@
       void HighSpeedPWM ();
       void AutoExposure(int _myISO);
       void AutoExposureFF(int _myISO);
-      void ExposureStart();
       void ExposureFinish();
       void ManualExposure(int _myISO,uint8_t selector);
       void FlashBAR();
@@ -42,7 +39,6 @@
       bool setLIGHTMETER_HELPER(bool active);
       bool getLIGHTMETER_HELPER();
       void multipleExposureLastClick();
-      int getGTD();
     private:
       void FastFlash();
       void AperturePriority();

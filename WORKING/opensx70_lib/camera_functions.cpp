@@ -9,20 +9,11 @@
 
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
-//
-
-int GTD = 0;
 
 Camera::Camera(uDongle *dongle){
   _dongle = dongle;
   //   io_init();
   //  init_EEPROM();
-}
-
-#if SONAR
-int Camera::getGTD(){
-   GTD = digitalRead(PIN_GTD);
-   return GTD;  
 }
 
 void Camera::S1F_Focus(){
@@ -33,7 +24,6 @@ void Camera::S1F_Focus(){
     return;
 }
 
-
 void Camera::S1F_Unfocus(){
     #if FOCUSDEBUG
       Serial.println("Focus off");
@@ -42,36 +32,6 @@ void Camera::S1F_Unfocus(){
     return;
 }
 #endif
-
-#if APERTURE_PRIORITY
-void Camera::AperturePriority(){
-  #if FFDEBUG
-    Serial.println("SOL2 ON");
-  #endif
-  #if ECM_PCB
-    digitalWrite(PIN_SOL2, HIGH);
-    digitalWrite(PIN_SOL2LOW, HIGH);
-  #else
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
-  #endif
-}
-#endif
-
-/*
-#if ECM_PCB
-  void Camera::sol1LowPower(){
-    digitalWrite(PIN_SOL1, LOW);
-  }
-#endif
-*/
-
-void Camera::SelfTimerMUP(){
-  #if BASICDEBUG
-    Serial.println("Selftimer preMirror Up");
-  #endif
-  Camera::mirrorUP();
-}
 
 void Camera::shutterCLOSE(){
   #if BASICDEBUG
@@ -264,23 +224,18 @@ void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
 
   // DS2408 LED BLINK
 
-  #if SONAR
-    Camera::S1F_Unfocus(); 
-  #endif
+  Camera::S1F_Unfocus(); 
   Camera::Blink (1000, steps, led1, 2);
   Camera::Blink (600, steps, led1, 2);
-  #if SONAR
-    Camera::S1F_Focus();
-  #endif
   Camera::Blink (200, steps, led1, 2);
   steps = steps / 2;
-  
+  Camera::S1F_Focus();
   #if TIMER_MIRROR_UP
     Camera::shutterCLOSE();
   #endif
   Camera::Blink (80, steps, led1, 2);
   #if TIMER_MIRROR_UP
-    Camera::SelfTimerMUP();
+    Camera::mirrorUP();
   #endif
   Camera::Blink (80, steps, led2, 2);
 }
@@ -352,35 +307,176 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
 
 void Camera::ManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
-  bool flashFlag = (selector>= Dongle_Flash_Limit) ? true : false;
-  bool varianceFlag = ((selector>SELECTOR_LIMIT_VARIANCE) && (selector<12)) ? true : false;
-  int ShutterSpeedDelay = (flashFlag) ? (ShutterSpeed[selector] - Flash_Capture_Delay) : ShutterSpeed[selector];
-  int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
 
   #if SIMPLEDEBUG
     Serial.print("take single Picture on  Manual Mode");
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
-  #if ADVANCEDEBUG
-    Serial.print("Manual Exposure Debug: ");
-    Serial.print("ShutterSpeed[");
-    Serial.print(selector);
-    Serial.print("] :");
-    Serial.println(ShutterSpeed[selector]);
-    Serial.print("flashflag: ");
-    Serial.println(flashFlag);
-    Serial.print("varianceflag:");
-    Serial.println(varianceFlag);
-    Serial.print("ShutterSpeedDelay:");
-    Serial.println(ShutterSpeedDelay);
+
+  pinMode(PIN_S3, INPUT_PULLUP); // GND
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
+     #if BASICDEBUG
+     Serial.println("waiting for S3 to OPEN");
+     #endif
+  }
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
+  delay (YDelay);
+
+  if (selector >= Dongle_Flash_Limit){
+    int ShutterSpeedDelay = (ShutterSpeed[selector] - Flash_Capture_Delay);
+
+    #if ADVANCEDEBUG
+      Serial.print("Manual Exposure Debug: ");
+      Serial.print("ShutterSpeed[");
+      Serial.print(selector);
+      Serial.print("] :");
+      Serial.println(ShutterSpeed[selector]);
+      Serial.print("ShutterConstant:");
+      Serial.println(ShutterConstant);
+      Serial.print("ShutterSpeedDelay:");
+      Serial.println(ShutterSpeedDelay);
+      Serial.println("Dongle Flash Enabled");
+    #endif
+
+    Camera::shutterOPEN();
+    initialMillis = millis();
+    while (millis() < (initialMillis + ShutterSpeedDelay)){
+      //Take the Picture
+    }
+    Camera::FastFlash ();
+    delay(Flash_Capture_Delay);
+  }
+  else{
+    int ShutterSpeedDelay = ShutterSpeed[selector];
+
+    #if ADVANCEDEBUG
+      Serial.print("Manual Exposure Debug: ");
+      Serial.print("ShutterSpeed[");
+      Serial.print(selector);
+      Serial.print("] :");
+      Serial.println(ShutterSpeed[selector]);
+      Serial.print("ShutterConstant:");
+      Serial.println(ShutterConstant);
+      Serial.print("ShutterSpeedDelay:");
+      Serial.println(ShutterSpeedDelay);
+      Serial.println("Dongle Flash Disabled");
+    #endif
+
+    Camera::shutterOPEN();
+    initialMillis = millis();
+    while (millis() < (initialMillis + ShutterSpeedDelay)){
+      //Take the Picture
+    }
+  }
+
+  #if LMDEBUG
+    uint32_t shutterCloseTime = millis(); //Shutter Debug
+  #endif
+  Camera::ExposureFinish();
+  #if LMDEBUG
+      uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
+      Serial.print("ExposureTime on Manualmode: ");
+      Serial.println(exposureTime);
+  #endif
+  return; //Added 26.10.
+}
+
+void Camera::VariableManualExposure(int _myISO, uint8_t selector){
+  uint32_t initialMillis;
+
+  #if SIMPLEDEBUG
+    Serial.print("take single Picture on  Manual Mode");
+    Serial.print(", current Picture: ");
+    Serial.println(currentPicture);
+  #endif
+
+  pinMode(PIN_S3, INPUT_PULLUP); // GND
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
+     #if BASICDEBUG
+     Serial.println("waiting for S3 to OPEN");
+     #endif
+  }
+  #if APERTURE_PRIORITY
+    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+    #if FFDEBUG
+      Serial.println("SOL2 255");
+    #endif
+    Camera::HighSpeedPWM();
+    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #endif
+  delay (YDelay);
+
+  if(selector>= Dongle_Flash_Limit){
+    int ShutterSpeedDelay = ShutterSpeed[selector] - Flash_Capture_Delay;
+    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
+    #if ADVANCEDEBUG
+      Serial.print("Manual Exposure Debug: ");
+      Serial.print("ShutterSpeed[");
+      Serial.print(selector);
+      Serial.print("] :");
+      Serial.println(ShutterSpeed[selector]);
+      Serial.print("ShutterConstant:");
+      Serial.println(ShutterConstant);
+      Serial.print("ShutterSpeedDelay:");
+      Serial.println(ShutterSpeedDelay);
+    #endif
+
+    meter_set_iso(_myISO);
+    // TODO - Move this to top level, does not need to run per exposure
+
+    meter_init();
+    meter_reset();
+
+    initialMillis = millis();
+    uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
+    Camera::shutterOPEN();
+    delay(MinShutterSpeedDelay);
+    while(meter_update() == false){
+      if(millis() >= maxMillis){
+        break;
+      }
+    }
+    Camera::FastFlash ();
+    delay(Flash_Capture_Delay);
     
   #endif
   #if APERTURE_PRIORITY
     AperturePriority();
   #endif
 
-  delay (YDelay);
+  }
+  else{
+    int ShutterSpeedDelay = ShutterSpeed[selector];
+    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
+
+    #if ADVANCEDEBUG
+      
+      Serial.print("Manual Exposure Debug: ");
+      Serial.print("ShutterSpeed[");
+      Serial.print(selector);
+      Serial.print("] :");
+      Serial.println(ShutterSpeed[selector]);
+      Serial.print("ShutterConstant:");
+      Serial.println(ShutterConstant);
+      Serial.print("ShutterSpeedDelay:");
+      Serial.println(ShutterSpeedDelay);
+    #endif
+
+    meter_set_iso(_myISO);
+    // TODO - Move this to top level, does not need to run per exposure
+
+    meter_init();
+    meter_reset();
 
   if(varianceFlag){
     Camera::startMeter(_myISO);
@@ -432,6 +528,7 @@ void Camera::AutoExposure(int _myISO){
     Serial.print(", current Picture: ");
     Serial.println(currentPicture);
   #endif
+  //lmTimer_stop();
   #if LMDEBUG
     Serial.print(F("AUTOMODE ISO: "));
     Serial.println(_myISO);
@@ -442,7 +539,15 @@ void Camera::AutoExposure(int _myISO){
 
   delay(YDelay);
 
-  Camera::startMeter(_myISO);
+  #if LMDEBUG
+  Serial.print(F("METER_UPDATE status : "));
+  Serial.println(meter_update());
+  #endif
+  
+  // TODO - Move this to top level, does not need to run per exposure
+
+  meter_init();
+  meter_reset();
   Camera::shutterOPEN();
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
@@ -464,7 +569,40 @@ void Camera::AutoExposure(int _myISO){
 }
 
 void Camera::AutoExposureFF(int _myISO){
-  int FD_MN = (_myISO == ISO_SX70) ? FD100 : FD600;  //FlashDelay Magicnumber
+  #if SIMPLEDEBUG
+      Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
+      Serial.print(_myISO);
+      Serial.print(", current Picture: ");
+      Serial.println(currentPicture);
+  #endif
+  Camera::shutterCLOSE();
+  Camera::mirrorUP();   
+  pinMode(PIN_S3, INPUT_PULLUP); // GND
+  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
+     #if BASICDEBUG
+     Serial.println("waiting for S3 to OPEN");
+     #endif
+  }
+  pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+  pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
+  #if FFDEBUG
+    Serial.println("SOL2 255");
+  #endif
+  Camera::HighSpeedPWM();
+  analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  delay(YDelay);           //AT Yd and POWERS OFF AT FF
+  #if FFDEBUG
+    Serial.print("_myISO: ");
+    Serial.println(_myISO);
+  #endif
+  int FD_MN = 0;  //FlashDelay Magicnumber
+  if(_myISO == ISO_SX70){
+     FD_MN = FD100;  
+  }
+  else if(_myISO == ISO_600){
+    FD_MN = FD600;
+  }
+  meter_set_iso(FD_MN);
   #if FFDEBUG
     Serial.print("FlashDelay Magicnumber: ");
     Serial.println(FD_MN);
@@ -484,16 +622,15 @@ void Camera::AutoExposureFF(int _myISO){
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
+  
+  analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
+  #if FFDEBUG
+    Serial.println("SOL2: 130 - Powersave");
+  #endif   
+  // TODO - Move this to top level, does not need to run per exposure
 
-  /* SOL2 powerdown may not be needed.
-  #if ECM_PCB
-    //digitalWrite(PIN_SOL1, LOW); //ENTERING POWER SAVE "POWERDOWN" MODE PIN SOL2LOW REMANINS ENGAGED
-  #else  
-    analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
-  #endif
-  */
-
-  Camera::startMeter(FD_MN);
+  meter_init();
+  meter_reset();
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); 
   //Start FlashDelay 
@@ -582,11 +719,9 @@ void Camera::ShutterT(){
 
   delay (40);
   
-
-  #if SONAR
   while (digitalRead(PIN_S1F) == HIGH){
   }
-  #endif
+
   Camera::shutterOPEN ();
   while(DebouncedRead(PIN_S1) == S1Logic){
     #if SIMPLEDEBUG
@@ -620,7 +755,7 @@ void Camera::ExposureFinish()
   #if APERTURE_PRIORITY
     Camera::sol2Disengage();
   #endif
-  lmTimer_stop(); //Lightmeter Timer stop
+  //lmTimer_stop(); //Lightmeter Timer stop
   delay (200); //Was 20
 
   if(multipleExposureMode == true){
@@ -642,12 +777,10 @@ void Camera::ExposureFinish()
       while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
     #endif
     Camera::shutterOPEN();
-    #if SONAR
-      delay (100);
-      S1F_Unfocus(); //neccesary???
-      #if FOCUSDEBUG
-        Serial.println("Unfocus");
-      #endif
+    delay (100);
+    S1F_Unfocus(); //neccesary???
+    #if FOCUSDEBUG
+      Serial.println("Unfocus");
     #endif
   }
   #if SIMPLEDEBUG
@@ -673,13 +806,11 @@ void Camera::multipleExposureLastClick(){
     Serial.println(currentPicture);
   #endif
   Camera::mirrorDOWN(); 
-  delay(50);                             //AGAIN is this delay necessary? 100-->50
-  #if SONAR
-    delay (100);                             //AGAIN is this delay necessary?
-    S1F_Unfocus(); //neccesary???
-    #if FOCUSDEBUG
-      Serial.println("Unfocus");
-    #endif
+  //delay(50);                             //AGAIN is this delay necessary? 100-->50
+  //delay (100);                             //AGAIN is this delay necessary?
+  S1F_Unfocus(); //neccesary???
+  #if FOCUSDEBUG
+    Serial.println("Unfocus");
   #endif
   Camera::shutterOPEN();
   multipleExposureMode = false;

@@ -28,25 +28,26 @@ status uDongle::get_peripheral_status(){
   uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
   uint8_t prev_readDevice;
 
+  //While loop acts as a debounce for peripheral state
+  //Need two confirmations of the same state in a row in order to get a returned change.
   while(true){
     _device_count = checkDongle();
 
+    pinMode(_Pin, INPUT_PULLUP);
     if (digitalRead(_Pin) == LOW){
       //CASE: FLASH
       peripheral_status.selector = 100;
       peripheral_status.switch1 = false;
       peripheral_status.switch2 = false;
-      return peripheral_status; // FLASH
     }
     else if((_device_count == 0) && (digitalRead(_Pin) == HIGH)){  
       //CASE: NO PERIPHERAL
       peripheral_status.selector = 200;
       peripheral_status.switch1 = false;
       peripheral_status.switch2 = false;
-      return peripheral_status;
     }
     else{
-      //CASE COMMAND
+      //Case command module/dongle
       readDevice = _ds->get_state(_dongleDevice);
       peripheral_status.selector = readDevice & selector_mask;
       peripheral_status.switch1 = readDevice & switch1_mask;

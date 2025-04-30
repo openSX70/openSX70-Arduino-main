@@ -8,6 +8,7 @@
   // As we are in the developing process, their argument may evolve, as well as their return type.
   // Pin enable, one-wire / I2C / SPI interface initialisation
   extern void meter_init();
+  extern void meter_reset();
   // give the sensitivity to the meter
   extern void meter_set_iso(uint16_t const& iso);
   // compute the time needed for current ligth condition so it can be display as an indication in the viewfinder
@@ -19,15 +20,7 @@
   extern void meter_set_iso(uint16_t const& iso);
   //void meter_led(byte _selector, bool _type);
   // preprocessor conditionnal inlusion for specific chip header file.
-  #if TSL237T
-    #	include "TSL237T.h"
-  #elif TSL235R
-    #	include "TSL235R.h"
-  #elif TCS3200
-    #	include "TCS3200.h"
-  #elif TSL2591
-    #	include "TSL2591.h"
-  #else
-    #	warning	"no meter included"
-  #endif
+
+  #include "INTEGRATOR.h"
+
 #endif
