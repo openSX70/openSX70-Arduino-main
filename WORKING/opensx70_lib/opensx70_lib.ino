@@ -317,12 +317,10 @@ camera_state do_state_dongle (void){
       openSX70.ManualExposure(current_status.selector);
     }
     else if(ShutterSpeed[current_status.selector] == POST){ //POST
-      //lmTimer_stop();
       turnLedsOff();
       openSX70.ShutterT();
     }
     else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
-      //lmTimer_stop();
       turnLedsOff(); //why?
       openSX70.ShutterB();
     }
@@ -427,13 +425,11 @@ camera_state do_state_multi_exp (void){
         multipleExposureCounter++;
       }
       else if(ShutterSpeed[current_status.selector] == POST){ //POST
-        //lmTimer_stop();
         turnLedsOff();
         openSX70.ShutterT();
         multipleExposureCounter++;
       }
       else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
-        //lmTimer_stop();
         turnLedsOff(); //why?
         openSX70.ShutterB();
         multipleExposureCounter++;
@@ -503,7 +499,6 @@ void preFocus() {
 void unfocusing(){
   if ((digitalRead(PIN_S1F) == LOW)) {
     openSX70.S1F_Unfocus();
-    turnLedsOff();
   }
 }
 
