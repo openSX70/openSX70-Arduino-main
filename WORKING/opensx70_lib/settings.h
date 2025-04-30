@@ -31,7 +31,6 @@
   //      Feature toggles
   #define DOUBLECLICK 0            //1 Enables double clicking the shutter button without a dongle to start 10s self timer
   #define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
-  #define APERTURE_PRIORITY 0      //1 Enables SOL2 engage on picture taking for experimental aperture priority mode
   #define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
   #define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
   #define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper

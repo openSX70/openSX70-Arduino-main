@@ -319,13 +319,7 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
      #endif
   }
   #if APERTURE_PRIORITY
-    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-    #if FFDEBUG
-      Serial.println("SOL2 255");
-    #endif
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+    AperturePriority();
   #endif
   delay (YDelay);
 
@@ -404,13 +398,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
      #endif
   }
   #if APERTURE_PRIORITY
-    pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-    pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-    #if FFDEBUG
-      Serial.println("SOL2 255");
-    #endif
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+    AperturePriority();
   #endif
   delay (YDelay);
 
@@ -446,10 +434,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     }
     Camera::FastFlash ();
     delay(Flash_Capture_Delay);
-    
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
 
   }
   else{
@@ -716,9 +700,6 @@ void Camera::ShutterT(){
   Camera::FastFlash();
   delay(Flash_Capture_Delay);   //Capture Flash 
 
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
   #if SIMPLEDEBUG
     Serial.println("Exp finish T mode");
   #endif
