@@ -403,10 +403,7 @@ camera_state do_state_multi_exp (void){
 
 void preFocus() {
   if ((digitalRead(PIN_S1F) == HIGH)) { // S1F pressed
-    if(isFocused == false){
-      openSX70.S1F_Focus();
-      isFocused = true;
-    }  
+    openSX70.S1F_Focus();
   }
 }
 

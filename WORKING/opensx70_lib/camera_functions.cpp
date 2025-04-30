@@ -31,7 +31,6 @@ void Camera::S1F_Unfocus(){
     digitalWrite (PIN_S1F_FBW, LOW);
     return;
 }
-#endif
 
 void Camera::shutterCLOSE(){
   #if BASICDEBUG
@@ -131,7 +130,6 @@ void Camera::mirrorUP(){
 }
 
 void Camera::startMeter(int _myISO){
-  lmTimer_stop(); 
   meter_set_iso(_myISO);
   meter_init();
   meter_integrate();
@@ -449,7 +447,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     Camera::FastFlash ();
     delay(Flash_Capture_Delay);
     
-  #endif
   #if APERTURE_PRIORITY
     AperturePriority();
   #endif
@@ -478,8 +475,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     meter_init();
     meter_reset();
 
-  if(varianceFlag){
-    Camera::startMeter(_myISO);
     initialMillis = millis();
     uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
     
@@ -491,22 +486,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
         break;
       }
     }
-
-  }
-  else{
-    Camera::shutterOPEN();
-    initialMillis = millis();
-    delay(ShutterSpeedDelay);
-    /*
-    while (millis() < (initialMillis + ShutterSpeedDelay)){
-      //Take the Picture
-    }
-    */
-  }
-
-  if(flashFlag){
-    Camera::FastFlash();
-    delay(Flash_Capture_Delay);
   }
 
   #if LMDEBUG
