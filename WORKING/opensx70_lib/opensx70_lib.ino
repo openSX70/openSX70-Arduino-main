@@ -723,3 +723,45 @@ void LightMeterHelper(byte ExposureType){
     meter_led(current_status.selector, ExposureType);
   }
 }
+
+#if DONGLE_FREE_ISO_CHANGE
+void viewfinderBlink(uint8_t LEDPIN){
+  digitalWrite(LEDPIN, HIGH);
+  delay(100);
+  digitalWrite(LEDPIN, LOW);
+  delay(100);
+  digitalWrite(LEDPIN, HIGH);
+  delay(100);
+  digitalWrite(LEDPIN, LOW);
+}
+
+void S1ISOSwap(){
+  int _selectedISO;
+  //sw_S1.Update();
+
+  if(digitalRead(PIN_S1) == HIGH){
+    savedISO = ReadISO();
+    if (savedISO == ISO_600) { 
+      #if DEBUG
+        Serial.println("ISO HAS BEEN SWAPPED TO: SX70");
+      #endif
+      _selectedISO = ISO_SX70;
+      viewfinderBlink(PIN_LED1);
+    }
+    else if ((savedISO == ISO_SX70)) {
+      #if DEBUG
+        Serial.println("ISO HAS BEEN SWAPPED TO: 600");
+      #endif
+      _selectedISO = ISO_600;
+      viewfinderBlink(PIN_LED2);
+    }
+    activeISO = _selectedISO;
+    WriteISO(_selectedISO);
+    savedISO = ReadISO();
+    while(digitalRead(PIN_S1) == HIGH){
+      //wait....
+    }
+  }
+  sw_S1.Reset();
+}
+#endif
