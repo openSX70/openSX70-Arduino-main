@@ -53,7 +53,7 @@ int meter_compute(byte _selector,int _activeISO){
   // TODO If possible, change this to use an integrated timer and interrupt rather than checking time manually.
   // Doing this on a new microcontroller would probably be more worthwhile time wise.
   int _myISO = _activeISO;
-
+  uint16_t counter
   if(measuring == false){
     //meter_set_iso(_activeISO);
     measuring = true;
@@ -70,7 +70,7 @@ int meter_compute(byte _selector,int _activeISO){
     endMillis = millis();
     uint32_t timeElapsed =  endMillis - startMillis;
     if((timeElapsed) >= METER_INTERVAL){
-      uint16_t counter = analogRead(PIN_LM);
+      counter = analogRead(PIN_LM);
       measuring = false;
 
       float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
