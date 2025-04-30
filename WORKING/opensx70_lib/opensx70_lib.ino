@@ -108,6 +108,7 @@ void setup() {//setup - Inizialize
     Serial.print(F("currentPicture: "));
     Serial.println(currentPicture);
   #endif
+  S1ISOSwap();
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
