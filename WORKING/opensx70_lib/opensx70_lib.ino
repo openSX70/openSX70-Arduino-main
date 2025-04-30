@@ -20,8 +20,7 @@ uDongle peripheral(PIN_S2);
 Camera openSX70(&peripheral);
 
 status current_status;
-uint8_t prev_selector;
-
+status previous_status;
 
 int savedISO;
 int activeISO;
@@ -62,65 +61,6 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 //Default state
 camera_state state = STATE_DARKSLIDE;
 
-camera_state update_state(){
-  camera_state new_state;
-  camera_state current_state = state;
-  if((current_status.selector <= 15) && (prev_status.selector == 200)){
-    //DONGLE STATE FROM NO DONGLE
-    if((prev_status.selector == 200) && (current_status.switch1 && current_status.switch2)){
-      saveISOChange();
-    }
-    else if((current_status.selector<=13)){
-      #if COUNTER_BLINK
-      CounterBlink();
-      #else
-      BlinkISO();
-      #endif
-    }
-    new_state = STATE_DONGLE;
-    savedISO = ReadISO();
-    //delay(100);
-    BlinkISO();
-    #if STATEDEBUG
-      Serial.println(F("TRANSITION TO STATE_DONGLE"));
-    #endif
-  }
-  // TODO Fix MEXP state. 
-  /*
-  else if((current_status.selector <= 15) && (current_status.switch1)){
-    //MEXP STATE
-    if(prev_status != current_status)
-    result = STATE_MULTI_EXP;
-    multipleExposureMode = true;
-    mEXPFirstRun = true;
-    #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
-    #endif 
-  }
-  */
-  else if ((current_status.selector == 100) && (prev_status.selector == 200)){
-    new_state = STATE_FLASHBAR;
-    savedISO = ReadISO();
-    #if STATEDEBUG
-      Serial.println(F("TRANSITION TO STATE_FLASHBAR"));
-    #endif
-  }
-  else if((current_status.selector == 200) && (prev_status.selector != current_status.selector)){
-    new_state = STATE_NODONGLE;
-    savedISO = ReadISO();
-    #if STATEDEBUG
-      Serial.println(F("TRANSITION TO STATE_NODONGLE"));
-    #endif
-  }
-  else{
-    return current_state;
-  }
-  return new_state;
-}
-
-
-
-
 void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
@@ -145,7 +85,6 @@ void setup() {//setup - Inizialize
   sw_S1.longClickTime  = 0; // time until "held-down clicks" register
 
   current_status = peripheral.get_peripheral_status();
-  prev_selector = current_status.selector;
 
   mEXPFirstRun = false;
   multipleExposureMode = false;
@@ -179,6 +118,7 @@ void loop() {
   else{
     unfocusing();
   }
+  previous_status = current_status;
   current_status = peripheral.get_peripheral_status();
   normalOperation();
   state = STATE_MACHINE[state]();
@@ -208,7 +148,6 @@ camera_state do_state_darkslide (void) {
         Serial.println(currentPicture);
       #endif
     }
-    
     if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
       result = STATE_DONGLE;
       savedISO = ReadISO();
@@ -232,6 +171,7 @@ camera_state do_state_darkslide (void) {
         Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
+    
   #if SHUTTERDARKSLIDE
   sw_S1.Reset();
   }
@@ -321,7 +261,7 @@ camera_state do_state_dongle (void){
       openSX70.ShutterT();
     }
     else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
-      turnLedsOff(); //why?
+      turnLedsOff();
       openSX70.ShutterB();
     }
     else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
@@ -337,7 +277,7 @@ camera_state do_state_dongle (void){
     sw_S1.Reset();
     checkFilmCount();
   } 
-
+  
   // Dongle Removed
   if (current_status.selector == 200){
     result = STATE_NODONGLE;
@@ -378,7 +318,7 @@ camera_state do_state_flashBar (void){
   } 
   #endif
   
-  if ((current_status.selector == 200) && (peripheral.checkDongle() == 0)){
+  if (current_status.selector == 200){
     result = STATE_NODONGLE;
     savedISO = ReadISO();
     #if STATEDEBUG
@@ -473,20 +413,14 @@ camera_state do_state_multi_exp (void){
     }
   #endif
 
-  if(current_status.switch1 == 0 && multipleExposureCounter == 0){
+  if(current_status.switch1 == false && multipleExposureCounter == 0){
     result = STATE_DONGLE;
     multipleExposureMode = false;
     #if STATEDEBUG
       Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
     #endif
   }
-  else if((current_status.selector == 200) && multipleExposureCounter == 0){
-    // Edge case where dongle is removed during onewire communication, causing it to think it should be in MEXP mode.
-    result = STATE_NODONGLE;
-    #if STATEDEBUG
-      Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_MULTI_EXP"));
-    #endif
-  }
+
   return result;
 }
 
