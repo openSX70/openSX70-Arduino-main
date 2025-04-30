@@ -452,7 +452,7 @@ void turnLedsOff(){ //TODO :move to camerafunction
 void DongleInserted() { //Dongle is pressend LOOP
   if (digitalRead(PIN_S1) != S1Logic) { //Dont run DongleInserted Function on S1T pressed
     lmEnable(); //added 26.10.
-    if ((current_status.selector != prev_status.selector)){
+    if ((current_status.selector != previous_status.selector)){
       #if ADVANCEDEBUG
         Serial.print(F("DONGLE Mode:  "));
         Serial.print(F("Selector: "));
