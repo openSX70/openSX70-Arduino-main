@@ -96,7 +96,9 @@ void setup() {//setup - Inizialize
     Serial.print(F("currentPicture: "));
     Serial.println(currentPicture);
   #endif
+  #if DONGLE_FREE_ISO_CHANGE
   S1ISOSwap();
+  #endif
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
