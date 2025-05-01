@@ -284,6 +284,7 @@ camera_state do_state_dongle (void){
 }
 
 camera_state do_state_flashBar (void){
+  LightMeterHelper(0);
   camera_state result = STATE_FLASHBAR;
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     beginExposure();
