@@ -188,38 +188,7 @@ void meter_led(byte _selector, byte _type){
     
     Serial.println(predictedMillis);
   #endif
-  /*
-  if(_type ==2){ // Manual mode
-    predictedMillis = predictedMillis + METER_PREDICTION_OFFSET;
-    // Within range
-    if((predictedMillis <= (ShutterSpeed[_selector] + meterRange)) && (predictedMillis >= (ShutterSpeed[_selector] - meterRange))){
-      digitalWrite(PIN_LED1, HIGH);
-      digitalWrite(PIN_LED2, HIGH);
-      #if LMHELPERDEBUG
-        Serial.println(F("Selector within meter range"));
-      #endif
-      return;
-    }
-    // Lower speed required
-    else if((predictedMillis < (ShutterSpeed[_selector] - meterRange))){
-      digitalWrite(PIN_LED1, LOW);
-      digitalWrite(PIN_LED2, HIGH);
-      #if LMHELPERDEBUG
-        Serial.println(F("Selector under meter range"));
-      #endif
-      return;
-    }
-    // Higher speed needed
-    else{
-      digitalWrite(PIN_LED1, HIGH);
-      digitalWrite(PIN_LED2, LOW);
-      #if LMHELPERDEBUG
-        Serial.println(F("Selector over meter range"));
-      #endif
-      return;
-    }
-  }
-  */
+
   if(_type ==2){ // Manual mode
     predictedMillis = predictedMillis + METER_PREDICTION_OFFSET;
     // Within range
@@ -265,15 +234,6 @@ void meter_led(byte _selector, byte _type){
         Serial.println(F("Enough Light Detected"));
       #endif
     }
-    /*
-    else{
-      digitalWrite(PIN_LED1, LOW);
-      digitalWrite(PIN_LED2, HIGH);
-      #if LMHELPERDEBUG
-        Serial.println("Auto mode Enough light");
-      #endif
-    }
-    */
   }
 
 }
