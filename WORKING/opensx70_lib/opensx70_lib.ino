@@ -222,7 +222,7 @@ camera_state do_state_dongle (void){
   if(current_status.selector<=11){
     LightMeterHelper(2); //LMHelper Manual Mode
   }
-  else if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
+  else if(ShutterSpeed[current_status.selector] == AUTO100 || ShutterSpeed[current_status.selector] == AUTO600){
     LightMeterHelper(1); //LMHelper Auto Mode
   }
   
