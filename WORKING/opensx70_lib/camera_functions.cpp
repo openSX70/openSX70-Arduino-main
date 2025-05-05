@@ -432,7 +432,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   }
   else{
     int ShutterSpeedDelay = ShutterSpeed[selector];
-    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
+    int MinShutterSpeedDelay = ShutterSpeedDelay - ShutterVariance[selector];
 
     #if ADVANCEDEBUG
       
