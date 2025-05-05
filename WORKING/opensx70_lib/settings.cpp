@@ -7,19 +7,7 @@ const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 195; //max 255 = full power/POWERUP mode
 int FD100 = round(.29*A100);
 int FD600 = round(.29*A600);
-int ShutterConstant = 0; // was 9; Setting this to 0 to remove need for doing math. putting this in the raw speed. - Zane
 byte lightmeterHelper = true;
-//enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; //uDONGLE
-//enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
-//  enum positions_t {POST = -100, AUTO600, AUTO600BW, AUTO100}; //uDONGLE Optoflow
-//uDONGLE WHEEL
-//int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing Original U-Dongle3.3
-//int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO600BW, AUTO100, POST }; //reduced speeds from 25 (slot5) to compensate flash firing
-//int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, AUTO600, AUTO600BW, AUTO100, POST, POSB }; //with 600BW | reduced speeds from 25 (slot5) to compensate flash firing
-//int ShutterSpeed[] = { 16, 20, 23, 25, 30, 35, 45, 55, 166, 302, 600, POST, POSB, AUTO600, AUTO600BW, AUTO100 };  //SANTI DONGLE WHEEL 600BW
-//NEW WHEEL ANALOGUEDONGLE
-//int ShutterSpeed[] = { 3, 5, 9, 11, 20, 30, 35, 55, 166, 302, 600, 1100, POST, POSB, AUTO600, AUTO100 };  //SANTI DONGLE WHEEL
-
 // Added to remove the need to check for selector values prior to picture taking.
 
 //int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175,  311, 609, 1109, POST, POSB, AUTO600, AUTO100 };

@@ -332,8 +332,6 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
       Serial.print(selector);
       Serial.print("] :");
       Serial.println(ShutterSpeed[selector]);
-      Serial.print("ShutterConstant:");
-      Serial.println(ShutterConstant);
       Serial.print("ShutterSpeedDelay:");
       Serial.println(ShutterSpeedDelay);
       Serial.println("Dongle Flash Enabled");
@@ -356,8 +354,6 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
       Serial.print(selector);
       Serial.print("] :");
       Serial.println(ShutterSpeed[selector]);
-      Serial.print("ShutterConstant:");
-      Serial.println(ShutterConstant);
       Serial.print("ShutterSpeedDelay:");
       Serial.println(ShutterSpeedDelay);
       Serial.println("Dongle Flash Disabled");
@@ -411,8 +407,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
       Serial.print(selector);
       Serial.print("] :");
       Serial.println(ShutterSpeed[selector]);
-      Serial.print("ShutterConstant:");
-      Serial.println(ShutterConstant);
       Serial.print("ShutterSpeedDelay:");
       Serial.println(ShutterSpeedDelay);
     #endif
@@ -447,8 +441,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
       Serial.print(selector);
       Serial.print("] :");
       Serial.println(ShutterSpeed[selector]);
-      Serial.print("ShutterConstant:");
-      Serial.println(ShutterConstant);
       Serial.print("ShutterSpeedDelay:");
       Serial.println(ShutterSpeedDelay);
     #endif

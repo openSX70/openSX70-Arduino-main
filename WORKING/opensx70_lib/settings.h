@@ -88,7 +88,6 @@
 
   extern int FD100;
   extern int FD600;
-  extern int ShutterConstant;
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
   extern int flashDelay; //new flash "system"
   extern int MaxRange[];
