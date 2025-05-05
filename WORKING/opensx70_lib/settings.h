@@ -2,12 +2,12 @@
   #define settings_h
   #include "Arduino.h"
   //----------------DEBUG OPTIONS----------------------------------------
-  #define DEBUG 0
+  #define DEBUG 1
   #define SIMPLEDEBUG 0     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //More detailed view of OpenSX70 functions
   #define BASICDEBUG 0      //Debug of Basic Camera Functions
   #define MXDEBUG 0         //Multiple Exposure Debug
-  #define LMDEBUG 0      //Lightmeter Debug
+  #define LMDEBUG 1      //Lightmeter Debug
   #define LMHELPERDEBUG 0   //Lightmeter Debug
   #define ROTARYDEBUG 0     //Rotaryswitch on Dongle Debug
   #define STATEDEBUG 0      //Debug state transitions
@@ -66,9 +66,10 @@
   //---------------End Shutter Settings--------------------------------------
 
   //---------------METER SETTINGS--------------------------------------------
-  #define METER_INTERVAL 100 // Sets how long each meter measurement sample is taken in ms
+  #define METER_HELPER_TIMEOUT 20 // Sets max meter helper integration time
+  #define METER_HELPER_THRESHOLD 100 // Sets ACD threshold for ending meter helper integration
   #define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
-  #define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
+  #define METER_PREDICTION_OFFSET 18 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off
   #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
   #define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
   //---------------END METER SETTINGS----------------------------------------
@@ -90,7 +91,6 @@
   extern int ShutterConstant;
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
   extern int flashDelay; //new flash "system"
-  extern int MeterRange[];
   extern int MaxRange[];
   extern int MinRange[];
   extern int ShutterVariance[];

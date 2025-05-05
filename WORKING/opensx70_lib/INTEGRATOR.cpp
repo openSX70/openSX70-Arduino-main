@@ -69,8 +69,8 @@ int meter_compute(byte _selector,int _activeISO){
   else{
     endMillis = millis();
     uint32_t timeElapsed =  endMillis - startMillis;
-    if((timeElapsed) >= METER_INTERVAL){
-      counter = analogRead(PIN_LM);
+    counter = analogRead(PIN_LM);
+    if((counter >= METER_HELPER_THRESHOLD) || (timeElapsed >= METER_HELPER_TIMEOUT)){
       measuring = false;
 
       float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
@@ -104,18 +104,6 @@ int meter_compute(byte _selector,int _activeISO){
         Serial.print("slope: ");
         Serial.println(slope);
       #endif
-
-      
-      //#if LMDEBUG
-        //Serial.print("PREDMILLI: ");
-        //Serial.println(pred_milli);
-      //#endif
-      
-
-      // pred_milli is how many ms the meter will take to reach the set 
-      // magic number. Every scene should generally have a linear increase
-      // of the counter, therefore we can use basic algebra to extrapolate
-      // when the counter will hit the magic number.
       return pred_milli; 
     }
   }
@@ -171,7 +159,6 @@ void meter_led(byte _selector, byte _type){
     return;
   }
 
-  //int meterRange = round(ShutterSpeed[_selector] * MeterRange[_selector]);
   int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
 
 
