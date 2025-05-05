@@ -8,6 +8,12 @@ uint32_t endMillis;
 
 uint16_t outputCompare = A100;
 
+//Array for meter helper rolling average
+uint16_t meterReadings[] = {0, 0, 0};
+uint8_t oldestReading = 0;
+uint16_t readingsTaken = 0;
+uint8_t meterReadingsLength = sizeof(meterReadings) / sizeof(meterReadings[0]);
+
 void meter_init(){
   integrator_init();
 }
@@ -142,6 +148,7 @@ void meter_led(byte _selector, byte _type){
 
   int predictedMillis;
   int activeISO;
+  int roundedReading;
 
   if((ShutterSpeed[_selector]) == AUTO600){
     activeISO = ISO_600;
@@ -159,69 +166,84 @@ void meter_led(byte _selector, byte _type){
     return;
   }
 
-  int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
+  if(oldestReading == (meterReadingsLength - 1)){
+    oldestReading = 0;
+  }
+
+  // Replace oldest reading with new reading
+  meterReadings[oldestReading] = predictedMillis;
+  readingsTaken++;
+  oldestReading++;
 
 
-  #if LMHELPERDEBUG
-    Serial.print(F("meter range at Selector: "));
-    Serial.print(_selector);
-    Serial.print(F(" "));
-    Serial.print(ShutterSpeed[_selector]);
-    Serial.print(F(" min: "));
-    Serial.println(MinRange[_selector]);
-    Serial.print(F(" max "));
-    Serial.println(MaxRange[_selector]);
-    Serial.print(F("Predictedmillis: "));
-    
-    Serial.println(predictedMillis);
-  #endif
-
-  if(_type ==2){ // Manual mode
-    predictedMillis = predictedMillis + METER_PREDICTION_OFFSET;
-    // Within range
-    if((predictedMillis <= MaxRange[_selector])  && (predictedMillis >= MinRange[_selector])){
-      digitalWrite(PIN_LED1, HIGH);
-      digitalWrite(PIN_LED2, HIGH);
-      #if LMHELPERDEBUG
-        Serial.println(F("Selector within meter range"));
-      #endif
-      return;
+  if(readingsTaken >= meterReadingsLength){
+    for (uint8_t i = 0; i < meterReadingsLength; i++){
+      roundedReading += meterReadings[i];
     }
-    // Lower speed required
-    else if(predictedMillis < MinRange[_selector]){
-      digitalWrite(PIN_LED1, LOW);
-      digitalWrite(PIN_LED2, HIGH);
-      #if LMHELPERDEBUG
-        Serial.println(F("Selector under meter range"));
-      #endif
-      return;
+    roundedReading = round(roundedReading/meterReadingsLength);
+  
+    #if LMHELPERDEBUG
+      Serial.print(F("meter range at Selector: "));
+      Serial.print(_selector);
+      Serial.print(F(" "));
+      Serial.print(ShutterSpeed[_selector]);
+      Serial.print(F(" min: "));
+      Serial.println(MinRange[_selector]);
+      Serial.print(F(" max "));
+      Serial.println(MaxRange[_selector]);
+      Serial.print(F("Predictedmillis: "));
+      
+      Serial.println(predictedMillis);
+    #endif
+
+    if(_type ==2){ // Manual mode
+      roundedReading = roundedReading + METER_PREDICTION_OFFSET;
+      // Within range
+      if((roundedReading <= MaxRange[_selector])  && (roundedReading >= MinRange[_selector])){
+        digitalWrite(PIN_LED1, HIGH);
+        digitalWrite(PIN_LED2, HIGH);
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector within meter range"));
+        #endif
+        return;
+      }
+      // Lower speed required
+      else if(roundedReading < MinRange[_selector]){
+        digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, HIGH);
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector under meter range"));
+        #endif
+        return;
+      }
+      // Higher speed needed
+      else{
+        digitalWrite(PIN_LED1, HIGH);
+        digitalWrite(PIN_LED2, LOW);
+        #if LMHELPERDEBUG
+          Serial.println(F("Selector over meter range"));
+        #endif
+        return;
+      }
     }
-    // Higher speed needed
-    else{
-      digitalWrite(PIN_LED1, HIGH);
-      digitalWrite(PIN_LED2, LOW);
-      #if LMHELPERDEBUG
-        Serial.println(F("Selector over meter range"));
-      #endif
-      return;
+    else if(_type == 1){ // Automode
+      if(roundedReading >= METER_AUTO_WARNING){ //Low light warning
+        digitalWrite(PIN_LED1, HIGH);
+        digitalWrite(PIN_LED2, LOW);
+        #if LMHELPERDEBUG
+          Serial.println(F("Auto mode low light warning"));
+        #endif
+      }
+      else{ //Low light warning off
+        digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, LOW);
+        #if LMHELPERDEBUG
+          Serial.println(F("Enough Light Detected"));
+        #endif
+      }
     }
   }
-  else if(_type == 1){ // Automode
-    if(predictedMillis >= METER_AUTO_WARNING){ //Low light warning
-      digitalWrite(PIN_LED1, HIGH);
-      digitalWrite(PIN_LED2, LOW);
-      #if LMHELPERDEBUG
-        Serial.println(F("Auto mode low light warning"));
-      #endif
-    }
-    else{ //Low light warning off
-      digitalWrite(PIN_LED1, LOW);
-      digitalWrite(PIN_LED2, LOW);
-      #if LMHELPERDEBUG
-        Serial.println(F("Enough Light Detected"));
-      #endif
-    }
-  }
+  
 
 }
 
