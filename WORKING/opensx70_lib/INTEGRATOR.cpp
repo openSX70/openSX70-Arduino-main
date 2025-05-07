@@ -31,7 +31,7 @@ void integrator_init(){
 void integrator_reset(){
   //TODO, See how much time a cap reset takes and add a delay if required.
   digitalWrite(PIN_LM_RST, HIGH);
-  delay(METER_RESET_DELAY);
+  //delay(METER_RESET_DELAY);
   digitalWrite(PIN_LM_RST, LOW);
 }
 
@@ -166,14 +166,13 @@ void meter_led(byte _selector, byte _type){
     return;
   }
 
-  if(oldestReading == (meterReadingsLength - 1)){
-    oldestReading = 0;
-  }
-
   // Replace oldest reading with new reading
   meterReadings[oldestReading] = predictedMillis;
   readingsTaken++;
   oldestReading++;
+  if(oldestReading == meterReadingsLength){
+    oldestReading = 0;
+  }
 
 
   if(readingsTaken >= meterReadingsLength){
@@ -181,7 +180,7 @@ void meter_led(byte _selector, byte _type){
       roundedReading += meterReadings[i];
     }
     roundedReading = round(roundedReading/meterReadingsLength);
-  
+
     #if LMHELPERDEBUG
       Serial.print(F("meter range at Selector: "));
       Serial.print(_selector);
@@ -191,9 +190,9 @@ void meter_led(byte _selector, byte _type){
       Serial.println(MinRange[_selector]);
       Serial.print(F(" max "));
       Serial.println(MaxRange[_selector]);
-      Serial.print(F("Predictedmillis: "));
+      Serial.print(F("Reading + Offset: "));
       
-      Serial.println(predictedMillis);
+      Serial.println(roundedReading + METER_PREDICTION_OFFSET);
     #endif
 
     if(_type ==2){ // Manual mode
