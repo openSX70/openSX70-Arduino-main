@@ -44,6 +44,8 @@
     const byte PIN_GTD = PA0; // Sonar gone that distance
     const byte PIN_S1F = PB4; //Sonar S1 Focus //Analog imput only
     const byte PIN_S1F_FBW = PA11; //engage SONAR prefocus
+    const byte USART_RX = PB7;
+    const byte USART_TX = PB6;
   #endif
 
   void io_init();
