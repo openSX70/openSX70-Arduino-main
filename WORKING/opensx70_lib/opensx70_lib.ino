@@ -62,6 +62,7 @@ void setup() {//setup - Inizialize
   #endif
 
   io_init();
+  openSX70.solenoid_init();
   meter_init();
 
   peripheral.initDS2408();

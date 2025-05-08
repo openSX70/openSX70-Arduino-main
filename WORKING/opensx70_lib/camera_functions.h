@@ -10,6 +10,7 @@
       void S1F_Focus();
       void shutterCLOSE();
       void shutterOPEN();
+      void solenoid_init();
       void sol2Engage();
       void sol2Disengage();
       void mirrorDOWN();
@@ -20,13 +21,8 @@
       void motorOFF();
       void Ydelay ();
       void BlinkTimerDelay(byte led1, byte led2, byte time = 10) ;
-      //  uDongle2 *myDongle _Write_DS2408_PIO(byte _port, bool _ON);
-      //  uDongle2 *myDongle (pin_S2);
-      //  uDongle(pin_S2).myDongle;
-      //  int Blink (int interval, int timer, int Pin, byte type);
       void Blink (unsigned int interval, int timer, int Pin, byte type = 1);
       void Blink (unsigned int interval, int timer, int PinDongle, int PinPCB, byte type);
-      void HighSpeedPWM ();
       void AutoExposure(int _myISO);
       void AutoExposureFF(int _myISO);
       void ExposureFinish();
@@ -43,12 +39,8 @@
     private:
       void FastFlash();
       void AperturePriority();
-      //  void ShutterB();
-      //  void ShutterT();
       void DongleFlashF8();
       void DongleFlashNormal();
-      
-      //  Basics* _Basics;
       bool DebouncedRead(uint8_t pin);
       uDongle * _dongle;
   };

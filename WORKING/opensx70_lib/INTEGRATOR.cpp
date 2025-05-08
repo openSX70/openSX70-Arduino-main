@@ -171,7 +171,6 @@ void meter_led(byte _selector, byte _type){
     return;
   }
 
-  //int meterRange = round(ShutterSpeed[_selector] * MeterRange[_selector]);
   int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
 
 

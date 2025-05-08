@@ -1,7 +1,5 @@
 #ifndef SX70_PCB_H 
   #define SX70_PCB_H 
-  #include "settings.h"
-
   #ifdef ARDUINO_AVR_PRO
     const uint8_t PIN_S1 = 12; //Sonar S1T S1 Trigger Redbutton
     const uint8_t PIN_S2 = A4;

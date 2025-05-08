@@ -3,12 +3,15 @@
 #include "meter.h"
 #include "open_sx70.h"
 #include "sx70_pcb.h"
-//#include "Clickbutton.h"
 #include "settings.h"
 #include "udongle2.h"
 
 extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
+
+#ifdef ARDUINO_GENERIC_G030K8TX
+HardwareTimer *SolenoidPWM = new HardwareTimer(TIM1);
+#endif
 
 Camera::Camera(uDongle *dongle){
   _dongle = dongle;
@@ -32,19 +35,59 @@ void Camera::S1F_Unfocus(){
     return;
 }
 
+//setup for timers used for PWM
+void Camera::solenoid_init(){
+    #ifdef ARDUINO_AVR_PRO
+        const byte n =224;      // for example, 71.111 kHz
+        //PWM high speed
+        //one N_Mosfet powerdown
+        //taken from: https://www.gammon.com.au/forum/?id=11504
+        /*
+        Timer 0
+        input     T0     pin  6  (D4)
+        output    OC0A   pin 12  (D6)
+        output    OC0B   pin 11  (D5)
+    
+        Timer 1
+        input     T1     pin 11  (D5)
+        output    OC1A   pin 15  (D9)
+        output    OC1B   pin 16  (D10)
+    
+        Timer 2
+        output    OC2A   pin 17  (D11)
+        output    OC2B   pin  5  (D3)
+        */
+        TCCR2A = bit (WGM20) | bit (WGM21) | bit (COM2B1); // fast PWM, clear OC2A on compare
+        TCCR2B = bit (WGM22) | bit (CS20);                 // fast PWM, no prescaler
+        OCR2A =  n;                                        // Value to count to - from table
+        OCR2B = ((n + 1) / 2) - 1;                         // 50% duty cycle
+        //THIS AFFECTS OUTPUT 3 (Solenoid1) AND OUTPUT 11 (Solenoid2)    
+    #elif defined ARDUINO_GENERIC_G030K8TX
+        SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 0); // 62khz, 0% dutycycle
+        SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0); // 62khz, 0% dutycycle
+    #endif
+}
+
+/*
+void Camera::solenoidEngage(){
+
+}
+*/
 void Camera::shutterCLOSE(){
   #if BASICDEBUG
     Serial.println("shutterCLOSE");
   #endif
-  #if ECM_PCB
-    digitalWrite(PIN_SOL1, HIGH);    //ENGAGING SOLENOID 1
-    //digitalWrite(PIN_SOL1LOW, HIGH); //ENGAGING SOLENOID 1 LOW POWER PIN
-  #else
-    Camera::HighSpeedPWM();
+  #ifdef ARDUINO_AVR_PRO
     analogWrite(PIN_SOL1, 255);
     delay (PowerDownDelay);
     analogWrite (PIN_SOL1, PowerDown);
   #endif
+  #ifdef ARDUINO_GENERIC_G030K8TX
+    SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 100);
+    delay (PowerDownDelay);
+    SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 70);
+  #endif
+
   return;
 }
 
@@ -52,33 +95,33 @@ void Camera::shutterOPEN(){
   #if BASICDEBUG
     Serial.println("shutterOPEN");
   #endif
-  #if ECM_PCB
-    //digitalWrite(PIN_SOL1LOW, LOW); //SOL1 LOW POWER OFF REMAINING ENGAGED
-    digitalWrite(PIN_SOL1, LOW);    //SOL1 POWER OFF JUST IN CASE
-  #else
+  #ifdef ARDUINO_AVR_PRO
     analogWrite (PIN_SOL1, 0);
+  #endif
+  #ifdef ARDUINO_GENERIC_G030K8TX
+    SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 0);
   #endif
 
   return; //Added 26.10.
 }
 
 void Camera::sol2Engage(){
-  #if ECM_PCB
-    digitalWrite(PIN_SOL2, HIGH);
-    digitalWrite(PIN_SOL2LOW, HIGH);
-  #else
-    Camera::HighSpeedPWM();
-    analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  #ifdef ARDUINO_AVR_PRO
+    analogWrite(PIN_SOL2, 255);
+  #endif
+  #ifdef ARDUINO_GENERIC_G030K8TX
+    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 100);
+    //SolenoidPWM->setCaptureCompare(2, 100, PERCENT_COMPARE_FORMAT);
   #endif
 }
 
 void Camera::sol2Disengage(){
-  #if ECM_PCB
-    digitalWrite(PIN_SOL2, LOW);
-    digitalWrite(PIN_SOL2LOW, LOW);
-  #else
-    Camera::HighSpeedPWM();
+  #ifdef ARDUINO_AVR_PRO
     analogWrite(PIN_SOL2, 0);
+  #endif
+  #ifdef ARDUINO_GENERIC_G030K8TX
+    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0);
+    //SolenoidPWM->setCaptureCompare(2, 0, PERCENT_COMPARE_FORMAT);
   #endif
 }
 
@@ -149,16 +192,10 @@ void Camera::darkslideEJECT(){
 
 void Camera::DongleFlashNormal(){
   pinMode(PIN_S2, OUTPUT);
-  #if ECM_PCB
-    digitalWrite(PIN_FPIN, HIGH); //F- connected from GND
-  #endif
   digitalWrite(PIN_S2, LOW);      //So FFA recognizes the flash as such
   digitalWrite(PIN_FF, HIGH);       //FLASH TRIGGERING
   delay (1);                        //FLASH TRIGGERING
   digitalWrite(PIN_FF, LOW);        //FLASH TRIGGERING
-  #if ECM_PCB
-    digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
-  #endif
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to dongle mode
 }
 
@@ -181,35 +218,6 @@ bool Camera::DebouncedRead(uint8_t pin){
   }
   return lastState;
 }
-
-#if !ECM_PCB
-void Camera::HighSpeedPWM(){
-  const byte n =224;      // for example, 71.111 kHz
-  //PWM high speed
-  //one N_Mosfet powerdown
-  //taken from: https://www.gammon.com.au/forum/?id=11504
-  /*
-    Timer 0
-    input     T0     pin  6  (D4)
-    output    OC0A   pin 12  (D6)
-    output    OC0B   pin 11  (D5)
-
-    Timer 1
-    input     T1     pin 11  (D5)
-    output    OC1A   pin 15  (D9)
-    output    OC1B   pin 16  (D10)
-
-    Timer 2
-    output    OC2A   pin 17  (D11)
-    output    OC2B   pin  5  (D3)
-  */
-  TCCR2A = bit (WGM20) | bit (WGM21) | bit (COM2B1); // fast PWM, clear OC2A on compare
-  TCCR2B = bit (WGM22) | bit (CS20);                 // fast PWM, no prescaler
-  OCR2A =  n;                                        // Value to count to - from table
-  OCR2B = ((n + 1) / 2) - 1;                         // 50% duty cycle
-  //THIS AFFECTS OUTPUT 3 (Solenoid1) AND OUTPUT 11 (Solenoid2)
-}
-#endif
 
 void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
   // DONGLE-LED BLINKS ON COUNTDOWN (10secs)
@@ -546,13 +554,9 @@ void Camera::AutoExposureFF(int _myISO){
      Serial.println("waiting for S3 to OPEN");
      #endif
   }
-  pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
-  pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-  #if FFDEBUG
-    Serial.println("SOL2 255");
-  #endif
-  Camera::HighSpeedPWM();
-  analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+
+  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 100);
+
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
   #if FFDEBUG
     Serial.print("_myISO: ");
@@ -570,23 +574,11 @@ void Camera::AutoExposureFF(int _myISO){
     Serial.print("FlashDelay Magicnumber: ");
     Serial.println(FD_MN);
   #endif
-  #if SIMPLEDEBUG
-    Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
-    Serial.print(_myISO);
-    Serial.print(", current Picture: ");
-    Serial.println(currentPicture);
-  #endif
-
-  Camera::shutterCLOSE();
-  Camera::mirrorUP();
-  Camera::sol2Engage();
-  delay(YDelay);           //AT Yd and POWERS OFF AT FF
-  
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
   
-  analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
+  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 70);
   #if FFDEBUG
     Serial.println("SOL2: 130 - Powersave");
   #endif   
@@ -595,7 +587,7 @@ void Camera::AutoExposureFF(int _myISO){
   meter_init();
   meter_reset();
   uint32_t integrationStartTime = millis();
-  Camera::shutterOPEN(); 
+  Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   //Start FlashDelay 
   while ((meter_update() == false) && ((millis() - integrationStartTime) <= Flash_Min_Time)){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
     if((millis() - integrationStartTime) >= Flash_Max_Time){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
@@ -614,10 +606,7 @@ void Camera::AutoExposureFF(int _myISO){
     Serial.println("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
-  Camera::sol2Disengage();
-  #if ECM_PCB
-    digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
-  #endif
+  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0);
   delay(15);
   #if FFDEBUG
     Serial.print((millis()-flashExposureStartTime));
@@ -781,16 +770,10 @@ void Camera::FastFlash(){
   #if BASICDEBUG
     Serial.println("FastFlash");
   #endif
-  #if ECM_PCB
-    digitalWrite(PIN_FPIN, HIGH); //F- connected from GND
-  #endif
   digitalWrite (PIN_S2, LOW);     //So FFA recognizes the flash as such
   digitalWrite(PIN_FF, HIGH);    //FLASH TRIGGERING
   delay (1);                      //FLASH TRIGGERING
   digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
-  #if ECM_PCB
-    digitalWrite(PIN_FPIN, LOW); //F- disconnected from GND
-  #endif
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
 }
 
