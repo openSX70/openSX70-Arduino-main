@@ -338,13 +338,13 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
     #if ADVANCEDEBUG
       output_serial("Manual Exposure Debug: ");
       output_serial("ShutterSpeed[");
-      output_serial(selector);
+      output_serial(String(selector));
       output_serial("] :");
-      output_line_serial(ShutterSpeed[selector]);
+      output_line_serial(String(ShutterSpeed[selector]));
       output_serial("ShutterConstant:");
-      output_line_serial(ShutterConstant);
+      output_line_serial(String(ShutterConstant));
       output_serial("ShutterSpeedDelay:");
-      output_line_serial(ShutterSpeedDelay);
+      output_line_serial(String(ShutterSpeedDelay));
       output_line_serial("Dongle Flash Enabled");
     #endif
 
@@ -362,13 +362,13 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
     #if ADVANCEDEBUG
       output_serial("Manual Exposure Debug: ");
       output_serial("ShutterSpeed[");
-      output_serial(selector);
+      output_serial(String(selector));
       output_serial("] :");
-      output_line_serial(ShutterSpeed[selector]);
+      output_line_serial(String(ShutterSpeed[selector]));
       output_serial("ShutterConstant:");
-      output_line_serial(ShutterConstant);
+      output_line_serial(String(ShutterConstant));
       output_serial("ShutterSpeedDelay:");
-      output_line_serial(ShutterSpeedDelay);
+      output_line_serial(String(ShutterSpeedDelay));
       output_line_serial("Dongle Flash Disabled");
     #endif
 
@@ -397,7 +397,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   #if SIMPLEDEBUG
     output_serial("take single Picture on  Manual Mode");
     output_serial(", current Picture: ");
-    output_line_serial(currentPicture);
+    output_line_serial(String(currentPicture));
   #endif
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
@@ -417,13 +417,13 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     #if ADVANCEDEBUG
       output_serial("Manual Exposure Debug: ");
       output_serial("ShutterSpeed[");
-      output_serial(selector);
+      output_serial(String(selector));
       output_serial("] :");
-      output_line_serial(ShutterSpeed[selector]);
+      output_line_serial(String(ShutterSpeed[selector]));
       output_serial("ShutterConstant:");
-      output_line_serial(ShutterConstant);
+      output_line_serial(String(ShutterConstant));
       output_serial("ShutterSpeedDelay:");
-      output_line_serial(ShutterSpeedDelay);
+      output_line_serial(String(ShutterSpeedDelay));
     #endif
 
     meter_set_iso(_myISO);
@@ -453,13 +453,13 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
       
       output_serial("Manual Exposure Debug: ");
       output_serial("ShutterSpeed[");
-      output_serial(selector);
+      output_serial(String(selector));
       output_serial("] :");
-      output_line_serial(ShutterSpeed[selector]);
+      output_line_serial(String(ShutterSpeed[selector]));
       output_serial("ShutterConstant:");
-      output_line_serial(ShutterConstant);
+      output_line_serial(String(ShutterConstant));
       output_serial("ShutterSpeedDelay:");
-      output_line_serial(ShutterSpeedDelay);
+      output_line_serial(String(ShutterSpeedDelay));
     #endif
 
     meter_set_iso(_myISO);
@@ -488,7 +488,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   #if LMDEBUG
     uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
     output_serial("ExposureTime on Manualmode: ");
-    output_line_serial(exposureTime);
+    output_line_serial(String(exposureTime));
   #endif
   return;
 }
@@ -496,14 +496,14 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
 void Camera::AutoExposure(int _myISO){
   #if SIMPLEDEBUG
     output_serial("take a picture on Auto Mode with ISO: ");
-    output_serial(_myISO);
+    output_serial(String(_myISO));
     output_serial(", current Picture: ");
-    output_line_serial(currentPicture);
+    output_line_serial(String(currentPicture));
   #endif
   //lmTimer_stop();
   #if LMDEBUG
     output_serial(F("AUTOMODE ISO: "));
-    output_line_serial(_myISO);
+    output_line_serial(String(_myISO));
   #endif
   #if APERTURE_PRIORITY
     AperturePriority();
@@ -513,7 +513,7 @@ void Camera::AutoExposure(int _myISO){
 
   #if LMDEBUG
   output_serial(F("METER_UPDATE status : "));
-  output_line_serial(meter_update());
+  output_line_serial(String(meter_update()));
   #endif
   
   // TODO - Move this to top level, does not need to run per exposure
@@ -535,7 +535,7 @@ void Camera::AutoExposure(int _myISO){
   #if LMDEBUG
     uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
     output_serial("ExposureTime on Automode: ");
-    output_line_serial(exposureTime);
+    output_line_serial(String(exposureTime));
   #endif
   return; //Added 26.10.
 }
@@ -543,9 +543,9 @@ void Camera::AutoExposure(int _myISO){
 void Camera::AutoExposureFF(int _myISO){
   #if SIMPLEDEBUG
       output_serial("take a picture on Auto Mode + Fill Flash with ISO: ");
-      output_serial(_myISO);
+      output_serial(String(_myISO));
       output_serial(", current Picture: ");
-      output_line_serial(currentPicture);
+      output_line_serial(String(currentPicture));
   #endif
   Camera::shutterCLOSE();
   Camera::mirrorUP();   
@@ -561,7 +561,7 @@ void Camera::AutoExposureFF(int _myISO){
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
   #if FFDEBUG
     output_serial("_myISO: ");
-    output_line_serial(_myISO);
+    output_line_serial(String(_myISO));
   #endif
   int FD_MN = 0;  //FlashDelay Magicnumber
   if(_myISO == ISO_SX70){
@@ -573,7 +573,7 @@ void Camera::AutoExposureFF(int _myISO){
   meter_set_iso(FD_MN);
   #if FFDEBUG
     output_serial("FlashDelay Magicnumber: ");
-    output_line_serial(FD_MN);
+    output_line_serial(String(FD_MN));
   #endif
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
@@ -597,20 +597,20 @@ void Camera::AutoExposureFF(int _myISO){
   }
 
   #if FFDEBUG
-    output_serial(millis()-integrationStartTime);
+    output_serial(String(millis()-integrationStartTime));
     output_line_serial("ms Flash Delay Time, Flash fired!");
   #endif
   digitalWrite(PIN_FF, HIGH);  //FireFlash
   delay(Flash_Capture_Delay);   //Capture Flash 
   #if FFDEBUG
-    output_serial((millis() - flashExposureStartTime));
+    output_serial(String(millis() - flashExposureStartTime));
     output_line_serial("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
   SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0);
   delay(15);
   #if FFDEBUG
-    output_serial((millis()-flashExposureStartTime));
+    output_serial(String(millis()-flashExposureStartTime));
     output_line_serial("ms EndFlashExposure: FF and SOL off");
   #endif
   
@@ -620,14 +620,14 @@ void Camera::AutoExposureFF(int _myISO){
 
   #if FFDEBUG
   output_serial("FF Status: ");
-  output_line_serial(FFState);
+  output_line_serial(String(FFState));
   #endif
   Camera::ExposureFinish();
 
   #if LMDEBUG
     uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
     output_serial("ExposureTime on Automode + FF: ");
-    output_line_serial(exposureTime);
+    output_line_serial(String(exposureTime));
   #endif
 
   return; //Added 26.10.
@@ -638,7 +638,7 @@ void Camera::ShutterB()
   #if SIMPLEDEBUG
      output_serial("take B Mode Picture");
      output_serial(", current Picture: ");
-     output_line_serial(currentPicture);
+     output_line_serial(String(currentPicture));
   #endif
 
   #if APERTURE_PRIORITY
@@ -662,7 +662,7 @@ void Camera::ShutterT(){
   #if SIMPLEDEBUG
      output_serial("take T Mode picture: ");
      output_serial(", current Picture: ");
-     output_line_serial(currentPicture);
+     output_line_serial(String(currentPicture));
   #endif
 
 
@@ -751,9 +751,9 @@ void Camera::ExposureFinish()
 void Camera::multipleExposureLastClick(){
   #if MXDEBUG
     output_serial("Multiexposure last Red Button Click, mxshots: ");
-    output_serial(mxshots);
+    output_serial(String(mxshots));
     output_serial(", CurrentPicture: ");
-    output_line_serial(currentPicture);
+    output_line_serial(String(currentPicture));
   #endif
   Camera::mirrorDOWN(); 
   //delay(50);                             //AGAIN is this delay necessary? 100-->50
@@ -783,7 +783,7 @@ void Camera::FastFlash(){
 bool Camera::setLIGHTMETER_HELPER(bool state){
   #if LMHELPERDEBUG
     output_serial("Set Lightmeterhelper status: ");
-    output_line_serial(state);
+    output_line_serial(String(state));
   #endif
   lightmeterHelper = state;
   return state;
