@@ -560,11 +560,7 @@ void Camera::AutoExposureFF(int _myISO){
   }
   pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
   pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
-  #if FFDEBUG
-    Serial.println("SOL2 255");
-  #endif
-  Camera::HighSpeedPWM();
-  analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  Camera:sol2Engage();
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
   #if FFDEBUG
     Serial.print("_myISO: ");
@@ -586,10 +582,7 @@ void Camera::AutoExposureFF(int _myISO){
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
   
-  analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
-  #if FFDEBUG
-    Serial.println("SOL2: 130 - Powersave");
-  #endif   
+  Camera::sol2LowPower();
   // TODO - Move this to top level, does not need to run per exposure
 
   meter_init();
@@ -614,7 +607,7 @@ void Camera::AutoExposureFF(int _myISO){
     Serial.println("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
-  analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
+  Camera::sol2Disengage();
   delay(15);
   #if FFDEBUG
     Serial.print((millis()-flashExposureStartTime));
