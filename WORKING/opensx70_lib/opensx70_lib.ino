@@ -79,8 +79,11 @@ void setup() {//setup - Inizialize
   multipleExposureMode = false;
 
   checkFilmCount();
-
   savedISO = ReadISO();
+  if ((savedISO != ISO_600) || (savedISO != ISO_SX70)){
+    savedISO = ISO_600;
+    WriteISO(savedISO);
+  }
   meter_set_iso(savedISO);
 
   if (digitalRead(PIN_S5) != LOW)
@@ -112,7 +115,8 @@ void loop() {
   }
   previous_status = current_status;
   current_status = peripheral.get_peripheral_status();
-  normalOperation();
+  sw_S1.Update();
+  //normalOperation();
   state = STATE_MACHINE[state]();
 }
 
