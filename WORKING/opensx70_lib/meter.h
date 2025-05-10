@@ -21,6 +21,6 @@
   //void meter_led(byte _selector, bool _type);
   // preprocessor conditionnal inlusion for specific chip header file.
 
-  #include "INTEGRATOR.h"
+  #include "opensx70_meter.h"
 
 #endif
