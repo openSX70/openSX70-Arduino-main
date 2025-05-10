@@ -1,4 +1,5 @@
 #include "open_sx70.h"
+#include "logging.h"
 
 volatile bool integrationFinished = 0;
 
@@ -31,8 +32,8 @@ void integrator_reset(){
 
 void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Timer1 -- Magicnumber for ISO
     #if LMDEBUG
-    Serial.print(F("meter_set_iso : "));
-    Serial.println(iso);
+    output_serial(F("meter_set_iso : "));
+    output_line_serial(iso);
     #endif
     if (iso == ISO_600) {
       outputCompare = A600;
@@ -44,8 +45,8 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
       outputCompare = iso; //FF Delay Magicnumber as well as      
     }
     #if LMDEBUG
-    Serial.print(F("outputcompare set to : "));
-    Serial.println(outputCompare);
+    output_serial(F("outputcompare set to : "));
+    output_line_serial(outputCompare);
     #endif
 }
 
@@ -61,9 +62,9 @@ int meter_compute(byte _selector,int _activeISO){
     startMillis = millis();
 
     #if LMHELPERDEBUG
-      Serial.print("Metering started at: ");
-      Serial.print(startMillis);
-      Serial.println(" ms");
+      output_serial("Metering started at: ");
+      output_serial(startMillis);
+      output_line_serial(" ms");
     #endif
   }
   else{
@@ -83,32 +84,32 @@ int meter_compute(byte _selector,int _activeISO){
       }
       
       #if LMHELPERDEBUG
-        Serial.print("Metering ended at ");
-        Serial.print(endMillis);
-        Serial.println(" ms");
+        output_serial("Metering ended at ");
+        output_serial(endMillis);
+        output_line_serial(" ms");
 
-        Serial.print("Metering time elapsed: ");
-        Serial.print(timeElapsed);
-        Serial.println(" ms");
+        output_serial("Metering time elapsed: ");
+        output_serial(timeElapsed);
+        output_line_serial(" ms");
 
-        Serial.print("Magic number used: ");
-        Serial.println(outputCompare);
+        output_serial("Magic number used: ");
+        output_line_serial(outputCompare);
 
-        Serial.print("Meter counter ended at ");
-        Serial.println(counter);
+        output_serial("Meter counter ended at ");
+        output_line_serial(counter);
 
-        Serial.print("Magic number hit at ");
-        Serial.print(pred_milli);
-        Serial.println(" ms");
+        output_serial("Magic number hit at ");
+        output_serial(pred_milli);
+        output_line_serial(" ms");
 
-        Serial.print("slope: ");
-        Serial.println(slope);
+        output_serial("slope: ");
+        output_line_serial(slope);
       #endif
 
       
       //#if LMDEBUG
-        //Serial.print("PREDMILLI: ");
-        //Serial.println(pred_milli);
+        //output_serial("PREDMILLI: ");
+        //output_line_serial(pred_milli);
       //#endif
       
 
@@ -130,13 +131,13 @@ void meter_integrate(){
 bool meter_update(){
   uint16_t integration_value = analogRead(PIN_LM);
   #if LMDEBUG
-      Serial.print(F("Integrated counter value : "));
-      Serial.println(integration_value);
+      output_serial(F("Integrated counter value : "));
+      output_line_serial(integration_value);
   #endif
   if( integration_value >= outputCompare){
       #if LMDEBUG
-          Serial.print(F("Final integrated counter value : "));
-          Serial.println(integration_value);
+          output_serial(F("Final integrated counter value : "));
+          output_line_serial(integration_value);
       #endif
       return 1;
   }
@@ -171,22 +172,21 @@ void meter_led(byte _selector, byte _type){
     return;
   }
 
-  //int meterRange = round(ShutterSpeed[_selector] * MeterRange[_selector]);
   int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
 
 
   #if LMHELPERDEBUG
-    Serial.print(F("meter range at Selector: "));
-    Serial.print(_selector);
-    Serial.print(F(" "));
-    Serial.print(ShutterSpeed[_selector]);
-    Serial.print(F(" min: "));
-    Serial.println(MinRange[_selector]);
-    Serial.print(F(" max "));
-    Serial.println(MaxRange[_selector]);
-    Serial.print(F("Predictedmillis: "));
+    output_serial(F("meter range at Selector: "));
+    output_serial(_selector);
+    output_serial(F(" "));
+    output_serial(ShutterSpeed[_selector]);
+    output_serial(F(" min: "));
+    output_line_serial(MinRange[_selector]);
+    output_serial(F(" max "));
+    output_line_serial(MaxRange[_selector]);
+    output_serial(F("Predictedmillis: "));
     
-    Serial.println(predictedMillis);
+    output_line_serial(predictedMillis);
   #endif
   /*
   if(_type ==2){ // Manual mode
@@ -196,7 +196,7 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, HIGH);
       digitalWrite(PIN_LED2, HIGH);
       #if LMHELPERDEBUG
-        Serial.println(F("Selector within meter range"));
+        output_line_serial(F("Selector within meter range"));
       #endif
       return;
     }
@@ -205,7 +205,7 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, LOW);
       digitalWrite(PIN_LED2, HIGH);
       #if LMHELPERDEBUG
-        Serial.println(F("Selector under meter range"));
+        output_line_serial(F("Selector under meter range"));
       #endif
       return;
     }
@@ -214,7 +214,7 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, HIGH);
       digitalWrite(PIN_LED2, LOW);
       #if LMHELPERDEBUG
-        Serial.println(F("Selector over meter range"));
+        output_line_serial(F("Selector over meter range"));
       #endif
       return;
     }
@@ -227,7 +227,7 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, HIGH);
       digitalWrite(PIN_LED2, HIGH);
       #if LMHELPERDEBUG
-        Serial.println(F("Selector within meter range"));
+        output_line_serial(F("Selector within meter range"));
       #endif
       return;
     }
@@ -236,7 +236,7 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, LOW);
       digitalWrite(PIN_LED2, HIGH);
       #if LMHELPERDEBUG
-        Serial.println(F("Selector under meter range"));
+        output_line_serial(F("Selector under meter range"));
       #endif
       return;
     }
@@ -245,7 +245,7 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, HIGH);
       digitalWrite(PIN_LED2, LOW);
       #if LMHELPERDEBUG
-        Serial.println(F("Selector over meter range"));
+        output_line_serial(F("Selector over meter range"));
       #endif
       return;
     }
@@ -255,14 +255,14 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, HIGH);
       digitalWrite(PIN_LED2, LOW);
       #if LMHELPERDEBUG
-        Serial.println(F("Auto mode low light warning"));
+        output_line_serial(F("Auto mode low light warning"));
       #endif
     }
     else{ //Low light warning off
       digitalWrite(PIN_LED1, LOW);
       digitalWrite(PIN_LED2, LOW);
       #if LMHELPERDEBUG
-        Serial.println(F("Enough Light Detected"));
+        output_line_serial(F("Enough Light Detected"));
       #endif
     }
     /*
@@ -270,7 +270,7 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, LOW);
       digitalWrite(PIN_LED2, HIGH);
       #if LMHELPERDEBUG
-        Serial.println("Auto mode Enough light");
+        output_line_serial("Auto mode Enough light");
       #endif
     }
     */

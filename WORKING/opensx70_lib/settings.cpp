@@ -4,7 +4,7 @@ int currentPicture = 0; //why is this set to 1?
 int mxshots = 0; //Multiple exposure counter
 const uint8_t YDelay = 120;
 const byte PowerDownDelay = 15; //time it takes to be fully closed
-const byte PowerDown = 195; //max 255 = full power/POWERUP mode
+const byte PowerDown = 130; //max 255 = full power/POWERUP mode
 int FD100 = round(.29*A100);
 int FD600 = round(.29*A600);
 int ShutterConstant = 0; // was 9; Setting this to 0 to remove need for doing math. putting this in the raw speed. - Zane
@@ -37,10 +37,6 @@ int ShutterSpeed[] = {     25,   29,   32,    34,  39,   44,  64,   64,    175, 
 // to change the speed in the slot position just change the number corresponding.
 int flashDelay = 1; //new flash "system"
   // (These are default if not set, but changeable for convenience)
-
-int MeterRange[] = {     0.20, 0.11, 0.09,  0.07, 0.07, 0.07,0.20, 0.20,   0.20, 0.20,0.20,0.20,1,1,1,1};
-//int ShutterSpeed[] = { 2000, 1000,  500,   250,  125,   60,  30,   15,      8,    4,   2,   1
-//                          0     1     2      3    4     5    6     7       8     9    10   11
 
 int ShutterVariance[] = {  15,   10,   8,     6,    6,    6,   6,    6,      10,    20,   40,   40};
 //int ShutterSpeed[] = { 2000, 1000,  500,   250,  125,   60,  30,   15,      8,    4,   2,   1

@@ -1,5 +1,6 @@
 #include "Arduino.h"
 #include "open_sx70.h"
+#include "logging.h"
 
 ClickButton sw_S1(PIN_S1, S1Logic);
 
@@ -51,14 +52,14 @@ camera_state state = STATE_DARKSLIDE;
 void setup() {//setup - Inizialize
   currentPicture = ReadPicture();
   #if DEBUG
-    Serial.begin(9600);
-    Serial.println(F("Welcome to openSX70 Version: 04_26_2025 Integrator"));
-    Serial.print(F("Magic Number: A100="));
-    Serial.print(A100);
-    Serial.print(F("| A600 ="));
-    Serial.print(A600);
-    Serial.print(F("currentPicture stored in EEPROM: "));
-    Serial.println(currentPicture);
+    serial_init();
+    output_line_serial(F("Welcome to openSX70 Version: 05_08_2025 Integrator STM32"));
+    output_serial(F("Magic Number: A100="));
+    output_serial(String(A100));
+    output_serial(F("| A600 ="));
+    output_line_serial(String(A600));
+    output_serial(F("currentPicture stored in EEPROM: "));
+    output_line_serial(String(currentPicture));
   #endif
 
   io_init();
@@ -78,8 +79,11 @@ void setup() {//setup - Inizialize
   multipleExposureMode = false;
 
   checkFilmCount();
-
   savedISO = ReadISO();
+  if ((savedISO != ISO_600) || (savedISO != ISO_SX70)){
+    savedISO = ISO_600;
+    WriteISO(savedISO);
+  }
   meter_set_iso(savedISO);
 
   if (digitalRead(PIN_S5) != LOW)
@@ -88,13 +92,13 @@ void setup() {//setup - Inizialize
     openSX70.mirrorDOWN();
     openSX70.shutterOPEN();
     #if SIMPLEDEBUG
-      Serial.println(F("Initialize: mirrorDOWN"));
+    output_line_serial(F("Initialize: mirrorDOWN"));
     #endif
   }
 
   #if SIMPLEDEBUG
-    Serial.print(F("currentPicture: "));
-    Serial.println(currentPicture);
+    output_serial(F("currentPicture: "));
+    output_line_serial(currentPicture);
   #endif
   #if DONGLE_FREE_ISO_CHANGE
   S1ISOSwap();
@@ -111,7 +115,8 @@ void loop() {
   }
   previous_status = current_status;
   current_status = peripheral.get_peripheral_status();
-  normalOperation();
+  sw_S1.Update();
+  //normalOperation();
   state = STATE_MACHINE[state]();
 }
 
@@ -134,9 +139,9 @@ camera_state do_state_darkslide (void) {
         peripheral.dongleLed(GREEN, LOW); //switching off green uDongle LED
       }
       #if SIMPLEDEBUG
-        Serial.println(F("STATE1: EJECT DARK SLIDE"));
-        Serial.print(F("currentPicture on Darkslide eject: "));
-        Serial.println(currentPicture);
+        output_line_serial(F("STATE1: EJECT DARK SLIDE"));
+        output_serial(F("currentPicture on Darkslide eject: "));
+        output_line_serial(currentPicture);
       #endif
     }
     if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
@@ -145,21 +150,21 @@ camera_state do_state_darkslide (void) {
       delay(100);
       BlinkISO();
       #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
+        output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
     else if ((current_status.selector == 100) && (peripheral.checkDongle() == 0)){
       result = STATE_FLASHBAR;
       savedISO = ReadISO();
       #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
+        output_line_serial(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
       #endif
     }
     else{
       result = STATE_NODONGLE;
       savedISO = ReadISO();
       #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
+        output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
     
@@ -194,7 +199,7 @@ camera_state do_state_noDongle (void){
 
   if (current_status.selector<=15){
     #if STATEDEBUG
-      Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
+      output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
     #endif
     result = STATE_DONGLE;
     savedISO = ReadISO();
@@ -209,7 +214,7 @@ camera_state do_state_noDongle (void){
     result = STATE_FLASHBAR;
     savedISO = ReadISO();
     #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
+      output_line_serial(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
     #endif
   }
   return result;
@@ -228,8 +233,8 @@ camera_state do_state_dongle (void){
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     #if SIMPLEDEBUG
-      Serial.print("SELECTOR: ");
-      Serial.println(current_status.selector);
+      output_serial("SELECTOR: ");
+      output_line_serial(current_status.selector);
     #endif
     LightMeterHelper(0);
 
@@ -267,7 +272,7 @@ camera_state do_state_dongle (void){
     result = STATE_NODONGLE;
     savedISO = ReadISO();
     #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
+      output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
     #endif
   } 
   // Multiple Exposure switch flipped
@@ -276,7 +281,7 @@ camera_state do_state_dongle (void){
     multipleExposureMode = true;
     mEXPFirstRun = true;
     #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
+      output_line_serial(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
     #endif
   }
 
@@ -306,7 +311,7 @@ camera_state do_state_flashBar (void){
     result = STATE_NODONGLE;
     savedISO = ReadISO();
     #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
+      output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
   } 
   return result;
@@ -376,7 +381,7 @@ camera_state do_state_multi_exp (void){
       result = STATE_DONGLE;
 
       #if STATEDEBUG
-        Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
+        output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
       #endif
     }
     sw_S1.Reset();
@@ -397,7 +402,7 @@ camera_state do_state_multi_exp (void){
     result = STATE_DONGLE;
     multipleExposureMode = false;
     #if STATEDEBUG
-      Serial.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
+      output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
     #endif
   }
 
@@ -438,15 +443,15 @@ void DongleInserted() { //Dongle is pressend LOOP
     lmEnable(); //added 26.10.
     if ((current_status.selector != previous_status.selector)){
       #if ADVANCEDEBUG
-        Serial.print(F("DONGLE Mode:  "));
-        Serial.print(F("Selector: "));
-        Serial.print(current_status.selector);
-        Serial.print(F(" Switch1: "));
-        Serial.print(current_status.switch1);
-        Serial.print(F(" Switch2: "));
-        Serial.print(current_status.switch2);
-        Serial.print(F(" speed: "));
-        Serial.println(ShutterSpeed[current_status.selector]);
+        output_serial(F("DONGLE Mode:  "));
+        output_serial(F("Selector: "));
+        output_serial(current_status.selector);
+        output_serial(F(" Switch1: "));
+        output_serial(current_status.switch1);
+        output_serial(F(" Switch2: "));
+        output_serial(current_status.switch2);
+        output_serial(F(" speed: "));
+        output_line_serial(ShutterSpeed[current_status.selector]);
       #endif
       // TODO Move this into state transition
       blinkAutomode();
@@ -465,7 +470,7 @@ void lmEnable(){
         delay(100);
         digitalWrite(PIN_LED2, LOW);
         #if SIMPLEDEBUG
-          Serial.println(F("Lightmeter is on"));
+          output_line_serial(F("Lightmeter is on"));
         #endif
       }
     }
@@ -478,7 +483,7 @@ void lmEnable(){
         delay(100);
         digitalWrite(PIN_LED1, LOW);
       #if SIMPLEDEBUG
-        Serial.println(F("Lightmeter is off"));
+        output_line_serial(F("Lightmeter is off"));
       #endif
       }
     }
@@ -488,7 +493,7 @@ void lmEnable(){
 void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 600
   if((current_status.switch1 != 1) || (current_status.switch2 != 1)){ //Not Save ISO //Changed to OR 01.06.2020
       #if SIMPLEDEBUG
-        Serial.println(F("Blink for the saved ISO setting on Dongle insertion."));
+        output_line_serial(F("Blink for the saved ISO setting on Dongle insertion."));
       #endif
       //blinkAutomode();
       savedISO = ReadISO();
@@ -503,13 +508,13 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
       }
       else{
       #if SIMPLEDEBUG
-        Serial.println(F("No ISO Selected"));
+        output_line_serial(F("No ISO Selected"));
         peripheral.simpleBlink(5, RED);
       #endif
       }
       #if SIMPLEDEBUG
-          Serial.print(F("EEPROM READ ISO: "));
-          Serial.println(savedISO);
+          output_serial(F("EEPROM READ ISO: "));
+          output_line_serial(savedISO);
       #endif
       checkFilmCount();
       //return;
@@ -522,15 +527,15 @@ void blinkAutomode(){
     if(ShutterSpeed[current_status.selector]== AUTO600){
       peripheral.simpleBlink(2, GREEN);
       #if SIMPLEDEBUG
-        Serial.print(F("Selector at A600, Blink 2"));
-        Serial.println(ShutterSpeed[current_status.selector]);
+        output_serial(F("Selector at A600, Blink 2"));
+        output_line_serial(ShutterSpeed[current_status.selector]);
       #endif
       //return;
     }else if(ShutterSpeed[current_status.selector]== AUTO100){
       peripheral.simpleBlink(1, GREEN);
       #if SIMPLEDEBUG
-        Serial.print(F("Selector at A100, Blink 1"));
-        Serial.println(ShutterSpeed[current_status.selector]);
+        output_serial(F("Selector at A100, Blink 1"));
+        output_line_serial(ShutterSpeed[current_status.selector]);
       #endif
       //return;
     }
@@ -540,7 +545,7 @@ void blinkAutomode(){
 
 void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
   #if SIMPLEDEBUG
-      Serial.print(F("Blinking ISO change"));
+      output_serial(F("Blinking ISO change"));
   #endif
   turnLedsOff();
   if (activeISO == ISO_SX70){
@@ -550,8 +555,8 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
     peripheral.simpleBlink(2, RED);
   }
   #if SIMPLEDEBUG
-    Serial.print(F("active ISO: "));
-    Serial.println(activeISO);
+    output_serial(F("active ISO: "));
+    output_line_serial(activeISO);
   #endif
   checkFilmCount();
   //return;
@@ -559,7 +564,7 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
 
 void switch2Function(int mode) {
   #if SIMPLEDEBUG
-    Serial.println(F("Self Timer Activated"));
+    output_line_serial(F("Self Timer Activated"));
   #endif
   //0 Dongle 1 No dongle
   if (mode == 0) {
@@ -590,7 +595,7 @@ void switch2Function(int mode) {
     //undefined
   }
   #if SIMPLEDEBUG
-    Serial.println(F("Self Timer End"));
+    output_line_serial(F("Self Timer End"));
   #endif
 }
 
@@ -598,9 +603,9 @@ void checkFilmCount(){
   #if EIGHT_SHOT_PACK
     if(currentPicture >= 8){ 
       #if SIMPLEDEBUG
-        Serial.print(F("All 8 Frames shot!"));
-        Serial.print(F(", currentPicture: "));
-        Serial.println(currentPicture);
+        output_serial(F("All 8 Frames shot!"));
+        output_serial(F(", currentPicture: "));
+        output_line_serial(currentPicture);
       #endif
       peripheral.dongleLed(GREEN, LOW);
       peripheral.dongleLed(RED, HIGH);
@@ -609,9 +614,9 @@ void checkFilmCount(){
   #else
   if ((currentPicture == 8) || (currentPicture == 9)){
       #if SIMPLEDEBUG
-        Serial.print(F("Two Frames left!"));
-        Serial.print(F(", currentPicture on Two Frames left: "));
-        Serial.println(currentPicture);
+        output_serial(F("Two Frames left!"));
+        output_serial(F(", currentPicture on Two Frames left: "));
+        output_line_serial(currentPicture);
       #endif
       //peripheral.simpleBlink(2, RED);
       peripheral.dongleLed(RED, LOW);
@@ -620,9 +625,9 @@ void checkFilmCount(){
   }
   else if(currentPicture == 10){ 
     #if SIMPLEDEBUG
-      Serial.print(F("All ten Frames shot!"));
-      Serial.print(F(", currentPicture: "));
-      Serial.println(currentPicture);
+      output_serial(F("All ten Frames shot!"));
+      output_serial(F(", currentPicture: "));
+      output_line_serial(currentPicture);
     #endif
     peripheral.dongleLed(GREEN, LOW);
     peripheral.dongleLed(RED, HIGH);
@@ -678,12 +683,12 @@ void saveISOChange() {
   }
   if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
     #if SIMPLEDEBUG
-      Serial.print(F("SaveISOChange() Function: "));
-      Serial.print(F("ISO has changed, previos saved ISO (from EEPROM): "));
-      Serial.println(savedISO);
-      Serial.print(F("Saving new selected ISO "));
-      Serial.print(_selectedISO);
-      Serial.println(F(" to the EEPROM"));
+      output_serial(F("SaveISOChange() Function: "));
+      output_serial(F("ISO has changed, previos saved ISO (from EEPROM): "));
+      output_line_serial(savedISO);
+      output_serial(F("Saving new selected ISO "));
+      output_serial(_selectedISO);
+      output_line_serial(F(" to the EEPROM"));
     #endif
     activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
     WriteISO(_selectedISO); //Write ISO to EEPROM
@@ -694,8 +699,8 @@ void saveISOChange() {
   }
   else{
     #if SIMPLEDEBUG
-      Serial.print(F("SaveISOChange() Function: "));
-      Serial.println(F("savedISO is equal to selected ISO, dont save!"));
+      output_serial(F("SaveISOChange() Function: "));
+      output_line_serial(F("savedISO is equal to selected ISO, dont save!"));
     #endif
     activeISO = _selectedISO;
     BlinkISORed(); //Blink ISO Red
@@ -727,14 +732,14 @@ void S1ISOSwap(){
     savedISO = ReadISO();
     if (savedISO == ISO_600) { 
       #if DEBUG
-        Serial.println("ISO HAS BEEN SWAPPED TO: SX70");
+        output_line_serial("ISO HAS BEEN SWAPPED TO: SX70");
       #endif
       _selectedISO = ISO_SX70;
       viewfinderBlink(PIN_LED1);
     }
     else if ((savedISO == ISO_SX70)) {
       #if DEBUG
-        Serial.println("ISO HAS BEEN SWAPPED TO: 600");
+        output_line_serial("ISO HAS BEEN SWAPPED TO: 600");
       #endif
       _selectedISO = ISO_600;
       viewfinderBlink(PIN_LED2);
