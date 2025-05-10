@@ -70,6 +70,7 @@ void Camera::solenoid_init(){
 }
 
 void Camera::shutterCLOSE(){
+  Camera::solenoid_init();
   #if BASICDEBUG
     output_line_serial("shutterCLOSE");
   #endif
