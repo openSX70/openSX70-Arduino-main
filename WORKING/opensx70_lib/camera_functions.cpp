@@ -69,11 +69,6 @@ void Camera::solenoid_init(){
     #endif
 }
 
-/*
-void Camera::solenoidEngage(){
-
-}
-*/
 void Camera::shutterCLOSE(){
   #if BASICDEBUG
     output_line_serial("shutterCLOSE");
@@ -134,8 +129,6 @@ void Camera::sol2Disengage(){
     //SolenoidPWM->setCaptureCompare(2, 0, PERCENT_COMPARE_FORMAT);
   #endif
 }
-
-
 
 void Camera::motorON(){
   #if BASICDEBUG
