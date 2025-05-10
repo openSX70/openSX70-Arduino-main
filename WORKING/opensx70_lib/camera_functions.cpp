@@ -545,28 +545,31 @@ void Camera::AutoExposure(int _myISO){
 
 void Camera::AutoExposureFF(int _myISO){
   #if SIMPLEDEBUG
-      output_serial("take a picture on Auto Mode + Fill Flash with ISO: ");
-      output_serial(String(_myISO));
-      output_serial(", current Picture: ");
-      output_line_serial(String(currentPicture));
+      Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
+      Serial.print(_myISO);
+      Serial.print(", current Picture: ");
+      Serial.println(currentPicture);
   #endif
   Camera::shutterCLOSE();
   Camera::mirrorUP();   
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
      #if BASICDEBUG
-     output_line_serial("waiting for S3 to OPEN");
+     Serial.println("waiting for S3 to OPEN");
      #endif
   }
-
-  Camera::sol2Engage();
-  delay(YDelay);           //AT Yd and POWERS OFF AT FF
-
+  pinMode(PIN_SOL2, OUTPUT);  //Define SOL2 as OUTPUT
+  pinMode(PIN_FF, OUTPUT);    //Define FF as OUTPUT
   #if FFDEBUG
-    output_serial("_myISO: ");
-    output_line_serial(String(_myISO));
+    Serial.println("SOL2 255");
   #endif
-
+  Camera::HighSpeedPWM();
+  analogWrite(PIN_SOL2, 255); //SOL2 POWER UP (S2 Closed)
+  delay(YDelay);           //AT Yd and POWERS OFF AT FF
+  #if FFDEBUG
+    Serial.print("_myISO: ");
+    Serial.println(_myISO);
+  #endif
   int FD_MN = 0;  //FlashDelay Magicnumber
   if(_myISO == ISO_SX70){
      FD_MN = FD100;  
@@ -575,24 +578,22 @@ void Camera::AutoExposureFF(int _myISO){
     FD_MN = FD600;
   }
   meter_set_iso(FD_MN);
-
   #if FFDEBUG
-    output_serial("FlashDelay Magicnumber: ");
-    output_line_serial(String(FD_MN));
+    Serial.print("FlashDelay Magicnumber: ");
+    Serial.println(FD_MN);
   #endif
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
   
-  Camera::sol2LowPower();
-
+  analogWrite (PIN_SOL2, 130);    //SOL2 Powersaving
   #if FFDEBUG
-    output_line_serial("SOL2 - Powersave");
+    Serial.println("SOL2: 130 - Powersave");
   #endif   
-
   // TODO - Move this to top level, does not need to run per exposure
-  meter_init();
 
+  meter_init();
+  meter_reset();
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   //Start FlashDelay 
@@ -603,38 +604,37 @@ void Camera::AutoExposureFF(int _myISO){
   }
 
   #if FFDEBUG
-    output_serial(String(millis()-integrationStartTime));
-    output_line_serial("ms Flash Delay Time, Flash fired!");
+    Serial.print(millis()-integrationStartTime);
+    Serial.println("ms Flash Delay Time, Flash fired!");
   #endif
   digitalWrite(PIN_FF, HIGH);  //FireFlash
   delay(Flash_Capture_Delay);   //Capture Flash 
   #if FFDEBUG
-    output_serial(String(millis() - flashExposureStartTime));
-    output_line_serial("ms FlashExposure Integrationtime");
+    Serial.print((millis() - flashExposureStartTime));
+    Serial.println("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
-
-  sol2Disengage();
+  analogWrite (PIN_SOL2, 0); //SOL2 POWER OFF
   delay(15);
-
   #if FFDEBUG
-    output_serial(String(millis()-flashExposureStartTime));
-    output_line_serial("ms EndFlashExposure: FF and SOL off");
+    Serial.print((millis()-flashExposureStartTime));
+    Serial.println("ms EndFlashExposure: FF and SOL off");
   #endif
+  
   #if LMDEBUG
     uint32_t shutterCloseTime = millis(); //Shutter Debug
   #endif
-  #if FFDEBUG
-  output_serial("FF Status: ");
-  output_line_serial(String(FFState));
-  #endif
 
+  #if FFDEBUG
+  Serial.print("FF Status: ");
+  Serial.println(FFState);
+  #endif
   Camera::ExposureFinish();
 
   #if LMDEBUG
     uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
-    output_serial("ExposureTime on Automode + FF: ");
-    output_line_serial(String(exposureTime));
+    Serial.print("ExposureTime on Automode + FF: ");
+    Serial.println(exposureTime);
   #endif
 
   return; //Added 26.10.
