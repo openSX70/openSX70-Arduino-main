@@ -80,10 +80,6 @@ void setup() {//setup - Inizialize
 
   checkFilmCount();
   savedISO = ReadISO();
-  if ((savedISO != ISO_600) || (savedISO != ISO_SX70)){
-    savedISO = ISO_600;
-    WriteISO(savedISO);
-  }
   meter_set_iso(savedISO);
 
   if (digitalRead(PIN_S5) != LOW)
