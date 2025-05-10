@@ -558,7 +558,7 @@ void Camera::AutoExposureFF(int _myISO){
      #endif
   }
 
-  Camera::solenoid2Engage();
+  Camera::sol2Engage();
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
 
   #if FFDEBUG
@@ -583,7 +583,7 @@ void Camera::AutoExposureFF(int _myISO){
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
   
-  Camera::solenoid2LowPower();
+  Camera::sol2LowPower();
 
   #if FFDEBUG
     output_line_serial("SOL2 - Powersave");
@@ -613,7 +613,7 @@ void Camera::AutoExposureFF(int _myISO){
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
 
-  solenoid2Disengage();
+  sol2Disengage();
   delay(15);
 
   #if FFDEBUG
