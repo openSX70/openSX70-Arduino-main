@@ -116,6 +116,15 @@ void Camera::sol2Engage(){
   #endif
 }
 
+void Camera::sol2LowPower(){
+  #ifdef ARDUINO_AVR_PRO
+    analogWrite(PIN_SOL2, 130);
+  #endif
+  #ifdef ARDUINO_GENERIC_G030K8TX
+    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 70);
+  #endif
+}
+
 void Camera::sol2Disengage(){
   #ifdef ARDUINO_AVR_PRO
     analogWrite(PIN_SOL2, 0);
@@ -556,13 +565,14 @@ void Camera::AutoExposureFF(int _myISO){
      #endif
   }
 
-  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 100);
-
+  Camera::solenoid2Engage();
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
+
   #if FFDEBUG
     output_serial("_myISO: ");
     output_line_serial(String(_myISO));
   #endif
+
   int FD_MN = 0;  //FlashDelay Magicnumber
   if(_myISO == ISO_SX70){
      FD_MN = FD100;  
@@ -571,6 +581,7 @@ void Camera::AutoExposureFF(int _myISO){
     FD_MN = FD600;
   }
   meter_set_iso(FD_MN);
+
   #if FFDEBUG
     output_serial("FlashDelay Magicnumber: ");
     output_line_serial(String(FD_MN));
@@ -579,14 +590,15 @@ void Camera::AutoExposureFF(int _myISO){
     uint32_t shutterOpenTime = millis(); //Shutter Debug
   #endif
   
-  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 70);
-  #if FFDEBUG
-    output_line_serial("SOL2: 130 - Powersave");
-  #endif   
-  // TODO - Move this to top level, does not need to run per exposure
+  Camera::solenoid2LowPower();
 
+  #if FFDEBUG
+    output_line_serial("SOL2 - Powersave");
+  #endif   
+
+  // TODO - Move this to top level, does not need to run per exposure
   meter_init();
-  meter_reset();
+
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
   //Start FlashDelay 
@@ -607,21 +619,22 @@ void Camera::AutoExposureFF(int _myISO){
     output_line_serial("ms FlashExposure Integrationtime");
   #endif
   digitalWrite(PIN_FF, LOW);  //Turn FF off
-  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0);
+
+  solenoid2Disengage();
   delay(15);
+
   #if FFDEBUG
     output_serial(String(millis()-flashExposureStartTime));
     output_line_serial("ms EndFlashExposure: FF and SOL off");
   #endif
-  
   #if LMDEBUG
     uint32_t shutterCloseTime = millis(); //Shutter Debug
   #endif
-
   #if FFDEBUG
   output_serial("FF Status: ");
   output_line_serial(String(FFState));
   #endif
+
   Camera::ExposureFinish();
 
   #if LMDEBUG

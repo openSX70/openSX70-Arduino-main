@@ -12,6 +12,7 @@
       void shutterOPEN();
       void solenoid_init();
       void sol2Engage();
+      void sol2LowPower();
       void sol2Disengage();
       void mirrorDOWN();
       void mirrorUP();
