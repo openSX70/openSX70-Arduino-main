@@ -740,6 +740,14 @@ void S1ISOSwap(){
       _selectedISO = ISO_600;
       viewfinderBlink(PIN_LED2);
     }
+    else{
+      //Boards come without a set ISO, this will set the ISO to 600 without a dongle.
+      #if DEBUG
+        output_line_serial("ISO HAS BEEN SWAPPED TO: 600");
+      #endif
+      _selectedISO = ISO_600;
+      viewfinderBlink(PIN_LED2);
+    }
     activeISO = _selectedISO;
     WriteISO(_selectedISO);
     savedISO = ReadISO();
