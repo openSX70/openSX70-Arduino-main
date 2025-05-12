@@ -1,6 +1,6 @@
 #include "settings.h"
 #include "Arduino.h"
-int currentPicture = 0; //why is this set to 1?
+
 int mxshots = 0; //Multiple exposure counter
 const uint8_t YDelay = 120;
 const byte PowerDownDelay = 15; //time it takes to be fully closed
