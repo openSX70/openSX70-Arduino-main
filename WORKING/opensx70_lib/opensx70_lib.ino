@@ -15,10 +15,6 @@ int activeISO;
 
 bool mEXPFirstRun;
 bool multipleExposureMode;
-static int multipleExposureCounter = 0;
-#if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
-  static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
-#endif
 
 /*------------BEGIN STATE MACHINE SET_UP------------*/
 typedef enum{
@@ -296,36 +292,31 @@ camera_state do_state_flashBar (void){
 }
 
 camera_state do_state_multi_exp (void){
+  static uint32_t multipleExposureLastStartTimestamp;
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
-    LightMeterHelper(0); //Turns off LMHelper on picutre Taking
     if(current_status.switch1){
-      if(mEXPFirstRun){
-        beginExposure();
-        mEXPFirstRun = false;
-        #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
-          multipleExposureLastStartTimestamp = millis();
-        #endif
-      }
       if(current_status.switch2){
         switch2Function(0); // start self timer 
       }
-
+      if(mEXPFirstRun){
+        mEXPFirstRun = false;
+        multipleExposureLastStartTimestamp = millis();
+        beginExposure();
+      }
+      
       if(current_status.selector<12){ //MANUAL SPEEDS  
         openSX70.ManualExposure(savedISO, current_status.selector);;
-        multipleExposureCounter++;
       }
       else if(ShutterSpeed[current_status.selector] == POST){ //POST
         turnLedsOff();
         openSX70.ShutterT();
-        multipleExposureCounter++;
       }
       else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
         turnLedsOff(); //why?
         openSX70.ShutterB();
-        multipleExposureCounter++;
       }
       else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
         switch(ShutterSpeed[current_status.selector]){
@@ -335,36 +326,23 @@ camera_state do_state_multi_exp (void){
         case AUTO600:
           openSX70.AutoExposure(ISO_600);
           break;
-      }
-        multipleExposureCounter++;
+        } 
       }
     }
-    else if(current_status.switch1 == 0 && multipleExposureCounter > 0){
-      openSX70.multipleExposureLastClick();
-      multipleExposureCounter = 0;
-      #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
-        multipleExposureLastStartTimestamp = 0;
-      #endif
+    else if((current_status.switch1 == 0) && (mEXPFirstRun == false)){
       result = STATE_DONGLE;
-
-      #if STATEDEBUG
-        output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
-      #endif
+      openSX70.multipleExposureLastClick();
     }
     sw_S1.Reset();
-}
+  }
 
-  #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
-    // Finish multiple exposure due to timeout.
-    if(multipleExposureLastStartTimestamp != 0 && millis() - multipleExposureLastStartTimestamp > MULTIPLE_EXPOSURES_TIMEOUT){
-      peripheral.simpleBlink(2, RED);
-      openSX70.multipleExposureLastClick();
-      multipleExposureCounter = 0;
-      multipleExposureLastStartTimestamp = 0;
-    }
-  #endif
+  if((mEXPFirstRun == false) && ((millis() - multipleExposureLastStartTimestamp) >= MULTIPLE_EXPOSURES_TIMEOUT)){
+    mEXPFirstRun = true;
+    peripheral.simpleBlink(2, RED);
+    openSX70.multipleExposureLastClick(); 
+  }
 
-  if(current_status.switch1 == false && multipleExposureCounter == 0){
+  if(current_status.switch1 == false && mEXPFirstRun == true){
     result = STATE_DONGLE;
     multipleExposureMode = false;
     #if STATEDEBUG

@@ -7,7 +7,6 @@
 #include "udongle2.h"
 #include "logging.h"
 
-extern bool mEXPFirstRun;
 extern bool multipleExposureMode;
 
 #ifdef ARDUINO_GENERIC_G030K8TX
@@ -691,34 +690,12 @@ void Camera::ExposureFinish()
     #endif
     Camera::shutterOPEN();
     delay (100);
-    S1F_Unfocus(); //neccesary???
-    #if FOCUSDEBUG
-      output_line_serial("Unfocus");
-    #endif
   }
-  #if SIMPLEDEBUG
-    if (_dongle->checkDongle() > 0){ //Dongle present
-      #if SIMPLEDEBUG
-        output_line_serial("Exposure Finish - Dongle Mode, ");
-      #endif
-    }
-    else if (_dongle->checkDongle() == 0){ //No Dongle
-      #if SIMPLEDEBUG
-        output_serial("Exposure Finish - No Dongle Mode, ");
-      #endif
-    }
-  #endif
   return;
 }
 
 void Camera::multipleExposureLastClick(){
   Camera::mirrorDOWN(); 
-  //delay(50);                             //AGAIN is this delay necessary? 100-->50
-  //delay (100);                             //AGAIN is this delay necessary?
-  S1F_Unfocus(); //neccesary???
-  #if FOCUSDEBUG
-    output_line_serial("Unfocus");
-  #endif
   Camera::shutterOPEN();
   multipleExposureMode = false;
 }
