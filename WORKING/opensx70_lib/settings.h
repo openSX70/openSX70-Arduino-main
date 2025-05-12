@@ -75,9 +75,6 @@
   #define MULTIPLE_EXPOSURES_TIMEOUT 120000 // Max time that MX mode can run for after the first exposure (in milliseconds)
   //---------------END MULTIPLE EXPOSURES MODE SETTINGS----------------------
 
-  #define EE_ADD_CUR   4    //-> CurrentPicture --> 1-8 "Pack" picture counter
-  #define EE_ADD_ADD   30    //-> eeAddress Where to write next
-  #define EE_ADD_PIC   13    //-> ActualPicture --> Counter from begining
   #define EE_ADD_ISO   20   //-> camera current ISO (dongleless) 
 
   enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
@@ -96,6 +93,5 @@
   extern const byte PowerDownDelay;
   extern const byte PowerDown; //max 255 = full power/POWERUP mode
   #define DEBOUNCECOUNT 5 
-  extern int currentPicture;
   extern int prevDongle;
 #endif

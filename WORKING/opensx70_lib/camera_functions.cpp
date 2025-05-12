@@ -318,12 +318,6 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
 void Camera::ManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
 
-  #if SIMPLEDEBUG
-    output_serial("take single Picture on  Manual Mode");
-    output_serial(", current Picture: ");
-    output_line_serial(currentPicture);
-  #endif
-
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
      #if BASICDEBUG
@@ -396,12 +390,6 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
 
 void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
-
-  #if SIMPLEDEBUG
-    output_serial("take single Picture on  Manual Mode");
-    output_serial(", current Picture: ");
-    output_line_serial(String(currentPicture));
-  #endif
 
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
@@ -497,12 +485,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
 }
 
 void Camera::AutoExposure(int _myISO){
-  #if SIMPLEDEBUG
-    output_serial("take a picture on Auto Mode with ISO: ");
-    output_serial(String(_myISO));
-    output_serial(", current Picture: ");
-    output_line_serial(String(currentPicture));
-  #endif
   //lmTimer_stop();
   #if LMDEBUG
     output_serial(F("AUTOMODE ISO: "));
@@ -544,12 +526,6 @@ void Camera::AutoExposure(int _myISO){
 }
 
 void Camera::AutoExposureFF(int _myISO){
-  #if SIMPLEDEBUG
-      Serial.print("take a picture on Auto Mode + Fill Flash with ISO: ");
-      Serial.print(_myISO);
-      Serial.print(", current Picture: ");
-      Serial.println(currentPicture);
-  #endif
   Camera::shutterCLOSE();
   Camera::mirrorUP();   
   pinMode(PIN_S3, INPUT_PULLUP); // GND
@@ -635,12 +611,6 @@ void Camera::AutoExposureFF(int _myISO){
 
 void Camera::ShutterB()
 {
-  #if SIMPLEDEBUG
-     output_serial("take B Mode Picture");
-     output_serial(", current Picture: ");
-     output_line_serial(String(currentPicture));
-  #endif
-
   #if APERTURE_PRIORITY
     AperturePriority();
   #endif
@@ -659,13 +629,6 @@ void Camera::ShutterB()
 }
 
 void Camera::ShutterT(){
-  #if SIMPLEDEBUG
-     output_serial("take T Mode picture: ");
-     output_serial(", current Picture: ");
-     output_line_serial(String(currentPicture));
-  #endif
-
-
   #if APERTURE_PRIORITY
     AperturePriority();
   #endif
@@ -749,12 +712,6 @@ void Camera::ExposureFinish()
 }
 
 void Camera::multipleExposureLastClick(){
-  #if MXDEBUG
-    output_serial("Multiexposure last Red Button Click, mxshots: ");
-    output_serial(String(mxshots));
-    output_serial(", CurrentPicture: ");
-    output_line_serial(String(currentPicture));
-  #endif
   Camera::mirrorDOWN(); 
   //delay(50);                             //AGAIN is this delay necessary? 100-->50
   //delay (100);                             //AGAIN is this delay necessary?
