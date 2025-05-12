@@ -15,10 +15,6 @@ int activeISO;
 
 bool mEXPFirstRun;
 bool multipleExposureMode;
-static int multipleExposureCounter = 0;
-#if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
-  static int multipleExposureLastStartTimestamp = 0; // last time the MX mode started
-#endif
 
 /*------------BEGIN STATE MACHINE SET_UP------------*/
 typedef enum{
@@ -50,7 +46,6 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 camera_state state = STATE_DARKSLIDE;
 
 void setup() {//setup - Inizialize
-  currentPicture = ReadPicture();
   #if DEBUG
     serial_init();
     output_line_serial(F("Welcome to openSX70 Version: 05_08_2025 Integrator STM32"));
@@ -58,8 +53,6 @@ void setup() {//setup - Inizialize
     output_serial(String(A100));
     output_serial(F("| A600 ="));
     output_line_serial(String(A600));
-    output_serial(F("currentPicture stored in EEPROM: "));
-    output_line_serial(String(currentPicture));
   #endif
 
   io_init();
@@ -78,7 +71,6 @@ void setup() {//setup - Inizialize
   mEXPFirstRun = false;
   multipleExposureMode = false;
 
-  checkFilmCount();
   savedISO = ReadISO();
   meter_set_iso(savedISO);
 
@@ -92,10 +84,6 @@ void setup() {//setup - Inizialize
     #endif
   }
 
-  #if SIMPLEDEBUG
-    output_serial(F("currentPicture: "));
-    output_line_serial(currentPicture);
-  #endif
   #if DONGLE_FREE_ISO_CHANGE
   S1ISOSwap();
   #endif
@@ -123,9 +111,6 @@ camera_state do_state_darkslide (void) {
   if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
   #endif
     if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
-      currentPicture = 0; 
-      WritePicture(currentPicture);
-      checkFilmCount();
       if(peripheral.checkDongle() == 0){
         openSX70.darkslideEJECT(); 
       }
@@ -134,11 +119,6 @@ camera_state do_state_darkslide (void) {
         openSX70.darkslideEJECT();
         peripheral.dongleLed(GREEN, LOW); //switching off green uDongle LED
       }
-      #if SIMPLEDEBUG
-        output_line_serial(F("STATE1: EJECT DARK SLIDE"));
-        output_serial(F("currentPicture on Darkslide eject: "));
-        output_line_serial(currentPicture);
-      #endif
     }
     if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
       result = STATE_DONGLE;
@@ -260,7 +240,6 @@ camera_state do_state_dongle (void){
       }
     }
     sw_S1.Reset();
-    checkFilmCount();
   } 
   
   // Dongle Removed
@@ -276,6 +255,7 @@ camera_state do_state_dongle (void){
     result = STATE_MULTI_EXP;
     multipleExposureMode = true;
     mEXPFirstRun = true;
+    LightMeterHelper(0);
     #if STATEDEBUG
       output_line_serial(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
     #endif
@@ -291,7 +271,6 @@ camera_state do_state_flashBar (void){
     beginExposure();
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
-    checkFilmCount();
   }
   #if DOUBLECLICK
   if (sw_S1.clicks == 2){
@@ -299,7 +278,6 @@ camera_state do_state_flashBar (void){
     switch2Function(1);
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
-    checkFilmCount(); 
   } 
   #endif
   
@@ -314,46 +292,31 @@ camera_state do_state_flashBar (void){
 }
 
 camera_state do_state_multi_exp (void){
+  static uint32_t multipleExposureLastStartTimestamp;
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
 
-
-  // TODO May want to remove lmhelper for MEXP
-  if(current_status.selector<11){
-    LightMeterHelper(2); //LMHelper Manual Mode
-  }
-  else if(current_status.selector==14 || current_status.selector==15){
-    LightMeterHelper(1); //LMHelper Auto Mode
-  }
-
-  
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
-    LightMeterHelper(0); //Turns off LMHelper on picutre Taking
-    if(current_status.switch1){ //Why Switch1 == true?!    This is for checking if we are still taking mexp pics
-      if(mEXPFirstRun){
-        beginExposure();
-        mEXPFirstRun = false;
-        #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
-          multipleExposureLastStartTimestamp = millis();
-        #endif
-      }
+    if(current_status.switch1){
       if(current_status.switch2){
         switch2Function(0); // start self timer 
       }
-
+      if(mEXPFirstRun){
+        mEXPFirstRun = false;
+        multipleExposureLastStartTimestamp = millis();
+        beginExposure();
+      }
+      
       if(current_status.selector<12){ //MANUAL SPEEDS  
         openSX70.ManualExposure(savedISO, current_status.selector);;
-        multipleExposureCounter++;
       }
       else if(ShutterSpeed[current_status.selector] == POST){ //POST
         turnLedsOff();
         openSX70.ShutterT();
-        multipleExposureCounter++;
       }
       else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
         turnLedsOff(); //why?
         openSX70.ShutterB();
-        multipleExposureCounter++;
       }
       else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
         switch(ShutterSpeed[current_status.selector]){
@@ -363,38 +326,23 @@ camera_state do_state_multi_exp (void){
         case AUTO600:
           openSX70.AutoExposure(ISO_600);
           break;
-      }
-        multipleExposureCounter++;
+        } 
       }
     }
-    else if(current_status.switch1 == 0 && multipleExposureCounter > 0){
-      openSX70.multipleExposureLastClick();
-      checkFilmCount();
-      multipleExposureCounter = 0;
-      #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
-        multipleExposureLastStartTimestamp = 0;
-      #endif
+    else if((current_status.switch1 == 0) && (mEXPFirstRun == false)){
       result = STATE_DONGLE;
-
-      #if STATEDEBUG
-        output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
-      #endif
+      openSX70.multipleExposureLastClick();
     }
     sw_S1.Reset();
   }
 
-  #if MULTIPLE_EXPOSURES_TIMEOUT_ENABLED
-    // Finish multiple exposure due to timeout.
-    if(multipleExposureLastStartTimestamp != 0 && millis() - multipleExposureLastStartTimestamp > MULTIPLE_EXPOSURES_TIMEOUT){
-      peripheral.simpleBlink(2, RED);
-      openSX70.multipleExposureLastClick();
-      checkFilmCount();
-      multipleExposureCounter = 0;
-      multipleExposureLastStartTimestamp = 0;
-    }
-  #endif
+  if((mEXPFirstRun == false) && ((millis() - multipleExposureLastStartTimestamp) >= MULTIPLE_EXPOSURES_TIMEOUT)){
+    mEXPFirstRun = true;
+    peripheral.simpleBlink(2, RED);
+    openSX70.multipleExposureLastClick(); 
+  }
 
-  if(current_status.switch1 == false && multipleExposureCounter == 0){
+  if(current_status.switch1 == false && mEXPFirstRun == true){
     result = STATE_DONGLE;
     multipleExposureMode = false;
     #if STATEDEBUG
@@ -420,9 +368,6 @@ void unfocusing(){
 //Added to remove check for multiple exposure mode from standard manual exposure state. 
 //Offload the check to multiple exposure state
 void beginExposure(){
-  currentPicture++;
-  WritePicture(currentPicture);
-
   openSX70.shutterCLOSE();
   delay(40);
   openSX70.mirrorUP();
@@ -512,8 +457,6 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
           output_serial(F("EEPROM READ ISO: "));
           output_line_serial(savedISO);
       #endif
-      checkFilmCount();
-      //return;
     }
 }
 
@@ -535,7 +478,6 @@ void blinkAutomode(){
       #endif
       //return;
     }
-    checkFilmCount(); //Needed to Check if Counter is on 8 and 9 or 10 to activate LED again
   }
 }
 
@@ -554,8 +496,6 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
     output_serial(F("active ISO: "));
     output_line_serial(activeISO);
   #endif
-  checkFilmCount();
-  //return;
 }
 
 void switch2Function(int mode) {
@@ -592,43 +532,6 @@ void switch2Function(int mode) {
   }
   #if SIMPLEDEBUG
     output_line_serial(F("Self Timer End"));
-  #endif
-}
-
-void checkFilmCount(){
-  #if EIGHT_SHOT_PACK
-    if(currentPicture >= 8){ 
-      #if SIMPLEDEBUG
-        output_serial(F("All 8 Frames shot!"));
-        output_serial(F(", currentPicture: "));
-        output_line_serial(currentPicture);
-      #endif
-      peripheral.dongleLed(GREEN, LOW);
-      peripheral.dongleLed(RED, HIGH);
-      return;
-    }
-  #else
-  if ((currentPicture == 8) || (currentPicture == 9)){
-      #if SIMPLEDEBUG
-        output_serial(F("Two Frames left!"));
-        output_serial(F(", currentPicture on Two Frames left: "));
-        output_line_serial(currentPicture);
-      #endif
-      //peripheral.simpleBlink(2, RED);
-      peripheral.dongleLed(RED, LOW);
-      peripheral.dongleLed(GREEN, HIGH);
-      return;
-  }
-  else if(currentPicture == 10){ 
-    #if SIMPLEDEBUG
-      output_serial(F("All ten Frames shot!"));
-      output_serial(F(", currentPicture: "));
-      output_line_serial(currentPicture);
-    #endif
-    peripheral.dongleLed(GREEN, LOW);
-    peripheral.dongleLed(RED, HIGH);
-    return;
-  }
   #endif
 }
 
