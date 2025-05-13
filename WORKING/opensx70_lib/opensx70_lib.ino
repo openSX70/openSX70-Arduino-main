@@ -99,7 +99,6 @@ void loop() {
   previous_status = current_status;
   current_status = peripheral.get_peripheral_status();
   sw_S1.Update();
-  //normalOperation();
   state = STATE_MACHINE[state]();
 }
 
@@ -150,7 +149,7 @@ camera_state do_state_darkslide (void) {
   
   savedISO = ReadISO();
   meter_set_iso(savedISO);
-  
+
   return result;
 }
 
@@ -535,38 +534,6 @@ void switch2Function(int mode) {
   #if SIMPLEDEBUG
     output_line_serial(F("Self Timer End"));
   #endif
-}
-
-void normalOperation(){
-  if (digitalRead(PIN_S8) == LOW && digitalRead(PIN_S9) == LOW){
-      //WHAT TO DO WHEN POWER-UP:
-      //  S8     S9
-      // closed  open  --> EJECT DARKSLIDE (DEFAULT)
-      // open  closed --> FILM REACH 0 (NO FLASH)
-      // open   open  --> NORMAL OPERATION 10 TO 1
-      // ///////////////////////////////////PICTURE TAKING OPERATION//////////////////////////////////////////////////
-      //    FOUR CASES:
-      //   *  CASE 1 NORMAL OPERATION: FULL CYCLE
-      //   *  SELECTOR = NORMAL (LOW)
-      //   *  MXSHOTS = 0
-      //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
-      //   *
-      //   *  CASE 2 DOUBLE EXPOSURE FIRST SHOT: MIRROR DOWN AND FIRST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
-      //   *  SELECTOR = DOUBLE (HIGH)
-      //   *  MXSHOTS = 0
-      //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
-      //   *
-      //   *  CASE 3 DOUBLE EXPOSURE ULTERIOR MXSHOTS: NO MOTOR OPERATION JUST PICTURE (CLICK: SHUTTER OPERATION REMAINING CLOSED)
-      //   *  SELECTOR = DOUBLE (HIGH)
-      //   *  MXSHOTS >= 1
-      //   *  PIN_S1 = LOW (RED BUTTON PRESSED)
-      //   *
-      //   *  CASE 4 PICTURE EXPULSION AFTER DOUBLE EXPOSURE: MIRROR DOWN AND SHUTTER OPENING (NO PICTURE TAKEN)
-      //   *
-      //   *  SELECTOR = NORMAL (LOW)
-      //   *  MXSHOTS >= 1
-    sw_S1.Update();
-  }
 }
 
 void saveISOChange() {
