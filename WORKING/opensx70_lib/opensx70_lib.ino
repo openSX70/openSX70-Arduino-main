@@ -82,10 +82,7 @@ void setup() {//setup - Inizialize
     output_line_serial(F("Initialize: mirrorDOWN"));
     #endif
   }
-
-  #if DONGLE_FREE_ISO_CHANGE
   S1ISOSwap();
-  #endif
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
@@ -573,7 +570,6 @@ void LightMeterHelper(byte ExposureType){
   }
 }
 
-#if DONGLE_FREE_ISO_CHANGE
 void viewfinderBlink(uint8_t LEDPIN){
   digitalWrite(LEDPIN, HIGH);
   delay(100);
@@ -622,4 +618,3 @@ void S1ISOSwap(){
   }
   sw_S1.Reset();
 }
-#endif
