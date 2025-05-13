@@ -90,14 +90,9 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
-  if ((digitalRead(PIN_S1F) == HIGH)){
-    preFocus();
-  }
-  else{
-    unfocusing();
-  }
   previous_status = current_status;
   current_status = peripheral.get_peripheral_status();
+  sonarFocus();
   sw_S1.Update();
   state = STATE_MACHINE[state]();
 }
@@ -354,14 +349,11 @@ camera_state do_state_multi_exp (void){
   return result;
 }
 
-void preFocus() {
-  if ((digitalRead(PIN_S1F) == HIGH)) { // S1F pressed
+void sonarFocus() {
+  if ((digitalRead(PIN_S1F) == HIGH)){
     openSX70.S1F_Focus();
   }
-}
-
-void unfocusing(){
-  if ((digitalRead(PIN_S1F) == LOW)) {
+  else{
     openSX70.S1F_Unfocus();
   }
 }
