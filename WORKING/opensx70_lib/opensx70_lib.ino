@@ -471,23 +471,6 @@ void blinkAutomode(){
   }
 }
 
-void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
-  #if SIMPLEDEBUG
-      output_serial(F("Blinking ISO change"));
-  #endif
-  turnLedsOff();
-  if (activeISO == ISO_SX70){
-    peripheral.simpleBlink(1, RED);
-  }
-  else if (activeISO == ISO_600){
-    peripheral.simpleBlink(2, RED);
-  }
-  #if SIMPLEDEBUG
-    output_serial(F("active ISO: "));
-    output_line_serial(activeISO);
-  #endif
-}
-
 void switch2Function(int mode) {
   #if SIMPLEDEBUG
     output_line_serial(F("Self Timer Activated"));
@@ -525,33 +508,6 @@ void switch2Function(int mode) {
   #endif
 }
 
-void dongleISOSwap() {
-  int _selectedISO;
-  savedISO = ReadISO(); //read the savedISO from the EEPROM
-  if (((ShutterSpeed[current_status.selector]) == AUTO600)) {
-    _selectedISO = ISO_600;
-  }
-  else if (((ShutterSpeed[current_status.selector]) == AUTO100)) {
-    _selectedISO = ISO_SX70;
-  }
-  else {
-    //Fall back to current ISO if A100 or A600 are not selected
-    _selectedISO = DEFAULT_ISO;
-  }
-  if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
-    activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
-    WriteISO(_selectedISO); //Write ISO to EEPROM
-    savedISO = ReadISO();
-    meter_set_iso(activeISO);
-    BlinkISORed();
-
-  }
-  else{
-    activeISO = _selectedISO;
-    BlinkISORed(); //Blink ISO Red
-  }
-}
-
 void LightMeterHelper(byte ExposureType){
   if(openSX70.getLIGHTMETER_HELPER()){
     meter_led(current_status.selector, ExposureType);
@@ -559,18 +515,39 @@ void LightMeterHelper(byte ExposureType){
 }
 
 void viewfinderBlink(uint8_t LEDPIN){
-  digitalWrite(LEDPIN, HIGH);
-  delay(100);
-  digitalWrite(LEDPIN, LOW);
-  delay(100);
-  digitalWrite(LEDPIN, HIGH);
-  delay(100);
-  digitalWrite(LEDPIN, LOW);
+  for(i=0; i<2; i++){
+    digitalWrite(LEDPIN, HIGH);
+    delay(100);
+    digitalWrite(LEDPIN, LOW);
+    delay(100);
+  }
+}
+
+void saveISO(int iso){
+  WriteISO(iso);
+  savedISO = iso;
+  meter_set_iso(iso);
+}
+
+void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
+  #if SIMPLEDEBUG
+      output_serial(F("Blinking ISO change"));
+  #endif
+  turnLedsOff();
+  if (activeISO == ISO_SX70){
+    peripheral.simpleBlink(1, RED);
+  }
+  else if (activeISO == ISO_600){
+    peripheral.simpleBlink(2, RED);
+  }
+  #if SIMPLEDEBUG
+    output_serial(F("active ISO: "));
+    output_line_serial(activeISO);
+  #endif
 }
 
 void S1ISOSwap(){
   int _selectedISO;
-  //sw_S1.Update();
 
   if(digitalRead(PIN_S1) == HIGH){
     savedISO = ReadISO();
@@ -596,13 +573,35 @@ void S1ISOSwap(){
       _selectedISO = ISO_600;
       viewfinderBlink(PIN_LED2);
     }
-    activeISO = _selectedISO;
-    WriteISO(_selectedISO);
-    savedISO = ReadISO();
-    meter_set_iso(activeISO);
+
+    saveISO(_selectedISO);
+
     while(digitalRead(PIN_S1) == HIGH){
       //wait....
     }
   }
   sw_S1.Reset();
+}
+
+void dongleISOSwap() {
+  int _selectedISO;
+  savedISO = ReadISO(); //read the savedISO from the EEPROM
+  if (((ShutterSpeed[current_status.selector]) == AUTO600)) {
+    _selectedISO = ISO_600;
+  }
+  else if (((ShutterSpeed[current_status.selector]) == AUTO100)) {
+    _selectedISO = ISO_SX70;
+  }
+  else { //Fall back to current ISO if A100 or A600 are not selected
+    _selectedISO = savedISO;
+  }
+
+  if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
+    saveISO(_selectedISO);
+    BlinkISORed();
+  }
+  else{
+    activeISO = _selectedISO;
+    BlinkISORed(); //Blink ISO Red
+  }
 }
