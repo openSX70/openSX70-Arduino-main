@@ -11,7 +11,6 @@ status current_status;
 status previous_status;
 
 int savedISO;
-int activeISO;
 
 bool mEXPFirstRun;
 bool multipleExposureMode;
@@ -534,16 +533,12 @@ void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for
       output_serial(F("Blinking ISO change"));
   #endif
   turnLedsOff();
-  if (activeISO == ISO_SX70){
+  if (savedISO == ISO_SX70){
     peripheral.simpleBlink(1, RED);
   }
-  else if (activeISO == ISO_600){
+  else if (savedISO == ISO_600){
     peripheral.simpleBlink(2, RED);
   }
-  #if SIMPLEDEBUG
-    output_serial(F("active ISO: "));
-    output_line_serial(activeISO);
-  #endif
 }
 
 void S1ISOSwap(){
@@ -601,7 +596,7 @@ void dongleISOSwap() {
     BlinkISORed();
   }
   else{
-    activeISO = _selectedISO;
+    savedISO = _selectedISO;
     BlinkISORed(); //Blink ISO Red
   }
 }
