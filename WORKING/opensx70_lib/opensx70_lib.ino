@@ -173,7 +173,7 @@ camera_state do_state_noDongle (void){
     result = STATE_DONGLE;
     savedISO = ReadISO();
     if(((current_status.switch1 == 1) && (current_status.switch2 == 1))){
-      saveISOChange();
+      dongleISOSwap();
     }
     else if(current_status.selector<=13){ //Dont blink on AUTOMODE
       BlinkISO();
@@ -525,7 +525,7 @@ void switch2Function(int mode) {
   #endif
 }
 
-void saveISOChange() {
+void dongleISOSwap() {
   int _selectedISO;
   savedISO = ReadISO(); //read the savedISO from the EEPROM
   if (((ShutterSpeed[current_status.selector]) == AUTO600)) {
@@ -539,14 +539,6 @@ void saveISOChange() {
     _selectedISO = DEFAULT_ISO;
   }
   if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
-    #if SIMPLEDEBUG
-      output_serial(F("SaveISOChange() Function: "));
-      output_serial(F("ISO has changed, previos saved ISO (from EEPROM): "));
-      output_line_serial(savedISO);
-      output_serial(F("Saving new selected ISO "));
-      output_serial(_selectedISO);
-      output_line_serial(F(" to the EEPROM"));
-    #endif
     activeISO = _selectedISO; //Save selectedISO to volatile Variable activeISO
     WriteISO(_selectedISO); //Write ISO to EEPROM
     savedISO = ReadISO();
@@ -555,10 +547,6 @@ void saveISOChange() {
 
   }
   else{
-    #if SIMPLEDEBUG
-      output_serial(F("SaveISOChange() Function: "));
-      output_line_serial(F("savedISO is equal to selected ISO, dont save!"));
-    #endif
     activeISO = _selectedISO;
     BlinkISORed(); //Blink ISO Red
   }
