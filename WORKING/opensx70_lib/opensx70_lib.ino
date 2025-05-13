@@ -71,8 +71,7 @@ void setup() {//setup - Inizialize
   mEXPFirstRun = false;
   multipleExposureMode = false;
 
-  savedISO = ReadISO();
-  meter_set_iso(savedISO);
+  
 
   if (digitalRead(PIN_S5) != LOW)
   {
@@ -148,6 +147,9 @@ camera_state do_state_darkslide (void) {
   sw_S1.Reset();
   }
   #endif
+  
+  savedISO = ReadISO();
+  meter_set_iso(savedISO);
   
   return result;
 }
@@ -654,6 +656,7 @@ void S1ISOSwap(){
     activeISO = _selectedISO;
     WriteISO(_selectedISO);
     savedISO = ReadISO();
+    meter_set_iso(activeISO);
     while(digitalRead(PIN_S1) == HIGH){
       //wait....
     }
