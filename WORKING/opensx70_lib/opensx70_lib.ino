@@ -71,7 +71,9 @@ void setup() {//setup - Inizialize
   multipleExposureMode = false;
 
   
-
+  // Move some setup stuff into its own init state
+  // Reason for this is to add branching option for making the dark slide eject a standard exposure
+  // (Changing bag pack swap)
   if (digitalRead(PIN_S5) != LOW)
   {
     openSX70.shutterCLOSE();
