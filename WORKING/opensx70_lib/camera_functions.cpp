@@ -530,7 +530,7 @@ void Camera::AutoExposureFF(int _myISO){
   Camera::shutterCLOSE();
   Camera::mirrorUP();   
 
-  Camera:sol2Engage();
+  Camera::sol2Engage();
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
 
   uint16_t FD_MN = 0;  //FlashDelay Magicnumber
