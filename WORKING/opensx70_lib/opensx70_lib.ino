@@ -84,6 +84,7 @@ void setup() {//setup - Inizialize
     #endif
   }
   S1ISOSwap();
+  savedISO = ReadISO();
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
@@ -139,10 +140,6 @@ camera_state do_state_darkslide (void) {
   sw_S1.Reset();
   }
   #endif
-  
-  savedISO = ReadISO();
-  meter_set_iso(savedISO);
-
   return result;
 }
 

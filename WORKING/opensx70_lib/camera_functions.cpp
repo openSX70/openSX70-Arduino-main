@@ -499,11 +499,10 @@ void Camera::AutoExposure(int _myISO){
   output_serial(F("METER_UPDATE status : "));
   output_line_serial(String(meter_update()));
   #endif
-  
-  // TODO - Move this to top level, does not need to run per exposure
 
-  meter_init();
+  meter_set_iso(_myISO);
   meter_reset();
+
   Camera::shutterOPEN();
   #if LMDEBUG
     uint32_t shutterOpenTime = millis(); //Shutter Debug
@@ -527,9 +526,6 @@ void Camera::AutoExposure(int _myISO){
 // TODO Explore this one a bit. It may be possible to remove the hard coded timing
 // and move purely to a meter-based approach. Would be faster and more consistent.
 void Camera::AutoExposureFF(int _myISO){
-  Camera::shutterCLOSE();
-  Camera::mirrorUP();   
-
   Camera::sol2Engage();
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
 
