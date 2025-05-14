@@ -481,7 +481,7 @@ void LightMeterHelper(byte ExposureType){
 }
 
 void viewfinderBlink(uint8_t LEDPIN){
-  for(i=0; i<2; i++){
+  for(uint8_t i=0; i<2; i++){
     digitalWrite(LEDPIN, HIGH);
     delay(100);
     digitalWrite(LEDPIN, LOW);
