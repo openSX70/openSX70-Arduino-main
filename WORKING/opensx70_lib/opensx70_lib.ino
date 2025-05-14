@@ -370,7 +370,6 @@ void turnLedsOff(){ //TODO :move to camerafunction
 
 void DongleInserted() { //Dongle is pressend LOOP
   if (digitalRead(PIN_S1) != S1Logic) { //Dont run DongleInserted Function on S1T pressed
-    lmEnable(); //added 26.10.
     if ((current_status.selector != previous_status.selector)){
       #if ADVANCEDEBUG
         output_serial(F("DONGLE Mode:  "));
@@ -385,37 +384,6 @@ void DongleInserted() { //Dongle is pressend LOOP
       #endif
       // TODO Move this into state transition
       blinkAutomode();
-    }
-  }
-}
-
-void lmEnable(){
-  if(current_status.switch1 && current_status.switch2){
-    if(current_status.selector == 12){ //POST
-      if (openSX70.getLIGHTMETER_HELPER() == false) {
-        openSX70.setLIGHTMETER_HELPER(true);
-        turnLedsOff();
-        digitalWrite(PIN_LED2, HIGH); //Blink Blue -- LMH On
-        peripheral.simpleBlink(1, GREEN);
-        delay(100);
-        digitalWrite(PIN_LED2, LOW);
-        #if SIMPLEDEBUG
-          output_line_serial(F("Lightmeter is on"));
-        #endif
-      }
-    }
-    else if(current_status.selector == 13){ //POSB
-      if (openSX70.getLIGHTMETER_HELPER() == true) {
-        openSX70.setLIGHTMETER_HELPER(false);
-        turnLedsOff();
-        digitalWrite(PIN_LED1, HIGH); //Blink RED -- LMH Off
-        peripheral.simpleBlink(1, RED);
-        delay(100);
-        digitalWrite(PIN_LED1, LOW);
-      #if SIMPLEDEBUG
-        output_line_serial(F("Lightmeter is off"));
-      #endif
-      }
     }
   }
 }
