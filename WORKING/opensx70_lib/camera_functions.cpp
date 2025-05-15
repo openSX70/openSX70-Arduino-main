@@ -390,36 +390,13 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
 void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
 
-  pinMode(PIN_S3, INPUT_PULLUP); // GND
-  while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
-     #if BASICDEBUG
-     output_line_serial("waiting for S3 to OPEN");
-     #endif
-  }
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
   delay (YDelay);
 
-  if(selector>= Dongle_Flash_Limit){
+  if(selector >= Dongle_Flash_Limit){
     int ShutterSpeedDelay = ShutterSpeed[selector] - Flash_Capture_Delay;
     int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
-    #if ADVANCEDEBUG
-      output_serial("Manual Exposure Debug: ");
-      output_serial("ShutterSpeed[");
-      output_serial(String(selector));
-      output_serial("] :");
-      output_line_serial(String(ShutterSpeed[selector]));
-      output_serial("ShutterConstant:");
-      output_line_serial(String(ShutterConstant));
-      output_serial("ShutterSpeedDelay:");
-      output_line_serial(String(ShutterSpeedDelay));
-    #endif
 
     meter_set_iso(_myISO);
-    // TODO - Move this to top level, does not need to run per exposure
-
-    meter_init();
     meter_reset();
 
     initialMillis = millis();
