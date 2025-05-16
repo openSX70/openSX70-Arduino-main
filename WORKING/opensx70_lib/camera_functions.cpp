@@ -416,23 +416,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
     int ShutterSpeedDelay = ShutterSpeed[selector];
     int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
 
-    #if ADVANCEDEBUG
-      
-      output_serial("Manual Exposure Debug: ");
-      output_serial("ShutterSpeed[");
-      output_serial(String(selector));
-      output_serial("] :");
-      output_line_serial(String(ShutterSpeed[selector]));
-      output_serial("ShutterConstant:");
-      output_line_serial(String(ShutterConstant));
-      output_serial("ShutterSpeedDelay:");
-      output_line_serial(String(ShutterSpeedDelay));
-    #endif
-
     meter_set_iso(_myISO);
-    // TODO - Move this to top level, does not need to run per exposure
-
-    meter_init();
     meter_reset();
 
     initialMillis = millis();
@@ -461,42 +445,18 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
 }
 
 void Camera::AutoExposure(int _myISO){
-  //lmTimer_stop();
-  #if LMDEBUG
-    output_serial(F("AUTOMODE ISO: "));
-    output_line_serial(String(_myISO));
-  #endif
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
-
   delay(YDelay);
-
-  #if LMDEBUG
-  output_serial(F("METER_UPDATE status : "));
-  output_line_serial(String(meter_update()));
-  #endif
 
   meter_set_iso(_myISO);
   meter_reset();
 
   Camera::shutterOPEN();
-  #if LMDEBUG
-    uint32_t shutterOpenTime = millis(); //Shutter Debug
-  #endif
+
   while (meter_update() == false){
   }
-  #if LMDEBUG
-    uint32_t shutterCloseTime = millis(); //Shutter Debug
-  #endif
 
   Camera::ExposureFinish();
 
-  #if LMDEBUG
-    uint32_t exposureTime = shutterCloseTime - shutterOpenTime; //Shutter Debug
-    output_serial("ExposureTime on Automode: ");
-    output_line_serial(String(exposureTime));
-  #endif
   return; //Added 26.10.
 }
 
@@ -540,9 +500,7 @@ void Camera::AutoExposureFF(int _myISO){
 
 void Camera::ShutterB()
 {
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
+
   delay (YDelay);
 
   Camera::shutterOPEN ();
@@ -558,9 +516,6 @@ void Camera::ShutterB()
 }
 
 void Camera::ShutterT(){
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
 
   delay (40);
   
@@ -568,25 +523,15 @@ void Camera::ShutterT(){
   }
 
   Camera::shutterOPEN ();
+
+  // Catch button press, wait for depress
   while(DebouncedRead(PIN_S1) == S1Logic){
-    #if SIMPLEDEBUG
-      output_line_serial("WAITING FOR BUTTON TO DEPRESS");
-    #endif
   }
   while (digitalRead(PIN_S1) == !S1Logic){
-    #if SIMPLEDEBUG
-      output_line_serial("Shutter stays open");
-    #endif
-    //do nothing
   }
   Camera::FastFlash();
   delay(Flash_Capture_Delay);   //Capture Flash 
 
-  #if SIMPLEDEBUG
-    output_line_serial("Exp finish T mode");
-  #endif
-
-  //multiple exposure test (Should not work in T Mode?!)
   ExposureFinish();
   return; //Addes 26.10.
 }
@@ -594,10 +539,7 @@ void Camera::ShutterT(){
 void Camera::ExposureFinish()
 {
   Camera::shutterCLOSE();
-  #if APERTURE_PRIORITY
-    Camera::sol2Disengage();
-  #endif
-  //lmTimer_stop(); //Lightmeter Timer stop
+
   delay (200); //Was 20
 
   if(multipleExposureMode == true){
@@ -632,9 +574,6 @@ void Camera::multipleExposureLastClick(){
 
 void Camera::FastFlash(){
   pinMode(PIN_S2, OUTPUT);
-  #if BASICDEBUG
-    output_line_serial("FastFlash");
-  #endif
   digitalWrite (PIN_S2, LOW);     //So FFA recognizes the flash as such
   digitalWrite(PIN_FF, HIGH);    //FLASH TRIGGERING
   delay (1);                      //FLASH TRIGGERING
