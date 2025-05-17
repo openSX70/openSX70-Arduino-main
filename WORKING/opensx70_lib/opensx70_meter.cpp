@@ -37,6 +37,7 @@ int meter_compute(byte _selector,int _activeISO){
   int _myISO = _activeISO;
   bool _sampleTaken = false;
   uint16_t counter;
+  uint32_t timeElapsed;
 
   if(measuring == false){
     //meter_set_iso(_activeISO);
@@ -50,16 +51,18 @@ int meter_compute(byte _selector,int _activeISO){
         counter = analogRead(PIN_LM);
         endMillis = millis();
         _sampleTaken = true;
+        timeElapsed = endMillis - startMillis;
         break;
       }
     }
   }
   else{ 
-    uint32_t timeElapsed =  endMillis - startMillis;
+    timeElapsed = endMillis - startMillis;
     if((timeElapsed) >= METER_INTERVAL){
       counter = analogRead(PIN_LM);
       endMillis = millis();
       _sampleTaken = true;
+    }
   }
 
   if(_sampleTaken){
@@ -74,7 +77,6 @@ int meter_compute(byte _selector,int _activeISO){
       pred_milli = round(float(outputCompare)/float(slope)); 
     }
       return pred_milli; 
-    }
   }
   else{
     return -1; 
