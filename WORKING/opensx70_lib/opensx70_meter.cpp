@@ -35,32 +35,50 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
 
 int meter_compute(byte _selector,int _activeISO){
   int _myISO = _activeISO;
+  bool _sampleTaken = false;
   uint16_t counter;
+
   if(measuring == false){
     //meter_set_iso(_activeISO);
     measuring = true;
     meter_reset();
     startMillis = millis();
+
+    //initial blocking sample for high EVs
+    while(millis() <= (startMillis + METER_DURATION)){
+      if(meter_update()){
+        counter = analogRead(PIN_LM);
+        endMillis = millis();
+        _sampleTaken = true;
+        break;
+      }
+    }
   }
-  else{
-    endMillis = millis();
+  else{ 
     uint32_t timeElapsed =  endMillis - startMillis;
     if((timeElapsed) >= METER_INTERVAL){
       counter = analogRead(PIN_LM);
-      measuring = false;
+      endMillis = millis();
+      _sampleTaken = true;
+  }
 
-      float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
-      int pred_milli; 
-      if(slope == 0){
-        pred_milli = 9999;
-      }
-      else{
-        pred_milli = round(float(outputCompare)/float(slope)); 
-      }
+  if(_sampleTaken){
+    measuring = false;
+
+    float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
+    int pred_milli; 
+    if(slope == 0){
+      pred_milli = 9999;
+    }
+    else{
+      pred_milli = round(float(outputCompare)/float(slope)); 
+    }
       return pred_milli; 
     }
   }
-  return -1;   
+  else{
+    return -1; 
+  }
 }
 
 bool meter_update(){
