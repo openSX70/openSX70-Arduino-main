@@ -13,8 +13,6 @@
   extern void meter_set_iso(uint16_t const& iso);
   // compute the time needed for current ligth condition so it can be display as an indication in the viewfinder
   extern int meter_compute(unsigned int _interval);
-  // start an integration cycle for auto exposure
-  extern void meter_integrate();
   // get the update from the sensor. When enough light has reached the film, returns true.
   extern bool meter_update();
   extern void meter_set_iso(uint16_t const& iso);

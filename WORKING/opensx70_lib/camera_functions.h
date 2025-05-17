@@ -16,7 +16,6 @@
       void sol2Disengage();
       void mirrorDOWN();
       void mirrorUP();
-      void startMeter(int _myISO);
       void darkslideEJECT();
       void motorON();
       void motorOFF();
