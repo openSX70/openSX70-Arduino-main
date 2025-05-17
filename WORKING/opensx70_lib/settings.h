@@ -2,7 +2,7 @@
   #define settings_h
   #include "Arduino.h"
   //----------------DEBUG OPTIONS----------------------------------------
-  #define DEBUG 0
+  #define DEBUG 1
   #define SIMPLEDEBUG 0     //Debug of opensx70 functions
   #define ADVANCEDEBUG 0    //More detailed view of OpenSX70 functions
   #define BASICDEBUG 0      //Debug of Basic Camera Functions
@@ -62,7 +62,7 @@
   //---------------End Shutter Settings--------------------------------------
 
   //---------------METER SETTINGS--------------------------------------------
-  #define METER_DURATION 2 // in ms, how long an initial blocking meter helper reading will take place
+  #define METER_DURATION 3 // in ms, how long an initial blocking meter helper reading will take place
   #define METER_INTERVAL 100 // Sets how long each meter measurement sample is taken in ms
   #define METER_AUTO_WARNING 100 // If predicted ms is over this value, warning LED will shine in auto mode
   #define METER_PREDICTION_OFFSET 20 // in ms. This gets added to the prediction. At f8 I noticed all meter predictions were around 20ms off

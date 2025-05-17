@@ -45,8 +45,8 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 camera_state state = STATE_DARKSLIDE;
 
 void setup() {//setup - Inizialize
+  serial_init();
   #if DEBUG
-    serial_init();
     output_line_serial(F("Welcome to openSX70 Version: 05_08_2025 Integrator STM32"));
     output_serial(F("Magic Number: A100="));
     output_serial(String(A100));

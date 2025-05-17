@@ -12,7 +12,7 @@
   // give the sensitivity to the meter
   extern void meter_set_iso(uint16_t const& iso);
   // compute the time needed for current ligth condition so it can be display as an indication in the viewfinder
-  extern int meter_compute(unsigned int _interval);
+  extern int meter_compute();
   // get the update from the sensor. When enough light has reached the film, returns true.
   extern bool meter_update();
   extern void meter_set_iso(uint16_t const& iso);

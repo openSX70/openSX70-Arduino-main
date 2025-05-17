@@ -4,8 +4,8 @@
 volatile bool integrationFinished = 0;
 
 bool measuring = false;
-uint32_t startMillis;
-uint32_t endMillis;
+unsigned long startMillis;
+unsigned long endMillis;
 
 uint16_t outputCompare = A100;
 
@@ -33,11 +33,12 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
     }
 }
 
-int meter_compute(byte _selector,int _activeISO){
-  int _myISO = _activeISO;
+int meter_compute(){
+  //int _myISO = _activeISO;
   bool _sampleTaken = false;
-  uint16_t counter;
-  uint32_t timeElapsed;
+  int counter;
+  unsigned long timeElapsed;
+  
 
   if(measuring == false){
     //meter_set_iso(_activeISO);
@@ -48,6 +49,7 @@ int meter_compute(byte _selector,int _activeISO){
     //initial blocking sample for high EVs
     while(millis() <= (startMillis + METER_DURATION)){
       if(meter_update()){
+        output_line_serial("HIGHEV");
         counter = analogRead(PIN_LM);
         endMillis = millis();
         _sampleTaken = true;
@@ -68,15 +70,16 @@ int meter_compute(byte _selector,int _activeISO){
   if(_sampleTaken){
     measuring = false;
 
-    float slope = (float(counter)/float(timeElapsed)) + METER_SLOPE_HANDICAP;
-    int pred_milli; 
+    float slope = counter/timeElapsed;
+    unsigned long pred_milli; 
     if(slope == 0){
       pred_milli = 9999;
     }
     else{
-      pred_milli = round(float(outputCompare)/float(slope)); 
+      pred_milli = round(outputCompare/slope); 
     }
-      return pred_milli; 
+    output_line_serial(String(timeElapsed));
+    return pred_milli; 
   }
   else{
     return -1; 
@@ -113,11 +116,13 @@ void meter_led(byte _selector, byte _type){
     activeISO = ReadISO();
   }
 
-  predictedMillis = meter_compute(_selector, activeISO);
+  predictedMillis = meter_compute();
 
   if(predictedMillis == -1){ // Still measuring!
     return;
   }
+
+  //output_line_serial(String(predictedMillis));
 
   int meterDifference = abs(predictedMillis - ShutterSpeed[_selector]);
 
