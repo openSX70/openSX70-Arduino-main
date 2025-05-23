@@ -7,6 +7,7 @@ bool measuring = false;
 unsigned long startMillis;
 unsigned long endMillis;
 unsigned long timeElapsed;
+int adcValue;
 
 uint16_t outputCompare = A100;
 
@@ -37,7 +38,7 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
 int meter_compute(){
   //int _myISO = _activeISO;
   bool _sampleTaken = false;
-  int adcValue;
+
   
   
 
