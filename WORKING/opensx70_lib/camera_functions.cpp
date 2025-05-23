@@ -175,14 +175,6 @@ void Camera::mirrorUP(){
   motorOFF ();
 }
 
-void Camera::startMeter(int _myISO){
-  meter_set_iso(_myISO);
-  meter_init();
-  meter_integrate();
-}
-
-
-
 void Camera::darkslideEJECT(){
   #if SIMPLEDEBUG
     output_line_serial(F("darkslideEJECT"));
