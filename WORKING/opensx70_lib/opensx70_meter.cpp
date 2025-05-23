@@ -6,6 +6,7 @@ volatile bool integrationFinished = 0;
 bool measuring = false;
 unsigned long startMillis;
 unsigned long endMillis;
+unsigned long timeElapsed;
 
 uint16_t outputCompare = A100;
 
@@ -36,8 +37,8 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
 int meter_compute(){
   //int _myISO = _activeISO;
   bool _sampleTaken = false;
-  int counter;
-  unsigned long timeElapsed;
+  int adcValue;
+  
   
 
   if(measuring == false){
@@ -50,7 +51,7 @@ int meter_compute(){
     while(millis() <= (startMillis + METER_DURATION)){
       if(meter_update()){
         output_line_serial("HIGHEV");
-        counter = analogRead(PIN_LM);
+        adcValue = analogRead(PIN_LM);
         endMillis = millis();
         _sampleTaken = true;
         timeElapsed = endMillis - startMillis;
@@ -61,7 +62,7 @@ int meter_compute(){
   else{ 
     timeElapsed = endMillis - startMillis;
     if((timeElapsed) >= METER_INTERVAL){
-      counter = analogRead(PIN_LM);
+      adcValue = analogRead(PIN_LM);
       endMillis = millis();
       _sampleTaken = true;
     }
@@ -70,7 +71,7 @@ int meter_compute(){
   if(_sampleTaken){
     measuring = false;
 
-    float slope = counter/timeElapsed;
+    float slope = adcValue/timeElapsed;
     unsigned long pred_milli; 
     if(slope == 0){
       pred_milli = 9999;
