@@ -9,7 +9,7 @@ unsigned long endMillis;
 unsigned long timeElapsed;
 int adcValue;
 
-uint16_t outputCompare = A100;
+uint16_t outputCompare = A600;
 
 void meter_init(){
   pinMode(PIN_LM, INPUT);
