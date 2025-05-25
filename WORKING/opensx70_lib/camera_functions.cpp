@@ -437,6 +437,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
 }
 
 void Camera::AutoExposure(int _myISO){
+  
   delay(YDelay);
 
   meter_set_iso(_myISO);
@@ -444,7 +445,12 @@ void Camera::AutoExposure(int _myISO){
 
   Camera::shutterOPEN();
 
+  uint32_t timeoutThreshold = millis() + AUTO_TIMEOUT;
   while (meter_update() == false){
+    // timeout if current exposure hits AUTO_TIMEOUT
+    if ((millis() >= timeoutThreshold) ){
+      break;
+    }
   }
 
   Camera::ExposureFinish();
