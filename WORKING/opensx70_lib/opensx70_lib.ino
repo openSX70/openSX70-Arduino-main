@@ -191,11 +191,12 @@ camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
   DongleInserted();
   
-  if(current_status.selector<=11){
-    LightMeterHelper(2); //LMHelper Manual Mode
-  }
-  else if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
+
+  if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
     LightMeterHelper(1); //LMHelper Auto Mode
+  }
+  else{
+    LightMeterHelper(0);
   }
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
