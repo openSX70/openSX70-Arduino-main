@@ -84,7 +84,7 @@ void setup() {//setup - Inizialize
     #endif
   }
   S1ISOSwap();
-  savedISO = ReadISO();
+  validateISO();
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
@@ -566,5 +566,13 @@ void dongleISOSwap() {
   else{
     savedISO = _selectedISO;
     BlinkISORed(); //Blink ISO Red
+  }
+}
+
+void validateISO(){
+  savedISO = ReadISO();
+  if(savedISO != ISO_600 && savedISO != ISO_SX70){
+    //ISO in EEPROM is invalid, set to 600
+    saveISO(ISO_600);
   }
 }
