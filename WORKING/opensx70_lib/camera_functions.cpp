@@ -320,45 +320,21 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
   #endif
   delay (YDelay);
 
+  
+
   if (selector >= Dongle_Flash_Limit){
     int ShutterSpeedDelay = (ShutterSpeed[selector] - Flash_Capture_Delay);
-
-    #if ADVANCEDEBUG
-      output_serial("Manual Exposure Debug: ");
-      output_serial("ShutterSpeed[");
-      output_serial(String(selector));
-      output_serial("] :");
-      output_line_serial(String(ShutterSpeed[selector]));
-      output_serial("ShutterConstant:");
-      output_line_serial(String(ShutterConstant));
-      output_serial("ShutterSpeedDelay:");
-      output_line_serial(String(ShutterSpeedDelay));
-      output_line_serial("Dongle Flash Enabled");
-    #endif
 
     Camera::shutterOPEN();
     initialMillis = millis();
     while (millis() < (initialMillis + ShutterSpeedDelay)){
       //Take the Picture
     }
-    Camera::FastFlash ();
+    Camera::FastFlash();
     delay(Flash_Capture_Delay);
   }
   else{
     int ShutterSpeedDelay = ShutterSpeed[selector];
-
-    #if ADVANCEDEBUG
-      output_serial("Manual Exposure Debug: ");
-      output_serial("ShutterSpeed[");
-      output_serial(String(selector));
-      output_serial("] :");
-      output_line_serial(String(ShutterSpeed[selector]));
-      output_serial("ShutterConstant:");
-      output_line_serial(String(ShutterConstant));
-      output_serial("ShutterSpeedDelay:");
-      output_line_serial(String(ShutterSpeedDelay));
-      output_line_serial("Dongle Flash Disabled");
-    #endif
 
     Camera::shutterOPEN();
     initialMillis = millis();
