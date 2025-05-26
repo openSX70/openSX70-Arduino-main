@@ -22,7 +22,7 @@ byte lightmeterHelper = true;
 
 // Added to remove the need to check for selector values prior to picture taking.
 //int ShutterSpeed[] = {     23,   26,   30,    36,  40,   44,  64,   120,    175,  275, 525, 1025, POST, POSB, AUTO600, AUTO100 };
-int ShutterSpeed[] = {     25,   26,   27,    29,  33,   40,  58,   92,    150,  275, 525, 1025, POST, POSB, AUTO600, AUTO100 };
+int ShutterSpeed[] = {     22,   23,   24,    26,  30,   37,  55,   89,    147,  272, 522, 1022, POST, POSB, AUTO600, AUTO100 };
 
 //int ShutterSpeed[] = { 2000, 1000,  500,   250, 125,   60,  30,   15,      8,    4,   2,    1, T, B, AUTO600, AUTO100 };
 //                          0     1     2      3    4     5    6     7       8     9    10   11
