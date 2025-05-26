@@ -114,8 +114,6 @@ camera_state do_state_darkslide (void) {
     }
     if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
       result = STATE_DONGLE;
-      savedISO = ReadISO();
-      delay(100);
       BlinkISO();
       #if STATEDEBUG
         output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
@@ -123,14 +121,12 @@ camera_state do_state_darkslide (void) {
     }
     else if ((current_status.selector == 100) && (peripheral.checkDongle() == 0)){
       result = STATE_FLASHBAR;
-      savedISO = ReadISO();
       #if STATEDEBUG
         output_line_serial(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
       #endif
     }
     else{
       result = STATE_NODONGLE;
-      savedISO = ReadISO();
       #if STATEDEBUG
         output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
       #endif
@@ -145,7 +141,6 @@ camera_state do_state_darkslide (void) {
 
 camera_state do_state_noDongle (void){
   camera_state result = STATE_NODONGLE;
-  //savedISO = ReadISO();
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
@@ -169,7 +164,6 @@ camera_state do_state_noDongle (void){
       output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
     #endif
     result = STATE_DONGLE;
-    savedISO = ReadISO();
     if(((current_status.switch1 == 1) && (current_status.switch2 == 1))){
       dongleISOSwap();
     }
@@ -179,7 +173,6 @@ camera_state do_state_noDongle (void){
   }
   else if (current_status.selector==100){
     result = STATE_FLASHBAR;
-    savedISO = ReadISO();
     #if STATEDEBUG
       output_line_serial(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
     #endif
@@ -237,7 +230,6 @@ camera_state do_state_dongle (void){
   // Dongle Removed
   if (current_status.selector == 200){
     result = STATE_NODONGLE;
-    savedISO = ReadISO();
     #if STATEDEBUG
       output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
     #endif
@@ -275,7 +267,6 @@ camera_state do_state_flashBar (void){
   
   if (current_status.selector == 200){
     result = STATE_NODONGLE;
-    savedISO = ReadISO();
     #if STATEDEBUG
       output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
@@ -394,26 +385,16 @@ void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 6
         output_line_serial(F("Blink for the saved ISO setting on Dongle insertion."));
       #endif
       //blinkAutomode();
-      savedISO = ReadISO();
       turnLedsOff();
       if (savedISO == ISO_600){
         peripheral.simpleBlink(2, GREEN);
-        delay(500);
       }
       else if (savedISO == ISO_SX70){
         peripheral.simpleBlink(1, GREEN);
-        delay(500);
       }
       else{
-      #if SIMPLEDEBUG
-        output_line_serial(F("No ISO Selected"));
         peripheral.simpleBlink(5, RED);
-      #endif
       }
-      #if SIMPLEDEBUG
-          output_serial(F("EEPROM READ ISO: "));
-          output_line_serial(savedISO);
-      #endif
     }
 }
 
@@ -422,18 +403,8 @@ void blinkAutomode(){
     turnLedsOff();
     if(ShutterSpeed[current_status.selector]== AUTO600){
       peripheral.simpleBlink(2, GREEN);
-      #if SIMPLEDEBUG
-        output_serial(F("Selector at A600, Blink 2"));
-        output_line_serial(ShutterSpeed[current_status.selector]);
-      #endif
-      //return;
     }else if(ShutterSpeed[current_status.selector]== AUTO100){
       peripheral.simpleBlink(1, GREEN);
-      #if SIMPLEDEBUG
-        output_serial(F("Selector at A100, Blink 1"));
-        output_line_serial(ShutterSpeed[current_status.selector]);
-      #endif
-      //return;
     }
   }
 }
@@ -548,7 +519,6 @@ void S1ISOSwap(){
 
 void dongleISOSwap() {
   int _selectedISO;
-  savedISO = ReadISO(); //read the savedISO from the EEPROM
   if (((ShutterSpeed[current_status.selector]) == AUTO600)) {
     _selectedISO = ISO_600;
   }
