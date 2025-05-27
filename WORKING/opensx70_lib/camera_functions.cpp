@@ -81,7 +81,7 @@ void Camera::shutterCLOSE(){
   #ifdef ARDUINO_GENERIC_G030K8TX
     SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 100);
     delay (PowerDownDelay);
-    SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 70);
+    SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 30);
   #endif
 
   return;
@@ -116,7 +116,7 @@ void Camera::sol2LowPower(){
     analogWrite(PIN_SOL2, 130);
   #endif
   #ifdef ARDUINO_GENERIC_G030K8TX
-    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 70);
+    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 30);
   #endif
 }
 
