@@ -4,7 +4,7 @@
 int mxshots = 0; //Multiple exposure counter
 const uint8_t YDelay = 120;
 const byte PowerDownDelay = 15; //time it takes to be fully closed
-const byte PowerDown = 130; //max 255 = full power/POWERUP mode
+const byte PowerDown = 77; //max 255 = full power/POWERUP mode
 int FD100 = round(.29*A100);
 int FD600 = round(.29*A600);
 int ShutterConstant = 0; // was 9; Setting this to 0 to remove need for doing math. putting this in the raw speed. - Zane
