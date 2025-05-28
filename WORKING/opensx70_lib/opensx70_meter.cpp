@@ -58,6 +58,7 @@ int meter_compute(byte _selector,int _activeISO){
     measuring = true;
     meter_reset();
     startMillis = millis();
+    meter_set_iso(_activeISO);
   }
   else{
     endMillis = millis();

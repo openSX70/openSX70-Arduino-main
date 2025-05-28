@@ -55,7 +55,9 @@ void setup() {//setup - Inizialize
   #endif
 
   io_init();
+  validateISO();
   meter_init();
+  meter_set_iso(savedISO);
 
   peripheral.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
@@ -84,7 +86,6 @@ void setup() {//setup - Inizialize
     #endif
   }
   S1ISOSwap();
-  validateISO();
 }
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
