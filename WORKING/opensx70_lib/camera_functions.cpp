@@ -437,8 +437,8 @@ void Camera::AutoExposure(int _myISO){
 // TODO Explore this one a bit. It may be possible to remove the hard coded timing
 // and move purely to a meter-based approach. Would be faster and more consistent.
 void Camera::AutoExposureFF(int _myISO){
-  Camera::sol2Engage();
   delay(YDelay);           //AT Yd and POWERS OFF AT FF
+  Camera::sol2Engage();
 
   uint16_t FD_MN = 0;  //FlashDelay Magicnumber
   if(_myISO == ISO_SX70){

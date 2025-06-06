@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 int mxshots = 0; //Multiple exposure counter
-const uint8_t YDelay = 120;
+const uint8_t YDelay = 65;
 const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 77; //max 255 = full power/POWERUP mode
 int FD100 = round(.29*A100);
