@@ -462,12 +462,18 @@ void Camera::AutoExposureFF(int _myISO){
     }  
   }
 
+  meter_set_iso(FF_MN);
   digitalWrite(PIN_FF, HIGH);  //FireFlash
   delay(Flash_Capture_Delay);   //Capture Flash 
+  uint32_t FFStartTime = millis();
+  while (meter_update() == false){
+    if ((millis() - FFStartTime) >= Flash_Capture_Max_Time){
+      break;
+    }
+  }
 
   digitalWrite(PIN_FF, LOW);  //Turn FF off
   Camera::sol2Disengage();
-  delay(15);
 
   Camera::ExposureFinish();
 
