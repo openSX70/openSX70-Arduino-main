@@ -5,23 +5,21 @@ int mxshots = 0; //Multiple exposure counter
 const uint8_t YDelay = 65;
 const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 77; //max 255 = full power/POWERUP mode
-int FD100 = round(.29*A100);
-int FD600 = round(.29*A600);
-int ShutterConstant = 0; // was 9; Setting this to 0 to remove need for doing math. putting this in the raw speed. - Zane
-byte lightmeterHelper = true;
-//enum positions_t {AUTO600 = -100, AUTO100, POST, POSB}; //uDONGLE
-//enum positions_t {POST = -100, POSB, AUTO600, AUTO100 };//ANALOGUEWORKS
-//  enum positions_t {POST = -100, AUTO600, AUTO600BW, AUTO100}; //uDONGLE Optoflow
-//uDONGLE WHEEL
-//int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO100, POST, POSB }; //reduced speeds from 25 (slot5) to compensate flash firing Original U-Dongle3.3
-//int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, 302, AUTO600, AUTO600BW, AUTO100, POST }; //reduced speeds from 25 (slot5) to compensate flash firing
-//int ShutterSpeed[] = { 17, 20, 23, 25, 30, 35, 45, 55, 68, 102, 166, AUTO600, AUTO600BW, AUTO100, POST, POSB }; //with 600BW | reduced speeds from 25 (slot5) to compensate flash firing
-//int ShutterSpeed[] = { 16, 20, 23, 25, 30, 35, 45, 55, 166, 302, 600, POST, POSB, AUTO600, AUTO600BW, AUTO100 };  //SANTI DONGLE WHEEL 600BW
-//NEW WHEEL ANALOGUEDONGLE
-//int ShutterSpeed[] = { 3, 5, 9, 11, 20, 30, 35, 55, 166, 302, 600, 1100, POST, POSB, AUTO600, AUTO100 };  //SANTI DONGLE WHEEL
 
-// Added to remove the need to check for selector values prior to picture taking.
-//int ShutterSpeed[] = {     23,   26,   30,    36,  40,   44,  64,   120,    175,  275, 525, 1025, POST, POSB, AUTO600, AUTO100 };
+
+// Explanation for these numbers. Concept is pulled directly from fill flash description in the alpha repair supplement.
+// FD values are 1/3 of ISO magic numbers
+// FF values are 1.3x the FD numbers
+// FD (Flash Delay) value is the value the meter must hit prior to the flash firing. If integration time takes longer than 56ms, fire the flash regardless.
+// FF (Flash Fired) value is the value the meter must hit before the shutter closes. This also has a timeout but is a much shorter 12ms.
+// I am hard coding these values as the magic number is no longer changing per board.
+int FD100 = 341;
+int FF100 = 443;
+int FD600 = 85;
+int FF600 = 111;
+
+byte lightmeterHelper = true;
+
 int ShutterSpeed[] = {     22,   24,   25,    27,  31,   38,  56,   90,    148,  273, 523, 1023, POST, POSB, AUTO600, AUTO100 };
 
 //int ShutterSpeed[] = { 2000, 1000,  500,   250, 125,   60,  30,   15,      8,    4,   2,    1, T, B, AUTO600, AUTO100 };

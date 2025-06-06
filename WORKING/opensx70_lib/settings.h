@@ -53,6 +53,7 @@
   #define Flashbar_Change 1
   #define Flash_Capture_Delay 4
   #define Flash_Max_Time 56
+  #define Flash_Capture_Max_Time 12
   #define Dongle_Flash_Limit 4
   //---------------End Flash settings----------------------------------------
 
@@ -79,8 +80,9 @@
   enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
 
   extern int FD100;
+  extern int FF100;
   extern int FD600;
-  extern int ShutterConstant;
+  extern int FF600;
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
   extern int flashDelay; //new flash "system"
   extern int MaxRange[];
