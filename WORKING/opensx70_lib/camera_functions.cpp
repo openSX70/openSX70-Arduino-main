@@ -437,24 +437,26 @@ void Camera::AutoExposure(int _myISO){
 // TODO Explore this one a bit. It may be possible to remove the hard coded timing
 // and move purely to a meter-based approach. Would be faster and more consistent.
 void Camera::AutoExposureFF(int _myISO){
-  delay(YDelay);           //AT Yd and POWERS OFF AT FF
-  Camera::sol2Engage();
-
-  uint16_t FD_MN = 0;  //FlashDelay Magicnumber
+  uint16_t FD_MN = 0;
+  uint16_t FF_MN = 0;  //FlashDelay Magicnumber
   if(_myISO == ISO_SX70){
-     FD_MN = FD100;  
+     FD_MN = FD100;
+     FF_MN = FF100;  
   }
   else if(_myISO == ISO_600){
     FD_MN = FD600;
+    FF_MN = FF600; 
   }
+
+  Camera::sol2Engage();
+  delay(YDelay);
   meter_set_iso(FD_MN);
-
   Camera::sol2LowPower();
-
   meter_reset();
+
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
-  while ((meter_update() == false) && ((millis() - integrationStartTime) <= Flash_Min_Time)){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
+  while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
     if((millis() - integrationStartTime) >= Flash_Max_Time){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
       break;
     }  
