@@ -52,8 +52,7 @@
   //---------------Flashbar and Dongle Flash---------------------------------
   #define Flashbar_Change 1
   #define Flash_Capture_Delay 4
-  #define Flash_Max_Time 63
-  #define Flash_Min_Time 47
+  #define Flash_Max_Time 56
   #define Dongle_Flash_Limit 4
   //---------------End Flash settings----------------------------------------
 
