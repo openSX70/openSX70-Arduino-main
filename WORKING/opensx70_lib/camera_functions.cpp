@@ -522,7 +522,7 @@ void Camera::ExposureFinish()
 {
   Camera::shutterCLOSE();
 
-  delay (200); //Was 20
+  delay (30); //Was 20
 
   if(multipleExposureMode == true){
     while(digitalRead(PIN_S1) == S1Logic);
@@ -536,10 +536,10 @@ void Camera::ExposureFinish()
     #if EJECT_AFTER_DEPRESSING
       while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
       Camera::mirrorDOWN ();
-      delay (300);
+      delay (30);
     #else
       Camera::mirrorDOWN ();
-      delay (300);
+      delay (30);
       while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
     #endif
     Camera::shutterOPEN();
