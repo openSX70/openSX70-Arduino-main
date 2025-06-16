@@ -437,35 +437,43 @@ void Camera::AutoExposure(int _myISO){
 // TODO Explore this one a bit. It may be possible to remove the hard coded timing
 // and move purely to a meter-based approach. Would be faster and more consistent.
 void Camera::AutoExposureFF(int _myISO){
-  delay(YDelay);           //AT Yd and POWERS OFF AT FF
-  Camera::sol2Engage();
-
-  uint16_t FD_MN = 0;  //FlashDelay Magicnumber
+  uint16_t FD_MN = 0;
+  uint16_t FF_MN = 0;  //FlashDelay Magicnumber
   if(_myISO == ISO_SX70){
-     FD_MN = FD100;  
+     FD_MN = FD100;
+     FF_MN = FF100;  
   }
   else if(_myISO == ISO_600){
     FD_MN = FD600;
+    FF_MN = FF600; 
   }
+
+  Camera::sol2Engage();
+  delay(YDelay);
   meter_set_iso(FD_MN);
-
   Camera::sol2LowPower();
-
   meter_reset();
+
   uint32_t integrationStartTime = millis();
   Camera::shutterOPEN(); //Power released from SOL1 - 25ms to get Shutter full open
-  while ((meter_update() == false) && ((millis() - integrationStartTime) <= Flash_Min_Time)){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
+  while (meter_update() == false){ //Start FlashDelay: Integrate with the 1/3 of the Magicnumber in Automode of selected ISO
     if((millis() - integrationStartTime) >= Flash_Max_Time){ //Flash can occure anytime of the Flash Delay 56+-7ms depending on scene brightness
       break;
     }  
   }
 
+  meter_set_iso(FF_MN);
   digitalWrite(PIN_FF, HIGH);  //FireFlash
   delay(Flash_Capture_Delay);   //Capture Flash 
+  uint32_t FFStartTime = millis();
+  while (meter_update() == false){
+    if ((millis() - FFStartTime) >= Flash_Capture_Max_Time){
+      break;
+    }
+  }
 
   digitalWrite(PIN_FF, LOW);  //Turn FF off
   Camera::sol2Disengage();
-  delay(15);
 
   Camera::ExposureFinish();
 
@@ -514,7 +522,7 @@ void Camera::ExposureFinish()
 {
   Camera::shutterCLOSE();
 
-  delay (200); //Was 20
+  delay (30); //Was 20
 
   if(multipleExposureMode == true){
     while(digitalRead(PIN_S1) == S1Logic);
@@ -528,10 +536,10 @@ void Camera::ExposureFinish()
     #if EJECT_AFTER_DEPRESSING
       while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
       Camera::mirrorDOWN ();
-      delay (300);
+      delay (30);
     #else
       Camera::mirrorDOWN ();
-      delay (300);
+      delay (30);
       while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
     #endif
     Camera::shutterOPEN();

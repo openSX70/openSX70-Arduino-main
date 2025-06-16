@@ -27,7 +27,6 @@ void integrator_init(){
 void integrator_reset(){
   //TODO, See how much time a cap reset takes and add a delay if required.
   digitalWrite(PIN_LM_RST, HIGH);
-  delay(METER_RESET_DELAY);
   digitalWrite(PIN_LM_RST, LOW);
 }
 
