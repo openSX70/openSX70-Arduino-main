@@ -184,8 +184,6 @@ camera_state do_state_noDongle (void){
 camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
   DongleInserted();
-  
-  bool selfTimerSwitchStatus = getSwitchStates(SELF_TIMER);
 
   if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
     LightMeterHelper(1); //LMHelper Auto Mode
@@ -201,7 +199,7 @@ camera_state do_state_dongle (void){
     #endif
     LightMeterHelper(0);
 
-    if(current_status.switch2 == 1){
+    if(getSwitchStates(SELF_TIMER)){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
@@ -548,12 +546,9 @@ bool getSwitchStates(uint8_t switchValue){
   switch (switchValue){
     case 1:
       return current_status.switch1;
-      break;
     case 2:
       return current_status.switch2;
-      break;
     default:
       return false;
-      break;
   }
 }
