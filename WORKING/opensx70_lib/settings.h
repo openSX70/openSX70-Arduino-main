@@ -43,6 +43,10 @@
   // #define MEXP_MODE 1   : MEXP_MODE on switch 1
   // #define SELF_TIMER 2  : SELF_TIMER on switch 2
   // #define {whatever} 0  : No switch assigned. 
+  // DO NOT ASSIGN MULTIPLE THINGS TO THE SAME VALUE (except 0).
+  // DOING SO WILL BREAK THINGS. YOU CANNOT HAVE MULTIPLE FUNCTIONS ASSIGNED TO THE SAME SWITCH.
+  // When I have a configurator style dongle set up I will be doing validation on that side.
+  // Until then, YOU will need to validate that you are not overloading a switch.
 
   #define MEXP_MODE 1
   #define SELF_TIMER 2
