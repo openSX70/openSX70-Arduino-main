@@ -47,7 +47,7 @@ camera_state state = STATE_DARKSLIDE;
 void setup() {//setup - Inizialize
   #if DEBUG
     serial_init();
-    output_line_serial(F("Welcome to openSX70 Version: 05_08_2025 Integrator STM32"));
+    output_line_serial(F("Welcome to openSX70 Version: 06_22_2025 Integrator STM32"));
     output_serial(F("Magic Number: A100="));
     output_serial(String(A100));
     output_serial(F("| A600 ="));
@@ -185,6 +185,7 @@ camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
   DongleInserted();
   
+  bool selfTimerSwitchStatus = getSwitchStates(SELF_TIMER);
 
   if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
     LightMeterHelper(1); //LMHelper Auto Mode
@@ -204,27 +205,7 @@ camera_state do_state_dongle (void){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
-    if(current_status.selector<12){ //MANUAL SPEEDS  
-      openSX70.ManualExposure(savedISO, current_status.selector);
-    }
-    else if(ShutterSpeed[current_status.selector] == POST){ //POST
-      turnLedsOff();
-      openSX70.ShutterT();
-    }
-    else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
-      turnLedsOff();
-      openSX70.ShutterB();
-    }
-    else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
-      switch(ShutterSpeed[current_status.selector]){
-        case AUTO100:
-          openSX70.AutoExposure(ISO_SX70);
-          break;
-        case AUTO600:
-          openSX70.AutoExposure(ISO_600);
-          break;
-      }
-    }
+    dongleFunctions();
     sw_S1.Reset();
   } 
   
@@ -236,7 +217,7 @@ camera_state do_state_dongle (void){
     #endif
   } 
   // Multiple Exposure switch flipped
-  else if (current_status.switch1){
+  else if (getSwitchStates(MEXP_MODE)){
     result = STATE_MULTI_EXP;
     multipleExposureMode = true;
     mEXPFirstRun = true;
@@ -280,9 +261,11 @@ camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
 
+  bool mexpSwitchStatus = getSwitchStates(MEXP_MODE);
+
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
-    if(current_status.switch1){
-      if(current_status.switch2){
+    if(mexpSwitchStatus){
+      if(getSwitchStates(SELF_TIMER)){
         switch2Function(0); // start self timer 
       }
       if(mEXPFirstRun){
@@ -290,30 +273,9 @@ camera_state do_state_multi_exp (void){
         multipleExposureLastStartTimestamp = millis();
         beginExposure();
       }
-      
-      if(current_status.selector<12){ //MANUAL SPEEDS  
-        openSX70.ManualExposure(savedISO, current_status.selector);;
-      }
-      else if(ShutterSpeed[current_status.selector] == POST){ //POST
-        turnLedsOff();
-        openSX70.ShutterT();
-      }
-      else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
-        turnLedsOff(); //why?
-        openSX70.ShutterB();
-      }
-      else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
-        switch(ShutterSpeed[current_status.selector]){
-        case AUTO100:
-          openSX70.AutoExposure(ISO_SX70);
-          break;
-        case AUTO600:
-          openSX70.AutoExposure(ISO_600);
-          break;
-        } 
-      }
+      dongleFunctions();
     }
-    else if((current_status.switch1 == 0) && (mEXPFirstRun == false)){
+    else if((mexpSwitchStatus == 0) && (mEXPFirstRun == false)){
       result = STATE_DONGLE;
       openSX70.multipleExposureLastClick();
     }
@@ -326,7 +288,7 @@ camera_state do_state_multi_exp (void){
     openSX70.multipleExposureLastClick(); 
   }
 
-  if(current_status.switch1 == false && mEXPFirstRun == true){
+  if((mexpSwitchStatus == false) && (mEXPFirstRun == true)){
     result = STATE_DONGLE;
     multipleExposureMode = false;
     #if STATEDEBUG
@@ -337,7 +299,30 @@ camera_state do_state_multi_exp (void){
   return result;
 }
 
-void sonarFocus() {
+void dongleFunctions(){
+  turnLedsOff(); //why?
+  if(current_status.selector<12){ //MANUAL SPEEDS  
+    openSX70.ManualExposure(savedISO, current_status.selector);;
+  }
+  else if(ShutterSpeed[current_status.selector] == POST){ //POST
+    openSX70.ShutterT();
+  }
+  else if(ShutterSpeed[current_status.selector] == POSB){ //POSB
+    openSX70.ShutterB();
+  }
+  else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
+    switch(ShutterSpeed[current_status.selector]){
+    case AUTO100:
+      openSX70.AutoExposure(ISO_SX70);
+      break;
+    case AUTO600:
+      openSX70.AutoExposure(ISO_600);
+      break;
+    } 
+  }
+}
+
+void sonarFocus(){
   if ((digitalRead(PIN_S1F) == HIGH)){
     openSX70.S1F_Focus();
   }
@@ -545,5 +530,30 @@ void validateISO(){
   if(savedISO != ISO_600 && savedISO != ISO_SX70){
     //ISO in EEPROM is invalid, set to 600
     saveISO(ISO_600);
+  }
+}
+
+// Function will read settings from settings.h and assign functions to proper state values
+void setSwitchStates(){
+  #if MEXP_MODE
+
+  #endif
+
+  #if SELF_TIMER
+
+  #endif
+}
+
+bool getSwitchStates(uint8_t switchValue){
+  switch (switchValue){
+    case 1:
+      return current_status.switch1;
+      break;
+    case 2:
+      return current_status.switch2;
+      break;
+    default:
+      return false;
+      break;
   }
 }

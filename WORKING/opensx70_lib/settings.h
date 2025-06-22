@@ -37,6 +37,18 @@
   #define EJECT_AFTER_DEPRESSING 1 //1 Enables the user to hold the shutter button to prevent photo ejection
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
+  //----------------DONGLE SWITCH FEATURE SELECTION-------------------------
+  // 1 and 2 values assign features to switch 1 and 2, 0 means unused.
+  // Example values:
+  // #define MEXP_MODE 1   : MEXP_MODE on switch 1
+  // #define SELF_TIMER 2  : SELF_TIMER on switch 2
+  // #define {whatever} 0  : No switch assigned. 
+
+  #define MEXP_MODE 1
+  #define SELF_TIMER 2
+
+  //----------------END DONGLE SWITCH FEATURE SELECTION---------------------
+
   //----------------ISO VALUES VALUES---------------------------------------
   #define ISO_600 640
   #define ISO_SX70 125
