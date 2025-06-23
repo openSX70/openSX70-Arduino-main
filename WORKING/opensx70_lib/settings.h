@@ -51,6 +51,7 @@
   #define MEXP_MODE 0
   #define SELF_TIMER 2
   #define DONGLE_AUTO_FLASH 1
+  #define AUTO_STOP_DOWN 0
 
   //----------------END DONGLE SWITCH FEATURE SELECTION---------------------
 

@@ -320,11 +320,11 @@ void dongleFunctions(){
         isoSelection = ISO_SX70;
         break;
     } 
-    if(dongleAutoFlash){
-      openSX70.AutoExposureFF(isoSelection);
+    if(!dongleAutoFlash){
+      openSX70.AutoExposure(isoSelection);
     }
     else{
-      openSX70.AutoExposure(isoSelection);
+      openSX70.AutoExposureFF(isoSelection);
     }
   }
 }
