@@ -314,10 +314,10 @@ void dongleFunctions(){
   else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
     switch(ShutterSpeed[current_status.selector]){
     case AUTO100:
-      isoSelection = openSX70.AutoExposure(ISO_SX70);
+      isoSelection = ISO_SX70;
       break;
     case AUTO600:
-      isoSelection = openSX70.AutoExposure(ISO_600);
+      isoSelection = ISO_600;
       break;
     } 
     if(!dongleAutoFlash){
