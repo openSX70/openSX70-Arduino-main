@@ -48,8 +48,9 @@
   // When I have a configurator style dongle set up I will be doing validation on that side.
   // Until then, YOU will need to validate that you are not overloading a switch.
 
-  #define MEXP_MODE 1
+  #define MEXP_MODE 0
   #define SELF_TIMER 2
+  #define DONGLE_AUTO_FLASH 1
 
   //----------------END DONGLE SWITCH FEATURE SELECTION---------------------
 

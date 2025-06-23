@@ -298,7 +298,10 @@ camera_state do_state_multi_exp (void){
 }
 
 void dongleFunctions(){
-  turnLedsOff(); //why?
+  uint8_t isoSelection;
+  bool dongleAutoFlash = getSwitchStates(DONGLE_AUTO_FLASH);
+
+  turnLedsOff();
   if(current_status.selector<12){ //MANUAL SPEEDS  
     openSX70.ManualExposure(savedISO, current_status.selector);;
   }
@@ -311,12 +314,18 @@ void dongleFunctions(){
   else{ //Auto catch-all. Passes the value stored in the ShutterSpeed list at the selector value
     switch(ShutterSpeed[current_status.selector]){
     case AUTO100:
-      openSX70.AutoExposure(ISO_SX70);
+      isoSelection = openSX70.AutoExposure(ISO_SX70);
       break;
     case AUTO600:
-      openSX70.AutoExposure(ISO_600);
+      isoSelection = openSX70.AutoExposure(ISO_600);
       break;
     } 
+    if(!dongleAutoFlash){
+      openSX70.AutoExposure(isoSelection);
+    }
+    else{
+      openSX70.AutoExposureFF(isoSelection);
+    }
   }
 }
 
