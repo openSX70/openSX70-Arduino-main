@@ -412,7 +412,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
   return;
 }
 
-void Camera::AutoExposure(int _myISO){
+void Camera::AutoExposure(int _myISO, bool stopDown){
   if(stopDown){
     Camera::sol2Engage();
   }
@@ -437,9 +437,9 @@ void Camera::AutoExposure(int _myISO){
   }
 
   Camera::ExposureFinish();
-  
+
    if(stopDown){
-    Camera::sol2Engage();
+    Camera::sol2Disengage();
   }
 
   return; //Added 26.10.
