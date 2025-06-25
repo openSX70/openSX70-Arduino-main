@@ -146,7 +146,7 @@ camera_state do_state_noDongle (void){
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
     beginExposure();
-    openSX70.AutoExposure(savedISO);
+    openSX70.AutoExposure(savedISO, false);
     sw_S1.Reset();
   }
   #if DOUBLECLICK
@@ -154,7 +154,7 @@ camera_state do_state_noDongle (void){
     LightMeterHelper(0); 
     beginExposure();
     switch2Function(1);
-    openSX70.AutoExposure(savedISO);
+    openSX70.AutoExposure(savedISO, false);
     sw_S1.Reset();
   }
   #endif
