@@ -321,7 +321,7 @@ void dongleFunctions(){
         break;
     } 
     if(!dongleAutoFlash){
-      openSX70.AutoExposure(isoSelection, getSwitchStates(AUTO_STOP_DOWN));
+      openSX70.AutoExposure(isoSelection);
     }
     else{
       openSX70.AutoExposureFF(isoSelection);
