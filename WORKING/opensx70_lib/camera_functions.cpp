@@ -413,15 +413,7 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
 }
 
 void Camera::AutoExposure(int _myISO){
-  if(stopDown){
-    Camera::sol2Engage();
-  }
-  
   delay(YDelay);
-
-  if(stopDown){
-    Camera::sol2LowPower();
-  }
 
   meter_set_iso(_myISO);
   meter_reset();
@@ -438,10 +430,6 @@ void Camera::AutoExposure(int _myISO){
 
   Camera::ExposureFinish();
   
-   if(stopDown){
-    Camera::sol2Engage();
-  }
-
   return; //Added 26.10.
 }
 
