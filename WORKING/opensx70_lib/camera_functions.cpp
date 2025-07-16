@@ -413,7 +413,6 @@ void Camera::VariableManualExposure(int _myISO, uint8_t selector){
 }
 
 void Camera::AutoExposure(int _myISO){
-  
   delay(YDelay);
 
   meter_set_iso(_myISO);
@@ -430,7 +429,7 @@ void Camera::AutoExposure(int _myISO){
   }
 
   Camera::ExposureFinish();
-
+  
   return; //Added 26.10.
 }
 
@@ -439,9 +438,10 @@ void Camera::AutoExposure(int _myISO){
 void Camera::AutoExposureFF(int _myISO){
   uint16_t FD_MN = 0;
   uint16_t FF_MN = 0;  //FlashDelay Magicnumber
+  
   if(_myISO == ISO_SX70){
-     FD_MN = FD100;
-     FF_MN = FF100;  
+    FD_MN = FD100;
+    FF_MN = FF100;  
   }
   else if(_myISO == ISO_600){
     FD_MN = FD600;
@@ -463,7 +463,8 @@ void Camera::AutoExposureFF(int _myISO){
   }
 
   meter_set_iso(FF_MN);
-  digitalWrite(PIN_FF, HIGH);  //FireFlash
+  //digitalWrite(PIN_FF, HIGH);  //FireFlash
+  FastFlash();
   delay(Flash_Capture_Delay);   //Capture Flash 
   uint32_t FFStartTime = millis();
   while (meter_update() == false){
@@ -472,9 +473,7 @@ void Camera::AutoExposureFF(int _myISO){
     }
   }
 
-  digitalWrite(PIN_FF, LOW);  //Turn FF off
   Camera::sol2Disengage();
-
   Camera::ExposureFinish();
 
   return; //Added 26.10.
@@ -558,7 +557,7 @@ void Camera::FastFlash(){
   pinMode(PIN_S2, OUTPUT);
   digitalWrite (PIN_S2, LOW);     //So FFA recognizes the flash as such
   digitalWrite(PIN_FF, HIGH);    //FLASH TRIGGERING
-  delay (1);                      //FLASH TRIGGERING
+  delay(1);
   digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
 }
