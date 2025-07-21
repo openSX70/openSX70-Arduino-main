@@ -326,21 +326,14 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
     int ShutterSpeedDelay = (ShutterSpeed[selector] - Flash_Capture_Delay);
 
     Camera::shutterOPEN();
-    initialMillis = millis();
-    while (millis() < (initialMillis + ShutterSpeedDelay)){
-      //Take the Picture
-    }
+    delay(ShutterSpeedDelay);
     Camera::FastFlash();
     delay(Flash_Capture_Delay);
   }
   else{
     int ShutterSpeedDelay = ShutterSpeed[selector];
-
     Camera::shutterOPEN();
-    initialMillis = millis();
-    while (millis() < (initialMillis + ShutterSpeedDelay)){
-      //Take the Picture
-    }
+    delay(ShutterSpeedDelay);
   }
 
   #if LMDEBUG
