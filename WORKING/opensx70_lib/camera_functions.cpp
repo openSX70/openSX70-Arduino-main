@@ -326,21 +326,14 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
     int ShutterSpeedDelay = (ShutterSpeed[selector] - Flash_Capture_Delay);
 
     Camera::shutterOPEN();
-    initialMillis = millis();
-    while (millis() < (initialMillis + ShutterSpeedDelay)){
-      //Take the Picture
-    }
+    delay(ShutterSpeedDelay);
     Camera::FastFlash();
     delay(Flash_Capture_Delay);
   }
   else{
     int ShutterSpeedDelay = ShutterSpeed[selector];
-
     Camera::shutterOPEN();
-    initialMillis = millis();
-    while (millis() < (initialMillis + ShutterSpeedDelay)){
-      //Take the Picture
-    }
+    delay(ShutterSpeedDelay);
   }
 
   #if LMDEBUG
@@ -353,63 +346,6 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
       output_line_serial(exposureTime);
   #endif
   return; //Added 26.10.
-}
-
-void Camera::VariableManualExposure(int _myISO, uint8_t selector){
-  uint32_t initialMillis;
-
-  delay (YDelay);
-
-  if(selector >= Dongle_Flash_Limit){
-    int ShutterSpeedDelay = ShutterSpeed[selector] - Flash_Capture_Delay;
-    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
-
-    meter_set_iso(_myISO);
-    meter_reset();
-
-    initialMillis = millis();
-    uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
-    Camera::shutterOPEN();
-    delay(MinShutterSpeedDelay);
-    while(meter_update() == false){
-      if(millis() >= maxMillis){
-        break;
-      }
-    }
-    Camera::FastFlash ();
-    delay(Flash_Capture_Delay);
-
-  }
-  else{
-    int ShutterSpeedDelay = ShutterSpeed[selector];
-    int MinShutterSpeedDelay = ShutterSpeedDelay -ShutterVariance[selector];
-
-    meter_set_iso(_myISO);
-    meter_reset();
-
-    initialMillis = millis();
-    uint32_t maxMillis = initialMillis + ShutterSpeedDelay;
-    
-    Camera::shutterOPEN();
-    delay(MinShutterSpeedDelay);
-
-    while(meter_update() == false){
-      if(millis() >= maxMillis){
-        break;
-      }
-    }
-  }
-
-  #if LMDEBUG
-    uint32_t shutterCloseTime = millis(); //Shutter Debug
-  #endif
-  Camera::ExposureFinish();
-  #if LMDEBUG
-    uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
-    output_serial("ExposureTime on Manualmode: ");
-    output_line_serial(String(exposureTime));
-  #endif
-  return;
 }
 
 void Camera::AutoExposure(int _myISO){
