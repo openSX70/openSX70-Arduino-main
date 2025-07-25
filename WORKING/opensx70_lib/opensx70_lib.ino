@@ -280,12 +280,6 @@ camera_state do_state_multi_exp (void){
     sw_S1.Reset();
   }
 
-  if((mEXPFirstRun == false) && ((millis() - multipleExposureLastStartTimestamp) >= MULTIPLE_EXPOSURES_TIMEOUT)){
-    mEXPFirstRun = true;
-    peripheral.simpleBlink(2, RED);
-    openSX70.multipleExposureLastClick(); 
-  }
-
   if((mexpSwitchStatus == false) && (mEXPFirstRun == true)){
     result = STATE_DONGLE;
     multipleExposureMode = false;
