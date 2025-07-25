@@ -102,15 +102,9 @@
   extern int FD600;
   extern int FF600;
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
-  extern int flashDelay; //new flash "system"
-  extern int MaxRange[];
-  extern int MinRange[];
-  extern int ShutterVariance[];
-  extern int mxshots;
   extern byte lightmeterHelper;
   extern const uint8_t YDelay;
   extern const byte PowerDownDelay;
   extern const byte PowerDown; //max 255 = full power/POWERUP mode
   #define DEBOUNCECOUNT 5 
-  extern int prevDongle;
 #endif

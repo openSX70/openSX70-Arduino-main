@@ -1,7 +1,6 @@
 #include "settings.h"
 #include "Arduino.h"
 
-int mxshots = 0; //Multiple exposure counter
 const uint8_t YDelay = 100;
 const byte PowerDownDelay = 15; //time it takes to be fully closed
 const byte PowerDown = 77; //max 255 = full power/POWERUP mode
@@ -24,5 +23,3 @@ byte lightmeterHelper = true;
 int ShutterSpeed[] = {     23,   27,   32,    34,  39,   44,  56,   64,    125,  250, 500, 1000, POST, POSB, AUTO600, AUTO100 };
 //int ShutterSpeed[] = { 2000, 1000,  500,   250, 125,   60,  30,   15,      8,    4,   2,    1, T, B, AUTO600, AUTO100 };
 //                          0     1     2      3    4     5    6     7       8     9    10   11
-
-int flashDelay = 1; //new flash "system"
