@@ -87,12 +87,7 @@
   #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
   #define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
   //---------------END METER SETTINGS----------------------------------------
-
-  //---------------MULTIPLE EXPOSURES MODE SETTINGS--------------------------
-  #define MULTIPLE_EXPOSURES_TIMEOUT_ENABLED 1 // 1 -> MX mode will finish after timeout. 0 -> No time limit for MX mode.
-  #define MULTIPLE_EXPOSURES_TIMEOUT 120000 // Max time that MX mode can run for after the first exposure (in milliseconds)
-  //---------------END MULTIPLE EXPOSURES MODE SETTINGS----------------------
-
+  
   #define EE_ADD_ISO   20   //-> camera current ISO (dongleless) 
 
   enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
