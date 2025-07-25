@@ -13,21 +13,21 @@
   {
     public:
       ClickButton(uint8_t buttonPin);
-      ClickButton(uint8_t buttonPin, boolean active);
-      ClickButton(uint8_t buttonPin, boolean active, boolean internalPullup);
+      ClickButton(uint8_t buttonPin, bool active);
+      ClickButton(uint8_t buttonPin, bool active, bool internalPullup);
       void Update();
       void Reset();
       int clicks;                   // button click counts to return
-      boolean depressed;            // the currently debounced button (press) state (presumably it is not sad :)
+      bool depressed;            // the currently debounced button (press) state (presumably it is not sad :)
       long debounceTime;
       long multiclickTime;
       long longClickTime;
-      boolean changed;
+      bool changed;
     private:
       uint8_t _pin;                 // Arduino pin connected to the button
-      boolean _activeHigh;          // Type of button: Active-low = 0 or active-high = 1
-      boolean _btnState;            // Current appearant button state
-      boolean _lastState;           // previous button reading
+      bool _activeHigh;          // Type of button: Active-low = 0 or active-high = 1
+      bool _btnState;            // Current appearant button state
+      bool _lastState;           // previous button reading
       int _clickCount;              // Number of button clicks within multiclickTime milliseconds
       long _lastBounceTime;         // the last time the button input pin was toggled, due to noise or a press
   };

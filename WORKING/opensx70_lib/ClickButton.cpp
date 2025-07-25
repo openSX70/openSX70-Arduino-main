@@ -17,7 +17,7 @@ ClickButton::ClickButton(uint8_t buttonPin)
   pinMode(_pin, INPUT);
 }
 
-ClickButton::ClickButton(uint8_t buttonPin, boolean activeType)
+ClickButton::ClickButton(uint8_t buttonPin, bool activeType)
 {
   _pin           = buttonPin;
   _activeHigh    = activeType;
@@ -34,7 +34,7 @@ ClickButton::ClickButton(uint8_t buttonPin, boolean activeType)
   pinMode(_pin, INPUT);
 }
 
-ClickButton::ClickButton(uint8_t buttonPin, boolean activeType, boolean internalPullup)
+ClickButton::ClickButton(uint8_t buttonPin, bool activeType, bool internalPullup)
 {
   _pin           = buttonPin;
   _activeHigh    = activeType;

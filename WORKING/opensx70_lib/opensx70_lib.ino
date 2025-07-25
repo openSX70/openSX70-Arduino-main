@@ -255,7 +255,6 @@ camera_state do_state_flashBar (void){
 }
 
 camera_state do_state_multi_exp (void){
-  static uint32_t multipleExposureLastStartTimestamp;
   camera_state result = STATE_MULTI_EXP;
   DongleInserted();
 
@@ -268,7 +267,6 @@ camera_state do_state_multi_exp (void){
       }
       if(mEXPFirstRun){
         mEXPFirstRun = false;
-        multipleExposureLastStartTimestamp = millis();
         beginExposure();
       }
       dongleFunctions();
@@ -278,12 +276,6 @@ camera_state do_state_multi_exp (void){
       openSX70.multipleExposureLastClick();
     }
     sw_S1.Reset();
-  }
-
-  if((mEXPFirstRun == false) && ((millis() - multipleExposureLastStartTimestamp) >= MULTIPLE_EXPOSURES_TIMEOUT)){
-    mEXPFirstRun = true;
-    peripheral.simpleBlink(2, RED);
-    openSX70.multipleExposureLastClick(); 
   }
 
   if((mexpSwitchStatus == false) && (mEXPFirstRun == true)){
