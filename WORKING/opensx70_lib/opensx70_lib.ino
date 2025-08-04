@@ -106,14 +106,11 @@ camera_state do_state_darkslide (void) {
         openSX70.darkslideEJECT(); 
       }
       else{
-        peripheral.dongleLed(GREEN, HIGH); //green uDongle LED on while ejecting Darkslide
         openSX70.darkslideEJECT();
-        peripheral.dongleLed(GREEN, LOW); //switching off green uDongle LED
       }
     }
     if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
       result = STATE_DONGLE;
-      BlinkISO();
       #if STATEDEBUG
         DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
       #endif
@@ -163,12 +160,6 @@ camera_state do_state_noDongle (void){
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
     #endif
     result = STATE_DONGLE;
-    if(((current_status.switch1 == 1) && (current_status.switch2 == 1))){
-      dongleISOSwap();
-    }
-    else if(current_status.selector<=13){ //Dont blink on AUTOMODE
-      BlinkISO();
-    }
   }
   else if (current_status.selector==100){
     result = STATE_FLASHBAR;
@@ -181,7 +172,6 @@ camera_state do_state_noDongle (void){
 
 camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
-  DongleInserted();
 
   if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
     LightMeterHelper(1); //LMHelper Auto Mode
@@ -254,7 +244,6 @@ camera_state do_state_flashBar (void){
 
 camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
-  DongleInserted();
 
   bool mexpSwitchStatus = getSwitchStates(MEXP_MODE);
 
@@ -342,56 +331,6 @@ void turnLedsOff(){ //TODO :move to camerafunction
    //delay(400); 
 }
 
-void DongleInserted() { //Dongle is pressend LOOP
-  if (digitalRead(PIN_S1) != S1Logic) { //Dont run DongleInserted Function on S1T pressed
-    if ((current_status.selector != previous_status.selector)){
-      #if ADVANCEDEBUG
-        DEBUG_OUTPUT.print(F("DONGLE Mode:  "));
-        DEBUG_OUTPUT.print(F("Selector: "));
-        DEBUG_OUTPUT.print(current_status.selector);
-        DEBUG_OUTPUT.print(F(" Switch1: "));
-        DEBUG_OUTPUT.print(current_status.switch1);
-        DEBUG_OUTPUT.print(F(" Switch2: "));
-        DEBUG_OUTPUT.print(current_status.switch2);
-        DEBUG_OUTPUT.print(F(" speed: "));
-        DEBUG_OUTPUT.println(ShutterSpeed[current_status.selector]);
-      #endif
-      // TODO Move this into state transition
-      blinkAutomode();
-    }
-  }
-}
-
-void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 600
-  if((current_status.switch1 != 1) || (current_status.switch2 != 1)){ //Not Save ISO //Changed to OR 01.06.2020
-      #if SIMPLEDEBUG
-        DEBUG_OUTPUT.println(F("Blink for the saved ISO setting on Dongle insertion."));
-      #endif
-      //blinkAutomode();
-      turnLedsOff();
-      if (savedISO == ISO_600){
-        peripheral.simpleBlink(2, GREEN);
-      }
-      else if (savedISO == ISO_SX70){
-        peripheral.simpleBlink(1, GREEN);
-      }
-      else{
-        peripheral.simpleBlink(5, RED);
-      }
-    }
-}
-
-void blinkAutomode(){
-  if ((current_status.switch1 != 1) || (current_status.switch2 != 1)) { //Save ISO Mode
-    turnLedsOff();
-    if(ShutterSpeed[current_status.selector]== AUTO600){
-      peripheral.simpleBlink(2, GREEN);
-    }else if(ShutterSpeed[current_status.selector]== AUTO100){
-      peripheral.simpleBlink(1, GREEN);
-    }
-  }
-}
-
 void switch2Function(int mode) {
   #if SIMPLEDEBUG
     DEBUG_OUTPUT.println(F("Self Timer Activated"));
@@ -450,19 +389,6 @@ void saveISO(int iso){
   meter_set_iso(iso);
 }
 
-void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
-  #if SIMPLEDEBUG
-      DEBUG_OUTPUT.print(F("Blinking ISO change"));
-  #endif
-  turnLedsOff();
-  if (savedISO == ISO_SX70){
-    peripheral.simpleBlink(1, RED);
-  }
-  else if (savedISO == ISO_600){
-    peripheral.simpleBlink(2, RED);
-  }
-}
-
 void S1ISOSwap(){
   int _selectedISO;
 
@@ -498,28 +424,6 @@ void S1ISOSwap(){
     }
   }
   sw_S1.Reset();
-}
-
-void dongleISOSwap() {
-  int _selectedISO;
-  if (((ShutterSpeed[current_status.selector]) == AUTO600)) {
-    _selectedISO = ISO_600;
-  }
-  else if (((ShutterSpeed[current_status.selector]) == AUTO100)) {
-    _selectedISO = ISO_SX70;
-  }
-  else { //Fall back to current ISO if A100 or A600 are not selected
-    _selectedISO = savedISO;
-  }
-
-  if (savedISO != _selectedISO) { //Check if new ISO is diffrent to the ISO saved in EEPROM
-    saveISO(_selectedISO);
-    BlinkISORed();
-  }
-  else{
-    savedISO = _selectedISO;
-    BlinkISORed(); //Blink ISO Red
-  }
 }
 
 void validateISO(){

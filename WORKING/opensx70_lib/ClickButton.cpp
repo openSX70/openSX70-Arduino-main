@@ -91,24 +91,6 @@ void ClickButton::Update()
   }
   _lastState = _btnState;
   
-  #if (ALPHA == 1) //Not sure if this is working!! 26.10.
-    // If the button released state is stable, report nr of clicks and start new cycle
-    if (!depressed && (now - _lastBounceTime) > multiclickTime)
-    {
-      // positive count for released buttons
-      clicks = _clickCount;
-      //DEBUG_OUTPUT.print("Clickcount = ");
-      //DEBUG_OUTPUT.println(clicks); 
-      _clickCount = 0;
-      if(clicks != 0){
-        changed = true;
-      //#if SIMPLEDEBUG
-        DEBUG_OUTPUT.println(F("Single Click"));
-      //#endif
-      }
-    }
-  #endif
-  
   // Check for "long click"
   if (depressed && (now - _lastBounceTime > longClickTime))
   {

@@ -87,10 +87,6 @@ byte uDongle::checkDongle(){
   return _device_count;
 }
 
-void uDongle::dongleLed (byte _led,bool on){
-  uDongle::Write_DS2408_PIO(_led,on);
-}
-
 void uDongle::simpleBlink (int _times, int _led){
   if (_times <= 0){
     uDongle::Write_DS2408_PIO (_led, 1);
