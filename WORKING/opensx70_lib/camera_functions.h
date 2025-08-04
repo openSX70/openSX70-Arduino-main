@@ -2,6 +2,8 @@
   #define Camera_h
   #include "Arduino.h"
   #include "udongle2.h"
+
+  extern HardwareSerial DEBUG_OUTPUT;
   class Camera
   {
     public:

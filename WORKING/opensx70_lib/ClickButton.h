@@ -8,6 +8,8 @@
   #endif
   
   #define CLICKBTN_PULLUP HIGH
+
+  extern HardwareSerial DEBUG_OUTPUT;
   
   class ClickButton
   {

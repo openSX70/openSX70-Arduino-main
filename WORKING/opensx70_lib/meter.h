@@ -7,6 +7,7 @@
   // note : as they are hardware-specific implemented, there is no meter.cpp file.
   // As we are in the developing process, their argument may evolve, as well as their return type.
   // Pin enable, one-wire / I2C / SPI interface initialisation
+  extern HardwareSerial DEBUG_OUTPUT;
   extern void meter_init();
   extern void meter_reset();
   // give the sensitivity to the meter

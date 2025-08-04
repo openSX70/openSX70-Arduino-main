@@ -1,5 +1,5 @@
 #include "ClickButton.h"
-#include "logging.h"
+
 ClickButton::ClickButton(uint8_t buttonPin)
 {
   _pin           = buttonPin;
@@ -97,13 +97,13 @@ void ClickButton::Update()
     {
       // positive count for released buttons
       clicks = _clickCount;
-      //output_serial("Clickcount = ");
-      //output_line_serial(clicks); 
+      //DEBUG_OUTPUT.print("Clickcount = ");
+      //DEBUG_OUTPUT.println(clicks); 
       _clickCount = 0;
       if(clicks != 0){
         changed = true;
       //#if SIMPLEDEBUG
-        output_line_serial(F("Single Click"));
+        DEBUG_OUTPUT.println(F("Single Click"));
       //#endif
       }
     }
@@ -114,13 +114,13 @@ void ClickButton::Update()
   {
     // negative count for long clicks
     clicks = 0 - _clickCount;
-    //output_serial("Clickcount = ");
-    //output_line_serial(clicks); 
+    //DEBUG_OUTPUT.print("Clickcount = ");
+    //DEBUG_OUTPUT.println(clicks); 
     _clickCount = 0;
     if(clicks != 0){
       changed = true;
       //#if SIMPLEDEBUG
-        output_line_serial(F("Long Click"));
+        DEBUG_OUTPUT.println(F("Long Click"));
       //#endif
     }
   }

@@ -1,11 +1,13 @@
 #include "Arduino.h"
 #include "open_sx70.h"
-#include "logging.h"
+
 
 ClickButton sw_S1(PIN_S1, S1Logic);
 
 uDongle peripheral(PIN_S2);
 Camera openSX70(&peripheral);
+
+HardwareSerial DEBUG_OUTPUT(USART_RX, USART_TX);
 
 status current_status;
 status previous_status;
@@ -46,12 +48,8 @@ camera_state state = STATE_DARKSLIDE;
 
 void setup() {//setup - Inizialize
   #if DEBUG
-    serial_init();
-    output_line_serial(F("Welcome to openSX70 Version: 06_22_2025 Integrator STM32"));
-    output_serial(F("Magic Number: A100="));
-    output_serial(String(A100));
-    output_serial(F("| A600 ="));
-    output_line_serial(String(A600));
+    DEBUG_OUTPUT.begin(115200);
+    DEBUG_OUTPUT.println(F("Welcome to openSX70 Version: 08_04_2025 STM32 edition"));
   #endif
 
   io_init();
@@ -82,7 +80,7 @@ void setup() {//setup - Inizialize
     openSX70.mirrorDOWN();
     openSX70.shutterOPEN();
     #if SIMPLEDEBUG
-    output_line_serial(F("Initialize: mirrorDOWN"));
+    DEBUG_OUTPUT.println(F("Initialize: mirrorDOWN"));
     #endif
   }
   S1ISOSwap();
@@ -117,19 +115,19 @@ camera_state do_state_darkslide (void) {
       result = STATE_DONGLE;
       BlinkISO();
       #if STATEDEBUG
-        output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
     else if ((current_status.selector == 100) && (peripheral.checkDongle() == 0)){
       result = STATE_FLASHBAR;
       #if STATEDEBUG
-        output_line_serial(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
       #endif
     }
     else{
       result = STATE_NODONGLE;
       #if STATEDEBUG
-        output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
     
@@ -162,7 +160,7 @@ camera_state do_state_noDongle (void){
 
   if (current_status.selector<=15){
     #if STATEDEBUG
-      output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
+      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
     #endif
     result = STATE_DONGLE;
     if(((current_status.switch1 == 1) && (current_status.switch2 == 1))){
@@ -175,7 +173,7 @@ camera_state do_state_noDongle (void){
   else if (current_status.selector==100){
     result = STATE_FLASHBAR;
     #if STATEDEBUG
-      output_line_serial(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
+      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
     #endif
   }
   return result;
@@ -194,8 +192,8 @@ camera_state do_state_dongle (void){
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     #if SIMPLEDEBUG
-      output_serial("SELECTOR: ");
-      output_line_serial(current_status.selector);
+      DEBUG_OUTPUT.print("SELECTOR: ");
+      DEBUG_OUTPUT.println(current_status.selector);
     #endif
     LightMeterHelper(0);
 
@@ -211,7 +209,7 @@ camera_state do_state_dongle (void){
   if (current_status.selector == 200){
     result = STATE_NODONGLE;
     #if STATEDEBUG
-      output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
+      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
     #endif
   } 
   // Multiple Exposure switch flipped
@@ -221,7 +219,7 @@ camera_state do_state_dongle (void){
     mEXPFirstRun = true;
     LightMeterHelper(0);
     #if STATEDEBUG
-      output_line_serial(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
+      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
     #endif
   }
 
@@ -248,7 +246,7 @@ camera_state do_state_flashBar (void){
   if (current_status.selector == 200){
     result = STATE_NODONGLE;
     #if STATEDEBUG
-      output_line_serial(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
+      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
   } 
   return result;
@@ -282,7 +280,7 @@ camera_state do_state_multi_exp (void){
     result = STATE_DONGLE;
     multipleExposureMode = false;
     #if STATEDEBUG
-      output_line_serial(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
+      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
     #endif
   }
 
@@ -348,15 +346,15 @@ void DongleInserted() { //Dongle is pressend LOOP
   if (digitalRead(PIN_S1) != S1Logic) { //Dont run DongleInserted Function on S1T pressed
     if ((current_status.selector != previous_status.selector)){
       #if ADVANCEDEBUG
-        output_serial(F("DONGLE Mode:  "));
-        output_serial(F("Selector: "));
-        output_serial(current_status.selector);
-        output_serial(F(" Switch1: "));
-        output_serial(current_status.switch1);
-        output_serial(F(" Switch2: "));
-        output_serial(current_status.switch2);
-        output_serial(F(" speed: "));
-        output_line_serial(ShutterSpeed[current_status.selector]);
+        DEBUG_OUTPUT.print(F("DONGLE Mode:  "));
+        DEBUG_OUTPUT.print(F("Selector: "));
+        DEBUG_OUTPUT.print(current_status.selector);
+        DEBUG_OUTPUT.print(F(" Switch1: "));
+        DEBUG_OUTPUT.print(current_status.switch1);
+        DEBUG_OUTPUT.print(F(" Switch2: "));
+        DEBUG_OUTPUT.print(current_status.switch2);
+        DEBUG_OUTPUT.print(F(" speed: "));
+        DEBUG_OUTPUT.println(ShutterSpeed[current_status.selector]);
       #endif
       // TODO Move this into state transition
       blinkAutomode();
@@ -367,7 +365,7 @@ void DongleInserted() { //Dongle is pressend LOOP
 void BlinkISO() { //read the default ISO and blink once for SX70 and twice for 600
   if((current_status.switch1 != 1) || (current_status.switch2 != 1)){ //Not Save ISO //Changed to OR 01.06.2020
       #if SIMPLEDEBUG
-        output_line_serial(F("Blink for the saved ISO setting on Dongle insertion."));
+        DEBUG_OUTPUT.println(F("Blink for the saved ISO setting on Dongle insertion."));
       #endif
       //blinkAutomode();
       turnLedsOff();
@@ -396,7 +394,7 @@ void blinkAutomode(){
 
 void switch2Function(int mode) {
   #if SIMPLEDEBUG
-    output_line_serial(F("Self Timer Activated"));
+    DEBUG_OUTPUT.println(F("Self Timer Activated"));
   #endif
   //0 Dongle 1 No dongle
   if (mode == 0) {
@@ -427,7 +425,7 @@ void switch2Function(int mode) {
     //undefined
   }
   #if SIMPLEDEBUG
-    output_line_serial(F("Self Timer End"));
+    DEBUG_OUTPUT.println(F("Self Timer End"));
   #endif
 }
 
@@ -454,7 +452,7 @@ void saveISO(int iso){
 
 void BlinkISORed() { //read the active ISO and blink once for SX70 and twice for 600 - on ISO change
   #if SIMPLEDEBUG
-      output_serial(F("Blinking ISO change"));
+      DEBUG_OUTPUT.print(F("Blinking ISO change"));
   #endif
   turnLedsOff();
   if (savedISO == ISO_SX70){
@@ -472,14 +470,14 @@ void S1ISOSwap(){
     savedISO = ReadISO();
     if (savedISO == ISO_600) { 
       #if DEBUG
-        output_line_serial("ISO HAS BEEN SWAPPED TO: SX70");
+        DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: SX70");
       #endif
       _selectedISO = ISO_SX70;
       viewfinderBlink(PIN_LED1);
     }
     else if ((savedISO == ISO_SX70)) {
       #if DEBUG
-        output_line_serial("ISO HAS BEEN SWAPPED TO: 600");
+        DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: 600");
       #endif
       _selectedISO = ISO_600;
       viewfinderBlink(PIN_LED2);
@@ -487,7 +485,7 @@ void S1ISOSwap(){
     else{
       //Boards come without a set ISO, this will set the ISO to 600 without a dongle.
       #if DEBUG
-        output_line_serial("ISO HAS BEEN SWAPPED TO: 600");
+        DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: 600");
       #endif
       _selectedISO = ISO_600;
       viewfinderBlink(PIN_LED2);

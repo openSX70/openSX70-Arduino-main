@@ -5,7 +5,7 @@
 #include "sx70_pcb.h"
 #include "settings.h"
 #include "udongle2.h"
-#include "logging.h"
+
 
 extern bool multipleExposureMode;
 
@@ -21,7 +21,7 @@ Camera::Camera(uDongle *dongle){
 
 void Camera::S1F_Focus(){
     #if FOCUSDEBUG
-      output_line_serial("Focus on");
+      DEBUG_OUTPUT.println("Focus on");
     #endif
     digitalWrite(PIN_S1F_FBW, HIGH);
     return;
@@ -29,7 +29,7 @@ void Camera::S1F_Focus(){
 
 void Camera::S1F_Unfocus(){
     #if FOCUSDEBUG
-      output_line_serial("Focus off");
+      DEBUG_OUTPUT.println("Focus off");
     #endif
     digitalWrite (PIN_S1F_FBW, LOW);
     return;
@@ -71,7 +71,7 @@ void Camera::solenoid_init(){
 void Camera::shutterCLOSE(){
   Camera::solenoid_init();
   #if BASICDEBUG
-    output_line_serial("shutterCLOSE");
+    DEBUG_OUTPUT.println("shutterCLOSE");
   #endif
   #ifdef ARDUINO_AVR_PRO
     analogWrite(PIN_SOL1, 255);
@@ -89,7 +89,7 @@ void Camera::shutterCLOSE(){
 
 void Camera::shutterOPEN(){
   #if BASICDEBUG
-    output_line_serial("shutterOPEN");
+    DEBUG_OUTPUT.println("shutterOPEN");
   #endif
   #ifdef ARDUINO_AVR_PRO
     analogWrite (PIN_SOL1, 0);
@@ -132,26 +132,26 @@ void Camera::sol2Disengage(){
 
 void Camera::motorON(){
   #if BASICDEBUG
-    output_line_serial("motorON");
+    DEBUG_OUTPUT.println("motorON");
   #endif
   digitalWrite(PIN_MOTOR, HIGH);
 }
 
 void Camera::motorOFF(){
   #if BASICDEBUG
-    output_line_serial("motorOFF");
+    DEBUG_OUTPUT.println("motorOFF");
   #endif
   digitalWrite(PIN_MOTOR, LOW);
 }
 
 void Camera::mirrorDOWN(){
   #if BASICDEBUG
-    output_line_serial("mirrorDOWN");
+    DEBUG_OUTPUT.println("mirrorDOWN");
   #endif
   Camera::motorON();
   while (Camera::DebouncedRead(PIN_S5) != LOW){
     #if BASICDEBUG
-      output_line_serial("Wait for PIN_S5 to go LOW");
+      DEBUG_OUTPUT.println("Wait for PIN_S5 to go LOW");
     #endif
   }
   motorOFF();
@@ -160,7 +160,7 @@ void Camera::mirrorDOWN(){
 
 void Camera::mirrorUP(){
   #if BASICDEBUG
-    output_line_serial("mirrorUP");
+    DEBUG_OUTPUT.println("mirrorUP");
   #endif
   if(digitalRead(PIN_S3) != HIGH){
     motorON ();
@@ -168,7 +168,7 @@ void Camera::mirrorUP(){
 
   while (DebouncedRead(PIN_S5) != HIGH){
     #if BASICDEBUG
-      output_line_serial("Wait for S5 to go high");
+      DEBUG_OUTPUT.println("Wait for S5 to go high");
     #endif
   }
 
@@ -177,7 +177,7 @@ void Camera::mirrorUP(){
 
 void Camera::darkslideEJECT(){
   #if SIMPLEDEBUG
-    output_line_serial(F("darkslideEJECT"));
+    DEBUG_OUTPUT.println(F("darkslideEJECT"));
   #endif
   Camera::shutterCLOSE();
   Camera::mirrorUP();
@@ -294,11 +294,11 @@ void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB,
       }
       // set the LED with the ledState of the variable:
       if (type == 1) {
-        //output_line_serial("TYPE 1 - PCB Only");
+        //DEBUG_OUTPUT.println("TYPE 1 - PCB Only");
         digitalWrite (PinPCB, ledState);
       }  
       else if (type == 2) {
-        //output_line_serial("TYPE 2 - PCB and DONGLE");
+        //DEBUG_OUTPUT.println("TYPE 2 - PCB and DONGLE");
         digitalWrite (PinPCB, ledState);
         _dongle->Write_DS2408_PIO (PinDongle, ledState);
       }
@@ -312,7 +312,7 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
      #if BASICDEBUG
-     output_line_serial("waiting for S3 to OPEN");
+     DEBUG_OUTPUT.println("waiting for S3 to OPEN");
      #endif
   }
   #if APERTURE_PRIORITY
@@ -342,8 +342,8 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
   Camera::ExposureFinish();
   #if LMDEBUG
       uint32_t exposureTime = shutterCloseTime - initialMillis; //Shutter Debug
-      output_serial("ExposureTime on Manualmode: ");
-      output_line_serial(exposureTime);
+      DEBUG_OUTPUT.print("ExposureTime on Manualmode: ");
+      DEBUG_OUTPUT.println(exposureTime);
   #endif
   return; //Added 26.10.
 }
@@ -462,7 +462,7 @@ void Camera::ExposureFinish()
   if(multipleExposureMode == true){
     while(digitalRead(PIN_S1) == S1Logic);
     #if MXDEBUG
-      output_line_serial("mEXP");
+      DEBUG_OUTPUT.println("mEXP");
     #endif
     return;
   }
@@ -502,8 +502,8 @@ void Camera::FastFlash(){
 
 bool Camera::setLIGHTMETER_HELPER(bool state){
   #if LMHELPERDEBUG
-    output_serial("Set Lightmeterhelper status: ");
-    output_line_serial(String(state));
+    DEBUG_OUTPUT.print("Set Lightmeterhelper status: ");
+    DEBUG_OUTPUT.println(String(state));
   #endif
   lightmeterHelper = state;
   return state;
@@ -511,8 +511,8 @@ bool Camera::setLIGHTMETER_HELPER(bool state){
 
 bool Camera::getLIGHTMETER_HELPER(){
   #if LMHELPERDEBUG
-    //output_line_serial("Lightmeterhelper status: ");
-    //output_line_serial(lightmeterHelper));
+    //DEBUG_OUTPUT.println("Lightmeterhelper status: ");
+    //DEBUG_OUTPUT.println(lightmeterHelper));
   #endif
   return lightmeterHelper;
 }

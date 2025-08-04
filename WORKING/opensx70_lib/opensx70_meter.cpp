@@ -1,5 +1,5 @@
 #include "open_sx70.h"
-#include "logging.h"
+
 
 volatile bool integrationFinished = 0;
 
@@ -32,8 +32,8 @@ void integrator_reset(){
 
 void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Timer1 -- Magicnumber for ISO
     #if LMDEBUG
-    output_serial(F("meter_set_iso : "));
-    output_line_serial(iso);
+    DEBUG_OUTPUT.print(F("meter_set_iso : "));
+    DEBUG_OUTPUT.println(iso);
     #endif
     if (iso == ISO_600) {
       outputCompare = A600;
@@ -45,8 +45,8 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
       outputCompare = iso; //FF Delay Magicnumber as well as      
     }
     #if LMDEBUG
-    output_serial(F("outputcompare set to : "));
-    output_line_serial(outputCompare);
+    DEBUG_OUTPUT.print(F("outputcompare set to : "));
+    DEBUG_OUTPUT.println(outputCompare);
     #endif
 }
 
@@ -121,14 +121,14 @@ void meter_led(byte _selector, byte _type){
       digitalWrite(PIN_LED1, HIGH);
       digitalWrite(PIN_LED2, LOW);
       #if LMHELPERDEBUG
-        output_line_serial(F("Auto mode low light warning"));
+        DEBUG_OUTPUT.println(F("Auto mode low light warning"));
       #endif
     }
     else{ //Low light warning off
       digitalWrite(PIN_LED1, LOW);
       digitalWrite(PIN_LED2, LOW);
       #if LMHELPERDEBUG
-        output_line_serial(F("Enough Light Detected"));
+        DEBUG_OUTPUT.println(F("Enough Light Detected"));
       #endif
     }
   }
