@@ -1,13 +1,12 @@
 #ifndef Camera_h
   #define Camera_h
   #include "Arduino.h"
-  #include "udongle2.h"
 
   extern HardwareSerial DEBUG_OUTPUT;
   class Camera
   {
     public:
-      Camera(uDongle *dongle);
+      Camera(void);
       void S1F_Unfocus();
       void S1F_Focus();
       void shutterCLOSE();
@@ -35,6 +34,6 @@
     private:
       void FastFlash();
       bool DebouncedRead(uint8_t pin);
-      uDongle * _dongle;
+      //uDongle * _dongle;
   };
 #endif

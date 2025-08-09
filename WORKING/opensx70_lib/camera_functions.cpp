@@ -4,7 +4,6 @@
 #include "open_sx70.h"
 #include "sx70_pcb.h"
 #include "settings.h"
-#include "udongle2.h"
 
 
 extern bool multipleExposureMode;
@@ -13,10 +12,15 @@ extern bool multipleExposureMode;
 HardwareTimer *SolenoidPWM = new HardwareTimer(TIM1);
 #endif
 
+/*
 Camera::Camera(uDongle *dongle){
   _dongle = dongle;
   //   io_init();
   //  init_EEPROM();
+}
+*/
+Camera::Camera(void){
+
 }
 
 void Camera::S1F_Focus(){

@@ -14,9 +14,7 @@
   class ClickButton
   {
     public:
-      ClickButton(uint8_t buttonPin);
       ClickButton(uint8_t buttonPin, bool active);
-      ClickButton(uint8_t buttonPin, bool active, bool internalPullup);
       void Update();
       void Reset();
       int clicks;                   // button click counts to return

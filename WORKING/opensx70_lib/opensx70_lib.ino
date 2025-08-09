@@ -4,13 +4,13 @@
 
 ClickButton sw_S1(PIN_S1, S1Logic);
 
-uDongle peripheral(PIN_S2);
-Camera openSX70(&peripheral);
+//uDongle peripheral(PIN_S2);
+Camera openSX70;
 
 HardwareSerial DEBUG_OUTPUT(USART_RX, USART_TX);
 
-status current_status;
-status previous_status;
+//status current_status;
+//status previous_status;
 
 int savedISO;
 
@@ -57,7 +57,7 @@ void setup() {//setup - Inizialize
   meter_init();
   meter_set_iso(savedISO);
 
-  peripheral.initDS2408();
+  //peripheral.initDS2408();
   init_EEPROM(); //#writes Default ISO to EEPROM
 
   // (These are default if not set, but changeable for convenience)
@@ -65,7 +65,7 @@ void setup() {//setup - Inizialize
   sw_S1.multiclickTime = 250;  // Time limit for multi clicks
   sw_S1.longClickTime  = 0; // time until "held-down clicks" register
 
-  current_status = peripheral.get_peripheral_status();
+  //current_status = peripheral.get_peripheral_status();
 
   mEXPFirstRun = false;
   multipleExposureMode = false;
@@ -88,8 +88,8 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
-  previous_status = current_status;
-  current_status = peripheral.get_peripheral_status();
+  //previous_status = current_status;
+  //current_status = peripheral.get_peripheral_status();
   sonarFocus();
   sw_S1.Update();
   state = STATE_MACHINE[state]();
@@ -104,6 +104,7 @@ camera_state do_state_darkslide (void) {
     if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
       openSX70.darkslideEJECT(); 
     }
+    /*
     if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
       result = STATE_DONGLE;
       #if STATEDEBUG
@@ -122,7 +123,8 @@ camera_state do_state_darkslide (void) {
         DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
       #endif
     }
-    
+    */
+   result = STATE_NODONGLE;
   #if SHUTTERDARKSLIDE
   sw_S1.Reset();
   }
@@ -141,7 +143,7 @@ camera_state do_state_noDongle (void){
   }
 
   //Checks for dongle or flashbar insertion
-
+  /*
   if (current_status.selector<=15){
     #if STATEDEBUG
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
@@ -154,11 +156,14 @@ camera_state do_state_noDongle (void){
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
     #endif
   }
+  */
   return result;
 }
 
 camera_state do_state_dongle (void){
   camera_state result = STATE_DONGLE;
+  /*
+  
 
   if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
     LightMeterHelper(1); //LMHelper Auto Mode
@@ -166,7 +171,6 @@ camera_state do_state_dongle (void){
   else{
     LightMeterHelper(0);
   }
-  
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
     #if SIMPLEDEBUG
       DEBUG_OUTPUT.print("SELECTOR: ");
@@ -174,12 +178,14 @@ camera_state do_state_dongle (void){
     #endif
     LightMeterHelper(0);
 
+    
     if(getSwitchStates(SELF_TIMER)){
       switch2Function(0); //switch2Function Manual Mode
     }
     beginExposure();
     dongleFunctions();
     sw_S1.Reset();
+    
   } 
   
   // Dongle Removed
@@ -199,13 +205,16 @@ camera_state do_state_dongle (void){
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
     #endif
   }
-
+  */
   return result;
+  
 }
 
 camera_state do_state_flashBar (void){
-  LightMeterHelper(0);
   camera_state result = STATE_FLASHBAR;
+  /*
+  LightMeterHelper(0);
+  
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     beginExposure();
     openSX70.AutoExposureFF(savedISO);
@@ -218,12 +227,13 @@ camera_state do_state_flashBar (void){
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
   } 
+  */
   return result;
 }
 
 camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
-
+  /*
   bool mexpSwitchStatus = getSwitchStates(MEXP_MODE);
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
@@ -251,11 +261,12 @@ camera_state do_state_multi_exp (void){
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
     #endif
   }
-
+  */
   return result;
 }
 
 void dongleFunctions(){
+  /*
   static uint16_t isoSelection;
   bool dongleAutoFlash = getSwitchStates(DONGLE_AUTO_FLASH);
 
@@ -285,6 +296,7 @@ void dongleFunctions(){
       openSX70.AutoExposureFF(isoSelection);
     }
   }
+    */
 }
 
 void sonarFocus(){
@@ -329,9 +341,11 @@ void switch2Function(int mode) {
 }
 
 void LightMeterHelper(byte ExposureType){
+  /*
   if(openSX70.getLIGHTMETER_HELPER()){
     meter_led(current_status.selector, ExposureType);
   }
+  */
 }
 
 void viewfinderBlink(uint8_t LEDPIN){
@@ -406,6 +420,7 @@ void setSwitchStates(){
 }
 
 bool getSwitchStates(uint8_t switchValue){
+  /*
   switch (switchValue){
     case 1:
       return current_status.switch1;
@@ -414,4 +429,5 @@ bool getSwitchStates(uint8_t switchValue){
     default:
       return false;
   }
+  */
 }
