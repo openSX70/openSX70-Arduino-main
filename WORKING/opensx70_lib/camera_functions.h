@@ -19,7 +19,7 @@
       void AutoExposure(int _myISO);
       void AutoExposureFF(int _myISO);
       void ExposureFinish();
-      void ManualExposure(int _myISO,uint8_t selector);
+      void ManualExposure(uint8_t selector);
       void ShutterB();
       void ShutterT();
       void multipleExposureFinish();

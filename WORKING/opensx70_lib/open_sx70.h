@@ -13,4 +13,5 @@
   #include "ClickButton.h"
   #include "eeprom_init.h"
   #include "meter.h"
+  #include "peripheral_port.h"
 #endif

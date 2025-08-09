@@ -114,9 +114,7 @@ bool Camera::DebouncedRead(uint8_t pin){
 }
 
 
-void Camera::ManualExposure(int _myISO, uint8_t selector){
-  uint32_t initialMillis;
-
+void Camera::ManualExposure(uint8_t selector){
   pinMode(PIN_S3, INPUT_PULLUP); // GND
   while (digitalRead(PIN_S3) != HIGH){            //waiting for S3 to OPEN
      #if BASICDEBUG

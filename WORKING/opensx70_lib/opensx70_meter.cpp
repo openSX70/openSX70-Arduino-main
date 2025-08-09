@@ -50,8 +50,7 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
     #endif
 }
 
-int meter_compute(byte _selector,int _activeISO){
-  int _myISO = _activeISO;
+int meter_compute(int _activeISO){
   uint16_t adcValue;
   if(measuring == false){
     measuring = true;
@@ -110,7 +109,7 @@ void meter_led(byte _selector, byte _type){
     activeISO = ReadISO();
   }
 
-  predictedMillis = meter_compute(_selector, activeISO);
+  predictedMillis = meter_compute(activeISO);
 
   if(predictedMillis == -1){ // Still measuring!
     return;
