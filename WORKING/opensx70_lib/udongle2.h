@@ -23,9 +23,6 @@
       void initDS2408();
       void Write_DS2408_PIO(byte port, bool ON);
       byte checkDongle();
-      void simpleBlink (int _times, int _led);
-      void bothBlink (int _times);
-      void doubleBlink (int _times);
       status get_peripheral_status();
       
  

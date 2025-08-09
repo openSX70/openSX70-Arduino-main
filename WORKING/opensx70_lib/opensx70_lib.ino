@@ -102,12 +102,7 @@ camera_state do_state_darkslide (void) {
   if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
   #endif
     if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
-      if(peripheral.checkDongle() == 0){
-        openSX70.darkslideEJECT(); 
-      }
-      else{
-        openSX70.darkslideEJECT();
-      }
+      openSX70.darkslideEJECT(); 
     }
     if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
       result = STATE_DONGLE;
@@ -144,15 +139,7 @@ camera_state do_state_noDongle (void){
     openSX70.AutoExposure(savedISO);
     sw_S1.Reset();
   }
-  #if DOUBLECLICK
-  if (sw_S1.clicks == 2){ //Doubleclick the Red Button with no Dongle inserted
-    LightMeterHelper(0); 
-    beginExposure();
-    switch2Function(1);
-    openSX70.AutoExposure(savedISO);
-    sw_S1.Reset();
-  }
-  #endif
+
   //Checks for dongle or flashbar insertion
 
   if (current_status.selector<=15){
@@ -224,14 +211,6 @@ camera_state do_state_flashBar (void){
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
   }
-  #if DOUBLECLICK
-  if (sw_S1.clicks == 2){
-    beginExposure();
-    switch2Function(1);
-    openSX70.AutoExposureFF(savedISO);
-    sw_S1.Reset();
-  } 
-  #endif
   
   if (current_status.selector == 200){
     result = STATE_NODONGLE;
@@ -341,27 +320,8 @@ void switch2Function(int mode) {
     digitalWrite(PIN_LED2, LOW);
     digitalWrite(PIN_LED1, LOW);
     
-    openSX70.BlinkTimerDelay (GREEN, RED, 10);
+    // TODO: rewrite self timer to use new dongle functionality
 
-  }
-  else if (mode == 1) {
-    openSX70.S1F_Unfocus();
-    delay(100);
-    #if TIMER_MIRROR_UP
-      openSX70.shutterCLOSE();
-      openSX70.mirrorUP();
-    #endif
-    delay (10000); //NoDongleMode
-    #if TIMER_MIRROR_UP
-      openSX70.S1F_Focus();
-    #else
-      openSX70.S1F_Focus();
-      openSX70.shutterCLOSE();
-    #endif
-    delay(1000);
-  } 
-  else{
-    //undefined
   }
   #if SIMPLEDEBUG
     DEBUG_OUTPUT.println(F("Self Timer End"));

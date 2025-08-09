@@ -185,19 +185,6 @@ void Camera::darkslideEJECT(){
   Camera::shutterOPEN();
 }
 
-void Camera::DongleFlashNormal(){
-  pinMode(PIN_S2, OUTPUT);
-  digitalWrite(PIN_S2, LOW);      //So FFA recognizes the flash as such
-  digitalWrite(PIN_FF, HIGH);       //FLASH TRIGGERING
-  delay (1);                        //FLASH TRIGGERING
-  digitalWrite(PIN_FF, LOW);        //FLASH TRIGGERING
-  pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to dongle mode
-}
-
-void Camera::Ydelay (){
-  delay (120);
-}
-
 bool Camera::DebouncedRead(uint8_t pin){
   pinMode(pin, INPUT_PULLUP); // GND
   bool lastState = digitalRead(pin);
@@ -214,97 +201,6 @@ bool Camera::DebouncedRead(uint8_t pin){
   return lastState;
 }
 
-void Camera::BlinkTimerDelay(byte led1, byte led2, byte time) {
-  // DONGLE-LED BLINKS ON COUNTDOWN (10secs)
-  // this is a test function to do the progressing blinking of the LED using my blink function
-  // it last exactly 10 seconds (2500x4) and I could not accomplish this with the delay()
-  // everytime the led (in pin 5) blinks faster 1000, 700, 400, and 100.
-  //uint32_t startTimer = millis();
-  //*******************************************************
-  uint32_t steps = (time * 1000) / 4;
-
-  // DS2408 LED BLINK
-
-  Camera::S1F_Unfocus(); 
-  Camera::Blink (1000, steps, led1, 2);
-  Camera::Blink (600, steps, led1, 2);
-  Camera::Blink (200, steps, led1, 2);
-  steps = steps / 2;
-  Camera::S1F_Focus();
-  #if TIMER_MIRROR_UP
-    Camera::shutterCLOSE();
-  #endif
-  Camera::Blink (80, steps, led1, 2);
-  #if TIMER_MIRROR_UP
-    Camera::mirrorUP();
-  #endif
-  Camera::Blink (80, steps, led2, 2);
-}
-
-
-// blink (blink interval=blinking speed, timer=duration blinking, Pin=pin of LED
-//type 1 = ONBOARD LED
-//type 2 = DONGLE LED
-
-void Camera::Blink(unsigned int interval, int timer, int Pin, byte type){
-  int ledState = LOW;             // ledState used to set the LED
-  pinMode(Pin, OUTPUT);
-  uint32_t previousMillis = 0;        // will store last time LED was updated
-  uint32_t currentMillisTimer = millis();
-  while (millis() < (currentMillisTimer + timer)){
-    uint32_t currentMillis = millis();
-    if (currentMillis - previousMillis >= interval) {
-      // save the last time you blinked the LED
-      previousMillis = currentMillis;
-      // if the LED is off turn it on and vice-versa:
-      if (ledState == 0){
-        ledState = 1;
-      } 
-      else{
-        ledState = 0;
-      }
-      // set the LED with the ledState of the variable:
-      if (type == 1){
-        digitalWrite (Pin, ledState);
-      } 
-      else if (type == 2){
-        _dongle->Write_DS2408_PIO (Pin, ledState);
-      }
-    }
-  }
-}
-
-void Camera::Blink (unsigned int interval, int timer, int PinDongle, int PinPCB, byte type){
-  int ledState = LOW;             // ledState used to set the LED
-  pinMode(PinDongle, OUTPUT);
-  pinMode(PinPCB, OUTPUT);
-  uint32_t previousMillis = 0;        // will store last time LED was updated
-  uint32_t currentMillisTimer = millis();
-  while (millis() < (currentMillisTimer + timer)){
-    uint32_t currentMillis = millis();
-    if (currentMillis - previousMillis >= interval) {
-      // save the last time you blinked the LED
-      previousMillis = currentMillis;
-      // if the LED is off turn it on and vice-versa:
-      if (ledState == 0) {
-        ledState = 1;
-      } 
-      else {
-        ledState = 0;
-      }
-      // set the LED with the ledState of the variable:
-      if (type == 1) {
-        //DEBUG_OUTPUT.println("TYPE 1 - PCB Only");
-        digitalWrite (PinPCB, ledState);
-      }  
-      else if (type == 2) {
-        //DEBUG_OUTPUT.println("TYPE 2 - PCB and DONGLE");
-        digitalWrite (PinPCB, ledState);
-        _dongle->Write_DS2408_PIO (PinDongle, ledState);
-      }
-    }
-  }
-}
 
 void Camera::ManualExposure(int _myISO, uint8_t selector){
   uint32_t initialMillis;
@@ -315,9 +211,6 @@ void Camera::ManualExposure(int _myISO, uint8_t selector){
      DEBUG_OUTPUT.println("waiting for S3 to OPEN");
      #endif
   }
-  #if APERTURE_PRIORITY
-    AperturePriority();
-  #endif
   delay (YDelay);
 
   

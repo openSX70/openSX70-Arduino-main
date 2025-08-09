@@ -21,16 +21,10 @@
       void darkslideEJECT();
       void motorON();
       void motorOFF();
-      void Ydelay ();
-      void BlinkTimerDelay(byte led1, byte led2, byte time = 10) ;
-      void Blink (unsigned int interval, int timer, int Pin, byte type = 1);
-      void Blink (unsigned int interval, int timer, int PinDongle, int PinPCB, byte type);
       void AutoExposure(int _myISO);
       void AutoExposureFF(int _myISO);
       void ExposureFinish();
       void ManualExposure(int _myISO,uint8_t selector);
-      void VariableManualExposure(int _myISO,uint8_t selector);
-      void FlashBAR();
       void ShutterB();
       void ShutterT();
       void multipleExposureFinish();
@@ -40,8 +34,6 @@
       void multipleExposureLastClick();
     private:
       void FastFlash();
-      void AperturePriority();
-      void DongleFlashF8();
       bool DebouncedRead(uint8_t pin);
       uDongle * _dongle;
   };

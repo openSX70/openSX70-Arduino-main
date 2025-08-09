@@ -1,21 +1,5 @@
 #include "ClickButton.h"
 
-ClickButton::ClickButton(uint8_t buttonPin)
-{
-  _pin           = buttonPin;
-  _activeHigh    = LOW;           // Assume active-low button
-  _btnState      = !_activeHigh;  // initial button state in active-high logic
-  _lastState     = _btnState;
-  _clickCount    = 0;
-  clicks         = 0;
-  depressed      = false;
-  _lastBounceTime= 0;
-  debounceTime   = 20;            // Debounce timer in ms
-  multiclickTime = 250;           // Time limit for multi clicks
-  longClickTime  = 1000;          // time until long clicks register
-  changed        = false;
-  pinMode(_pin, INPUT);
-}
 
 ClickButton::ClickButton(uint8_t buttonPin, bool activeType)
 {
@@ -34,26 +18,6 @@ ClickButton::ClickButton(uint8_t buttonPin, bool activeType)
   pinMode(_pin, INPUT);
 }
 
-ClickButton::ClickButton(uint8_t buttonPin, bool activeType, bool internalPullup)
-{
-  _pin           = buttonPin;
-  _activeHigh    = activeType;
-  _btnState      = !_activeHigh;  // initial button state in active-high logic
-  _lastState     = _btnState;
-  _clickCount    = 0;
-  clicks         = 0;
-  depressed      = 0;
-  _lastBounceTime= 0;
-  debounceTime   = 20;            // Debounce timer in ms
-  multiclickTime = 250;           // Time limit for multi clicks
-  longClickTime  = 1000;          // time until "long" click register
-  changed        = false;
-  pinMode(_pin, INPUT);
-  // Turn on internal pullup resistor if applicable
-  if (_activeHigh == LOW && internalPullup == CLICKBTN_PULLUP) {
-    digitalWrite(_pin,HIGH);
-  }
-}
 
 void ClickButton::Reset()
 {
