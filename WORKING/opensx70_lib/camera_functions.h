@@ -42,7 +42,6 @@
       void FastFlash();
       void AperturePriority();
       void DongleFlashF8();
-      void DongleFlashNormal();
       bool DebouncedRead(uint8_t pin);
       uDongle * _dongle;
   };
