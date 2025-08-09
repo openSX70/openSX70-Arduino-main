@@ -58,7 +58,6 @@ void ClickButton::Update()
   // Check for "long click"
   if (depressed && (now - _lastBounceTime > longClickTime))
   {
-    // negative count for long clicks
     clicks = 0 - _clickCount;
     //DEBUG_OUTPUT.print("Clickcount = ");
     //DEBUG_OUTPUT.println(clicks); 
