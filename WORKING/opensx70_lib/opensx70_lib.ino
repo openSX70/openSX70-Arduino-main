@@ -4,13 +4,12 @@
 
 ClickButton sw_S1(PIN_S1, S1Logic);
 
-//uDongle peripheral(PIN_S2);
+peripheral_status current_status;
+peripheral_status previous_status;
+
 Camera openSX70;
 
 HardwareSerial DEBUG_OUTPUT(USART_RX, USART_TX);
-
-//status current_status;
-//status previous_status;
 
 int savedISO;
 
@@ -272,7 +271,7 @@ void dongleFunctions(){
 
   turnLedsOff();
   if(current_status.selector<12){ //MANUAL SPEEDS  
-    openSX70.ManualExposure(savedISO, current_status.selector);;
+    openSX70.ManualExposure(current_status.selector);;
   }
   else if(ShutterSpeed[current_status.selector] == POST){ //POST
     openSX70.ShutterT();
@@ -406,17 +405,6 @@ void validateISO(){
     //ISO in EEPROM is invalid, set to 600
     saveISO(ISO_600);
   }
-}
-
-// Function will read settings from settings.h and assign functions to proper state values
-void setSwitchStates(){
-  #if MEXP_MODE
-
-  #endif
-
-  #if SELF_TIMER
-
-  #endif
 }
 
 bool getSwitchStates(uint8_t switchValue){
