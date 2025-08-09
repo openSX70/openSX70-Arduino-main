@@ -100,6 +100,5 @@
   extern byte lightmeterHelper;
   extern const uint8_t YDelay;
   extern const byte PowerDownDelay;
-  extern const byte PowerDown; //max 255 = full power/POWERUP mode
   #define DEBOUNCECOUNT 5 
 #endif

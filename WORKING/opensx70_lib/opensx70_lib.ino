@@ -96,7 +96,7 @@ void loop() {
 }
 
 camera_state do_state_darkslide (void) {
-  camera_state result = STATE_DARKSLIDE;
+  static camera_state result = STATE_DARKSLIDE;
   #if SHUTTERDARKSLIDE
   sw_S1.Update();
   if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
@@ -133,7 +133,7 @@ camera_state do_state_darkslide (void) {
 }
 
 camera_state do_state_noDongle (void){
-  camera_state result = STATE_NODONGLE;
+  static camera_state result = STATE_NODONGLE;
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
@@ -161,7 +161,7 @@ camera_state do_state_noDongle (void){
 }
 
 camera_state do_state_dongle (void){
-  camera_state result = STATE_DONGLE;
+  static camera_state result = STATE_DONGLE;
   /*
   
 
@@ -211,7 +211,7 @@ camera_state do_state_dongle (void){
 }
 
 camera_state do_state_flashBar (void){
-  camera_state result = STATE_FLASHBAR;
+  static camera_state result = STATE_FLASHBAR;
   /*
   LightMeterHelper(0);
   
@@ -232,7 +232,7 @@ camera_state do_state_flashBar (void){
 }
 
 camera_state do_state_multi_exp (void){
-  camera_state result = STATE_MULTI_EXP;
+  static camera_state result = STATE_MULTI_EXP;
   /*
   bool mexpSwitchStatus = getSwitchStates(MEXP_MODE);
 
@@ -301,10 +301,10 @@ void dongleFunctions(){
 
 void sonarFocus(){
   if ((digitalRead(PIN_S1F) == HIGH)){
-    openSX70.S1F_Focus();
+    digitalWrite(PIN_S1F_FBW, HIGH);
   }
   else{
-    openSX70.S1F_Unfocus();
+    digitalWrite(PIN_S1F_FBW, LOW);
   }
 }
 

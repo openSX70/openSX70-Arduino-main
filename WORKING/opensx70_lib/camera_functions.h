@@ -7,8 +7,6 @@
   {
     public:
       Camera(void);
-      void S1F_Unfocus();
-      void S1F_Focus();
       void shutterCLOSE();
       void shutterOPEN();
       void solenoid_init();
@@ -18,8 +16,6 @@
       void mirrorDOWN();
       void mirrorUP();
       void darkslideEJECT();
-      void motorON();
-      void motorOFF();
       void AutoExposure(int _myISO);
       void AutoExposureFF(int _myISO);
       void ExposureFinish();

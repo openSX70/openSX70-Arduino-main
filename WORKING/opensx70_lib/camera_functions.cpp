@@ -8,9 +8,7 @@
 
 extern bool multipleExposureMode;
 
-#ifdef ARDUINO_GENERIC_G030K8TX
 HardwareTimer *SolenoidPWM = new HardwareTimer(TIM1);
-#endif
 
 /*
 Camera::Camera(uDongle *dongle){
@@ -23,53 +21,10 @@ Camera::Camera(void){
 
 }
 
-void Camera::S1F_Focus(){
-    #if FOCUSDEBUG
-      DEBUG_OUTPUT.println("Focus on");
-    #endif
-    digitalWrite(PIN_S1F_FBW, HIGH);
-    return;
-}
-
-void Camera::S1F_Unfocus(){
-    #if FOCUSDEBUG
-      DEBUG_OUTPUT.println("Focus off");
-    #endif
-    digitalWrite (PIN_S1F_FBW, LOW);
-    return;
-}
-
 //setup for timers used for PWM
 void Camera::solenoid_init(){
-    #ifdef ARDUINO_AVR_PRO
-        const byte n =224;      // for example, 71.111 kHz
-        //PWM high speed
-        //one N_Mosfet powerdown
-        //taken from: https://www.gammon.com.au/forum/?id=11504
-        /*
-        Timer 0
-        input     T0     pin  6  (D4)
-        output    OC0A   pin 12  (D6)
-        output    OC0B   pin 11  (D5)
-    
-        Timer 1
-        input     T1     pin 11  (D5)
-        output    OC1A   pin 15  (D9)
-        output    OC1B   pin 16  (D10)
-    
-        Timer 2
-        output    OC2A   pin 17  (D11)
-        output    OC2B   pin  5  (D3)
-        */
-        TCCR2A = bit (WGM20) | bit (WGM21) | bit (COM2B1); // fast PWM, clear OC2A on compare
-        TCCR2B = bit (WGM22) | bit (CS20);                 // fast PWM, no prescaler
-        OCR2A =  n;                                        // Value to count to - from table
-        OCR2B = ((n + 1) / 2) - 1;                         // 50% duty cycle
-        //THIS AFFECTS OUTPUT 3 (Solenoid1) AND OUTPUT 11 (Solenoid2)    
-    #elif defined ARDUINO_GENERIC_G030K8TX
-        SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 0); // 62khz, 0% dutycycle
-        SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0); // 62khz, 0% dutycycle
-    #endif
+  SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 0); // 62khz, 0% dutycycle
+  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0); // 62khz, 0% dutycycle
 }
 
 void Camera::shutterCLOSE(){
@@ -77,88 +32,41 @@ void Camera::shutterCLOSE(){
   #if BASICDEBUG
     DEBUG_OUTPUT.println("shutterCLOSE");
   #endif
-  #ifdef ARDUINO_AVR_PRO
-    analogWrite(PIN_SOL1, 255);
-    delay (PowerDownDelay);
-    analogWrite (PIN_SOL1, 130);
-  #endif
-  #ifdef ARDUINO_GENERIC_G030K8TX
-    SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 100);
-    delay (PowerDownDelay);
-    SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 30);
-  #endif
-
-  return;
+  SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 100);
+  delay (PowerDownDelay);
+  SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 30);
 }
 
 void Camera::shutterOPEN(){
   #if BASICDEBUG
     DEBUG_OUTPUT.println("shutterOPEN");
   #endif
-  #ifdef ARDUINO_AVR_PRO
-    analogWrite (PIN_SOL1, 0);
-  #endif
-  #ifdef ARDUINO_GENERIC_G030K8TX
-    SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 0);
-  #endif
-
-  return; //Added 26.10.
+  SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 0);
 }
 
 void Camera::sol2Engage(){
-  #ifdef ARDUINO_AVR_PRO
-    analogWrite(PIN_SOL2, 255);
-  #endif
-  #ifdef ARDUINO_GENERIC_G030K8TX
-    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 100);
-    //SolenoidPWM->setCaptureCompare(2, 100, PERCENT_COMPARE_FORMAT);
-  #endif
+  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 100);
 }
 
 void Camera::sol2LowPower(){
-  #ifdef ARDUINO_AVR_PRO
-    analogWrite(PIN_SOL2, 77);
-  #endif
-  #ifdef ARDUINO_GENERIC_G030K8TX
-    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 130);
-  #endif
+  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 130);
 }
 
 void Camera::sol2Disengage(){
-  #ifdef ARDUINO_AVR_PRO
-    analogWrite(PIN_SOL2, 0);
-  #endif
-  #ifdef ARDUINO_GENERIC_G030K8TX
-    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0);
-    //SolenoidPWM->setCaptureCompare(2, 0, PERCENT_COMPARE_FORMAT);
-  #endif
-}
-
-void Camera::motorON(){
-  #if BASICDEBUG
-    DEBUG_OUTPUT.println("motorON");
-  #endif
-  digitalWrite(PIN_MOTOR, HIGH);
-}
-
-void Camera::motorOFF(){
-  #if BASICDEBUG
-    DEBUG_OUTPUT.println("motorOFF");
-  #endif
-  digitalWrite(PIN_MOTOR, LOW);
+  SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0);
 }
 
 void Camera::mirrorDOWN(){
   #if BASICDEBUG
     DEBUG_OUTPUT.println("mirrorDOWN");
   #endif
-  Camera::motorON();
+  digitalWrite(PIN_MOTOR, HIGH);
   while (Camera::DebouncedRead(PIN_S5) != LOW){
     #if BASICDEBUG
       DEBUG_OUTPUT.println("Wait for PIN_S5 to go LOW");
     #endif
   }
-  motorOFF();
+  digitalWrite(PIN_MOTOR, LOW);
   
 }
 
@@ -167,7 +75,7 @@ void Camera::mirrorUP(){
     DEBUG_OUTPUT.println("mirrorUP");
   #endif
   if(digitalRead(PIN_S3) != HIGH){
-    motorON ();
+    digitalWrite(PIN_MOTOR, HIGH);
   }
 
   while (DebouncedRead(PIN_S5) != HIGH){
@@ -176,7 +84,7 @@ void Camera::mirrorUP(){
     #endif
   }
 
-  motorOFF ();
+  digitalWrite(PIN_MOTOR, LOW);
 }
 
 void Camera::darkslideEJECT(){
