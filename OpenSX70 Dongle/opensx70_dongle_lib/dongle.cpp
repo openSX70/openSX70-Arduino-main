@@ -2,8 +2,6 @@
 #include "dongle.h"
 #include "Arduino.h"
 
-HardwareSerial PERIPHERALPORT(PIN_S2);
-//HardwareTimer *LEDPWM = new HardwareTimer(TIM3);
 
 struct PinConfig {
     uint8_t pin;
@@ -35,28 +33,3 @@ byte getDongleState(void) {
     
     return dongleState;
 }
-
-/*
-void LED_init() {
-    LEDPWM->setPWM(3, LED_BLUE, 1000, 0); // 1kHz, 0% dutycycle
-    LEDPWM->setPWM(2, LED_GREEN, 1000, 0); // 1kHz, 0% dutycycle
-    LEDPWM->setPWM(1, LED_RED, 1000, 0); // 1kHz, 0% dutycycle
-}
-
-void set_LED(uint8_t led, uint8_t value) {
-    switch (led) {
-        case LED_BLUE:
-            LEDPWM->setPWM(3, LED_BLUE, 70, value);
-            break;
-        case LED_GREEN:
-            LEDPWM->setPWM(2, LED_GREEN, 70, value);
-            break;
-        case LED_RED:
-            LEDPWM->setPWM(1, LED_RED, 70, value);
-            break;
-        default:
-            // Invalid LED
-            break;
-    }
-}
-*/

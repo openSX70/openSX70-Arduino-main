@@ -3,7 +3,8 @@
 #include "dongle.h"
 
 HardwareSerial DEBUGPORT(PIN_RX, PIN_TX);
-extern HardwareTimer *LEDPWM;
+HardwareSerial PERIPHERALPORT(PIN_S2);
+
 void setup() {
     io_init();
     DEBUGPORT.begin(115200);
