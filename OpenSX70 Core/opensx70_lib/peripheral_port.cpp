@@ -33,15 +33,14 @@ peripheral_state do_state_noDongle(peripheral_device *device){
         return STATE_FLASHBAR;
     }
     else if(device->transmit_mode == TX){
-        sendCommand(PERIPHERAL_PING_CMD);
-        device->transmit_mode = RX;
+        sendCommand(PERIPHERAL_PING_CMD, device);
         return STATE_DONGLE;
     }
     else if(device->transmit_mode == RX){
         if(PERIPHERAL_PORT.available()){
             uint8_t response = PERIPHERAL_PORT.read();
             if(response == PERIPHERAL_ACK){
-                sendCommand(PERIPHERAL_READ_CMD);
+                sendCommand(PERIPHERAL_READ_CMD, device);
                 //Going to treat selector at 255 as a "not ready" selector
                 setPeripheralDevice(device, 255, false, false, 0, PERIPHERAL_DONGLE, RX);
                 return STATE_DONGLE;
@@ -55,8 +54,7 @@ peripheral_state do_state_noDongle(peripheral_device *device){
 
 peripheral_state do_state_dongle(peripheral_device *device){
     if(device->transmit_mode == TX){
-        sendCommand(PERIPHERAL_READ_CMD);
-        device->transmit_mode = RX;
+        sendCommand(PERIPHERAL_READ_CMD, device);
     }
     else if(device->transmit_mode == RX){
         if(PERIPHERAL_PORT.available()){
@@ -101,10 +99,11 @@ void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switc
 void checkPeripheral(peripheral_device *device){
 }
 
-void sendCommand(uint8_t command){
+void sendCommand(uint8_t command, peripheral_device *device){
     PERIPHERAL_PORT.write(command);
     PERIPHERAL_PORT.flush();
     PERIPHERAL_PORT.enableHalfDuplexRx();
+    device->transmit_mode = RX;
 }
 
 void updatePeripheralStatus(peripheral_device *device){
