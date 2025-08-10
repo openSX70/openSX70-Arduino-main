@@ -27,11 +27,14 @@ peripheral_state port_state = STATE_NODONGLE;
 
 peripheral_state do_state_noDongle(peripheral_device *device){
     if(digitalRead(PIN_S2) == LOW){
-        device->type = PERIPHERAL_FLASHBAR;
-        device->selector = 100;
-        device->switch1 = false; 
-        device->switch2 = false;
+        setPeripheralDevice(device, 100, false, false, 0, PERIPHERAL_FLASHBAR, TX);
         return STATE_FLASHBAR;
+    }
+    else if(device->transmit_mode == TX){
+        PERIPHERAL_PORT.write(PERIPHERAL_PING_CMD);
+        PERIPHERAL_PORT.flush();
+        PERIPHERAL_PORT.enableHalfDuplexRx();
+        return STATE_DONGLE;
     }
     else{
         return STATE_NODONGLE;
@@ -45,10 +48,7 @@ peripheral_state do_state_dongle(peripheral_device *device){
 
 peripheral_state do_state_flashBar(peripheral_device *device){
     if(digitalRead(PIN_S2) == HIGH){  
-        device->type = PERIPHERAL_NONE;
-        device->selector = 200;
-        device->switch1 = false;
-        device->switch2 = false;
+        setPeripheralDevice(device, 200, false, false, 0, PERIPHERAL_NONE, TX);
         return STATE_NODONGLE;
     }
     else{
@@ -57,16 +57,18 @@ peripheral_state do_state_flashBar(peripheral_device *device){
 }
 
 void initializePeripheralDevice(peripheral_device *device) {
-    device->selector = 200;
-    device->switch1 = false;
-    device->switch2 = false;
-    device->type = PERIPHERAL_NONE;
-
+    setPeripheralDevice(device, 200, false, false, 0, PERIPHERAL_NONE, TX);
     PERIPHERAL_PORT.begin(115200);
-    //PERIPHERAL_PORT.setTimeout(1000);
-    //PERIPHERAL_PORT.enableHalfDuplexRx();
 }
 
+void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, uint8_t retryCount, peripheral_type type, uart_mode transmit_mode) {
+    device->selector = selector;
+    device->switch1 = switch1;
+    device->switch2 = switch2;
+    device->retryCount = retryCount;
+    device->type = type;
+    device->transmit_mode = transmit_mode;
+}
 
 void findPeripheral(peripheral_device *device){
 

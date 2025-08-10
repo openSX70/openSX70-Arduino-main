@@ -17,13 +17,21 @@ enum peripheral_type {
     PERIPHERAL_UNKNOWN
 };
 
+enum uart_mode {
+    TX,
+    RX
+};
+
 typedef struct peripheral_device {
     uint8_t selector;
     bool switch1;
     bool switch2;
+    uint8_t retryCount;
     peripheral_type type;
+    uart_mode transmit_mode;
 } peripheral_device;
 
+void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, uint8_t retryCount, peripheral_type type, uart_mode transmit_mode);
 void initializePeripheralDevice(peripheral_device *device);
 void updatePeripheralStatus(peripheral_device *device);
 
