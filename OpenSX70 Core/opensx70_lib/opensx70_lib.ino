@@ -94,7 +94,6 @@ void loop() {
 }
 
 camera_state do_state_darkslide (void) {
-  camera_state result = STATE_DARKSLIDE;
   #if SHUTTERDARKSLIDE
   sw_S1.Update();
   if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
@@ -104,23 +103,20 @@ camera_state do_state_darkslide (void) {
     }
     switch(current_status.type){
       case PERIPHERAL_NONE:
-        result = STATE_NODONGLE;
         #if STATEDEBUG
           DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
         #endif
-        break;
+        return STATE_NODONGLE;
       case PERIPHERAL_DONGLE:
-        result = STATE_DONGLE;
         #if STATEDEBUG
           DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
         #endif
-        break;
+        return STATE_DONGLE;
       case PERIPHERAL_FLASHBAR:
-        result = STATE_FLASHBAR;
         #if STATEDEBUG
           DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
         #endif
-        break;
+        return STATE_FLASHBAR;
       default:
         break;
     }
@@ -128,11 +124,9 @@ camera_state do_state_darkslide (void) {
   sw_S1.Reset();
   }
   #endif
-  return result;
 }
 
 camera_state do_state_noDongle (void){
-  camera_state result = STATE_NODONGLE;
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
@@ -143,19 +137,21 @@ camera_state do_state_noDongle (void){
 
   switch(current_status.type){
     case PERIPHERAL_DONGLE:
-      result = STATE_DONGLE;
       #if STATEDEBUG
         DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
       #endif
-      break;
+      return STATE_DONGLE;
     case PERIPHERAL_FLASHBAR:
-      result = STATE_FLASHBAR;
       #if STATEDEBUG
         DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
       #endif
-      break;
+      return STATE_FLASHBAR;
+    case PERIPHERAL_NONE:
+      #if STATEDEBUG
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_NODONGLE"));
+      #endif
+      return STATE_NODONGLE;
   }
-  return result;
 }
 
 camera_state do_state_dongle (void){
@@ -209,8 +205,6 @@ camera_state do_state_dongle (void){
 }
 
 camera_state do_state_flashBar (void){
-  camera_state result = STATE_FLASHBAR;
-
   LightMeterHelper(0);
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
@@ -219,14 +213,19 @@ camera_state do_state_flashBar (void){
     sw_S1.Reset();
   }
 
-  if(current_status.type == PERIPHERAL_NONE){
-    result = STATE_NODONGLE;
-    #if STATEDEBUG
-      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
-    #endif
+
+  switch (current_status.type){
+    case PERIPHERAL_FLASHBAR:
+      #if STATEDEBUG
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_FLASHBAR"));
+      #endif
+      return STATE_FLASHBAR;
+    case PERIPHERAL_NONE:
+      #if STATEDEBUG
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
+      #endif
+      return STATE_NODONGLE;
   }
-  
-  return result;
 }
 
 camera_state do_state_multi_exp (void){

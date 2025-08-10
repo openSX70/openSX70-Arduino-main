@@ -26,16 +26,16 @@ static const peripheral_state_funct PERIPHERAL_MACHINE[STATE_N] = {
 peripheral_state port_state = STATE_NODONGLE;
 
 peripheral_state do_state_noDongle(peripheral_device *device){
-    peripheral_state result = STATE_NODONGLE;
     if(digitalRead(PIN_S2) == LOW){
-        //Flashbar detected
         device->type = PERIPHERAL_FLASHBAR;
         device->selector = 100;
         device->switch1 = false; 
         device->switch2 = false;
-        result = STATE_FLASHBAR;
+        return STATE_FLASHBAR;
     }
-    return result;
+    else{
+        return STATE_NODONGLE;
+    }
 }
 
 peripheral_state do_state_dongle(peripheral_device *device){
@@ -44,15 +44,16 @@ peripheral_state do_state_dongle(peripheral_device *device){
 }
 
 peripheral_state do_state_flashBar(peripheral_device *device){
-    peripheral_state result = STATE_FLASHBAR;
     if(digitalRead(PIN_S2) == HIGH){  
         device->type = PERIPHERAL_NONE;
         device->selector = 200;
         device->switch1 = false;
         device->switch2 = false;
-        result = STATE_NODONGLE;
+        return STATE_NODONGLE;
     }
-    return result;
+    else{
+        return STATE_FLASHBAR;
+    }
 }
 
 void initializePeripheralDevice(peripheral_device *device) {
