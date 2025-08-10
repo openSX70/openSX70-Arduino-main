@@ -64,9 +64,6 @@ void ClickButton::Update()
     _clickCount = 0;
     if(clicks != 0){
       changed = true;
-      //#if SIMPLEDEBUG
-        DEBUG_OUTPUT.println(F("Long Click"));
-      //#endif
     }
   }
 }
