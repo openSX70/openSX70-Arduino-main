@@ -91,9 +91,6 @@ void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switc
     device->transmit_mode = transmit_mode;
 }
 
-void checkPeripheral(peripheral_device *device){
-}
-
 void sendCommand(uint8_t command, peripheral_device *device){
     PERIPHERAL_PORT.write(command);
     PERIPHERAL_PORT.flush();
