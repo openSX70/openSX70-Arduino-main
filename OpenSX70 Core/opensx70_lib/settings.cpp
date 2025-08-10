@@ -15,6 +15,7 @@ int FD100 = 341;
 int FF100 = 443;
 int FD600 = 85;
 int FF600 = 111;
+uint8_t retryLimit = 3;
 
 byte lightmeterHelper = true;
 

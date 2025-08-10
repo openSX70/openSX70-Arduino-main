@@ -92,6 +92,7 @@
 
   enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
 
+  extern uint8_t retryLimit;
   extern int FD100;
   extern int FF100;
   extern int FD600;

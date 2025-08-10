@@ -1,8 +1,10 @@
 #include "Arduino.h"
 #include "peripheral_port.h"
 #include "sx70_pcb.h"
+#include "settings.h"
 
 HardwareSerial PERIPHERAL_PORT(PIN_S2);
+static uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
 
 typedef enum peripheral_state{
     STATE_NODONGLE,
@@ -31,10 +33,20 @@ peripheral_state do_state_noDongle(peripheral_device *device){
         return STATE_FLASHBAR;
     }
     else if(device->transmit_mode == TX){
-        PERIPHERAL_PORT.write(PERIPHERAL_PING_CMD);
-        PERIPHERAL_PORT.flush();
-        PERIPHERAL_PORT.enableHalfDuplexRx();
+        sendCommand(PERIPHERAL_PING_CMD);
+        device->transmit_mode = RX;
         return STATE_DONGLE;
+    }
+    else if(device->transmit_mode == RX){
+        if(PERIPHERAL_PORT.available()){
+            uint8_t response = PERIPHERAL_PORT.read();
+            if(response == PERIPHERAL_ACK){
+                sendCommand(PERIPHERAL_READ_CMD);
+                //Going to treat selector at 255 as a "not ready" selector
+                setPeripheralDevice(device, 255, false, false, 0, PERIPHERAL_DONGLE, RX);
+                return STATE_DONGLE;
+            }
+        }
     }
     else{
         return STATE_NODONGLE;
@@ -42,8 +54,24 @@ peripheral_state do_state_noDongle(peripheral_device *device){
 }
 
 peripheral_state do_state_dongle(peripheral_device *device){
-    peripheral_state result = STATE_DONGLE;
-    return result;
+    if(device->transmit_mode == TX){
+        sendCommand(PERIPHERAL_READ_CMD);
+        device->transmit_mode = RX;
+    }
+    else if(device->transmit_mode == RX){
+        if(PERIPHERAL_PORT.available()){
+            uint8_t response = PERIPHERAL_PORT.read();
+            setPeripheralDevice(device, (response & selector_mask), (response & switch1_mask), (response & switch2_mask), 0, PERIPHERAL_DONGLE, TX);
+        }
+        else if(device->retryCount >= retryLimit){
+            setPeripheralDevice(device, 200, false, false, 0, PERIPHERAL_NONE, TX);
+            return STATE_NODONGLE;
+        }
+        else{
+            device->retryCount++;
+        }
+    }
+    return STATE_DONGLE;
 }
 
 peripheral_state do_state_flashBar(peripheral_device *device){
@@ -70,36 +98,14 @@ void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switc
     device->transmit_mode = transmit_mode;
 }
 
-void findPeripheral(peripheral_device *device){
-
+void checkPeripheral(peripheral_device *device){
 }
 
-/*
-void findPeripheral(peripheral_device *device){
-    if(digitalRead(PIN_S2) == LOW){
-        //Flashbar detected
-        device->selector = 100;
-        device->switch1 = false; 
-        device->switch2 = false;
-        device->type = PERIPHERAL_FLASHBAR;
-        return;
-    }
-    else if(PERIPHERAL_PORT.available()){
-        //Dongle detected
-        uint8_t cmd = PERIPHERAL_PORT.read();
-        if(cmd == PERIPHERAL_PONG_CMD){
-            device->selector = 0; //Assuming selector 0 for dongle
-            device->switch1 = false; 
-            device->switch2 = false;
-            device->type = PERIPHERAL_DONGLE;
-            return;
-        }
-    }
-    PERIPHERAL_PORT.write(PERIPHERAL_PING_CMD);
+void sendCommand(uint8_t command){
+    PERIPHERAL_PORT.write(command);
     PERIPHERAL_PORT.flush();
     PERIPHERAL_PORT.enableHalfDuplexRx();
 }
-*/
 
 void updatePeripheralStatus(peripheral_device *device){
     port_state = PERIPHERAL_MACHINE[port_state](device);
