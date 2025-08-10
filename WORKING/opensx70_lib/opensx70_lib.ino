@@ -4,8 +4,8 @@
 
 ClickButton sw_S1(PIN_S1, S1Logic);
 
-peripheral_status current_status;
-peripheral_status previous_status;
+peripheral_device current_status;
+peripheral_device previous_status;
 
 Camera openSX70;
 
@@ -46,10 +46,8 @@ static const camera_state_funct STATE_MACHINE [STATE_N] = {
 camera_state state = STATE_DARKSLIDE;
 
 void setup() {//setup - Inizialize
-  #if DEBUG
-    DEBUG_OUTPUT.begin(115200);
-    DEBUG_OUTPUT.println(F("Welcome to openSX70 Version: 08_04_2025 STM32 edition"));
-  #endif
+  DEBUG_OUTPUT.begin(115200);
+  DEBUG_OUTPUT.println(F("Welcome to openSX70 Version: 08_04_2025 STM32 edition"));
 
   io_init();
   validateISO();
@@ -65,6 +63,7 @@ void setup() {//setup - Inizialize
   sw_S1.longClickTime  = 0; // time until "held-down clicks" register
 
   //current_status = peripheral.get_peripheral_status();
+  initializePeripheralDevice(&current_status);
 
   mEXPFirstRun = false;
   multipleExposureMode = false;
@@ -87,15 +86,15 @@ void setup() {//setup - Inizialize
 
 /*LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP LOOP*/
 void loop() {
-  //previous_status = current_status;
-  //current_status = peripheral.get_peripheral_status();
+  previous_status = current_status;
+  updatePeripheralStatus(&current_status);
   sonarFocus();
   sw_S1.Update();
   state = STATE_MACHINE[state]();
 }
 
 camera_state do_state_darkslide (void) {
-  static camera_state result = STATE_DARKSLIDE;
+  camera_state result = STATE_DARKSLIDE;
   #if SHUTTERDARKSLIDE
   sw_S1.Update();
   if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
@@ -103,27 +102,28 @@ camera_state do_state_darkslide (void) {
     if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
       openSX70.darkslideEJECT(); 
     }
-    /*
-    if ((current_status.selector <= 15) && (peripheral.checkDongle() > 0)){ //((selector <= 15) && (peripheral.checkDongle() > 0))
-      result = STATE_DONGLE;
-      #if STATEDEBUG
-        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
-      #endif
+    switch(current_status.type){
+      case PERIPHERAL_NONE:
+        result = STATE_NODONGLE;
+        #if STATEDEBUG
+          DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
+        #endif
+        break;
+      case PERIPHERAL_DONGLE:
+        result = STATE_DONGLE;
+        #if STATEDEBUG
+          DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_DARKSLIDE"));
+        #endif
+        break;
+      case PERIPHERAL_FLASHBAR:
+        result = STATE_FLASHBAR;
+        #if STATEDEBUG
+          DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
+        #endif
+        break;
+      default:
+        break;
     }
-    else if ((current_status.selector == 100) && (peripheral.checkDongle() == 0)){
-      result = STATE_FLASHBAR;
-      #if STATEDEBUG
-        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_DARKSLIDE"));
-      #endif
-    }
-    else{
-      result = STATE_NODONGLE;
-      #if STATEDEBUG
-        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DARKSLIDE"));
-      #endif
-    }
-    */
-   result = STATE_NODONGLE;
   #if SHUTTERDARKSLIDE
   sw_S1.Reset();
   }
@@ -132,7 +132,7 @@ camera_state do_state_darkslide (void) {
 }
 
 camera_state do_state_noDongle (void){
-  static camera_state result = STATE_NODONGLE;
+  camera_state result = STATE_NODONGLE;
   LightMeterHelper(1);
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
     LightMeterHelper(0); 
@@ -141,26 +141,25 @@ camera_state do_state_noDongle (void){
     sw_S1.Reset();
   }
 
-  //Checks for dongle or flashbar insertion
-  /*
-  if (current_status.selector<=15){
-    #if STATEDEBUG
-      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
-    #endif
-    result = STATE_DONGLE;
+  switch(current_status.type){
+    case PERIPHERAL_DONGLE:
+      result = STATE_DONGLE;
+      #if STATEDEBUG
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_NODONGLE"));
+      #endif
+      break;
+    case PERIPHERAL_FLASHBAR:
+      result = STATE_FLASHBAR;
+      #if STATEDEBUG
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
+      #endif
+      break;
   }
-  else if (current_status.selector==100){
-    result = STATE_FLASHBAR;
-    #if STATEDEBUG
-      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_NODONGLE"));
-    #endif
-  }
-  */
   return result;
 }
 
 camera_state do_state_dongle (void){
-  static camera_state result = STATE_DONGLE;
+  camera_state result = STATE_DONGLE;
   /*
   
 
@@ -210,8 +209,8 @@ camera_state do_state_dongle (void){
 }
 
 camera_state do_state_flashBar (void){
-  static camera_state result = STATE_FLASHBAR;
-  /*
+  camera_state result = STATE_FLASHBAR;
+
   LightMeterHelper(0);
   
   if ((sw_S1.clicks == -1) || (sw_S1.clicks == 1)){
@@ -219,19 +218,20 @@ camera_state do_state_flashBar (void){
     openSX70.AutoExposureFF(savedISO);
     sw_S1.Reset();
   }
-  
-  if (current_status.selector == 200){
+
+  if(current_status.type == PERIPHERAL_NONE){
     result = STATE_NODONGLE;
+    DEBUG_OUTPUT.println(F("LEAVING CORE FLASHBAR STATE"));
     #if STATEDEBUG
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
-  } 
-  */
+  }
+  
   return result;
 }
 
 camera_state do_state_multi_exp (void){
-  static camera_state result = STATE_MULTI_EXP;
+  camera_state result = STATE_MULTI_EXP;
   /*
   bool mexpSwitchStatus = getSwitchStates(MEXP_MODE);
 
@@ -340,11 +340,9 @@ void switch2Function(int mode) {
 }
 
 void LightMeterHelper(byte ExposureType){
-  /*
   if(openSX70.getLIGHTMETER_HELPER()){
     meter_led(current_status.selector, ExposureType);
   }
-  */
 }
 
 void viewfinderBlink(uint8_t LEDPIN){
