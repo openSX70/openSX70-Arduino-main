@@ -2,6 +2,7 @@
 #include "dongle.h"
 #include "Arduino.h"
 
+HardwareSerial PERIPHERALPORT(PIN_S2);
 
 struct PinConfig {
     uint8_t pin;
@@ -32,4 +33,10 @@ byte getDongleState(void) {
     }
     
     return dongleState;
+}
+
+void sendResponse(uint8_t message) {
+    PERIPHERALPORT.write(message);
+    PERIPHERALPORT.flush();
+    PERIPHERALPORT.enableHalfDuplexRx();
 }
