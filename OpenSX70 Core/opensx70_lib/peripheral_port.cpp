@@ -34,10 +34,9 @@ peripheral_state do_state_noDongle(peripheral_device *device){
     }
     else if(device->transmit_mode == TX){
         sendCommand(PERIPHERAL_PING_CMD, device);
-        return STATE_DONGLE;
     }
     else if(device->transmit_mode == RX){
-        if(PERIPHERAL_PORT.available()){
+        if(PERIPHERAL_PORT.available() > 0){
             uint8_t response = PERIPHERAL_PORT.read();
             if(response == PERIPHERAL_ACK){
                 sendCommand(PERIPHERAL_READ_CMD, device);
@@ -47,9 +46,7 @@ peripheral_state do_state_noDongle(peripheral_device *device){
             }
         }
     }
-    else{
-        return STATE_NODONGLE;
-    }
+    return STATE_NODONGLE;
 }
 
 peripheral_state do_state_dongle(peripheral_device *device){
