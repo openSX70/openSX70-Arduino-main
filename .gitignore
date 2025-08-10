@@ -344,3 +344,5 @@ WORKING/opensx70_lib/*.hex
 
 #exclude vscode settings
 .vscode
+
+.DS_Store
