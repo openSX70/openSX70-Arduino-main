@@ -74,9 +74,7 @@ peripheral_state do_state_flashBar(peripheral_device *device){
         setPeripheralDevice(device, 200, false, false, 0, PERIPHERAL_NONE, TX);
         return STATE_NODONGLE;
     }
-    else{
-        return STATE_FLASHBAR;
-    }
+    return STATE_FLASHBAR;
 }
 
 void initializePeripheralDevice(peripheral_device *device) {
