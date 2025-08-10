@@ -34,7 +34,6 @@ peripheral_state do_state_noDongle(peripheral_device *device){
         device->switch1 = false; 
         device->switch2 = false;
         result = STATE_FLASHBAR;
-        DEBUG_OUTPUT.println(F("Transition to STATE_FLASHBAR from STATE_NODONGLE"));
     }
     return result;
 }
@@ -46,13 +45,11 @@ peripheral_state do_state_dongle(peripheral_device *device){
 
 peripheral_state do_state_flashBar(peripheral_device *device){
     peripheral_state result = STATE_FLASHBAR;
-    if(digitalRead(PIN_S2) == HIGH){
-        
+    if(digitalRead(PIN_S2) == HIGH){  
         device->type = PERIPHERAL_NONE;
         device->selector = 200;
         device->switch1 = false;
         device->switch2 = false;
-        DEBUG_OUTPUT.println(F("Transition to STATE_NODONGLE from STATE_FLASHBAR"));
         result = STATE_NODONGLE;
     }
     return result;

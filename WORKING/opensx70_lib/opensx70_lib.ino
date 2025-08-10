@@ -221,7 +221,6 @@ camera_state do_state_flashBar (void){
 
   if(current_status.type == PERIPHERAL_NONE){
     result = STATE_NODONGLE;
-    DEBUG_OUTPUT.println(F("LEAVING CORE FLASHBAR STATE"));
     #if STATEDEBUG
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
     #endif
