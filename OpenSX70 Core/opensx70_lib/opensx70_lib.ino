@@ -147,9 +147,6 @@ camera_state do_state_noDongle (void){
       #endif
       return STATE_FLASHBAR;
     case PERIPHERAL_NONE:
-      #if STATEDEBUG
-        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_NODONGLE"));
-      #endif
       return STATE_NODONGLE;
   }
 }
@@ -216,9 +213,6 @@ camera_state do_state_flashBar (void){
 
   switch (current_status.type){
     case PERIPHERAL_FLASHBAR:
-      #if STATEDEBUG
-        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR FROM STATE_FLASHBAR"));
-      #endif
       return STATE_FLASHBAR;
     case PERIPHERAL_NONE:
       #if STATEDEBUG
