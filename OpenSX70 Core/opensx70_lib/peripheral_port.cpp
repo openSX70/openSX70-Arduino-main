@@ -49,7 +49,6 @@ peripheral_state do_state_noDongle(peripheral_device *device){
         }
     }
 
-    setPeripheralDevice(device, 200, false, false, PERIPHERAL_NONE);
     return STATE_NODONGLE;
 }
 
