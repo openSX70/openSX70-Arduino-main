@@ -33,5 +33,6 @@ void initializePeripheralDevice(peripheral_device *device);
 void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, peripheral_type type);
 void updatePeripheralStatus(peripheral_device *device);
 void sendCommand(uint8_t command, peripheral_device *device);
+bool getDongleSettings(peripheral_device *device);
 
 #endif

@@ -35,18 +35,16 @@ peripheral_state do_state_noDongle(peripheral_device *device){
         return STATE_FLASHBAR;
     }
     
-    PERIPHERAL_PORT.write(PERIPHERAL_PING_CMD);
-    PERIPHERAL_PORT.flush();
-    PERIPHERAL_PORT.enableHalfDuplexRx();
+    sendCommand(PERIPHERAL_PING_CMD, device);
     
     unsigned long start_time = millis();
     while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
         if(PERIPHERAL_PORT.available() > 0){
             uint8_t response = PERIPHERAL_PORT.read();
             if(response == PERIPHERAL_ACK){
-
-                setPeripheralDevice(device, 255, false, false, PERIPHERAL_DONGLE);
-                return STATE_DONGLE;
+                if(getDongleSettings(device)){
+                    return STATE_DONGLE;
+                }
             }
         }
     }
@@ -56,17 +54,8 @@ peripheral_state do_state_noDongle(peripheral_device *device){
 }
 
 peripheral_state do_state_dongle(peripheral_device *device){
-    PERIPHERAL_PORT.write(PERIPHERAL_READ_CMD);
-    PERIPHERAL_PORT.flush();
-    PERIPHERAL_PORT.enableHalfDuplexRx();
-    
-    unsigned long start_time = millis();
-    while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
-        if(PERIPHERAL_PORT.available()){
-            uint8_t response = PERIPHERAL_PORT.read();
-            setPeripheralDevice(device, (response & selector_mask), (response & switch1_mask), (response & switch2_mask), PERIPHERAL_DONGLE);
-            return STATE_DONGLE;
-        }
+    if(getDongleSettings(device)){
+        return STATE_DONGLE;
     }
 
     setPeripheralDevice(device, 200, false, false, PERIPHERAL_NONE);
@@ -99,16 +88,18 @@ void sendCommand(uint8_t command, peripheral_device *device){
     PERIPHERAL_PORT.enableHalfDuplexRx();
 }
 
-void waitForPeripheralResponse(peripheral_device *device) {
+bool getDongleSettings(peripheral_device *device){
+    sendCommand(PERIPHERAL_READ_CMD, device);
+
     unsigned long start_time = millis();
-    while (millis() - start_time < PERIPHERAL_TIMEOUT_MS) {
-        if (PERIPHERAL_PORT.available() > 0) {
+    while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
+        if(PERIPHERAL_PORT.available() > 0){
             uint8_t response = PERIPHERAL_PORT.read();
-            if (response == PERIPHERAL_ACK) {
-                return;
-            }
+            setPeripheralDevice(device, (response & selector_mask), (response & switch1_mask), (response & switch2_mask), PERIPHERAL_DONGLE);
+            return true;
         }
     }
+    return false;
 }
 
 void updatePeripheralStatus(peripheral_device *device){
