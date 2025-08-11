@@ -26,13 +26,11 @@ typedef struct peripheral_device {
     uint8_t selector;
     bool switch1;
     bool switch2;
-    uint8_t retryCount;
     peripheral_type type;
-    uart_mode transmit_mode;
 } peripheral_device;
 
 void initializePeripheralDevice(peripheral_device *device);
-void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, uint8_t retryCount, peripheral_type type, uart_mode transmit_mode);
+void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, peripheral_type type);
 void updatePeripheralStatus(peripheral_device *device);
 void sendCommand(uint8_t command, peripheral_device *device);
 
