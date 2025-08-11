@@ -9,6 +9,8 @@
 extern bool multipleExposureMode;
 
 HardwareTimer *SolenoidPWM = new HardwareTimer(TIM1);
+extern HardwareSerial DEBUG_OUTPUT;
+extern HardwareSerial PERIPHERAL_PORT;
 
 /*
 Camera::Camera(uDongle *dongle){
@@ -299,6 +301,7 @@ void Camera::FastFlash(){
   delay(1);
   digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
   pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
+  PERIPHERAL_PORT.begin(115200); //Reinitialize the Serial Port
 }
 
 
