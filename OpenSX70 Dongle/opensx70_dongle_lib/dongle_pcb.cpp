@@ -4,7 +4,7 @@
 
 void io_init() {
     // Output definition
-    pinMode(PIN_S2, INPUT); // GND
+    //pinMode(PIN_S2, INPUT); // GND
     pinMode(LED_BLUE, OUTPUT);
     pinMode(LED_GREEN, OUTPUT);
     pinMode(LED_RED, OUTPUT);

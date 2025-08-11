@@ -3,6 +3,8 @@
 #include "sx70_pcb.h"
 #include "settings.h"
 
+extern HardwareSerial DEBUG_OUTPUT;
+
 HardwareSerial PERIPHERAL_PORT(PIN_S2);
 static uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
 
@@ -32,41 +34,42 @@ peripheral_state do_state_noDongle(peripheral_device *device){
         setPeripheralDevice(device, 100, false, false, 0, PERIPHERAL_FLASHBAR, TX);
         return STATE_FLASHBAR;
     }
-    else if(device->transmit_mode == TX){
-        sendCommand(PERIPHERAL_PING_CMD, device);
-    }
-    else if(device->transmit_mode == RX){
+    
+    PERIPHERAL_PORT.write(PERIPHERAL_PING_CMD);
+    PERIPHERAL_PORT.flush();
+    PERIPHERAL_PORT.enableHalfDuplexRx();
+    
+    unsigned long start_time = millis();
+    while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
         if(PERIPHERAL_PORT.available() > 0){
             uint8_t response = PERIPHERAL_PORT.read();
             if(response == PERIPHERAL_ACK){
-                sendCommand(PERIPHERAL_READ_CMD, device);
-                //Going to treat selector at 255 as a "not ready" selector
-                setPeripheralDevice(device, 255, false, false, 0, PERIPHERAL_DONGLE, RX);
+                setPeripheralDevice(device, 255, false, false, 0, PERIPHERAL_DONGLE, TX);
                 return STATE_DONGLE;
             }
         }
     }
+
+    setPeripheralDevice(device, 200, false, false, 0, PERIPHERAL_NONE, TX);
     return STATE_NODONGLE;
 }
 
 peripheral_state do_state_dongle(peripheral_device *device){
-    if(device->transmit_mode == TX){
-        sendCommand(PERIPHERAL_READ_CMD, device);
-    }
-    else if(device->transmit_mode == RX){
+    PERIPHERAL_PORT.write(PERIPHERAL_READ_CMD);
+    PERIPHERAL_PORT.flush();
+    PERIPHERAL_PORT.enableHalfDuplexRx();
+    
+    unsigned long start_time = millis();
+    while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
         if(PERIPHERAL_PORT.available()){
             uint8_t response = PERIPHERAL_PORT.read();
             setPeripheralDevice(device, (response & selector_mask), (response & switch1_mask), (response & switch2_mask), 0, PERIPHERAL_DONGLE, TX);
-        }
-        else if(device->retryCount >= retryLimit){
-            setPeripheralDevice(device, 200, false, false, 0, PERIPHERAL_NONE, TX);
-            return STATE_NODONGLE;
-        }
-        else{
-            device->retryCount++;
+            return STATE_DONGLE;
         }
     }
-    return STATE_DONGLE;
+
+    setPeripheralDevice(device, 200, false, false, 0, PERIPHERAL_NONE, TX);
+    return STATE_NODONGLE;
 }
 
 peripheral_state do_state_flashBar(peripheral_device *device){

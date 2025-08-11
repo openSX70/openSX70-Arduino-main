@@ -152,10 +152,6 @@ camera_state do_state_noDongle (void){
 }
 
 camera_state do_state_dongle (void){
-  camera_state result = STATE_DONGLE;
-  /*
-  
-
   if(ShutterSpeed[current_status.selector] == A100 || ShutterSpeed[current_status.selector] == A600){
     LightMeterHelper(1); //LMHelper Auto Mode
   }
@@ -178,27 +174,26 @@ camera_state do_state_dongle (void){
     sw_S1.Reset();
     
   } 
-  
-  // Dongle Removed
-  if (current_status.selector == 200){
-    result = STATE_NODONGLE;
-    #if STATEDEBUG
-      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
-    #endif
-  } 
-  // Multiple Exposure switch flipped
-  else if (getSwitchStates(MEXP_MODE)){
-    result = STATE_MULTI_EXP;
-    multipleExposureMode = true;
-    mEXPFirstRun = true;
-    LightMeterHelper(0);
-    #if STATEDEBUG
-      DEBUG_OUTPUT.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
-    #endif
+
+  switch(current_status.type){
+    case PERIPHERAL_NONE:
+      return STATE_NODONGLE;
+      #if STATEDEBUG
+        DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_DONGLE"));
+      #endif
+      break;
+    case PERIPHERAL_DONGLE:
+      if(getSwitchStates(MEXP_MODE)){
+        return STATE_MULTI_EXP;
+        multipleExposureMode = true;
+        mEXPFirstRun = true;
+        LightMeterHelper(0);
+        #if STATEDEBUG
+          DEBUG_OUTPUT.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
+        #endif
+      }
+      return STATE_DONGLE;
   }
-  */
-  return result;
-  
 }
 
 camera_state do_state_flashBar (void){
@@ -224,7 +219,6 @@ camera_state do_state_flashBar (void){
 
 camera_state do_state_multi_exp (void){
   camera_state result = STATE_MULTI_EXP;
-  /*
   bool mexpSwitchStatus = getSwitchStates(MEXP_MODE);
 
   if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
@@ -252,12 +246,10 @@ camera_state do_state_multi_exp (void){
       DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE FROM STATE_MULTI_EXP"));
     #endif
   }
-  */
   return result;
 }
 
 void dongleFunctions(){
-  /*
   static uint16_t isoSelection;
   bool dongleAutoFlash = getSwitchStates(DONGLE_AUTO_FLASH);
 
@@ -287,7 +279,6 @@ void dongleFunctions(){
       openSX70.AutoExposureFF(isoSelection);
     }
   }
-    */
 }
 
 void sonarFocus(){
@@ -398,7 +389,6 @@ void validateISO(){
 }
 
 bool getSwitchStates(uint8_t switchValue){
-  /*
   switch (switchValue){
     case 1:
       return current_status.switch1;
@@ -407,5 +397,4 @@ bool getSwitchStates(uint8_t switchValue){
     default:
       return false;
   }
-  */
 }

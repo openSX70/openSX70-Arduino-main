@@ -8,5 +8,6 @@
 #define PERIPHERAL_READ_CMD 0xF5
 
 byte getDongleState(void);
+void sendResponse(uint8_t message);
 
 #endif

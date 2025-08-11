@@ -13,14 +13,15 @@ void setup() {
 }
 
 void loop() {
+    byte state = getDongleState();
     if(PERIPHERALPORT.available() > 0) {
         uint8_t command = PERIPHERALPORT.read();
+        //delayMicroseconds(500);
         switch (command) {
             case PERIPHERAL_PING_CMD:
                 sendResponse(PERIPHERAL_ACK);
                 break;
             case PERIPHERAL_READ_CMD:
-                byte state = getDongleState();
                 sendResponse(state);
                 break;
             default:
