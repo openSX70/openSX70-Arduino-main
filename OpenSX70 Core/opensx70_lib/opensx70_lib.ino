@@ -184,13 +184,13 @@ camera_state do_state_dongle (void){
       break;
     case PERIPHERAL_DONGLE:
       if(getSwitchStates(MEXP_MODE)){
-        return STATE_MULTI_EXP;
         multipleExposureMode = true;
         mEXPFirstRun = true;
         LightMeterHelper(0);
         #if STATEDEBUG
           DEBUG_OUTPUT.println(F("TRANSITION TO STATE_MULTI_EXP FROM STATE_DONGLE"));
         #endif
+        return STATE_MULTI_EXP;
       }
       return STATE_DONGLE;
   }
