@@ -6,7 +6,13 @@
 //Keeping things similar to the DS2408 for funsies.
 #define PERIPHERAL_PING_CMD 0x01
 #define PERIPHERAL_ACK 0x02
+#define CAMERA_ISO_600 0x03
+#define CAMERA_ISO_SX70 0x04
+
+#define DONGLE_LED_OFF 0x05
+
 #define PERIPHERAL_READ_CMD 0xF5
+#define PERIPHERAL_SELF_TIMER_CMD 0xF6
 
 extern HardwareSerial DEBUG_OUTPUT;
 
@@ -32,7 +38,7 @@ typedef struct peripheral_device {
 void initializePeripheralDevice(peripheral_device *device);
 void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switch1, bool switch2, peripheral_type type);
 void updatePeripheralStatus(peripheral_device *device);
-void sendCommand(uint8_t command, peripheral_device *device);
+void sendCommand(uint8_t command);
 bool getDongleSettings(peripheral_device *device);
 
 #endif

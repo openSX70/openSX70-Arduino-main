@@ -4,6 +4,7 @@
 #include "settings.h"
 
 extern HardwareSerial DEBUG_OUTPUT;
+extern int savedISO;
 
 HardwareSerial PERIPHERAL_PORT(PIN_S2);
 static uint8_t selector_mask = 0b00001111, switch1_mask = 0b00010000, switch2_mask = 0b00100000;
@@ -35,12 +36,18 @@ peripheral_state do_state_noDongle(peripheral_device *device){
         return STATE_FLASHBAR;
     }
     
-    sendCommand(PERIPHERAL_PING_CMD, device);
+    sendCommand(PERIPHERAL_PING_CMD);
     
     unsigned long start_time = millis();
     while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
         if(PERIPHERAL_PORT.available() > 0){
             uint8_t response = PERIPHERAL_PORT.read();
+            if(savedISO == ISO_600){
+                sendCommand(CAMERA_ISO_600);
+            }
+            else{
+                sendCommand(CAMERA_ISO_SX70);
+            }
             if(response == PERIPHERAL_ACK){
                 if(getDongleSettings(device)){
                     return STATE_DONGLE;
@@ -81,14 +88,14 @@ void setPeripheralDevice(peripheral_device *device, uint8_t selector, bool switc
     device->type = type;
 }
 
-void sendCommand(uint8_t command, peripheral_device *device){
+void sendCommand(uint8_t command){
     PERIPHERAL_PORT.write(command);
     PERIPHERAL_PORT.flush();
     PERIPHERAL_PORT.enableHalfDuplexRx();
 }
 
 bool getDongleSettings(peripheral_device *device){
-    sendCommand(PERIPHERAL_READ_CMD, device);
+    sendCommand(PERIPHERAL_READ_CMD);
 
     unsigned long start_time = millis();
     while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
