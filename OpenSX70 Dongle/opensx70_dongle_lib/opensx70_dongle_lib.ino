@@ -29,12 +29,10 @@ void loop() {
             case CAMERA_ISO_600:
                 currentISO = ISO_600;
                 setISOLED(ISO_600);
-                sendResponse(PERIPHERAL_ACK);
                 break;
             case CAMERA_ISO_SX70:
                 currentISO = ISO_SX70;
                 setISOLED(ISO_SX70);
-                sendResponse(PERIPHERAL_ACK);
                 break;
             case DONGLE_LED_OFF:
                 turnOffLEDs();
