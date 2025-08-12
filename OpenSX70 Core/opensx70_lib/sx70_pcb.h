@@ -1,6 +1,6 @@
 #ifndef SX70_PCB_H 
-  #define SX70_PCB_H 
-  #ifdef ARDUINO_GENERIC_G030K8TX
+#define SX70_PCB_H 
+#ifdef ARDUINO_GENERIC_G030K8TX
     const byte PIN_S1 = PB3; //Sonar S1T S1 Trigger Redbutton
     const byte PIN_S2 = PA2;
     const byte PIN_S3 = PC6;
@@ -24,7 +24,7 @@
     const byte PIN_S1F_FBW = PA11; //engage SONAR prefocus
     const byte USART_RX = PB7;
     const byte USART_TX = PB6;
-  #endif
+#endif
 
-  void io_init();
+void io_init();
 #endif

@@ -155,16 +155,7 @@ camera_state do_state_flashBar (void){
         sw_S1.Reset();
     }
 
-
-    switch (current_status.type){
-        case PERIPHERAL_FLASHBAR:
-            return STATE_FLASHBAR;
-        case PERIPHERAL_NONE:
-            #if STATEDEBUG
-                DEBUG_OUTPUT.println(F("TRANSITION TO STATE_NODONGLE FROM STATE_FLASHBAR"));
-            #endif
-            return STATE_NODONGLE;
-    }
+    return returnState();
 }
 
 camera_state do_state_multi_exp (void){
@@ -195,6 +186,7 @@ camera_state do_state_multi_exp (void){
         #endif
         return STATE_DONGLE;
     }
+    return STATE_MULTI_EXP;
 }
 
 camera_state returnState(){
@@ -214,6 +206,11 @@ camera_state returnState(){
                 DEBUG_OUTPUT.println(F("TRANSITION TO STATE_FLASHBAR"));
             #endif
             return STATE_FLASHBAR;
+        default:
+            #if STATEDEBUG
+                DEBUG_OUTPUT.println(F("TRANSITION TO STATE_UNKNOWN"));
+            #endif
+            return STATE_NODONGLE;
     }
 }
 

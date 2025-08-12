@@ -11,23 +11,23 @@ uint32_t timeElapsed;
 uint16_t outputCompare = A100;
 
 void meter_init(){
-  integrator_init();
+    integrator_init();
 }
 
 void meter_reset(){
-  integrator_reset();
+    integrator_reset();
 }
 
 void integrator_init(){
-  pinMode(PIN_LM, INPUT);
-  pinMode(PIN_LM_RST, OUTPUT);
-  digitalWrite(PIN_LM_RST, LOW);
+    pinMode(PIN_LM, INPUT);
+    pinMode(PIN_LM_RST, OUTPUT);
+    digitalWrite(PIN_LM_RST, LOW);
 }
 
 void integrator_reset(){
-  //TODO, See how much time a cap reset takes and add a delay if required.
-  digitalWrite(PIN_LM_RST, HIGH);
-  digitalWrite(PIN_LM_RST, LOW);
+    //TODO, See how much time a cap reset takes and add a delay if required.
+    digitalWrite(PIN_LM_RST, HIGH);
+    digitalWrite(PIN_LM_RST, LOW);
 }
 
 void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Timer1 -- Magicnumber for ISO
@@ -36,13 +36,13 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
     DEBUG_OUTPUT.println(iso);
     #endif
     if (iso == ISO_600) {
-      outputCompare = A600;
+        outputCompare = A600;
     } 
     else if (iso == ISO_SX70) {
-      outputCompare = A100;
+        outputCompare = A100;
     }
     else{
-      outputCompare = iso; //FF Delay Magicnumber as well as      
+        outputCompare = iso; //FF Delay Magicnumber as well as      
     }
     #if LMDEBUG
     DEBUG_OUTPUT.print(F("outputcompare set to : "));
@@ -51,86 +51,86 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
 }
 
 int meter_compute(int _activeISO){
-  uint16_t adcValue;
-  if(measuring == false){
-    measuring = true;
-    meter_reset();
-    startMillis = millis();
-    meter_set_iso(_activeISO);
-  }
-  else{
-    endMillis = millis();
-    timeElapsed =  endMillis - startMillis;
-    if((timeElapsed) >= METER_INTERVAL){
-      adcValue = analogRead(PIN_LM);
-      measuring = false;
-
-      float slope = (float(adcValue)/float(timeElapsed));
-      int pred_milli; 
-      if(slope == 0){
-        pred_milli = 9999;
-      }
-      else{
-        pred_milli = round(float(outputCompare)/float(slope)); 
-      }
-      return pred_milli; 
+    uint16_t adcValue;
+    if(measuring == false){
+        measuring = true;
+        meter_reset();
+        startMillis = millis();
+        meter_set_iso(_activeISO);
     }
-  }
-  return -1;   
+    else{
+        endMillis = millis();
+        timeElapsed =  endMillis - startMillis;
+        if((timeElapsed) >= METER_INTERVAL){
+            adcValue = analogRead(PIN_LM);
+            measuring = false;
+
+            float slope = (float(adcValue)/float(timeElapsed));
+            int pred_milli; 
+            if(slope == 0){
+                pred_milli = 9999;
+            }
+            else{
+                pred_milli = round(float(outputCompare)/float(slope)); 
+            }
+            return pred_milli; 
+        }
+    }
+    return -1;   
 }
 
 bool meter_update(){
-  uint16_t adcValue = analogRead(PIN_LM);
-  if( adcValue >= outputCompare){
-      return 1;
-  }
-  else{
-      return 0;
-  }
+    uint16_t adcValue = analogRead(PIN_LM);
+    if( adcValue >= outputCompare){
+        return 1;
+    }
+    else{
+        return 0;
+    }
 }
 
 void meter_led(byte _selector, byte _type){
-  if(_type == 0){ //OFF
-    digitalWrite(PIN_LED1, LOW);
-    digitalWrite(PIN_LED2, LOW);
-    return;
-  }
-
-  int predictedMillis;
-  int activeISO;
-
-  if((ShutterSpeed[_selector]) == AUTO600){
-    activeISO = ISO_600;
-  }
-  else if((ShutterSpeed[_selector] == AUTO100)){
-    activeISO = ISO_SX70;
-  }
-  else{
-    activeISO = ReadISO();
-  }
-
-  predictedMillis = meter_compute(activeISO);
-
-  if(predictedMillis == -1){ // Still measuring!
-    return;
-  }
-
-  else if(_type == 1){ // Automode
-    if(predictedMillis >= ShutterSpeed[7]){ //Low light warning
-      digitalWrite(PIN_LED1, HIGH);
-      digitalWrite(PIN_LED2, LOW);
-      #if LMHELPERDEBUG
-        DEBUG_OUTPUT.println(F("Auto mode low light warning"));
-      #endif
+    if(_type == 0){ //OFF
+        digitalWrite(PIN_LED1, LOW);
+        digitalWrite(PIN_LED2, LOW);
+        return;
     }
-    else{ //Low light warning off
-      digitalWrite(PIN_LED1, LOW);
-      digitalWrite(PIN_LED2, LOW);
-      #if LMHELPERDEBUG
-        DEBUG_OUTPUT.println(F("Enough Light Detected"));
-      #endif
+
+    int predictedMillis;
+    int activeISO;
+
+    if((ShutterSpeed[_selector]) == AUTO600){
+        activeISO = ISO_600;
     }
-  }
+    else if((ShutterSpeed[_selector] == AUTO100)){
+        activeISO = ISO_SX70;
+    }
+    else{
+        activeISO = ReadISO();
+    }
+
+    predictedMillis = meter_compute(activeISO);
+
+    if(predictedMillis == -1){ // Still measuring!
+        return;
+    }
+
+    else if(_type == 1){ // Automode
+        if(predictedMillis >= ShutterSpeed[7]){ //Low light warning
+            digitalWrite(PIN_LED1, HIGH);
+            digitalWrite(PIN_LED2, LOW);
+            #if LMHELPERDEBUG
+                DEBUG_OUTPUT.println(F("Auto mode low light warning"));
+            #endif
+        }
+        else{ //Low light warning off
+            digitalWrite(PIN_LED1, LOW);
+            digitalWrite(PIN_LED2, LOW);
+            #if LMHELPERDEBUG
+                DEBUG_OUTPUT.println(F("Enough Light Detected"));
+            #endif
+        }
+    }
 
 }
 
