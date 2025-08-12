@@ -5,6 +5,8 @@
 HardwareSerial DEBUGPORT(PIN_RX, PIN_TX);
 extern HardwareSerial PERIPHERALPORT;
 
+iso currentISO;
+
 void setup() {
     io_init();
     DEBUGPORT.begin(115200);
@@ -23,6 +25,16 @@ void loop() {
                 break;
             case PERIPHERAL_READ_CMD:
                 sendResponse(state);
+                break;
+            case CAMERA_ISO_600:
+                currentISO = ISO_600;
+                setISOLED(ISO_600);
+                sendResponse(PERIPHERAL_ACK);
+                break;
+            case CAMERA_ISO_SX70:
+                currentISO = ISO_SX70;
+                setISOLED(ISO_SX70);
+                sendResponse(PERIPHERAL_ACK);
                 break;
             default:
                 break;

@@ -10,6 +10,9 @@ struct PinConfig {
     uint8_t activeHigh;  // 1 if HIGH is active, 0 if LOW is active
 };
 
+/*
+    {PIN, MASK, ACTIVE_HIGH}
+*/
 static const struct PinConfig donglePins[] = {
     {ENC_1, 0x01, 0},
     {ENC_2, 0x02, 0},
@@ -19,6 +22,8 @@ static const struct PinConfig donglePins[] = {
     {SWITCH_2, 0x20, 1}
 };
 
+// Just in case we want to add more later, technically we can have up to 8 pins with the current communication protocol
+// Maybe two can be virtual for focus and shutter release. Bluetooth dongle with a remote?
 static const uint8_t NUM_DONGLE_PINS = sizeof(donglePins) / sizeof(donglePins[0]);
 
 byte getDongleState(void) {
@@ -39,4 +44,18 @@ void sendResponse(uint8_t message) {
     PERIPHERALPORT.write(message);
     PERIPHERALPORT.flush();
     PERIPHERALPORT.enableHalfDuplexRx();
+}
+
+void setISOLED(iso isoSetting) {
+    switch(isoSetting) {
+        case ISO_600:
+            digitalWrite(LED_BLUE, HIGH);
+            break;
+        case ISO_SX70:
+            digitalWrite(LED_RED, HIGH);
+            break;
+        default:
+            // Turn off all LEDs
+            break;
+    }
 }
