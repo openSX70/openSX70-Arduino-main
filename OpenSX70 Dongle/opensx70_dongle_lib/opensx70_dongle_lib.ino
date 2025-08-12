@@ -36,6 +36,9 @@ void loop() {
                 setISOLED(ISO_SX70);
                 sendResponse(PERIPHERAL_ACK);
                 break;
+            case DONGLE_LED_OFF:
+                turnOffLEDs();
+                break;
             default:
                 break;
         }

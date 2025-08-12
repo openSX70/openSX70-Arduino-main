@@ -59,3 +59,9 @@ void setISOLED(iso isoSetting) {
             break;
     }
 }
+
+void turnOffLEDs() {
+    digitalWrite(LED_BLUE, LOW);
+    digitalWrite(LED_RED, LOW);
+    digitalWrite(LED_GREEN, LOW);
+}
