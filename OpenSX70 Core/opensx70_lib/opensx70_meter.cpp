@@ -1,5 +1,6 @@
 #include "open_sx70.h"
 
+extern HardwareSerial DEBUG_OUTPUT;
 
 volatile bool integrationFinished = 0;
 
@@ -116,7 +117,7 @@ void meter_led(byte _selector, byte _type){
     }
 
     else if(_type == 1){ // Automode
-        if(predictedMillis >= ShutterSpeed[7]){ //Low light warning
+        if(predictedMillis >= ShutterSpeed[8]){ //Low light warning
             digitalWrite(PIN_LED1, HIGH);
             digitalWrite(PIN_LED2, LOW);
             #if LMHELPERDEBUG
