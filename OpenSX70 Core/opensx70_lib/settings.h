@@ -48,9 +48,9 @@
   // When I have a configurator style dongle set up I will be doing validation on that side.
   // Until then, YOU will need to validate that you are not overloading a switch.
 
-  #define MEXP_MODE 0
+  #define MEXP_MODE 1
   #define SELF_TIMER 2
-  #define DONGLE_AUTO_FLASH 1
+  #define DONGLE_AUTO_FLASH 0
   #define AUTO_STOP_DOWN 0
 
   //----------------END DONGLE SWITCH FEATURE SELECTION---------------------
@@ -87,11 +87,15 @@
   #define METER_SLOPE_HANDICAP 0 // Not used currently. Used to increase/decrease the slope of the prediction.
   #define METER_RESET_DELAY 2 // Time required for light meter capacitor to fully reset
   //---------------END METER SETTINGS----------------------------------------
+
+  // Timeout constant for peripheral communication (5ms)
+  #define PERIPHERAL_TIMEOUT_MS 5
   
   #define EE_ADD_ISO   20   //-> camera current ISO (dongleless) 
 
   enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
 
+  extern uint8_t retryLimit;
   extern int FD100;
   extern int FF100;
   extern int FD600;
@@ -100,6 +104,5 @@
   extern byte lightmeterHelper;
   extern const uint8_t YDelay;
   extern const byte PowerDownDelay;
-  extern const byte PowerDown; //max 255 = full power/POWERUP mode
   #define DEBOUNCECOUNT 5 
 #endif

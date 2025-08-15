@@ -341,6 +341,12 @@ healthchecksdb
 
 # Exclude .hex files if compiled inside the "working" subfolder
 WORKING/opensx70_lib/*.hex
+*.hex
+*.bin
+*.elf
+*.map
 
 #exclude vscode settings
 .vscode
+
+.DS_Store
