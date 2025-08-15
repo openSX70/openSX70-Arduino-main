@@ -4,6 +4,7 @@
 
 HardwareSerial DEBUGPORT(PIN_RX, PIN_TX);
 extern HardwareSerial PERIPHERALPORT;
+HardwareTimer *LEDPWM = new HardwareTimer(TIM3);
 
 iso currentISO;
 
@@ -12,9 +13,12 @@ void setup() {
     DEBUGPORT.begin(115200);
     PERIPHERALPORT.begin(115200);
     PERIPHERALPORT.enableHalfDuplexRx();
+    LEDPWM->setCaptureCompare(1, 1000);
+    
 }
 
 void loop() {
+    /*
     byte state = getDongleState();
     if(PERIPHERALPORT.available() > 0) {
         uint8_t command = PERIPHERALPORT.read();
@@ -41,5 +45,5 @@ void loop() {
                 break;
         }
     }
-
+*/
 }

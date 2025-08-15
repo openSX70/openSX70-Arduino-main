@@ -291,10 +291,24 @@ void LightMeterHelper(byte ExposureType){
     }
 }
 
-void viewfinderBlink(uint8_t LEDPIN){
+void ISOBlink(uint8_t LEDPIN){
+    uint8_t LED_ON_COMMAND;
+    uint8_t LED_OFF_COMMAND;
+    switch(LEDPIN){
+        case PIN_LED1:
+            LED_ON_COMMAND = RED_ON;
+            LED_OFF_COMMAND = RED_OFF;
+            break;
+        case PIN_LED2:
+            LED_ON_COMMAND = BLUE_ON;
+            LED_OFF_COMMAND = BLUE_OFF;
+            break;
+    }
     for(uint8_t i=0; i<2; i++){
+        sendCommand(LED_ON_COMMAND);
         digitalWrite(LEDPIN, HIGH);
         delay(100);
+        sendCommand(LED_OFF_COMMAND);
         digitalWrite(LEDPIN, LOW);
         delay(100);
     }
@@ -316,14 +330,14 @@ void S1ISOSwap(){
                 DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: SX70");
             #endif
             _selectedISO = ISO_SX70;
-            viewfinderBlink(PIN_LED1);
+            ISOBlink(PIN_LED1);
         }
         else if ((savedISO == ISO_SX70)) {
             #if DEBUG
                 DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: 600");
             #endif
             _selectedISO = ISO_600;
-            viewfinderBlink(PIN_LED2);
+            ISOBlink(PIN_LED2);
         }
         else{
             //Boards come without a set ISO, this will set the ISO to 600 without a dongle.
@@ -331,13 +345,19 @@ void S1ISOSwap(){
                 DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: 600");
             #endif
             _selectedISO = ISO_600;
-            viewfinderBlink(PIN_LED2);
+            ISOBlink(PIN_LED2);
         }
-
         saveISO(_selectedISO);
-
         while(digitalRead(PIN_S1) == HIGH){
             //wait....
+        }
+    }
+    else{
+        if(savedISO == ISO_600){
+            ISOBlink(PIN_LED2);
+        }
+        else{
+            ISOBlink(PIN_LED1);
         }
     }
     sw_S1.Reset();

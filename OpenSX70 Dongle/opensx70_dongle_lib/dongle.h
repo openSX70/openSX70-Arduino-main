@@ -8,10 +8,19 @@
 #define CAMERA_ISO_600 0x03
 #define CAMERA_ISO_SX70 0x04
 
-#define DONGLE_LED_OFF 0x05
+#define ALL_LEDS_OFF 0x05
 
+#define GREEN_ON 0x06
+#define GREEN_OFF 0x07
+
+#define RED_ON 0x08
+#define RED_OFF 0x09
+
+#define BLUE_ON 0x0A
+#define BLUE_OFF 0x0B
+
+//Keeping things similar to the DS2408 for funsies.
 #define PERIPHERAL_READ_CMD 0xF5
-#define PERIPHERAL_SELF_TIMER_CMD 0xF6
 
 typedef enum iso{
     ISO_600 = 0,

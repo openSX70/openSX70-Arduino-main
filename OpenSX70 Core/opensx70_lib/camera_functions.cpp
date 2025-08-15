@@ -43,7 +43,7 @@ void Camera::sol2Engage(){
 }
 
 void Camera::sol2LowPower(){
-    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 130);
+    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 30);
 }
 
 void Camera::sol2Disengage(){
@@ -61,7 +61,6 @@ void Camera::mirrorDOWN(){
         #endif
     }
     digitalWrite(PIN_MOTOR, LOW);
-    
 }
 
 void Camera::mirrorUP(){
@@ -162,8 +161,6 @@ void Camera::AutoExposure(int _myISO){
     }
 
     Camera::ExposureFinish();
-    
-    return; //Added 26.10.
 }
 
 // TODO Explore this one a bit. It may be possible to remove the hard coded timing
@@ -208,8 +205,6 @@ void Camera::AutoExposureFF(int _myISO){
 
     Camera::sol2Disengage();
     Camera::ExposureFinish();
-
-    return; //Added 26.10.
 }
 
 void Camera::ShutterB()
@@ -226,7 +221,6 @@ void Camera::ShutterB()
     delay(Flash_Capture_Delay);   //Capture Flash 
 
     ExposureFinish();
-    return; //Added 26.10.
 }
 
 void Camera::ShutterT(){
@@ -247,7 +241,6 @@ void Camera::ShutterT(){
     delay(Flash_Capture_Delay);   //Capture Flash 
 
     ExposureFinish();
-    return; //Addes 26.10.
 }
 
 void Camera::ExposureFinish()
@@ -277,7 +270,6 @@ void Camera::ExposureFinish()
         Camera::shutterOPEN();
         delay (100);
     }
-    return;
 }
 
 void Camera::multipleExposureLastClick(){
