@@ -197,10 +197,6 @@ camera_state returnState(){
             #endif
             return STATE_NODONGLE;
         case PERIPHERAL_DONGLE:
-            if(state == STATE_NODONGLE){
-                LightMeterHelper(0);
-                ISOBlink();
-            }
             #if STATEDEBUG
                 DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE"));
             #endif

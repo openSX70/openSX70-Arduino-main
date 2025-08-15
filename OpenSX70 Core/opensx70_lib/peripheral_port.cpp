@@ -40,9 +40,10 @@ peripheral_state do_state_noDongle(peripheral_device *device){
     
     unsigned long start_time = millis();
     while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
-        if(PERIPHERAL_PORT.available() > 0){
+        if(PERIPHERAL_PORT.available() > 0){    
             uint8_t response = PERIPHERAL_PORT.read();
             if(response == PERIPHERAL_ACK){
+                DEBUG_OUTPUT.println("Dongle state");
                 if(getDongleSettings(device)){
                     return STATE_DONGLE;
                 }
