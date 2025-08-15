@@ -280,7 +280,13 @@ void switch2Function(int mode) {
         // TODO: rewrite self timer to use new dongle functionality
 
         sendCommand(PERIPHERAL_SELF_TIMER_CMD);
-        delay(10000);
+        delay(4000);
+        openSX70.shutterCLOSE();
+        delay(2000);
+        openSX70.mirrorUP();
+        delay(1000);
+        digitalWrite(PIN_S1F_FBW, HIGH);
+        delay(3000);
 
     }
     #if SIMPLEDEBUG
