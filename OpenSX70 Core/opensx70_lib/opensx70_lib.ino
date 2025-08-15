@@ -279,6 +279,7 @@ void switch2Function(int mode) {
 
         // TODO: rewrite self timer to use new dongle functionality
 
+        digitalWrite(PIN_S1F_FBW, LOW);
         sendCommand(PERIPHERAL_SELF_TIMER_CMD);
         delay(4000);
         openSX70.shutterCLOSE();
@@ -356,11 +357,9 @@ void S1ISOSwap(){
             _selectedISO = ISO_600;
         }
         saveISO(_selectedISO);
-        while(digitalRead(PIN_S1) == HIGH){
-            //wait....
-        }
     }
     ISOBlink();
+    while(digitalRead(PIN_S1) == HIGH);
     sw_S1.Reset();
 }
 
