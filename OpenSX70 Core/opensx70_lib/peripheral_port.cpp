@@ -42,12 +42,6 @@ peripheral_state do_state_noDongle(peripheral_device *device){
     while(millis() - start_time < PERIPHERAL_TIMEOUT_MS){
         if(PERIPHERAL_PORT.available() > 0){
             uint8_t response = PERIPHERAL_PORT.read();
-            if(savedISO == ISO_600){
-                sendCommand(CAMERA_ISO_600);
-            }
-            else{
-                sendCommand(CAMERA_ISO_SX70);
-            }
             if(response == PERIPHERAL_ACK){
                 if(getDongleSettings(device)){
                     return STATE_DONGLE;

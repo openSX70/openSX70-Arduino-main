@@ -17,12 +17,12 @@ void setup() {
     
 }
 
+//Cases are a bit repetitive but I wanted to ensure LED states were easy to program as it is possible 
+//to have multiple LEDs on at the same time. A toggle would make tracking these states kinda maddening.
 void loop() {
-    /*
     byte state = getDongleState();
     if(PERIPHERALPORT.available() > 0) {
         uint8_t command = PERIPHERALPORT.read();
-        //delayMicroseconds(500);
         switch (command) {
             case PERIPHERAL_PING_CMD:
                 sendResponse(PERIPHERAL_ACK);
@@ -30,20 +30,32 @@ void loop() {
             case PERIPHERAL_READ_CMD:
                 sendResponse(state);
                 break;
-            case CAMERA_ISO_600:
-                currentISO = ISO_600;
-                setISOLED(ISO_600);
+            case GREEN_ON:
+                digitalWrite(LED_GREEN, HIGH);
                 break;
-            case CAMERA_ISO_SX70:
-                currentISO = ISO_SX70;
-                setISOLED(ISO_SX70);
+            case GREEN_OFF:
+                digitalWrite(LED_GREEN, LOW);
                 break;
-            case DONGLE_LED_OFF:
+            case RED_ON:
+                digitalWrite(LED_RED, HIGH);
+                break;
+            case RED_OFF:
+                digitalWrite(LED_RED, LOW);
+                break;
+            case BLUE_ON:
+                digitalWrite(LED_BLUE, HIGH);
+                break;
+            case BLUE_OFF:
+                digitalWrite(LED_BLUE, LOW);
+                break;
+            case ALL_LEDS_OFF:
                 turnOffLEDs();
+                break;
+            case PERIPHERAL_SELF_TIMER_CMD:
+                BlinkTimerDelay(10);
                 break;
             default:
                 break;
         }
     }
-*/
 }

@@ -197,6 +197,10 @@ camera_state returnState(){
             #endif
             return STATE_NODONGLE;
         case PERIPHERAL_DONGLE:
+            if(state == STATE_NODONGLE){
+                LightMeterHelper(0);
+                ISOBlink();
+            }
             #if STATEDEBUG
                 DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE"));
             #endif
@@ -279,6 +283,9 @@ void switch2Function(int mode) {
 
         // TODO: rewrite self timer to use new dongle functionality
 
+        sendCommand(PERIPHERAL_SELF_TIMER_CMD);
+        delay(10000);
+
     }
     #if SIMPLEDEBUG
         DEBUG_OUTPUT.println(F("Self Timer End"));
@@ -291,26 +298,28 @@ void LightMeterHelper(byte ExposureType){
     }
 }
 
-void ISOBlink(uint8_t LEDPIN){
-    uint8_t LED_ON_COMMAND;
-    uint8_t LED_OFF_COMMAND;
-    switch(LEDPIN){
-        case PIN_LED1:
-            LED_ON_COMMAND = RED_ON;
-            LED_OFF_COMMAND = RED_OFF;
+void ISOBlink(){
+    switch(savedISO){
+        case ISO_600:
+            for(uint8_t i=0; i<2; i++){
+                sendCommand(BLUE_ON);
+                digitalWrite(PIN_LED2, HIGH);
+                delay(100);
+                sendCommand(BLUE_OFF);
+                digitalWrite(PIN_LED2, LOW);
+                delay(100);
+            }
             break;
-        case PIN_LED2:
-            LED_ON_COMMAND = BLUE_ON;
-            LED_OFF_COMMAND = BLUE_OFF;
+        case ISO_SX70:
+            for(uint8_t i=0; i<2; i++){
+                sendCommand(RED_ON);
+                digitalWrite(PIN_LED1, HIGH);
+                delay(100);
+                sendCommand(RED_OFF);
+                digitalWrite(PIN_LED1, LOW);
+                delay(100);
+            }
             break;
-    }
-    for(uint8_t i=0; i<2; i++){
-        sendCommand(LED_ON_COMMAND);
-        digitalWrite(LEDPIN, HIGH);
-        delay(100);
-        sendCommand(LED_OFF_COMMAND);
-        digitalWrite(LEDPIN, LOW);
-        delay(100);
     }
 }
 
@@ -330,14 +339,12 @@ void S1ISOSwap(){
                 DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: SX70");
             #endif
             _selectedISO = ISO_SX70;
-            ISOBlink(PIN_LED1);
         }
         else if ((savedISO == ISO_SX70)) {
             #if DEBUG
                 DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: 600");
             #endif
             _selectedISO = ISO_600;
-            ISOBlink(PIN_LED2);
         }
         else{
             //Boards come without a set ISO, this will set the ISO to 600 without a dongle.
@@ -345,21 +352,13 @@ void S1ISOSwap(){
                 DEBUG_OUTPUT.println("ISO HAS BEEN SWAPPED TO: 600");
             #endif
             _selectedISO = ISO_600;
-            ISOBlink(PIN_LED2);
         }
         saveISO(_selectedISO);
         while(digitalRead(PIN_S1) == HIGH){
             //wait....
         }
     }
-    else{
-        if(savedISO == ISO_600){
-            ISOBlink(PIN_LED2);
-        }
-        else{
-            ISOBlink(PIN_LED1);
-        }
-    }
+    ISOBlink();
     sw_S1.Reset();
 }
 

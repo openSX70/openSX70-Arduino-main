@@ -65,3 +65,43 @@ void turnOffLEDs() {
     digitalWrite(LED_RED, LOW);
     digitalWrite(LED_GREEN, LOW);
 }
+
+void BlinkTimerDelay(byte time){
+    // DONGLE-LED BLINKS ON COUNTDOWN (10secs)
+    // this is a test function to do the progressing blinking of the LED using my blink function
+    // it last exactly 10 seconds (2500x4) and I could not accomplish this with the delay()
+    // everytime the led (in pin 5) blinks faster 1000, 700, 400, and 100.
+    //uint32_t startTimer = millis();
+    //*******************************************************
+    uint32_t steps = (time * 1000) / 4;
+
+    Blink(1000, steps, LED_GREEN);
+    Blink(600, steps, LED_GREEN);
+    Blink(200, steps, LED_GREEN);
+    steps = steps / 2;
+    Blink(80, steps, LED_GREEN);
+    Blink(80, steps, LED_RED);
+}
+
+void Blink(unsigned int interval, int timer, int Pin){
+    int ledState = LOW;             // ledState used to set the LED
+    pinMode(Pin, OUTPUT);
+    uint32_t previousMillis = 0;        // will store last time LED was updated
+    uint32_t currentMillisTimer = millis();
+    while (millis() < (currentMillisTimer + timer)){
+        uint32_t currentMillis = millis();
+        if (currentMillis - previousMillis >= interval) {
+            // save the last time you blinked the LED
+            previousMillis = currentMillis;
+            // if the LED is off turn it on and vice-versa:
+            if (ledState == 0){
+                ledState = 1;
+                digitalWrite(Pin, HIGH);
+            } 
+            else{
+                ledState = 0;
+                digitalWrite(Pin, LOW);
+            }
+        }
+    }
+}

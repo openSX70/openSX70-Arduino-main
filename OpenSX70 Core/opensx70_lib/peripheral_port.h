@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 
-
+//Keeping things similar to the DS2408 for funsies.
 #define PERIPHERAL_PING_CMD 0x01
 #define PERIPHERAL_ACK 0x02
 #define CAMERA_ISO_600 0x03
@@ -20,8 +20,8 @@
 #define BLUE_ON 0x0A
 #define BLUE_OFF 0x0B
 
-//Keeping things similar to the DS2408 for funsies.
 #define PERIPHERAL_READ_CMD 0xF5
+#define PERIPHERAL_SELF_TIMER_CMD 0xF6
 
 extern HardwareSerial DEBUG_OUTPUT;
 

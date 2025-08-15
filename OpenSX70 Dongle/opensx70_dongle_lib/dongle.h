@@ -21,6 +21,7 @@
 
 //Keeping things similar to the DS2408 for funsies.
 #define PERIPHERAL_READ_CMD 0xF5
+#define PERIPHERAL_SELF_TIMER_CMD 0xF6
 
 typedef enum iso{
     ISO_600 = 0,
@@ -31,5 +32,7 @@ byte getDongleState(void);
 void sendResponse(uint8_t message);
 void setISOLED(iso isoSetting);
 void turnOffLEDs();
+void BlinkTimerDelay(byte time);
+void Blink(unsigned int interval, int timer, int Pin);
 
 #endif
