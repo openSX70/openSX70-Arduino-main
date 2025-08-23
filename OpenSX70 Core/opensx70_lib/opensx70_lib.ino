@@ -13,6 +13,7 @@ HardwareSerial DEBUG_OUTPUT(USART_RX, USART_TX);
 
 int savedISO;
 
+bool isoBlinked = false;
 bool mEXPFirstRun;
 bool multipleExposureMode;
 
@@ -99,13 +100,17 @@ camera_state do_state_darkslide (void) {
     if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
     #endif
         if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
-            openSX70.darkslideEJECT(); 
+            openSX70.darkslideEJECT();         
         }
-        return returnState();
+   
     #if SHUTTERDARKSLIDE
     sw_S1.Reset();
     }
     #endif
+  if(!isoBlinked){
+      ISOBlink();
+  }
+  return returnState();    
 }
 
 camera_state do_state_noDongle (void){
@@ -357,8 +362,9 @@ void S1ISOSwap(){
             _selectedISO = ISO_600;
         }
         saveISO(_selectedISO);
+        ISOBlink();
+        isoBlinked = true;
     }
-    ISOBlink();
     while(digitalRead(PIN_S1) == HIGH);
     sw_S1.Reset();
 }
