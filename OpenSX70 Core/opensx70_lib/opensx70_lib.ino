@@ -100,16 +100,17 @@ camera_state do_state_darkslide (void) {
     if (((sw_S1.clicks == -1) || (sw_S1.clicks == 1)) || (digitalRead(PIN_S8) == LOW)){
     #endif
         if (digitalRead(PIN_S8) == HIGH && digitalRead(PIN_S9) == LOW){
-            openSX70.darkslideEJECT();
-            if(!isoBlinked){
-                ISOBlink();
-            }
+            openSX70.darkslideEJECT();         
         }
-        return returnState();
+   
     #if SHUTTERDARKSLIDE
     sw_S1.Reset();
     }
     #endif
+  if(!isoBlinked){
+      ISOBlink();
+  }
+  return returnState();    
 }
 
 camera_state do_state_noDongle (void){
