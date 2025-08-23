@@ -259,7 +259,7 @@ void Camera::ExposureFinish()
     else{
         delay (100);
         while(digitalRead(PIN_S1) == HIGH); // wait for s1 to be depressed
-        Camera::mirrorDOWN ();
+        Camera::mirrorDOWN();
         delay (30);
         Camera::shutterOPEN();
         delay (100);
@@ -280,23 +280,4 @@ void Camera::FastFlash(){
     digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
     pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
     PERIPHERAL_PORT.begin(115200); //Reinitialize the Serial Port
-}
-
-
-
-bool Camera::setLIGHTMETER_HELPER(bool state){
-    #if LMHELPERDEBUG
-        DEBUG_OUTPUT.print("Set Lightmeterhelper status: ");
-        DEBUG_OUTPUT.println(String(state));
-    #endif
-    lightmeterHelper = state;
-    return state;
-}
-
-bool Camera::getLIGHTMETER_HELPER(){
-    #if LMHELPERDEBUG
-        //DEBUG_OUTPUT.println("Lightmeterhelper status: ");
-        //DEBUG_OUTPUT.println(lightmeterHelper));
-    #endif
-    return lightmeterHelper;
 }

@@ -24,8 +24,6 @@ class Camera
         void ShutterT();
         void multipleExposureFinish();
         void multipleExposure(int exposureMode);
-        bool setLIGHTMETER_HELPER(bool active);
-        bool getLIGHTMETER_HELPER();
         void multipleExposureLastClick();
     private:
         void FastFlash();

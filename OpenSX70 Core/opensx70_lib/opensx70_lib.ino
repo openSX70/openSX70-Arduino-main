@@ -301,7 +301,7 @@ void switch2Function(int mode) {
 }
 
 void LightMeterHelper(byte ExposureType){
-    if(openSX70.getLIGHTMETER_HELPER()){
+    if(lightmeterHelper){
         meter_led(current_status.selector, ExposureType);
     }
 }
