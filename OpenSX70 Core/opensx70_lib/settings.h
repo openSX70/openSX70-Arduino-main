@@ -92,5 +92,5 @@
   extern byte lightmeterHelper;
   extern const uint8_t YDelay;
   extern const uint8_t PowerDownDelay;
-  extern bool Shutter_darkslide;
+  extern bool shutter_darkslide;
 #endif

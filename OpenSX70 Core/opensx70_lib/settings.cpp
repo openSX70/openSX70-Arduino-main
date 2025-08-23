@@ -17,7 +17,7 @@ uint16_t FD600 = 85;
 uint16_t FF600 = 111;
 uint8_t retryLimit = 3;
 
-bool Shutter_darkslide = false;
+bool shutter_darkslide = false;
 
 byte lightmeterHelper = true;
 

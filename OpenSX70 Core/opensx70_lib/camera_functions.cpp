@@ -38,18 +38,6 @@ void Camera::shutterOPEN(){
     SolenoidPWM->setPWM(1, PIN_SOL1, 62000, 0);
 }
 
-void Camera::sol2Engage(){
-    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 100);
-}
-
-void Camera::sol2LowPower(){
-    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 30);
-}
-
-void Camera::sol2Disengage(){
-    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0);
-}
-
 void Camera::mirrorDOWN(){
     #if BASICDEBUG
         DEBUG_OUTPUT.println("mirrorDOWN");
@@ -163,8 +151,6 @@ void Camera::AutoExposure(int _myISO){
     Camera::ExposureFinish();
 }
 
-// TODO Explore this one a bit. It may be possible to remove the hard coded timing
-// and move purely to a meter-based approach. Would be faster and more consistent.
 void Camera::AutoExposureFF(int _myISO){
     uint16_t FD_MN = 0;
     uint16_t FF_MN = 0;  //FlashDelay Magicnumber
@@ -178,10 +164,10 @@ void Camera::AutoExposureFF(int _myISO){
         FF_MN = FF600; 
     }
 
-    Camera::sol2Engage();
+    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 100);
     delay(YDelay);
     meter_set_iso(FD_MN);
-    Camera::sol2LowPower();
+    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 30);
     meter_reset();
 
     uint32_t integrationStartTime = millis();
@@ -202,44 +188,28 @@ void Camera::AutoExposureFF(int _myISO){
             break;
         }
     }
-
-    Camera::sol2Disengage();
+    SolenoidPWM->setPWM(2, PIN_SOL2, 62000, 0);
     Camera::ExposureFinish();
 }
 
-void Camera::ShutterB()
-{
-
+void Camera::ShutterB(){
     delay (YDelay);
-
     Camera::shutterOPEN ();
-
-    while (digitalRead(PIN_S1) == HIGH){
-        
-    }
+    while (digitalRead(PIN_S1) == HIGH);
     Camera::FastFlash();
     delay(Flash_Capture_Delay);   //Capture Flash 
-
     ExposureFinish();
 }
 
 void Camera::ShutterT(){
-
     delay (40);
-    
-    while (digitalRead(PIN_S1F) == HIGH){
-    }
-
+    while (digitalRead(PIN_S1F) == HIGH);
     Camera::shutterOPEN ();
-
     // Catch button press, wait for depress
-    while(DebouncedRead(PIN_S1) == HIGH){
-    }
-    while (digitalRead(PIN_S1) == !HIGH){
-    }
+    while(DebouncedRead(PIN_S1) == HIGH);
+    while (digitalRead(PIN_S1) == !HIGH);
     Camera::FastFlash();
     delay(Flash_Capture_Delay);   //Capture Flash 
-
     ExposureFinish();
 }
 
