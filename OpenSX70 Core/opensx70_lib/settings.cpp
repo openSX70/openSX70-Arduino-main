@@ -2,7 +2,7 @@
 #include "Arduino.h"
 
 const uint8_t YDelay = 100;
-const byte PowerDownDelay = 15; //time it takes to be fully closed
+const uint8_t PowerDownDelay = 15; //time it takes to be fully closed
 
 // *** FILL FLASH ***
 // Explanation for these numbers. Concept is pulled directly from fill flash description in the alpha repair supplement.
@@ -11,11 +11,13 @@ const byte PowerDownDelay = 15; //time it takes to be fully closed
 // FD (Flash Delay) value is the value the meter must hit prior to the flash firing. If integration time takes longer than 56ms (Flash_Max_Time), fire the flash regardless.
 // FF (Flash Fired) value is the value the meter must hit before the shutter closes. This also has a timeout but is a much shorter 12ms (Flash_Capture_Max_Time).
 // I am hard coding these values as the magic number is no longer changing per board.
-int FD100 = 341;
-int FF100 = 443;
-int FD600 = 85;
-int FF600 = 111;
+uint16_t FD100 = 341;
+uint16_t FF100 = 443;
+uint16_t FD600 = 85;
+uint16_t FF600 = 111;
 uint8_t retryLimit = 3;
+
+bool Shutter_darkslide = false;
 
 byte lightmeterHelper = true;
 

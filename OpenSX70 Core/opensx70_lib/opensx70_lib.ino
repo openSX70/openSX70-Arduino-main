@@ -2,7 +2,7 @@
 #include "open_sx70.h"
 
 
-ClickButton sw_S1(PIN_S1, S1Logic);
+ClickButton sw_S1(PIN_S1, HIGH);
 
 peripheral_device current_status;
 peripheral_device previous_status;

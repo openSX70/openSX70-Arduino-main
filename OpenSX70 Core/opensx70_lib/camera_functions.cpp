@@ -214,7 +214,7 @@ void Camera::ShutterB()
 
     Camera::shutterOPEN ();
 
-    while (digitalRead(PIN_S1) == S1Logic){
+    while (digitalRead(PIN_S1) == HIGH){
         
     }
     Camera::FastFlash();
@@ -233,9 +233,9 @@ void Camera::ShutterT(){
     Camera::shutterOPEN ();
 
     // Catch button press, wait for depress
-    while(DebouncedRead(PIN_S1) == S1Logic){
+    while(DebouncedRead(PIN_S1) == HIGH){
     }
-    while (digitalRead(PIN_S1) == !S1Logic){
+    while (digitalRead(PIN_S1) == !HIGH){
     }
     Camera::FastFlash();
     delay(Flash_Capture_Delay);   //Capture Flash 
@@ -250,7 +250,7 @@ void Camera::ExposureFinish()
     delay (30); //Was 20
 
     if(multipleExposureMode == true){
-        while(digitalRead(PIN_S1) == S1Logic);
+        while(digitalRead(PIN_S1) == HIGH);
         #if MXDEBUG
             DEBUG_OUTPUT.println("mEXP");
         #endif
@@ -258,15 +258,9 @@ void Camera::ExposureFinish()
     }
     else{
         delay (100);
-        #if EJECT_AFTER_DEPRESSING
-            while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
-            Camera::mirrorDOWN ();
-            delay (30);
-        #else
-            Camera::mirrorDOWN ();
-            delay (30);
-            while(digitalRead(PIN_S1) == S1Logic); // wait for s1 to be depressed
-        #endif
+        while(digitalRead(PIN_S1) == HIGH); // wait for s1 to be depressed
+        Camera::mirrorDOWN ();
+        delay (30);
         Camera::shutterOPEN();
         delay (100);
     }

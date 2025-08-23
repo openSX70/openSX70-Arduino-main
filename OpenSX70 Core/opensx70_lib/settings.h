@@ -20,21 +20,9 @@
   #define APERTURE_PRIORITY 0      //1 Enables SOL2 engage on picture taking for experimental aperture priority mode
 
   //----------------CAMERA PCB OPTIONS SELECTION-------------------------
-  //      Camera Options
-  //May go crazy and take all of these out.
-  //There is really no difference between an alpha and a sonar camera other than S1F as far as logic is concerned.
-  //End user will probably never even feel a difference.
-  #define S1Logic HIGH
-  //      Dongle Options 
-  #define GREEN 6
-  #define RED 7
-  //      Feature toggles
-  #define DOUBLECLICK 0            //1 Enables double clicking the shutter button without a dongle to start 10s self timer
+
   #define SHUTTERDARKSLIDE 0       //1 Enables feature to not eject dark slide until shutter button is pressed
-  #define TIMER_MIRROR_UP 1        //1 Enables mirror up feature for self timer modes
-  #define EIGHT_SHOT_PACK 1        //1 Makes all counter-based functions work based on an 8 shot pack rather than 10
-  #define LIGHMETER_HELPER 1       //1 Enables viewfinder light meter helper
-  #define EJECT_AFTER_DEPRESSING 1 //1 Enables the user to hold the shutter button to prevent photo ejection
+  
   //----------------END CAMERA PCB OPTIONS SELECTION------------------------
 
   //----------------DONGLE SWITCH FEATURE SELECTION-------------------------
@@ -90,19 +78,19 @@
 
   // Timeout constant for peripheral communication (5ms)
   #define PERIPHERAL_TIMEOUT_MS 5
-  
+  #define DEBOUNCECOUNT 5 
   #define EE_ADD_ISO   20   //-> camera current ISO (dongleless) 
 
   enum positions_t {POST = -100, POSB, AUTO600, AUTO100};//ANALOGUEWORKS AUTO 600BW
 
+  extern uint16_t FD100;
+  extern uint16_t FF100;
+  extern uint16_t FD600;
+  extern uint16_t FF600;
   extern uint8_t retryLimit;
-  extern int FD100;
-  extern int FF100;
-  extern int FD600;
-  extern int FF600;
   extern int ShutterSpeed[]; //reduced speeds from 25 (slot5) to compensate flash firing
   extern byte lightmeterHelper;
   extern const uint8_t YDelay;
-  extern const byte PowerDownDelay;
-  #define DEBOUNCECOUNT 5 
+  extern const uint8_t PowerDownDelay;
+  extern bool Shutter_darkslide;
 #endif
