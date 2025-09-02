@@ -167,21 +167,22 @@ camera_state do_state_multi_exp (void){
     bool mexpSwitchStatus = getSwitchStates(MEXP_MODE);
 
     if ((sw_S1.clicks == -1) || (sw_S1.clicks > 0)){
-    if(mexpSwitchStatus){
-        if(getSwitchStates(SELF_TIMER)){
-            switch2Function(0); // start self timer 
+        if(mexpSwitchStatus){
+            if(getSwitchStates(SELF_TIMER)){
+                switch2Function(0); // start self timer 
+            }
+            if(mEXPFirstRun){
+                mEXPFirstRun = false;
+                beginExposure();
+            }
+            dongleFunctions();
         }
-        if(mEXPFirstRun){
-            mEXPFirstRun = false;
-            beginExposure();
+        else if((mexpSwitchStatus == 0) && (mEXPFirstRun == false)){
+            openSX70.multipleExposureLastClick();
+            sw_S1.Reset();
+            return STATE_DONGLE;
         }
-        dongleFunctions();
-    }
-    else if((mexpSwitchStatus == 0) && (mEXPFirstRun == false)){
-        openSX70.multipleExposureLastClick();
-        return STATE_DONGLE;
-    }
-    sw_S1.Reset();
+        sw_S1.Reset();
     }
 
     if((mexpSwitchStatus == false) && (mEXPFirstRun == true)){
@@ -202,6 +203,11 @@ camera_state returnState(){
             #endif
             return STATE_NODONGLE;
         case PERIPHERAL_DONGLE:
+            if(getSwitchStates(MEXP_MODE)){
+                multipleExposureMode = true;
+                mEXPFirstRun = true;
+                return STATE_MULTI_EXP;
+            }
             #if STATEDEBUG
                 DEBUG_OUTPUT.println(F("TRANSITION TO STATE_DONGLE"));
             #endif
