@@ -179,6 +179,8 @@ void Camera::AutoExposureFF(int _myISO){
     }
 
     Camera::sol2Engage();
+    pinMode(PIN_S2, OUTPUT);
+    digitalWrite (PIN_S2, LOW);     //So FFA recognizes the flash as such
     delay(YDelay);
     meter_set_iso(FD_MN);
     Camera::sol2LowPower();
@@ -192,16 +194,21 @@ void Camera::AutoExposureFF(int _myISO){
         }  
     }
 
+    digitalWrite(PIN_FF, HIGH);    //FLASH TRIGGERING
+
     meter_set_iso(FF_MN);
-    //digitalWrite(PIN_FF, HIGH);  //FireFlash
-    FastFlash();
-    delay(Flash_Capture_Delay);   //Capture Flash 
+
+    //delay(Flash_Capture_Delay);   //Capture Flash 
     uint32_t FFStartTime = millis();
     while (meter_update() == false){
         if ((millis() - FFStartTime) >= Flash_Capture_Max_Time){
             break;
         }
     }
+
+    digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
+    pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
+    PERIPHERAL_PORT.begin(115200); //Reinitialize the Serial Port
 
     Camera::sol2Disengage();
     Camera::ExposureFinish();
@@ -282,7 +289,6 @@ void Camera::FastFlash(){
     pinMode(PIN_S2, OUTPUT);
     digitalWrite (PIN_S2, LOW);     //So FFA recognizes the flash as such
     digitalWrite(PIN_FF, HIGH);    //FLASH TRIGGERING
-    delay(1);
     digitalWrite(PIN_FF, LOW);     //FLASH TRIGGERING
     pinMode(PIN_S2, INPUT_PULLUP);  //S2 back to normal
     PERIPHERAL_PORT.begin(115200); //Reinitialize the Serial Port

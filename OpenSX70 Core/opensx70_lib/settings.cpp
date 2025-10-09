@@ -11,10 +11,10 @@ const byte PowerDownDelay = 15; //time it takes to be fully closed
 // FD (Flash Delay) value is the value the meter must hit prior to the flash firing. If integration time takes longer than 56ms (Flash_Max_Time), fire the flash regardless.
 // FF (Flash Fired) value is the value the meter must hit before the shutter closes. This also has a timeout but is a much shorter 12ms (Flash_Capture_Max_Time).
 // I am hard coding these values as the magic number is no longer changing per board.
-int FD100 = 341;
-int FF100 = 443;
-int FD600 = 85;
-int FF600 = 111;
+int FD100 = 200;
+int FF100 = 260;
+int FD600 = 40; //60 50
+int FF600 = 52; //78 65
 uint8_t retryLimit = 3;
 
 byte lightmeterHelper = true;
