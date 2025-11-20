@@ -36,15 +36,19 @@ void meter_set_iso(const uint16_t& iso){ //set the output Compare Value for Time
     DEBUG_OUTPUT.print(F("meter_set_iso : "));
     DEBUG_OUTPUT.println(iso);
     #endif
-    if (iso == ISO_600) {
-        outputCompare = A600;
-    } 
-    else if (iso == ISO_SX70) {
-        outputCompare = A100;
+    
+    switch(iso){
+        case ISO_600:
+            outputCompare = A600;
+            break;
+        case ISO_SX70:
+            outputCompare = A100;
+            break;
+        default:
+            outputCompare = iso; //FF Delay Magicnumber as well as
+            break;
     }
-    else{
-        outputCompare = iso; //FF Delay Magicnumber as well as      
-    }
+
     #if LMDEBUG
     DEBUG_OUTPUT.print(F("outputcompare set to : "));
     DEBUG_OUTPUT.println(outputCompare);
